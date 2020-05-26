@@ -1,22 +1,34 @@
 #!/bin/bash
 
 # ---------------------------------------------------------------------------------------------------------------------
-# pawpaw setup
-
-PAWPAW_DIR="$(realpath ~/PawPawBuilds)"
-PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds"
-PAWPAW_DOWNLOADDIR="${PAWPAW_DIR}/downloads"
-PAWPAW_PREFIX="${PAWPAW_DIR}/target"
-PAWPAW_TMPDIR="/tmp"
-
-# ---------------------------------------------------------------------------------------------------------------------
 # OS setup
 
 if [ "${MACOS}" -eq 1 ]; then
     CMAKE_SYSTEM_NAME="Darwin"
+    if [ "${MACOS_OLD}" -eq 1 ]; then
+        PAWPAW_TARGET="macos-old"
+    else
+        PAWPAW_TARGET="macos"
+    fi
 elif [ "${WIN32}" -eq 1 ]; then
     CMAKE_SYSTEM_NAME="Windows"
+    if [ "${WIN64}" -eq 1 ]; then
+        PAWPAW_TARGET="win64"
+    else
+        PAWPAW_TARGET="win32"
+    fi
+else
+    PAWPAW_TARGET="native"
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# PawPaw setup
+
+PAWPAW_DIR="$(realpath ~/PawPawBuilds)"
+PAWPAW_DOWNLOADDIR="${PAWPAW_DIR}/downloads"
+PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/${PAWPAW_TARGET}"
+PAWPAW_PREFIX="${PAWPAW_DIR}/targets/${PAWPAW_TARGET}"
+PAWPAW_TMPDIR="/tmp"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # build environment
@@ -24,10 +36,10 @@ fi
 ## build flags
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include"
-BUILD_FLAGS="${BUILD_FLAGS} -mtune=generic -msse -msse2 -mfpmath=sse"
-# -ffast-math
+BUILD_FLAGS="${BUILD_FLAGS} -mtune=generic -msse -msse2 -mfpmath=sse -ffast-math"
 BUILD_FLAGS="${BUILD_FLAGS} -fPIC -DPIC -DNDEBUG"
 BUILD_FLAGS="${BUILD_FLAGS} -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
+
 if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_OLD}" -eq 1 ]; then
         BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.5"
@@ -36,14 +48,18 @@ if [ "${MACOS}" -eq 1 ]; then
     fi
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS="${BUILD_FLAGS} -DPTW32_STATIC_LIB -mstackrealign"
+    # -DWIN32_LEAN_AND_MEAN
 fi
 # -DFLUIDSYNTH_NOT_A_DLL
+
 TARGET_CFLAGS="${BUILD_FLAGS}"
 TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 
 ## link flags
 
-LINK_FLAGS="-fdata-sections -ffunction-sections -L${PAWPAW_PREFIX}/lib"
+LINK_FLAGS="-L${PAWPAW_PREFIX}/lib"
+LINK_FLAGS="${LINK_FLAGS} -fdata-sections -ffunction-sections"
+
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS="${LINK_FLAGS} -Wl,-dead_strip -Wl,-dead_strip_dylibs"
     if [ "${MACOS_OLD}" -ne 1 ]; then
@@ -55,6 +71,7 @@ else
         LINK_FLAGS="${LINK_FLAGS} -static"
     fi
 fi
+
 TARGET_LDFLAGS="${LINK_FLAGS}"
 
 ## toolchain
@@ -69,6 +86,7 @@ elif [ "${WIN32}" -eq 1 ]; then
     TOOLCHAIN_PREFIX="i686-w64-mingw32"
     TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
 fi
+
 TARGET_AR="${TOOLCHAIN_PREFIX_}ar"
 TARGET_CC="${TOOLCHAIN_PREFIX_}gcc"
 TARGET_CXX="${TOOLCHAIN_PREFIX_}g++"

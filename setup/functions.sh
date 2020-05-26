@@ -42,6 +42,25 @@ function download() {
     fi
 }
 
+function copy_download() {
+    local name1="${1}"
+    local name2="${2}"
+    local version="${3}"
+    local dlext="${4}"
+
+    if [ -z "${dlext}" ]; then
+        dlext="tar.gz"
+    fi
+
+    local dlfile1="${PAWPAW_DOWNLOADDIR}/${name1}-${version}.${dlext}"
+    local dlfolder2="${PAWPAW_BUILDDIR}/${name2}-${version}"
+
+    if [ ! -d "${dlfolder2}" ]; then
+        mkdir "${dlfolder2}"
+        tar -xf "${dlfile1}" -C "${dlfolder2}" --strip-components=1
+    fi
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 function _prebuild() {
@@ -95,11 +114,15 @@ function build_autoconf() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
+    fi
+
     _prebuild "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./configure --enable-static --disable-shared --prefix="${PAWPAW_PREFIX}" --host=${TOOLCHAIN_PREFIX} ${extraconfrules}
+        ./configure --enable-static --disable-shared --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
@@ -161,13 +184,17 @@ function build_cmake() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        extraconfrules="-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME} ${extraconfrules}"
+    fi
+
     _prebuild "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
         # FIXME put this as a patch file
         sed -i -e 's/ -Wl,--no-undefined//' CMakeLists.txt
-        cmake -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" -DCMAKE_SYSTEM_NAME="${CMAKE_SYSTEM_NAME}" ${extraconfrules}
+        cmake -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
@@ -223,6 +250,10 @@ function build_meson() {
     local extraconfrules="${3}"
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        extraconfrules="--cross-file ${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini ${extraconfrules}"
+    fi
 
     _prebuild "${pkgdir}"
 

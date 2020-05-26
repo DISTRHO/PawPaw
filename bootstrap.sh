@@ -3,17 +3,57 @@
 set -e
 
 cd $(dirname ${0})
+PAWPAW_ROOT="${PWD}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-# TODO CLI args
+target="${1}"
 
-# NOTE all of these need to be defined. either 0 or 1
-CROSS_COMPILING=1
+if [ -z "${target}" ]; then
+    echo "usage: ${0} <target>"
+    exit 1
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+CROSS_COMPILING=0
 MACOS=0
 MACOS_OLD=0
-WIN32=1
-WIN64=1
+WIN32=0
+WIN64=0
+
+case ${target} in
+    "macos")
+        MACOS=1
+        ;;
+    "macos-old")
+        MACOS=1
+        MACOS_OLD=1
+        CROSS_COMPILING=1
+        ;;
+    "win32")
+        WIN32=1
+        CROSS_COMPILING=1
+        ;;
+    "win64")
+        WIN32=1
+        WIN64=1
+        CROSS_COMPILING=1
+        ;;
+    "native")
+        echo "TODO"
+        exit 2
+        ;;
+    default)
+        echo "Invalid target '${target}', possible values are:"
+        echo "\tmacos"
+        echo "\tmacos-old"
+        echo "\twin32"
+        echo "\twin64"
+        echo "\tnative"
+        exit 2
+        ;;
+esac
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -92,43 +132,15 @@ download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
 build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# now the fun: plugins!
+# fftw
 
-for p in $(ls plugins); do
-    name=$(jq -crM .name plugins/${p})
-    version=$(jq -crM .version plugins/${p})
-    buildtype=$(jq -crM .buildtype plugins/${p})
-    dlbaseurl=$(jq -crM .dlbaseurl plugins/${p})
+download fftw "${FFTW_VERSION}" "http://www.fftw.org"
+build_autoconf fftw "${FFTW_VERSION}" "--enable-sse2 --disable-debug --disable-alloca --disable-fortran --with-our-malloc"
 
-    # optional args
-    buildargs=$(echo -e $(jq -ecrM .buildargs plugins/${p} || echo '\n\n') | tail -n 1)
-    dlext=$(echo -e $(jq -ecrM .dlext plugins/${p} || echo '\n\n') | tail -n 1)
-    dlmethod=$(echo -e $(jq -ecrM .dlmethod plugins/${p} || echo '\n\n') | tail -n 1)
+# ---------------------------------------------------------------------------------------------------------------------
+# fftwf
 
-    download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}"
-
-    # TODO patch_file support?
-
-    case ${buildtype} in
-        "autoconf")
-            build_autoconf "${name}" "${version}" "${buildargs}"
-            ;;
-        "conf")
-            build_conf "${name}" "${version}" "${buildargs}"
-            ;;
-        "cmake")
-            build_cmake "${name}" "${version}" "${buildargs}"
-            ;;
-        "make")
-            build_make "${name}" "${version}" "${buildargs}"
-            ;;
-        "meson")
-            build_meson "${name}" "${version}" "${buildargs}"
-            ;;
-        "waf")
-            build_waf "${name}" "${version}" "${buildargs}"
-            ;;
-    esac
-done
+copy_download fftw fftwf "${FFTW_VERSION}" 
+build_autoconf fftwf "${FFTW_VERSION}" "--enable-single --enable-sse2 --disable-debug --disable-alloca --disable-fortran --with-our-malloc"
 
 # ---------------------------------------------------------------------------------------------------------------------
