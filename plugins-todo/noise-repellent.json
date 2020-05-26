@@ -1,0 +1,7 @@
+{
+    "name": "noise-repellent",
+    "version": "87b4380eae2b69b09bba8a8b181f24153079100d",
+    "dlbaseurl": "https://github.com/lucianodato/noise-repellent.git",
+    "dlmethod": "git",
+    "buildtype": "meson"
+}

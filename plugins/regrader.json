@@ -1,0 +1,7 @@
+{
+    "name": "regrader-port",
+    "version": "412e475cef1025d955fae4229b6bc94596f36fd4",
+    "dlbaseurl": "https://github.com/linuxmao-org/regrader-port.git",
+    "dlmethod": "git",
+    "buildtype": "make"
+}

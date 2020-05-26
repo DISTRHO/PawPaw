@@ -1,0 +1,8 @@
+{
+    "name": "artyfx",
+    "version": "6010d1a6034ea684cc2edb22021f034122ccf814",
+    "dlbaseurl": "https://github.com/openAVproductions/openAV-ArtyFX.git",
+    "dlmethod": "git",
+    "buildtype": "cmake",
+    "buildargs": "-DBUILD_GUI=OFF"
+}

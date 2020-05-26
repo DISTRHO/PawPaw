@@ -1,0 +1,7 @@
+{
+    "name": "mod-utilities",
+    "version": "4a92aa81351c5c95fefa0505fafad5fbea494dd0",
+    "dlbaseurl": "https://github.com/moddevices/mod-utilities.git",
+    "dlmethod": "git",
+    "buildtype": "make"
+}
