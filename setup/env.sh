@@ -10,6 +10,7 @@ if [ "${MACOS}" -eq 1 ]; then
     else
         PAWPAW_TARGET="macos"
     fi
+
 elif [ "${WIN32}" -eq 1 ]; then
     CMAKE_SYSTEM_NAME="Windows"
     if [ "${WIN64}" -eq 1 ]; then
@@ -17,8 +18,14 @@ elif [ "${WIN32}" -eq 1 ]; then
     else
         PAWPAW_TARGET="win32"
     fi
+
+elif [ "${LINUX}" -eq 1 ]; then
+    CMAKE_SYSTEM_NAME="Linux"
+    PAWPAW_TARGET="linux"
+
 else
-    PAWPAW_TARGET="native"
+    echo "Unknown target '${target}'"
+    exit 4
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

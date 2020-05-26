@@ -19,47 +19,7 @@ fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-CROSS_COMPILING=0
-MACOS=0
-MACOS_OLD=0
-WIN32=0
-WIN64=0
-
-case ${target} in
-    "macos")
-        MACOS=1
-        ;;
-    "macos-old")
-        MACOS=1
-        MACOS_OLD=1
-        CROSS_COMPILING=1
-        ;;
-    "win32")
-        WIN32=1
-        CROSS_COMPILING=1
-        ;;
-    "win64")
-        WIN32=1
-        WIN64=1
-        CROSS_COMPILING=1
-        ;;
-    "native")
-        echo "TODO"
-        exit 2
-        ;;
-    default)
-        echo "Invalid target '${target}', possible values are:"
-        echo "\tmacos"
-        echo "\tmacos-old"
-        echo "\twin32"
-        echo "\twin64"
-        echo "\tnative"
-        exit 2
-        ;;
-esac
-
-# ---------------------------------------------------------------------------------------------------------------------
-
+source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
