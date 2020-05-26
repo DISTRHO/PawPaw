@@ -8,7 +8,7 @@ where usually dependencies are involved which need to be built manually.
 In order to make audio plugins self-contained, these dependencies/libraries need to be built statically,  
 which most packaging projects do not do.
 
-Also, most open-source audio plugin projects to do have binaries for macOS or Windows,  
+Also, most open-source audio plugin projects to do not have binaries for macOS or Windows,  
 making it very difficult for users in these platforms to enjoy them.
 
 PawPaw has the following goals:
