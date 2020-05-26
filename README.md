@@ -15,8 +15,8 @@ PawPaw has the following goals:
 
  - Single script to build most common plugin dependencies statically, both natively and cross-compiling
  - Clean and simple code, easy to maintain and add new libraries to build
- - Statically build LV2 plugins for (at least) macOS and Windows
- - Define each plugin to build in its own file, to make it easy to support new plugins via pull-request
+ - Statically built LV2 plugins for (at least) macOS and Windows
+ - Define each plugin project in its own file, to make it easy to support new plugins via pull-request
  - Package the entire collection as an installer
 
 Additonally, PawPaw will be used to build library dependencies for
