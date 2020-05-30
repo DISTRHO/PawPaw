@@ -2,6 +2,7 @@
 
 set -e
 
+sudo add-apt-repository -y ppa:kxstudio-debian/mingw
 sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio
 sudo add-apt-repository -y ppa:kxstudio-debian/toolchain
 
