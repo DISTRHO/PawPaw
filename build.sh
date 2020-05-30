@@ -8,12 +8,13 @@ PAWPAW_ROOT="${PWD}"
 # ---------------------------------------------------------------------------------------------------------------------
 
 target="${1}"
-plugin="${2}"
 
-if [ -z "${target}" ] || [ -z "${plugin}" ]; then
+if [ -z "${target}" ]; then
     echo "usage: ${0} <target> <plugin>"
     exit 1
 fi
+
+shift
 
 # TODO check that bootstrap.sh has been run
 
@@ -26,9 +27,7 @@ source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-# TODO: make loop
-
-if true; then
+for plugin in ${@}; do
     pfile="${PAWPAW_ROOT}/plugins/${plugin}.json"
 
     if [ ! -e "${pfile}" ]; then
@@ -70,6 +69,6 @@ if true; then
             build_waf "${name}" "${version}" "${buildargs}"
             ;;
     esac
-fi
+done
 
 # ---------------------------------------------------------------------------------------------------------------------
