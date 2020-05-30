@@ -122,7 +122,7 @@ function build_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./configure --enable-static --disable-shared --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ./configure --enable-static --disable-shared --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
@@ -335,7 +335,7 @@ function build_host_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./configure --enable-static --disable-shared --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ./configure --enable-static --disable-shared --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi

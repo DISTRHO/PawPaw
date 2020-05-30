@@ -94,13 +94,33 @@ build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2"
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
+FFTW_EXTRAFLAGS="--enable-sse2 --disable-debug --disable-alloca --disable-doc --disable-fortran --with-our-malloc"
+
+# if [ "${WIN32}" -eq 0 ]; then
+#     FFTW_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-threads"
+# fi
+
 download fftw "${FFTW_VERSION}" "http://www.fftw.org"
-build_autoconf fftw "${FFTW_VERSION}" "--enable-sse2 --disable-debug --disable-alloca --disable-fortran --with-our-malloc"
+
+if [ "${MACOS_OLD}" -eq 1 ]; then
+    patch_file fftw "${FFTW_VERSION}" "configure" 's/CFLAGS="$CFLAGS -Wl,-no_compact_unwind"/CFLAGS="$CFLAGS"/'
+    patch_file fftw "${FFTW_VERSION}" "libbench2/timer.c" 's/#if defined(HAVE_GETTIMEOFDAY) && !defined(HAVE_TIMER)/#ifndef HAVE_TIMER/'
+fi
+
+build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # fftwf
 
-copy_download fftw fftwf "${FFTW_VERSION}" 
-build_autoconf fftwf "${FFTW_VERSION}" "--enable-single --enable-sse2 --disable-debug --disable-alloca --disable-fortran --with-our-malloc"
+FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
+
+copy_download fftw fftwf "${FFTW_VERSION}"
+
+if [ "${MACOS_OLD}" -eq 1 ]; then
+    patch_file fftwf "${FFTW_VERSION}" "configure" 's/CFLAGS="$CFLAGS -Wl,-no_compact_unwind"/CFLAGS="$CFLAGS"/'
+    patch_file fftwf "${FFTW_VERSION}" "libbench2/timer.c" 's/#if defined(HAVE_GETTIMEOFDAY) && !defined(HAVE_TIMER)/#ifndef HAVE_TIMER/'
+fi
+
+build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------

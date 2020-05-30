@@ -50,6 +50,7 @@ BUILD_FLAGS="${BUILD_FLAGS} -fdata-sections -ffunction-sections -fno-common -fvi
 if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_OLD}" -eq 1 ]; then
         BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.5"
+        # BUILD_FLAGS="${BUILD_FLAGS} -I/usr/lib/apple/SDKs/MacOSX10.5.sdk/usr/include"
     else
         BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations"
     fi
@@ -69,8 +70,11 @@ LINK_FLAGS="${LINK_FLAGS} -fdata-sections -ffunction-sections"
 
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS="${LINK_FLAGS} -Wl,-dead_strip -Wl,-dead_strip_dylibs"
-    if [ "${MACOS_OLD}" -ne 1 ]; then
-        LINK_FLAGS="${LINK_FLAGS} -stdlib=libc++"
+    if [ "${MACOS_OLD}" -eq 1 ]; then
+        LINK_FLAGS="${LINK_FLAGS} -mmacosx-version-min=10.5"
+        # LINK_FLAGS="${LINK_FLAGS} -L/usr/lib/apple/SDKs/MacOSX10.5.sdk/usr/lib"
+    else
+        LINK_FLAGS="${LINK_FLAGS} -mmacosx-version-min=10.8 -stdlib=libc++"
     fi
 else
     LINK_FLAGS="${LINK_FLAGS} -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
