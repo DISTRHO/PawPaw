@@ -1,0 +1,49 @@
+language: cpp
+
+os: linux
+
+dist: bionic
+
+jobs:
+  include:
+    # linux native build
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="linux"
+        - PLUGINS="dpf-plugins"
+
+    # linux with macOS cross-compilation
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="macos-old"
+        - PLUGINS="dpf-plugins"
+
+    # linux with win32 cross-compilation
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="win32"
+        - PLUGINS="dpf-plugins"
+
+    # linux with win64 cross-compilation
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="win64"
+        - PLUGINS="dpf-plugins"
+
+before_install:
+  - sh ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
+
+install:
+  - sh ${TRAVIS_BUILD_DIR}/.travis/install.sh
+
+script:
+  - sh ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
+  - sh ${TRAVIS_BUILD_DIR}/build-plugin.sh ${TARGET} ${PLUGINS}
+
+notifications:
+  email: true
+  irc: "ircs://chat.freenode.net:7070/#kxstudio"
