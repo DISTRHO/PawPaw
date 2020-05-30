@@ -35,14 +35,14 @@ jobs:
         - PLUGINS="dpf-plugins"
 
 before_install:
-  - sh ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
+  - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
 
 install:
-  - sh ${TRAVIS_BUILD_DIR}/.travis/install.sh
+  - bash ${TRAVIS_BUILD_DIR}/.travis/install.sh
 
 script:
-  - sh ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
-  - sh ${TRAVIS_BUILD_DIR}/build-plugin.sh ${TARGET} ${PLUGINS}
+  - bash ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
+  - bash ${TRAVIS_BUILD_DIR}/build-plugin.sh ${TARGET} ${PLUGINS}
 
 notifications:
   email: true
