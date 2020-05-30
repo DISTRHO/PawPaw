@@ -1,5 +1,7 @@
 # PawPaw
 
+[![Build Status](https://travis-ci.org/DISTRHO/PawPaw.png)](https://travis-ci.org/DISTRHO/PawPaw)
+
 PawPaw is a Cross-Platform build scripts setup for static libraries and audio plugins
 
 It was created out of the need of many open-source developers to easily build their stuff for macOS and Windows,  
