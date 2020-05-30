@@ -9,7 +9,7 @@ WIN64=0
 
 function check_target() {
     case "${target}" in
-        "macos")
+        "macos"|"Darwin")
             MACOS=1
             ;;
         "macos-old")
@@ -26,7 +26,7 @@ function check_target() {
             WIN64=1
             CROSS_COMPILING=1
             ;;
-        "Linux")
+        "linux"|"Linux")
             LINUX=1
             ;;
         "native")

@@ -2,7 +2,11 @@ language: cpp
 
 os: linux
 
-dist: bionic
+dist: trusty
+
+cache:
+  directories:
+  - ${HOME}/PawPawBuilds/downloads
 
 jobs:
   include:
@@ -44,6 +48,6 @@ script:
   - bash ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/build-plugin.sh ${TARGET} ${PLUGINS}
 
-notifications:
-  email: true
-  irc: "ircs://chat.freenode.net:7070/#kxstudio"
+#notifications:
+  #email: true
+  #irc: "ircs://chat.freenode.net:7070/#kxstudio"
