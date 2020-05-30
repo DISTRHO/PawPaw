@@ -12,10 +12,14 @@ if [ "${TARGET}" = "macos-old" ]; then
     if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then
         wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'
     fi
+    if [ ! -f 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' ]; then
+        wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'
+    fi
     if [ ! -f 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb' ]; then
         wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
     fi
     sudo dpkg -i 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'
+    sudo dpkg -i 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'
     sudo dpkg -i 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
     popd
 
