@@ -16,28 +16,28 @@ jobs:
       compiler: gcc
       env:
         - TARGET="linux"
-        - PLUGINS="dpf-plugins"
+        - PLUGINS="artyfx"
 
     # linux with macOS cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="macos-old"
-        - PLUGINS="dpf-plugins"
+        - PLUGINS="artyfx"
 
     # linux with win32 cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="win32"
-        - PLUGINS="dpf-plugins"
+        - PLUGINS="artyfx"
 
     # linux with win64 cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="win64"
-        - PLUGINS="dpf-plugins"
+        - PLUGINS="artyfx"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh

@@ -75,7 +75,6 @@ function _prebuild() {
     export CFLAGS="${TARGET_CFLAGS}"
     export CXXFLAGS="${TARGET_CXXFLAGS}"
     export LDFLAGS="${TARGET_LDFLAGS}"
-    export PKG_CONFIG="${TARGET_PKG_CONFIG}"
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
 
     unset CPPFLAGS
@@ -94,6 +93,7 @@ function _prebuild() {
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         rm -f "${pkgdir}/.stamp_built"
         rm -f "${pkgdir}/.stamp_installed"
+        rm -f "${pkgdir}/CMakeCache.txt"
 
     elif [ ! -f "${pkgdir}/.stamp_built" ]; then
         rm -f "${pkgdir}/.stamp_installed"
@@ -111,7 +111,6 @@ function _postbuild() {
     unset CPPFLAGS
     unset CXXFLAGS
     unset LDFLAGS
-    unset PKG_CONFIG
     unset PKG_CONFIG_PATH
 
     export PATH="${OLD_PATH}"
@@ -204,8 +203,6 @@ function build_cmake() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        # FIXME put this as a patch file
-        sed -i -e 's/ -Wl,--no-undefined//' CMakeLists.txt
         cmake -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
@@ -241,14 +238,14 @@ function build_make() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make PREFIX="${PAWPAW_PREFIX}" ${MAKE_ARGS} ${extraconfrules}
+        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} ${extraconfrules}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make PREFIX="${PAWPAW_PREFIX}" ${MAKE_ARGS} install
+        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} install
         touch .stamp_installed
         popd
     fi

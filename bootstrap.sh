@@ -21,7 +21,9 @@ fi
 # - cmake
 # - make
 # - jq
+# - patch
 # - python (waf, meson)
+# - realpath
 # - sed
 # - tar
 
