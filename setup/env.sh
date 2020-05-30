@@ -104,6 +104,7 @@ TARGET_CXX="${TOOLCHAIN_PREFIX_}g++"
 TARGET_LD="${TOOLCHAIN_PREFIX_}ld"
 TARGET_STRIP="${TOOLCHAIN_PREFIX_}strip"
 TARGET_PATH="${PAWPAW_PREFIX}/bin:/usr/${TOOLCHAIN_PREFIX}/bin:${PATH}"
+TARGET_PKG_CONFIG="${PAWPAW_PREFIX}/bin/pkg-config --static"
 TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 
 # ---------------------------------------------------------------------------------------------------------------------

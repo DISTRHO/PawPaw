@@ -74,6 +74,7 @@ function _prebuild() {
     export CFLAGS="${TARGET_CFLAGS}"
     export CXXFLAGS="${TARGET_CXXFLAGS}"
     export LDFLAGS="${TARGET_LDFLAGS}"
+    export PKG_CONFIG="${TARGET_PKG_CONFIG}"
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
 
     unset CPPFLAGS
@@ -100,6 +101,7 @@ function _postbuild() {
     unset CPPFLAGS
     unset CXXFLAGS
     unset LDFLAGS
+    unset PKG_CONFIG
     unset PKG_CONFIG_PATH
 
     export PATH="${OLD_PATH}"

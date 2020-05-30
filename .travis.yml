@@ -2,10 +2,11 @@ language: cpp
 
 os: linux
 
-dist: trusty
+dist: bionic
 
 cache:
   directories:
+  - ${HOME}/PawPawBuilds/debs
   - ${HOME}/PawPawBuilds/downloads
 
 jobs:
