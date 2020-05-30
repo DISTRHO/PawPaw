@@ -1,0 +1,7 @@
+{
+    "name": "caps-lv2",
+    "version": "5d52a0c6e8863c058c2aab2dea9f901a90d96eb9",
+    "dlbaseurl": "https://github.com/moddevices/caps-lv2.git",
+    "dlmethod": "git",
+    "buildtype": "make"
+}
