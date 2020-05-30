@@ -64,7 +64,8 @@ function copy_download() {
 # ---------------------------------------------------------------------------------------------------------------------
 
 function _prebuild() {
-    local pkgdir="${1}"
+    local name="${1}"
+    local pkgdir="${2}"
 
     export AR="${TARGET_AR}"
     export CC="${TARGET_CC}"
@@ -80,6 +81,15 @@ function _prebuild() {
     unset CPPFLAGS
     export OLD_PATH="${PATH}"
     export PATH="${TARGET_PATH}"
+
+    if [ -d "${PAWPAW_ROOT}/patches/${name}" ]; then
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch" | sort); do
+            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
+                touch "${pkgdir}/.stamp_applied_${p}"
+            fi
+        done
+    fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         rm -f "${pkgdir}/.stamp_built"
@@ -120,7 +130,7 @@ function build_autoconf() {
         extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
 
-    _prebuild "${pkgdir}"
+    _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -153,7 +163,7 @@ function build_conf() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    _prebuild "${pkgdir}"
+    _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -190,7 +200,7 @@ function build_cmake() {
         extraconfrules="-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME} ${extraconfrules}"
     fi
 
-    _prebuild "${pkgdir}"
+    _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -225,7 +235,7 @@ function build_make() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    _prebuild "${pkgdir}"
+    _prebuild "${name}" "${pkgdir}"
 
     touch "${pkgdir}/.stamp_configured"
 
@@ -257,7 +267,7 @@ function build_meson() {
         extraconfrules="--cross-file ${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini ${extraconfrules}"
     fi
 
-    _prebuild "${pkgdir}"
+    _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -290,7 +300,7 @@ function build_waf() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    _prebuild "${pkgdir}"
+    _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
