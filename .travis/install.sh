@@ -3,7 +3,7 @@
 set -e
 
 # common
-sudo apt-get install -y build-essential curl cmake jq
+sudo apt-get install -y build-essential coreutils curl cmake jq
 
 # for cross-compilation
 if [ "${TARGET}" = "macos-old" ]; then
