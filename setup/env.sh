@@ -31,7 +31,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # PawPaw setup
 
-PAWPAW_DIR="$(realpath ~/PawPawBuilds)"
+PAWPAW_DIR="${HOME}/PawPawBuilds"
 PAWPAW_DOWNLOADDIR="${PAWPAW_DIR}/downloads"
 PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/${PAWPAW_TARGET}"
 PAWPAW_PREFIX="${PAWPAW_DIR}/targets/${PAWPAW_TARGET}"
@@ -87,15 +87,17 @@ TARGET_LDFLAGS="${LINK_FLAGS}"
 
 ## toolchain
 
-if [ "${MACOS}" -eq 1 ]; then
-    TOOLCHAIN_PREFIX="i686-apple-darwin10"
-    TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
-elif [ "${WIN64}" -eq 1 ]; then
-    TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
-    TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
-elif [ "${WIN32}" -eq 1 ]; then
-    TOOLCHAIN_PREFIX="i686-w64-mingw32"
-    TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ "${MACOS}" -eq 1 ]; then
+        TOOLCHAIN_PREFIX="i686-apple-darwin10"
+        TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+    elif [ "${WIN64}" -eq 1 ]; then
+        TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
+        TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+    elif [ "${WIN32}" -eq 1 ]; then
+        TOOLCHAIN_PREFIX="i686-w64-mingw32"
+        TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+    fi
 fi
 
 TARGET_AR="${TOOLCHAIN_PREFIX_}ar"
