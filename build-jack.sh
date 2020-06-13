@@ -111,10 +111,13 @@ if [ ! -d jack2 ]; then
 	git clone --recursive git@github.com:jackaudio/jack2.git
 fi
 
-jack2_args="--prefix=\"${PAWPAW_PREFIX}/jack2\""
+jack2_args="--prefix="${PAWPAW_PREFIX}/jack2""
 
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
 #     jack2_args="${jack2_args} --mixed"
+# fi
+# if [ "${WIN32}" -eq 1 ]; then
+#     TARGET_LDFLAGS="${TARGET_LDFLAGS} -static-libgcc -static-libstdc++"
 # fi
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then

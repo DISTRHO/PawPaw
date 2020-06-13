@@ -79,7 +79,7 @@ if [ "${MACOS}" -eq 1 ]; then
 else
     LINK_FLAGS="${LINK_FLAGS} -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
-        LINK_FLAGS="${LINK_FLAGS} -static"
+        LINK_FLAGS="${LINK_FLAGS} -static -static-libgcc -static-libstdc++"
     fi
 fi
 
