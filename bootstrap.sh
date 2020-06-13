@@ -26,9 +26,6 @@ fi
 # - sed
 # - tar
 
-# TODO add these libraries
-# - libsamplerate
-
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
@@ -83,6 +80,12 @@ build_autoconf libvorbis "${LIBVORBIS_VERSION}"
 
 download flac "${FLAC_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/flac" "tar.xz"
 build_autoconf flac "${FLAC_VERSION}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# libsamplerate
+
+download libsamplerate "${LIBSAMPLERATE_VERSION}" "http://www.mega-nerd.com/SRC"
+build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "--disable-fftw --disable-sndfile"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libsndfile

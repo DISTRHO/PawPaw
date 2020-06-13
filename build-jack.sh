@@ -18,8 +18,9 @@ fi
 
 # TODO check that bootstrap.sh has been run
 
-# TODO add these libraries
-# - opus (custom)
+# TODO
+# - portaudio (with asio support) for windows
+# - readline for windows?
 
 source setup/check_target.sh
 source setup/env.sh
@@ -55,6 +56,9 @@ function build_custom_db() {
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
+    if [ "${WIN32}" -eq 1 ]; then
+        extraconfrules="--enable-mingw ${extraconfrules}"
+    fi
 
     _prebuild "${name}" "${pkgdir}"
 
@@ -83,20 +87,30 @@ function build_custom_db() {
 }
 
 patch_file db "${DB_VERSION}" "src/dbinc/atomic.h" 's/__atomic_compare_exchange/__db_atomic_compare_exchange/'
-build_custom_db db "${DB_VERSION}" --disable-java --disable-sql --disable-tcl
-
+build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disable-sql --disable-tcl"
 # --enable-posixmutexes --enable-compat185 --enable-cxx --enable-dbm --enable-stl
-# make LIBSO_LIBS=-lpthread
 
 # ---------------------------------------------------------------------------------------------------------------------
+# opus
+
+download opus "${OPUS_VERSION}" "https://archive.mozilla.org/pub/opus"
+build_autoconf opus "${OPUS_VERSION}" "--disable-extra-programs --enable-custom-modes --enable-float-approx"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# and finally jack2
 
 if [ ! -d jack2 ]; then
 	git clone --recursive git@github.com:jackaudio/jack2.git
 fi
 
+jack2_args="--prefix=\"${PAWPAW_PREFIX}/jack2\""
+
+# if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+#     jack2_args="${jack2_args} --mixed"
+# fi
+
 ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
 rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
-build_waf jack2 "git"
-# "--lv2dir=${PAWPAW_PREFIX}/lib/lv2"
+build_waf jack2 "git" "${jack2_args}"
 
 # ---------------------------------------------------------------------------------------------------------------------
