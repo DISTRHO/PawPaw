@@ -23,7 +23,6 @@ fi
 # - jq
 # - patch
 # - python (waf, meson)
-# - realpath
 # - sed
 # - tar
 
@@ -63,10 +62,12 @@ patch_file libogg "${LIBOGG_VERSION}" "include/ogg/os_types.h" 's/__MACH__/__MAC
 build_autoconf libogg "${LIBOGG_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# file/magic
+# file/magic (posix only)
 
-# download file "${FILE_VERSION}" "ftp://ftp.astron.com/pub/file"
-# build_autoconf file "${FILE_VERSION}"
+# if [ "${WIN32}" -eq 0 ]; then
+#     download file "${FILE_VERSION}" "ftp://ftp.astron.com/pub/file"
+#     build_autoconf file "${FILE_VERSION}"
+# fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libvorbis
@@ -124,5 +125,13 @@ if [ "${MACOS_OLD}" -eq 1 ]; then
 fi
 
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# aften (macos only)
+
+if [ "${MACOS}" -eq 1 ]; then
+    download aften "${AFTEN_VERSION}" "http://downloads.sourceforge.net/aften" "tar.bz2"
+    build_cmake aften "${AFTEN_VERSION}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
