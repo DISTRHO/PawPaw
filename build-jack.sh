@@ -97,6 +97,14 @@ download opus "${OPUS_VERSION}" "https://archive.mozilla.org/pub/opus"
 build_autoconf opus "${OPUS_VERSION}" "--disable-extra-programs --enable-custom-modes --enable-float-approx"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# tre (win32 only)
+
+if [ "${WIN32}" -eq 1 ]; then
+    download tre "${TRE_VERSION}" "https://laurikari.net/tre"
+    build_autoconf tre "${TRE_VERSION}" "--disable-nls"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # and finally jack2
 
 if [ ! -d jack2 ]; then
@@ -108,6 +116,15 @@ jack2_args="--prefix=\"${PAWPAW_PREFIX}/jack2\""
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
 #     jack2_args="${jack2_args} --mixed"
 # fi
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ "${LINUX}" -eq 1 ]; then
+        jack2_args="${jack2_args} --platform=linux"
+    elif [ "${MACOS}" -eq 1 ]; then
+        jack2_args="${jack2_args} --platform=darwin"
+    elif [ "${WIN32}" -eq 1 ]; then
+        jack2_args="${jack2_args} --platform=win32"
+    fi
+fi
 
 ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
 rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
