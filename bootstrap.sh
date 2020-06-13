@@ -78,8 +78,14 @@ build_autoconf libvorbis "${LIBVORBIS_VERSION}"
 # ---------------------------------------------------------------------------------------------------------------------
 # flac
 
+FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-thorough-tests"
+
+if [ "${MACOS_OLD}" -eq 1 ]; then
+    FLAC_EXTRAFLAGS="${FLAC_EXTRAFLAGS} --disable-asm-optimizations"
+fi
+
 download flac "${FLAC_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/flac" "tar.xz"
-build_autoconf flac "${FLAC_VERSION}"
+build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libsamplerate
