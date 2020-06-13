@@ -205,21 +205,21 @@ function build_cmake() {
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
         cmake -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
-        touch .stamp_configured
+        touch ../.stamp_configured
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}/build"
         make ${MAKE_ARGS}
-        touch .stamp_built
+        touch ../.stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}/build"
         make ${MAKE_ARGS} install
-        touch .stamp_installed
+        touch ../.stamp_installed
         popd
     fi
 

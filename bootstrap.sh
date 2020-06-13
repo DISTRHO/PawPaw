@@ -26,6 +26,11 @@ fi
 # - sed
 # - tar
 
+# TODO add these libraries
+# - libsamplerate
+# - opus (custom)
+# - libdb (berkley, 4.8)
+
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
@@ -132,6 +137,11 @@ build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 if [ "${MACOS}" -eq 1 ]; then
     download aften "${AFTEN_VERSION}" "http://downloads.sourceforge.net/aften" "tar.bz2"
     build_cmake aften "${AFTEN_VERSION}"
+    if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs2" ]; then
+    	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_pcm.a" "${PAWPAW_PREFIX}/lib/libaften_pcm.a"
+    	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_static.a" "${PAWPAW_PREFIX}/lib/libaften.a"
+    	touch "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
