@@ -64,7 +64,7 @@ function build_custom_db() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build_unix"
-        ../dist/configure --enable-static --disable-shared --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ../dist/configure --enable-static --disable-shared --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch ../.stamp_configured
         popd
     fi
@@ -127,6 +127,11 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     elif [ "${WIN32}" -eq 1 ]; then
         jack2_args="${jack2_args} --platform=win32"
     fi
+fi
+
+if [ "${MACOS_OLD}" -eq 1 ]; then
+    patch_file jack2 "git" "wscript" '/-std=gnu++11/d'
+    patch_file jack2 "git" "wscript" '/-Wno-deprecated-register/d'
 fi
 
 ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
