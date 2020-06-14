@@ -46,7 +46,7 @@ build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps -
 # liblo
 
 download liblo "${LIBLO_VERSION}" "http://download.sourceforge.net/liblo"
-build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tools"
+build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tests --disable-tools"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # zlib
