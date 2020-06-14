@@ -378,4 +378,15 @@ function patch_file() {
     sed -i -e "${rule}" "${pkgdir}/${file}"
 }
 
+function remove_file() {
+    local name="${1}"
+    local version="${2}"
+    local file="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    echo rm -f "${pkgdir}/${file}"
+    rm -f "${pkgdir}/${file}"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------

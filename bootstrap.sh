@@ -73,12 +73,12 @@ build_autoconf libogg "${LIBOGG_VERSION}"
 # libvorbis
 
 download libvorbis "${LIBVORBIS_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/vorbis"
-build_autoconf libvorbis "${LIBVORBIS_VERSION}"
+build_autoconf libvorbis "${LIBVORBIS_VERSION}" "--disable-examples"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # flac
 
-FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-thorough-tests"
+FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests"
 
 if [ "${MACOS_OLD}" -eq 1 ]; then
     FLAC_EXTRAFLAGS="${FLAC_EXTRAFLAGS} --disable-asm-optimizations"
@@ -104,7 +104,7 @@ build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-full-suite --disabl
 # lv2
 
 download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
-build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2"
+build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw

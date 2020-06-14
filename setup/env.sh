@@ -44,8 +44,8 @@ PAWPAW_TMPDIR="/tmp"
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include"
 BUILD_FLAGS="${BUILD_FLAGS} -mtune=generic -msse -msse2 -mfpmath=sse -ffast-math"
-BUILD_FLAGS="${BUILD_FLAGS} -fPIC -DPIC -DNDEBUG"
-BUILD_FLAGS="${BUILD_FLAGS} -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
+BUILD_FLAGS="${BUILD_FLAGS} -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
+BUILD_FLAGS="${BUILD_FLAGS} -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
 
 if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_OLD}" -eq 1 ]; then
@@ -56,7 +56,6 @@ if [ "${MACOS}" -eq 1 ]; then
     fi
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS="${BUILD_FLAGS} -DPTW32_STATIC_LIB -mstackrealign"
-    # -DWIN32_LEAN_AND_MEAN
 fi
 # -DFLUIDSYNTH_NOT_A_DLL
 
@@ -66,7 +65,7 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 ## link flags
 
 LINK_FLAGS="-L${PAWPAW_PREFIX}/lib"
-LINK_FLAGS="${LINK_FLAGS} -fdata-sections -ffunction-sections"
+LINK_FLAGS="${LINK_FLAGS} -fdata-sections -ffunction-sections -fstack-protector"
 
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS="${LINK_FLAGS} -Wl,-dead_strip -Wl,-dead_strip_dylibs"

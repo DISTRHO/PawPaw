@@ -105,6 +105,13 @@ if [ "${WIN32}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# stop here if CI test build
+
+if [ -n "${TRAVIS_BUILD_DIR}" ]; then
+    exit 0
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # and finally jack2
 
 if [ ! -d jack2 ]; then
@@ -113,7 +120,7 @@ fi
 
 jack2_args="--prefix="${PAWPAW_PREFIX}/jack2""
 
-# if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+# if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
 #     jack2_args="${jack2_args} --mixed"
 # fi
 # if [ "${WIN32}" -eq 1 ]; then
