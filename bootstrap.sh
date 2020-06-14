@@ -109,7 +109,7 @@ build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage 
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
-FFTW_EXTRAFLAGS="--enable-sse2 --disable-debug --disable-alloca --disable-doc --disable-fortran --with-our-malloc"
+FFTW_EXTRAFLAGS="--enable-sse2 --disable-alloca --disable-fortran --with-our-malloc"
 
 # if [ "${WIN32}" -eq 0 ]; then
 #     FFTW_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-threads"

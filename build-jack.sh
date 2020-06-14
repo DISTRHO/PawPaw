@@ -64,7 +64,7 @@ function build_custom_db() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build_unix"
-        ../dist/configure --enable-static --disable-shared --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ../dist/configure --enable-static --disable-shared --disable-debug --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch ../.stamp_configured
         popd
     fi
@@ -122,9 +122,6 @@ jack2_args="--prefix="${PAWPAW_PREFIX}/jack2""
 
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
 #     jack2_args="${jack2_args} --mixed"
-# fi
-# if [ "${WIN32}" -eq 1 ]; then
-#     TARGET_LDFLAGS="${TARGET_LDFLAGS} -static-libgcc -static-libstdc++"
 # fi
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
