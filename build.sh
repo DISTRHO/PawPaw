@@ -47,8 +47,6 @@ for plugin in ${@}; do
 
     download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}"
 
-    # TODO patch_file support?
-
     case ${buildtype} in
         "autoconf")
             build_autoconf "${name}" "${version}" "${buildargs}"
