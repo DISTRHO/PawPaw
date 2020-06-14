@@ -29,6 +29,8 @@ function download() {
             local dlurl
             if echo ${dlbaseurl} | grep -q github.com; then
                 dlurl="${dlbaseurl}/v${version}.${dlext}"
+            elif [ "${dlext}" = "orig.tar.gz" ]; then
+                dlurl="${dlbaseurl}/${name}_${version}.${dlext}"
             else
                 dlurl="${dlbaseurl}/${name}-${version}.${dlext}"
             fi
@@ -72,9 +74,9 @@ function _prebuild() {
     export CXX="${TARGET_CXX}"
     export LD="${TARGET_LD}"
     export STRIP="${TARGET_STRIP}"
-    export CFLAGS="${TARGET_CFLAGS}"
-    export CXXFLAGS="${TARGET_CXXFLAGS}"
-    export LDFLAGS="${TARGET_LDFLAGS}"
+    export CFLAGS="${TARGET_CFLAGS} ${EXTRA_CFLAGS}"
+    export CXXFLAGS="${TARGET_CXXFLAGS} ${EXTRA_CXXFLAGS}"
+    export LDFLAGS="${TARGET_LDFLAGS} ${EXTRA_LDFLAGS}"
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
 
     unset CPPFLAGS
@@ -112,6 +114,10 @@ function _postbuild() {
     unset CXXFLAGS
     unset LDFLAGS
     unset PKG_CONFIG_PATH
+
+    unset EXTRA_CFLAGS
+    unset EXTRA_CXXFLAGS
+    unset EXTRA_LDFLAGS
 
     export PATH="${OLD_PATH}"
 }
@@ -376,6 +382,21 @@ function patch_file() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     sed -i -e "${rule}" "${pkgdir}/${file}"
+}
+
+function link_file() {
+    local name="${1}"
+    local version="${2}"
+    local source="${3}"
+    local target="${4}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ ! -e "${pkgdir}/${target}" ]; then
+        pushd "${pkgdir}"
+        ln -sf "${source}" "${target}"
+        popd
+    fi
 }
 
 function remove_file() {

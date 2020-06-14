@@ -97,6 +97,28 @@ download opus "${OPUS_VERSION}" "https://archive.mozilla.org/pub/opus"
 build_autoconf opus "${OPUS_VERSION}" "--disable-extra-programs --enable-custom-modes --enable-float-approx"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# rtaudio (download, win32 only)
+
+if [ "${WIN32}" -eq 1 ]; then
+    download rtaudio "${RTAUDIO_VERSION}" "https://github.com/falkTX/rtaudio.git" "" "git"
+    # fixes for portaudio
+    link_file rtaudio "${RTAUDIO_VERSION}" "." "include/common"
+    link_file rtaudio "${RTAUDIO_VERSION}" "." "include/host"
+    link_file rtaudio "${RTAUDIO_VERSION}" "." "include/pc"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# portaudio (win32 only)
+
+if [ "${WIN32}" -eq 1 ]; then
+    ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
+    export EXTRA_CFLAGS="-I${ASIO_DIR}"
+    export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
+    download portaudio19 "${PORTAUDIO_VERSION}" "http://deb.debian.org/debian/pool/main/p/portaudio19" "orig.tar.gz"
+    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir="${ASIO_DIR}" --with-winapi=asio"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # tre (win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
