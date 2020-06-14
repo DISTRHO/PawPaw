@@ -164,4 +164,9 @@ ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
 rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
 build_waf jack2 "git" "${jack2_args}"
 
+
+if [ "${MACOS}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
+    ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2"
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
