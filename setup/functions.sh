@@ -303,26 +303,31 @@ function build_waf() {
     local extraconfrules="${3}"
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local python=python3
+
+    if ! which python3; then
+        python=python
+    fi
 
     _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./waf configure --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ${python} waf configure --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        ./waf build
+        ${python} waf build
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ./waf install
+        ${python} waf install
         touch .stamp_installed
         popd
     fi
