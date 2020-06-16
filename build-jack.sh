@@ -5,6 +5,9 @@ set -e
 cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
+JACK2_VERSION=git
+QJACKCTL_VERSION=0.6.2
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 target="${1}"
@@ -132,12 +135,10 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # and finally jack2
 
-if [ ! -d jack2 ]; then
-	git clone --recursive git@github.com:jackaudio/jack2.git
-fi
+jack2_repo="git@github.com:jackaudio/jack2.git"
+jack2_prefix="${PAWPAW_PREFIX}/jack2"
 
-jack2_args="--prefix="${PAWPAW_PREFIX}/jack2""
-
+jack2_args="--prefix=${jack2_prefix}"
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
 #     jack2_args="${jack2_args} --mixed"
 # fi
@@ -156,8 +157,35 @@ if [ "${MACOS_OLD}" -eq 1 ]; then
     patch_file jack2 "git" "wscript" '/-Wno-deprecated-register/d'
 fi
 
-ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
-rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
-build_waf jack2 "git" "${jack2_args}"
+if [ "${JACK2_VERSION}" = "git" ]; then
+    if [ ! -d jack2 ]; then
+        git clone --recursive "${jack2_repo}"
+        ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
+    fi
+    rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
+else
+    download jack2 "${JACK2_VERSION}" "${jack2_repo}" "" "git"
+fi
+
+build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
+
+# patch pkg-config file for static builds, and create link in regular prefix
+if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
+    local s=""
+    if [ "${WIN64}" -eq 1 ]; then
+        s="64"
+    fi
+    sed -i -e "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic /"
+    ln -sv "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# if qt is available, build qjackctl
+
+if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
+    download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
+    patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
+    build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------

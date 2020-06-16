@@ -338,7 +338,7 @@ function build_waf() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
     local python=python3
 
-    if ! which python3; then
+    if ! which python3 > /dev/null; then
         python=python
     fi
 
