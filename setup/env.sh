@@ -3,7 +3,11 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # OS setup
 
-if [ "${MACOS}" -eq 1 ]; then
+if [ "${LINUX}" -eq 1 ]; then
+    CMAKE_SYSTEM_NAME="Linux"
+    PAWPAW_TARGET="linux"
+
+elif [ "${MACOS}" -eq 1 ]; then
     CMAKE_SYSTEM_NAME="Darwin"
     if [ "${MACOS_OLD}" -eq 1 ]; then
         PAWPAW_TARGET="macos-old"
@@ -18,10 +22,6 @@ elif [ "${WIN32}" -eq 1 ]; then
     else
         PAWPAW_TARGET="win32"
     fi
-
-elif [ "${LINUX}" -eq 1 ]; then
-    CMAKE_SYSTEM_NAME="Linux"
-    PAWPAW_TARGET="linux"
 
 else
     echo "Unknown target '${target}'"
@@ -111,8 +111,11 @@ TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 # ---------------------------------------------------------------------------------------------------------------------
 # other
 
-# "-j 2"
 MAKE_ARGS=""
+
+if which nproc > /dev/null; then
+    MAKE_ARGS+="-j $(nproc)"
+fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     MAKE_ARGS="${MAKE_ARGS} CROSS_COMPILING=true"

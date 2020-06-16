@@ -153,7 +153,7 @@ function build_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS} install
+        make ${MAKE_ARGS} install -j 1
         touch .stamp_installed
         popd
     fi
@@ -186,7 +186,7 @@ function build_conf() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS} install
+        make ${MAKE_ARGS} -j 1 install
         touch .stamp_installed
         popd
     fi
@@ -224,7 +224,7 @@ function build_cmake() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}/build"
-        make ${MAKE_ARGS} install
+        make ${MAKE_ARGS} -j 1 install
         touch ../.stamp_installed
         popd
     fi
@@ -252,7 +252,7 @@ function build_make() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} install
+        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
         touch .stamp_installed
         popd
     fi
@@ -290,6 +290,39 @@ function build_meson() {
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
         ninja -C build install
+        touch .stamp_installed
+        popd
+    fi
+
+    _postbuild
+}
+
+function build_qmake() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        pushd "${pkgdir}"
+        qmake ${extraconfrules}
+        touch .stamp_configured
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}"
+        make ${MAKE_ARGS}
+        touch .stamp_built
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}"
+        make ${MAKE_ARGS} -j 1 install
         touch .stamp_installed
         popd
     fi
@@ -370,7 +403,7 @@ function build_host_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make install
+        make ${MAKE_ARGS} install -j 1
         touch .stamp_installed
         popd
     fi
