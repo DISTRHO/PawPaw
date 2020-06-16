@@ -18,10 +18,6 @@ fi
 
 # TODO check that bootstrap.sh has been run
 
-# TODO
-# - portaudio (with asio support) for windows
-# - readline for windows?
-
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
