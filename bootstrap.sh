@@ -49,12 +49,6 @@ download liblo "${LIBLO_VERSION}" "http://download.sourceforge.net/liblo"
 build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tests --disable-tools"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# zlib
-
-download zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib/archive"
-build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
-
-# ---------------------------------------------------------------------------------------------------------------------
 # libogg
 
 download libogg "${LIBOGG_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/ogg"
@@ -137,5 +131,13 @@ if [ "${MACOS_OLD}" -eq 1 ]; then
 fi
 
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# zlib
+
+if [ "${MACOS}" -eq 0 ]; then
+    download zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib/archive"
+    build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
