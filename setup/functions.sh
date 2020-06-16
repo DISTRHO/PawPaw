@@ -353,14 +353,14 @@ function build_waf() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        ${python} waf build
+        ${python} waf build ${WAF_ARGS}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ${python} waf install
+        ${python} waf install ${WAF_ARGS} -j 1
         touch .stamp_installed
         popd
     fi

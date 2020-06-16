@@ -112,9 +112,11 @@ TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 # other
 
 MAKE_ARGS=""
+WAF_ARGS=""
 
 if which nproc > /dev/null; then
     MAKE_ARGS+="-j $(nproc)"
+    WAF_ARGS+="-j $(nproc)"
 fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then

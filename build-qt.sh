@@ -203,20 +203,25 @@ qtbase_conf_args+=" -force-pkg-config"
 
 # platform specific
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    if [ "${MACOS}" -eq 1 ]; then
+    if [ "${LINUX}" -eq 1 ]; then
+        qtbase_conf_args+=" -xplatform linux-g++"
+    elif [ "${MACOS}" -eq 1 ]; then
         qtbase_conf_args+=" -xplatform macx-clang"
     elif [ "${WIN32}" -eq 1 ]; then
         qtbase_conf_args+=" -xplatform win32-g++"
     fi
     qtbase_conf_args+=" -device-option CROSS_COMPILE=${TOOLCHAIN_PREFIX_}"
 else
-    if [ "${MACOS}" -eq 1 ]; then
+    if [ "${LINUX}" -eq 1 ]; then
+        qtbase_conf_args+=" -platform linux-g++"
+    elif [ "${MACOS}" -eq 1 ]; then
         qtbase_conf_args+=" -platform macx-clang"
     elif [ "${WIN32}" -eq 1 ]; then
         qtbase_conf_args+=" -platform win32-g++"
     fi
 fi
 
+# platform specific
 if [ "${LINUX}" -eq 1 ]; then
     qtbase_conf_args+=" -qpa xcb"
     qtbase_conf_args+=" -qt-xcb"
@@ -233,8 +238,6 @@ if [ "${MACOS}" -eq 1 ]; then
 else
     qtbase_conf_args+=" -qt-zlib"
 fi
-
-echo "${qtbase_conf_args}"
 
 download_qt qtbase
 patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
