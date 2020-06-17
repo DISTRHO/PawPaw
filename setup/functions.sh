@@ -118,6 +118,7 @@ function _postbuild() {
     unset EXTRA_CFLAGS
     unset EXTRA_CXXFLAGS
     unset EXTRA_LDFLAGS
+    unset EXTRA_MAKE_ARGS
 
     export PATH="${OLD_PATH}"
 }
@@ -146,7 +147,7 @@ function build_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
     fi
@@ -179,7 +180,7 @@ function build_conf() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
     fi
@@ -217,7 +218,7 @@ function build_cmake() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}/build"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch ../.stamp_built
         popd
     fi
@@ -315,7 +316,7 @@ function build_qmake() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
     fi
@@ -420,6 +421,21 @@ function patch_file() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     sed -i -e "${rule}" "${pkgdir}/${file}"
+}
+
+function copy_file() {
+    local name="${1}"
+    local version="${2}"
+    local source="${3}"
+    local target="${4}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ ! -e "${pkgdir}/${target}" ]; then
+        pushd "${pkgdir}"
+        cp "${source}" "${target}"
+        popd
+    fi
 }
 
 function link_file() {

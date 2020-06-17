@@ -113,6 +113,7 @@ if [ "${WIN32}" -eq 1 ]; then
     ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
     export EXTRA_CFLAGS="-I${ASIO_DIR}"
     export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
+    export EXTRA_MAKE_ARGS="-j 1"
     download portaudio19 "${PORTAUDIO_VERSION}" "http://deb.debian.org/debian/pool/main/p/portaudio19" "orig.tar.gz"
     build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir="${ASIO_DIR}" --with-winapi=asio"
 fi
@@ -160,6 +161,8 @@ fi
 if [ "${JACK2_VERSION}" = "git" ]; then
     if [ ! -d jack2 ]; then
         git clone --recursive "${jack2_repo}"
+    fi
+    if [ ! -e "${PAWPAW_BUILDDIR}/jack2-git" ]; then
         ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
     fi
     rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
@@ -169,14 +172,15 @@ fi
 
 build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
 
-# patch pkg-config file for static builds, and create link in regular prefix
+# patch pkg-config file for static builds in regular prefix
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
-    local s=""
     if [ "${WIN64}" -eq 1 ]; then
         s="64"
+    else
+        s=""
     fi
-    sed -i -e "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic /"
-    ln -sv "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    cp -v "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -186,6 +190,9 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
     patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
+    if [ "${WIN32}" -eq 1 ]; then
+        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

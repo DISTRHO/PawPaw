@@ -69,9 +69,6 @@ function build_qt_conf() {
     unset CXXFLAGS
     unset LDFLAGS
 
-    export CFLAGS="${TARGET_CFLAGS}"
-    export CXXFLAGS="${TARGET_CXXFLAGS} -Wno-deprecated-copy -Wno-deprecated-declarations"
-    export LDFLAGS="${TARGET_LDFLAGS}"
     export PKG_CONFIG="${TARGET_PKG_CONFIG}"
     export PKG_CONFIG_LIBDIR="${TARGET_PKG_CONFIG_PATH}"
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
@@ -107,14 +104,6 @@ function build_qt_conf() {
         popd
     fi
 
-    unset AR
-    unset CC
-    unset CXX
-    unset LD
-    unset STRIP
-    unset CFLAGS
-    unset CXXFLAGS
-    unset LDFLAGS
     unset PKG_CONFIG
     unset PKG_CONFIG_LIBDIR
     unset PKG_CONFIG_PATH
