@@ -229,6 +229,9 @@ else
 fi
 
 download_qt qtbase
+# patch_file qtbase${qtsuffix} ${QT5_VERSION} "configure" 's/ --sdk $sdk / /'
+# patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/features/mac/sdk.prf" 's/ --sdk $$sdk / /'
+patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/macx-clang/qmake.conf" 's/10.10/10.8/'
 patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -shared/= -static -shared/'
 patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
 build_qt_conf qtbase "${qtbase_conf_args}"
