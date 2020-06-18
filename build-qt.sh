@@ -236,6 +236,12 @@ patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= 
 patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
 build_qt_conf qtbase "${qtbase_conf_args}"
 
+if [ "${MACOS}" -eq 1 ] && [ ! -e "ln -s ${PAWPAW_PREFIX}/include/qt5/QtCore" ]; then
+    ln -sfv ${PAWPAW_PREFIX}/lib/QtCore.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtCore
+    ln -sfv ${PAWPAW_PREFIX}/lib/QtGui.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtGui
+    ln -sfv ${PAWPAW_PREFIX}/lib/QtWidgets.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtWidgets
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 download_qt qtsvg

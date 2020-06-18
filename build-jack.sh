@@ -201,7 +201,11 @@ fi
 
 if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
-    patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
+    if [ "${WIN64}" -eq 1 ]; then
+        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
+    elif [ "${WIN32}" -eq 1 ]; then
+        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
+    fi
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
     if [ "${WIN32}" -eq 1 ]; then
         copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
