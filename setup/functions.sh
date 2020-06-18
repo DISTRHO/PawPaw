@@ -433,7 +433,7 @@ function copy_file() {
 
     if [ ! -e "${pkgdir}/${target}" ]; then
         pushd "${pkgdir}"
-        cp "${source}" "${target}"
+        cp -v "${source}" "${target}"
         popd
     fi
 }
@@ -448,7 +448,7 @@ function link_file() {
 
     if [ ! -e "${pkgdir}/${target}" ]; then
         pushd "${pkgdir}"
-        ln -sf "${source}" "${target}"
+        ln -sfv "${source}" "${target}"
         popd
     fi
 }
@@ -460,8 +460,9 @@ function remove_file() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    echo rm -f "${pkgdir}/${file}"
-    rm -f "${pkgdir}/${file}"
+    if [ ! -e "${pkgdir}/${file}" ]; then
+        rm -fv "${pkgdir}/${file}"
+    fi
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
