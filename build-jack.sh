@@ -193,7 +193,10 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
         s=""
     fi
     cp -v "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
-    sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    if [ "${WIN32}" -eq 1 ]; then
+        # FIXME rule that works for server lib too
+        sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
