@@ -61,7 +61,9 @@ if [ -n "${GLIB_VERSION}" ]; then
     fi
 
     download glib ${GLIB_VERSION} "http://caesar.ftp.acc.umu.se/pub/GNOME/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
-#     remove_file glib ${GLIB_VERSION} "m4macros/glib-gettext.m4"
+    if [ "${MACOS}" -eq 1 ]; then
+        remove_file glib ${GLIB_VERSION} "m4macros/glib-gettext.m4"
+    fi
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi
 
