@@ -140,7 +140,7 @@ function build_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./configure --enable-static --disable-shared --disable-debug --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ./configure --enable-static --disable-shared --disable-debug --disable-doc --disable-docs --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
@@ -160,6 +160,29 @@ function build_autoconf() {
     fi
 
     _postbuild
+}
+
+function build_autoconfgen() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
+        pushd "${pkgdir}"
+#         autoreconf --force --install --verbose
+#         ./autogen.sh
+        autoconf
+        touch .stamp_preconfigured
+        popd
+    fi
+
+    _postbuild
+
+    build_autoconf "${name}" "${version}" "${extraconfrules}"
 }
 
 function build_conf() {
@@ -211,7 +234,7 @@ function build_cmake() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
-        cmake -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
+        cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
         touch ../.stamp_configured
         popd
     fi

@@ -43,6 +43,29 @@ download pkg-config "${PKG_CONFIG_VERSION}" "https://pkg-config.freedesktop.org/
 build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps --with-internal-glib --with-pc-path=${TARGET_PKG_CONFIG_PATH}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# file/magic (posix only)
+
+# if [ "${WIN32}" -eq 0 ]; then
+#     download file "${FILE_VERSION}" "ftp://ftp.astron.com/pub/file"
+#     build_autoconf file "${FILE_VERSION}"
+# fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# glib
+
+if [ -n "${GLIB_VERSION}" ]; then
+    GLIB_EXTRAFLAGS=""
+
+    if [ "${WIN32}" -eq 0 ]; then
+        GLIB_EXTRAFLAGS+=" --with-threads=win32"
+    fi
+
+    download glib ${GLIB_VERSION} "http://caesar.ftp.acc.umu.se/pub/GNOME/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
+#     remove_file glib ${GLIB_VERSION} "m4macros/glib-gettext.m4"
+    build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # liblo
 
 download liblo "${LIBLO_VERSION}" "http://download.sourceforge.net/liblo"
@@ -54,14 +77,6 @@ build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --d
 download libogg "${LIBOGG_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/ogg"
 patch_file libogg "${LIBOGG_VERSION}" "include/ogg/os_types.h" 's/__MACH__/__MACH_SKIP__/'
 build_autoconf libogg "${LIBOGG_VERSION}"
-
-# ---------------------------------------------------------------------------------------------------------------------
-# file/magic (posix only)
-
-# if [ "${WIN32}" -eq 0 ]; then
-#     download file "${FILE_VERSION}" "ftp://ftp.astron.com/pub/file"
-#     build_autoconf file "${FILE_VERSION}"
-# fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libvorbis
@@ -80,25 +95,6 @@ fi
 
 download flac "${FLAC_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/flac" "tar.xz"
 build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
-
-# ---------------------------------------------------------------------------------------------------------------------
-# libsamplerate
-
-download libsamplerate "${LIBSAMPLERATE_VERSION}" "http://www.mega-nerd.com/SRC"
-build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "--disable-fftw --disable-sndfile"
-
-# ---------------------------------------------------------------------------------------------------------------------
-# libsndfile
-
-download libsndfile "${LIBSNDFILE_VERSION}" "http://www.mega-nerd.com/libsndfile/files"
-patch_file libsndfile "${LIBSNDFILE_VERSION}" "configure" 's/ -Wvla//'
-build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-full-suite --disable-alsa --disable-sqlite"
-
-# ---------------------------------------------------------------------------------------------------------------------
-# lv2
-
-download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
-build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
@@ -133,11 +129,68 @@ fi
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# libsamplerate
+
+download libsamplerate "${LIBSAMPLERATE_VERSION}" "http://www.mega-nerd.com/SRC"
+build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "--disable-fftw --disable-sndfile"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# libsndfile
+
+download libsndfile "${LIBSNDFILE_VERSION}" "http://www.mega-nerd.com/libsndfile/files"
+patch_file libsndfile "${LIBSNDFILE_VERSION}" "configure" 's/ -Wvla//'
+build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-full-suite --disable-alsa --disable-sqlite"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# lv2
+
+download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
+build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# fluidsynth
+
+FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-alsa=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-aufile=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-coreaudio=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-coremidi=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-dbus=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-debug=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-fpe-check=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-framework=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-ipv6=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-jack=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-ladcca=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-ladspa=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-lash=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-midishare=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-oss=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-portaudio=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-profiling=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-pulseaudio=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-readline=OFF"
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-trap-on-fpe=OFF"
+
+download fluidsynth ${FLUIDSYNTH_VERSION} "https://github.com/FluidSynth/fluidsynth/archive"
+patch_file fluidsynth ${FLUIDSYNTH_VERSION} "CMakeLists.txt" 's/_init_lib_suffix "64"/_init_lib_suffix ""/'
+build_cmake fluidsynth ${FLUIDSYNTH_VERSION} "${FLUIDSYNTH_EXTRAFLAGS}"
+# touch src/fluidsynth
+
+# sed -i -e "s|-lfluidsynth|-lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -logg -lpthread -lm -liconv|" ${PREFIX}/lib/pkgconfig/fluidsynth.pc
+
+# ---------------------------------------------------------------------------------------------------------------------
+# mxml
+
+download mxml ${MXML_VERSION} "https://github.com/michaelrsweet/mxml/archive"
+build_autoconf mxml ${MXML_VERSION} "--disable-shared --prefix=${PAWPAW_PREFIX}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # zlib
 
 if [ "${MACOS}" -eq 0 ]; then
-    download zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib/archive"
-    build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
+    download zlib ${ZLIB_VERSION} "https://github.com/madler/zlib/archive"
+    build_conf zlib ${ZLIB_VERSION} "--static --prefix=${PAWPAW_PREFIX}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
