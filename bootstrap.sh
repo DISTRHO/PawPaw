@@ -42,6 +42,7 @@ mkdir -p "${PAWPAW_TMPDIR}"
 if [ "${LINUX}" -eq 1 ] && [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
     mkdir -p ${TARGET_PKG_CONFIG_PATH}
     ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
+    ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
