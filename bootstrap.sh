@@ -53,16 +53,17 @@ build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps -
 # ---------------------------------------------------------------------------------------------------------------------
 # glib
 
-if [ -n "${GLIB_VERSION}" ]; then
-    GLIB_EXTRAFLAGS=""
-
-    if [ "${WIN32}" -eq 0 ]; then
-        GLIB_EXTRAFLAGS+=" --with-threads=win32"
+if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+    if [ "${WIN32}" -eq 1 ]; then
+        GLIB_EXTRAFLAGS="--with-threads=win32"
+    else
+        GLIB_EXTRAFLAGS="--with-threads=posix"
     fi
 
     download glib ${GLIB_VERSION} "http://caesar.ftp.acc.umu.se/pub/GNOME/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
     if [ "${MACOS}" -eq 1 ]; then
-        remove_file glib ${GLIB_VERSION} "m4macros/glib-gettext.m4"
+        patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
+        export EXTRA_LDFLAGS="-lresolv"
     fi
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi

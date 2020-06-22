@@ -178,18 +178,26 @@ function build_autoconfgen() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
+    local EXTRA_CFLAGS2="${EXTRA_CFLAGS}"
+    local EXTRA_CXXFLAGS2="${EXTRA_CXXFLAGS}"
+    local EXTRA_LDFLAGS2="${EXTRA_LDFLAGS}"
+    local EXTRA_MAKE_ARGS2="${EXTRA_MAKE_ARGS}"
+
     _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
         pushd "${pkgdir}"
-#         autoreconf --force --install --verbose
-#         ./autogen.sh
         autoconf
         touch .stamp_preconfigured
         popd
     fi
 
     _postbuild
+
+    export EXTRA_CFLAGS="${EXTRA_CFLAGS2}"
+    export EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS2}"
+    export EXTRA_LDFLAGS="${EXTRA_LDFLAGS2}"
+    export EXTRA_MAKE_ARGS="${EXTRA_MAKE_ARGS2}"
 
     build_autoconf "${name}" "${version}" "${extraconfrules}"
 }
