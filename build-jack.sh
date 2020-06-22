@@ -5,6 +5,9 @@ set -e
 cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
+JACK2_VERSION=git
+QJACKCTL_VERSION=0.6.2
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 target="${1}"
@@ -17,10 +20,6 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 
 # TODO check that bootstrap.sh has been run
-
-# TODO
-# - portaudio (with asio support) for windows
-# - readline for windows?
 
 source setup/check_target.sh
 source setup/env.sh
@@ -114,8 +113,22 @@ if [ "${WIN32}" -eq 1 ]; then
     ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
     export EXTRA_CFLAGS="-I${ASIO_DIR}"
     export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
+    export EXTRA_MAKE_ARGS="-j 1"
     download portaudio19 "${PORTAUDIO_VERSION}" "http://deb.debian.org/debian/pool/main/p/portaudio19" "orig.tar.gz"
-    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir="${ASIO_DIR}" --with-winapi=asio"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/audioclient.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/devicetopology.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/endpointvolume.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/functiondiscoverykeys.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/ksguid.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/ksproxy.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/ksuuids.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/mmdeviceapi.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/propkeydef.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/propsys.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/rpcsal.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/sal.h"
+    remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/structuredquery.h"
+    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir="${ASIO_DIR}" --with-winapi=asio,directx,wasapi,wdmks,wmme"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -136,12 +149,10 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # and finally jack2
 
-if [ ! -d jack2 ]; then
-	git clone --recursive git@github.com:jackaudio/jack2.git
-fi
+jack2_repo="git@github.com:jackaudio/jack2.git"
+jack2_prefix="${PAWPAW_PREFIX}/jack2"
 
-jack2_args="--prefix="${PAWPAW_PREFIX}/jack2""
-
+jack2_args="--prefix=${jack2_prefix}"
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
 #     jack2_args="${jack2_args} --mixed"
 # fi
@@ -160,9 +171,49 @@ if [ "${MACOS_OLD}" -eq 1 ]; then
     patch_file jack2 "git" "wscript" '/-Wno-deprecated-register/d'
 fi
 
-ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
-rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
-build_waf jack2 "git" "${jack2_args}"
+if [ "${JACK2_VERSION}" = "git" ]; then
+    if [ ! -d jack2 ]; then
+        git clone --recursive "${jack2_repo}"
+    fi
+    if [ ! -e "${PAWPAW_BUILDDIR}/jack2-git" ]; then
+        ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
+    fi
+    rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
+else
+    download jack2 "${JACK2_VERSION}" "${jack2_repo}" "" "git"
+fi
+
+build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
+
+# patch pkg-config file for static builds in regular prefix
+if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
+    if [ "${WIN64}" -eq 1 ]; then
+        s="64"
+    else
+        s=""
+    fi
+    cp -v "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    if [ "${WIN32}" -eq 1 ]; then
+        # FIXME rule that works for server lib too
+        sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    fi
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# if qt is available, build qjackctl
+
+if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
+    download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
+    if [ "${WIN64}" -eq 1 ]; then
+        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
+    elif [ "${WIN32}" -eq 1 ]; then
+        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
+    fi
+    build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
+    if [ "${WIN32}" -eq 1 ]; then
+        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
+    fi
+fi
 
 
 if [ "${MACOS}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then

@@ -1,0 +1,11 @@
+diff --git a/bindings/cpp/source/portaudiocpp/Device.cxx b/bindings/cpp/source/portaudiocpp/Device.cxx
+index 7b21b03..04e75b1 100644
+--- a/bindings/cpp/source/portaudiocpp/Device.cxx
++++ b/bindings/cpp/source/portaudiocpp/Device.cxx
+@@ -166,3 +166,6 @@ namespace portaudio
+ } // namespace portaudio
+ 
+ 
++#ifdef _WIN32
++#include "AsioDeviceAdapter.cxx"
++#endif

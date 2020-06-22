@@ -92,6 +92,15 @@ function _prebuild() {
         done
     fi
 
+    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ]; then
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch" | sort); do
+            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
+                touch "${pkgdir}/.stamp_applied_${p}"
+            fi
+        done
+    fi
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         rm -f "${pkgdir}/.stamp_built"
         rm -f "${pkgdir}/.stamp_installed"
@@ -118,6 +127,7 @@ function _postbuild() {
     unset EXTRA_CFLAGS
     unset EXTRA_CXXFLAGS
     unset EXTRA_LDFLAGS
+    unset EXTRA_MAKE_ARGS
 
     export PATH="${OLD_PATH}"
 }
@@ -139,26 +149,57 @@ function build_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./configure --enable-static --disable-shared --disable-debug --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ./configure --enable-static --disable-shared --disable-debug --disable-doc --disable-docs --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS} install
+        make ${MAKE_ARGS} install -j 1
         touch .stamp_installed
         popd
     fi
 
     _postbuild
+}
+
+function build_autoconfgen() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    local EXTRA_CFLAGS2="${EXTRA_CFLAGS}"
+    local EXTRA_CXXFLAGS2="${EXTRA_CXXFLAGS}"
+    local EXTRA_LDFLAGS2="${EXTRA_LDFLAGS}"
+    local EXTRA_MAKE_ARGS2="${EXTRA_MAKE_ARGS}"
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
+        pushd "${pkgdir}"
+        autoconf
+        touch .stamp_preconfigured
+        popd
+    fi
+
+    _postbuild
+
+    export EXTRA_CFLAGS="${EXTRA_CFLAGS2}"
+    export EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS2}"
+    export EXTRA_LDFLAGS="${EXTRA_LDFLAGS2}"
+    export EXTRA_MAKE_ARGS="${EXTRA_MAKE_ARGS2}"
+
+    build_autoconf "${name}" "${version}" "${extraconfrules}"
 }
 
 function build_conf() {
@@ -179,14 +220,14 @@ function build_conf() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS} install
+        make ${MAKE_ARGS} -j 1 install
         touch .stamp_installed
         popd
     fi
@@ -210,21 +251,21 @@ function build_cmake() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
-        cmake -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
+        cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
         touch ../.stamp_configured
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}/build"
-        make ${MAKE_ARGS}
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch ../.stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}/build"
-        make ${MAKE_ARGS} install
+        make ${MAKE_ARGS} -j 1 install
         touch ../.stamp_installed
         popd
     fi
@@ -252,7 +293,7 @@ function build_make() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} install
+        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
         touch .stamp_installed
         popd
     fi
@@ -297,7 +338,7 @@ function build_meson() {
     _postbuild
 }
 
-function build_waf() {
+function build_qmake() {
     local name="${1}"
     local version="${2}"
     local extraconfrules="${3}"
@@ -308,21 +349,59 @@ function build_waf() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./waf configure --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        qmake ${extraconfrules}
         touch .stamp_configured
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        ./waf build
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ./waf install
+        make ${MAKE_ARGS} -j 1 install
+        touch .stamp_installed
+        popd
+    fi
+
+    _postbuild
+}
+
+function build_waf() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local python=python3
+
+    if ! which python3 > /dev/null; then
+        python=python
+    fi
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        pushd "${pkgdir}"
+        ${python} waf configure --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        touch .stamp_configured
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}"
+        ${python} waf build ${WAF_ARGS}
+        touch .stamp_built
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}"
+        ${python} waf install ${WAF_ARGS} -j 1
         touch .stamp_installed
         popd
     fi
@@ -365,7 +444,7 @@ function build_host_autoconf() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make install
+        make ${MAKE_ARGS} install -j 1
         touch .stamp_installed
         popd
     fi
@@ -384,6 +463,21 @@ function patch_file() {
     sed -i -e "${rule}" "${pkgdir}/${file}"
 }
 
+function copy_file() {
+    local name="${1}"
+    local version="${2}"
+    local source="${3}"
+    local target="${4}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ ! -e "${pkgdir}/${target}" ]; then
+        pushd "${pkgdir}"
+        cp -v "${source}" "${target}"
+        popd
+    fi
+}
+
 function link_file() {
     local name="${1}"
     local version="${2}"
@@ -394,7 +488,7 @@ function link_file() {
 
     if [ ! -e "${pkgdir}/${target}" ]; then
         pushd "${pkgdir}"
-        ln -sf "${source}" "${target}"
+        ln -sfv "${source}" "${target}"
         popd
     fi
 }
@@ -406,8 +500,9 @@ function remove_file() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    echo rm -f "${pkgdir}/${file}"
-    rm -f "${pkgdir}/${file}"
+    if [ ! -e "${pkgdir}/${file}" ]; then
+        rm -fv "${pkgdir}/${file}"
+    fi
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

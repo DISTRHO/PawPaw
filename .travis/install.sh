@@ -5,8 +5,10 @@ set -e
 # common
 sudo apt-get install -y build-essential curl cmake jq
 
-# for cross-compilation
-if [ "${TARGET}" = "macos-old" ]; then
+if [ "${TARGET}" = "linux" ]; then
+    sudo apt-get install -y libglib2.0-dev
+
+elif [ "${TARGET}" = "macos-old" ]; then
     mkdir -p ${HOME}/PawPawBuilds/debs
     pushd ${HOME}/PawPawBuilds/debs
     if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then
