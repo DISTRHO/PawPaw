@@ -31,10 +31,18 @@ source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
 
-mkdir -p ${PAWPAW_BUILDDIR}
-mkdir -p ${PAWPAW_DOWNLOADDIR}
-mkdir -p ${PAWPAW_PREFIX}
-mkdir -p ${PAWPAW_TMPDIR}
+mkdir -p "${PAWPAW_BUILDDIR}"
+mkdir -p "${PAWPAW_DOWNLOADDIR}"
+mkdir -p "${PAWPAW_PREFIX}"
+mkdir -p "${PAWPAW_TMPDIR}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# let's use native glib for linux builds
+
+if [ "${LINUX}" -eq 1 ] && [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
+    mkdir -p ${TARGET_PKG_CONFIG_PATH}
+    ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pkgconfig
