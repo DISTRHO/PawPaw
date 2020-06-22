@@ -61,10 +61,21 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     fi
 
     download glib ${GLIB_VERSION} "http://caesar.ftp.acc.umu.se/pub/GNOME/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
+
     if [ "${MACOS}" -eq 1 ]; then
-        patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
         export EXTRA_LDFLAGS="-lresolv"
+        patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
+
+        if [ "${MACOS_OLD}" -eq 1 ]; then
+            GLIB_EXTRAFLAGS+=" glib_cv_stack_grows=yes"
+            GLIB_EXTRAFLAGS+=" glib_cv_rtldglobal_broken=no"
+            GLIB_EXTRAFLAGS+=" glib_cv_uscore=no"
+            GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getpwuid_r=yes"
+            GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getgrgid_r=yes"
+            patch_file glib ${GLIB_VERSION} "configure.in" 's/G_ATOMIC_I486/G_ATOMIC_I486_NOT/'
+        fi
     fi
+
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi
 
