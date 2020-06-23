@@ -13,8 +13,12 @@ QJACKCTL_VERSION=0.6.2
 target="${1}"
 
 if [ -z "${target}" ]; then
-    echo "usage: ${0} <target>"
+    echo "usage: ${0} <target> [package-build?]"
     exit 1
+fi
+
+if [ -n "${2}" ]; then
+    PACKAGING_BUILD="y"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -239,6 +243,19 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
         fi
     elif [ "${WIN32}" -eq 1 ]; then
         copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
+    fi
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+if [ -n "${PACKAGING_BUILD}" ]; then
+    if [ "${MACOS}" -eq 1 ]; then
+        ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2/"
+
+        rm -rf jack2/macosx/qjackctl.app
+        cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" "jack2/macosx/"
+
+        tar czf jack2-osx-1.9.14.tar.gz -C jack2/macosx jack2-osx-1.9.14.pkg qjackctl.app
     fi
 fi
 
