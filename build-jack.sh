@@ -185,18 +185,29 @@ fi
 
 build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
 
-# patch pkg-config file for static builds in regular prefix
+# remove useless dbus-specific file
+rm "${PAWPAW_PREFIX}/jack2/bin/jack_control"
+
+# copy jack pkg-config file to main system, so qjackctl can find it
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
-    if [ "${WIN64}" -eq 1 ]; then
-        s="64"
-    else
-        s=""
-    fi
     cp -v "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+
+    # patch pkg-config file for static win32 builds in regular prefix
     if [ "${WIN32}" -eq 1 ]; then
-        # FIXME rule that works for server lib too
+        if [ "${WIN64}" -eq 1 ]; then
+            s="64"
+        else
+            s=""
+        fi
+        # FIXME rule that works for server lib too, maybe ignoring suffix even
         sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
     fi
+fi
+
+if [ "${MACOS}" -eq 1 ]; then
+    for f in $(ls "${PAWPAW_PREFIX}/jack2/bin/"); do
+        patch_osx_binary_libs "${PAWPAW_PREFIX}/jack2/bin/${f}"
+    done
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -204,13 +215,29 @@ fi
 
 if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
+
     if [ "${WIN64}" -eq 1 ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
     elif [ "${WIN32}" -eq 1 ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
     fi
+
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
-    if [ "${WIN32}" -eq 1 ]; then
+
+    if [ "${MACOS}" -eq 1 ]; then
+        qjackctl_dir="${PAWPAW_PREFIX}/bin/qjackctl.app/Contents/MacOS"
+        patch_osx_binary_libs "${qjackctl_dir}/qjackctl"
+        if [ ! -e "${qjackctl_dir}/QtXml" ]; then
+            cp -v "${PAWPAW_PREFIX}/lib/QtCore.framework/Versions/5/QtCore" "${qjackctl_dir}/"
+            patch_osx_binary_libs "${qjackctl_dir}/QtCore"
+            cp -v "${PAWPAW_PREFIX}/lib/QtGui.framework/Versions/5/QtGui" "${qjackctl_dir}/"
+            patch_osx_binary_libs "${qjackctl_dir}/QtGui"
+            cp -v "${PAWPAW_PREFIX}/lib/QtWidgets.framework/Versions/5/QtWidgets" "${qjackctl_dir}/"
+            patch_osx_binary_libs "${qjackctl_dir}/QtWidgets"
+            cp -v "${PAWPAW_PREFIX}/lib/QtXml.framework/Versions/5/QtXml" "${qjackctl_dir}/"
+            patch_osx_binary_libs "${qjackctl_dir}/QtXml"
+        fi
+    elif [ "${WIN32}" -eq 1 ]; then
         copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
     fi
 fi
