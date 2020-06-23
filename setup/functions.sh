@@ -401,7 +401,7 @@ function build_waf() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ${python} waf install ${WAF_ARGS} -j 1
+        ${python} waf install ${WAF_ARGS} --prefix="${PAWPAW_PREFIX}" ${extraconfrules} -j 1
         touch .stamp_installed
         popd
     fi
@@ -517,10 +517,10 @@ function patch_osx_binary_libs() {
     idname=$(otool -D "${file}")
 
     if otool -L "${file}" | grep -v ":" | grep -v "${idname}" | grep -q "${PAWPAW_PREFIX}"; then
-        install_name_tool -change "@rpath/QtCore.framework/Versions/5/QtCore" "@executable_path/QtCore" "${file}"
-        install_name_tool -change "@rpath/QtGui.framework/Versions/5/QtGui" "@executable_path/QtGui" "${file}"
-        install_name_tool -change "@rpath/QtWidgets.framework/Versions/5/QtWidgets" "@executable_path/QtWidgets" "${file}"
-        install_name_tool -change "@rpath/QtXml.framework/Versions/5/QtXml" "@executable_path/QtXml" "${file}"
+        #install_name_tool -change "@rpath/QtCore.framework/Versions/5/QtCore" "@executable_path/QtCore" "${file}"
+        #install_name_tool -change "@rpath/QtGui.framework/Versions/5/QtGui" "@executable_path/QtGui" "${file}"
+        #install_name_tool -change "@rpath/QtWidgets.framework/Versions/5/QtWidgets" "@executable_path/QtWidgets" "${file}"
+        #install_name_tool -change "@rpath/QtXml.framework/Versions/5/QtXml" "@executable_path/QtXml" "${file}"
         install_name_tool -change "@executable_path/../Frameworks/libjack.0.dylib" "/usr/local/lib/libjack.0.dylib" "${file}"
         install_name_tool -change "${PAWPAW_PREFIX}/jack2/lib/libjack.0.dylib" "/usr/local/lib/libjack.0.dylib" "${file}"
         install_name_tool -change "${PAWPAW_PREFIX}/jack2/lib/libjacknet.0.dylib" "/usr/local/lib/libjacknet.0.dylib" "${file}"

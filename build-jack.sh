@@ -162,12 +162,17 @@ jack2_args="--prefix=${jack2_prefix}"
 # fi
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
-        jack2_args="${jack2_args} --platform=linux"
+        jack2_args+=" --platform=linux"
     elif [ "${MACOS}" -eq 1 ]; then
-        jack2_args="${jack2_args} --platform=darwin"
+        jack2_args+=" --platform=darwin"
     elif [ "${WIN32}" -eq 1 ]; then
-        jack2_args="${jack2_args} --platform=win32"
+        jack2_args+=" --platform=win32"
     fi
+fi
+if [ "${MACOS}" -eq 1 ]; then
+    jack2_extra_prefix="/usr/local"
+    jack2_args+=" --prefix=${jack2_extra_prefix}"
+    jack2_args+=" --destdir="${jack2_prefix}""
 fi
 
 if [ "${MACOS_OLD}" -eq 1 ]; then
@@ -190,11 +195,11 @@ fi
 build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
 
 # remove useless dbus-specific file
-rm "${PAWPAW_PREFIX}/jack2/bin/jack_control"
+rm "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/bin/jack_control"
 
 # copy jack pkg-config file to main system, so qjackctl can find it
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
-    cp -v "${PAWPAW_PREFIX}/jack2/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    cp -v "${PAWPAW_PREFIX}/jack2/${jack2_extra_prefix}lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
 
     # patch pkg-config file for static win32 builds in regular prefix
     if [ "${WIN32}" -eq 1 ]; then
@@ -223,22 +228,17 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
 fi
 
-
-if [ "${MACOS}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
-    ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2"
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 
 if [ -n "${PACKAGING_BUILD}" ]; then
     if [ "${MACOS}" -eq 1 ]; then
-        for f in $(ls "${PAWPAW_PREFIX}/jack2/bin"/* \
-                      "${PAWPAW_PREFIX}/jack2/lib"/*.dylib \
-                      "${PAWPAW_PREFIX}/jack2/lib/jack"/*); do
+        for f in $(ls "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/bin"/* \
+                      "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/lib"/*.dylib \
+                      "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/lib/jack"/*); do
             patch_osx_binary_libs "${f}"
         done
 
-        ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2/"
+        ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/"
 
         qjackctl_app="${PAWPAW_PREFIX}/bin/qjackctl.app"
         qjackctl_dir="${qjackctl_app}/Contents/MacOS"
