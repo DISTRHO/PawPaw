@@ -208,17 +208,11 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
     fi
 fi
 
-if [ "${MACOS}" -eq 1 ]; then
-    for f in $(ls "${PAWPAW_PREFIX}/jack2/bin/"); do
-        patch_osx_binary_libs "${PAWPAW_PREFIX}/jack2/bin/${f}"
-    done
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 # if qt is available, build qjackctl
 
 if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
-    download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
+    download qjackctl ${QJACKCTL_VERSION} https://download.sourceforge.net/qjackctl
 
     if [ "${WIN64}" -eq 1 ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
@@ -227,23 +221,6 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     fi
 
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
-
-    if [ "${MACOS}" -eq 1 ]; then
-        qjackctl_dir="${PAWPAW_PREFIX}/bin/qjackctl.app/Contents/MacOS"
-        patch_osx_binary_libs "${qjackctl_dir}/qjackctl"
-        if [ ! -e "${qjackctl_dir}/QtXml" ]; then
-            cp -v "${PAWPAW_PREFIX}/lib/QtCore.framework/Versions/5/QtCore" "${qjackctl_dir}/"
-            patch_osx_binary_libs "${qjackctl_dir}/QtCore"
-            cp -v "${PAWPAW_PREFIX}/lib/QtGui.framework/Versions/5/QtGui" "${qjackctl_dir}/"
-            patch_osx_binary_libs "${qjackctl_dir}/QtGui"
-            cp -v "${PAWPAW_PREFIX}/lib/QtWidgets.framework/Versions/5/QtWidgets" "${qjackctl_dir}/"
-            patch_osx_binary_libs "${qjackctl_dir}/QtWidgets"
-            cp -v "${PAWPAW_PREFIX}/lib/QtXml.framework/Versions/5/QtXml" "${qjackctl_dir}/"
-            patch_osx_binary_libs "${qjackctl_dir}/QtXml"
-        fi
-    elif [ "${WIN32}" -eq 1 ]; then
-        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
-    fi
 fi
 
 
@@ -255,12 +232,28 @@ fi
 
 if [ -n "${PACKAGING_BUILD}" ]; then
     if [ "${MACOS}" -eq 1 ]; then
+        for f in $(ls "${PAWPAW_PREFIX}/jack2/bin"/* \
+                      "${PAWPAW_PREFIX}/jack2/lib"/*.dylib \
+                      "${PAWPAW_PREFIX}/jack2/lib/jack"/*); do
+            patch_osx_binary_libs "${f}"
+        done
+
         ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2/"
 
-        rm -rf jack2/macosx/qjackctl.app
-        cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" "jack2/macosx/"
+        qjackctl_app="${PAWPAW_PREFIX}/bin/qjackctl.app"
+        qjackctl_dir="${qjackctl_app}/Contents/MacOS"
+        patch_osx_qtapp qjackctl "${QJACKCTL_VERSION}" "${qjackctl_app}"
+        patch_osx_binary_libs "${qjackctl_dir}/qjackctl"
 
+        rm -rf jack2/macosx/qjackctl.app
+        cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" jack2/macosx/
+
+        rm -f jack2-osx-1.9.14.tar.gz
         tar czf jack2-osx-1.9.14.tar.gz -C jack2/macosx jack2-osx-1.9.14.pkg qjackctl.app
+
+    elif [ "${WIN32}" -eq 1 ]; then
+        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
+
     fi
 fi
 

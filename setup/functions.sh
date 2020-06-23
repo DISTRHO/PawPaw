@@ -510,15 +510,43 @@ function remove_file() {
 function patch_osx_binary_libs() {
     local file="${1}"
 
-    if otool -L "${file}" | grep -q "${PAWPAW_PREFIX}"; then
+    if [ -L "${file}" ]; then
+        return 0
+    fi
+
+    idname=$(otool -D "${file}")
+
+    if otool -L "${file}" | grep -v ":" | grep -v "${idname}" | grep -q "${PAWPAW_PREFIX}"; then
         install_name_tool -change "@rpath/QtCore.framework/Versions/5/QtCore" "@executable_path/QtCore" "${file}"
         install_name_tool -change "@rpath/QtGui.framework/Versions/5/QtGui" "@executable_path/QtGui" "${file}"
         install_name_tool -change "@rpath/QtWidgets.framework/Versions/5/QtWidgets" "@executable_path/QtWidgets" "${file}"
         install_name_tool -change "@rpath/QtXml.framework/Versions/5/QtXml" "@executable_path/QtXml" "${file}"
+        install_name_tool -change "@executable_path/../Frameworks/libjack.0.dylib" "/usr/local/lib/libjack.0.dylib" "${file}"
         install_name_tool -change "${PAWPAW_PREFIX}/jack2/lib/libjack.0.dylib" "/usr/local/lib/libjack.0.dylib" "${file}"
         install_name_tool -change "${PAWPAW_PREFIX}/jack2/lib/libjacknet.0.dylib" "/usr/local/lib/libjacknet.0.dylib" "${file}"
         install_name_tool -change "${PAWPAW_PREFIX}/jack2/lib/libjackserver.0.dylib" "/usr/local/lib/libjackserver.0.dylib" "${file}"
      fi
+}
+
+function patch_osx_qtapp() {
+    local name="${1}"
+    local version="${2}"
+    local appfile="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    _prebuild "${name}" "${pkgdir}"
+
+    mkdir -p "${appfile}/Contents/PlugIns/platforms"
+    mkdir -p "${appfile}/Contents/PlugIns/printsupport"
+    cp -v "${PAWPAW_PREFIX}/lib/qt5/plugins/platforms/libqcocoa.dylib" "${appfile}/Contents/PlugIns/platforms/"
+    cp -v "${PAWPAW_PREFIX}/lib/qt5/plugins/printsupport/libcocoaprintersupport.dylib" "${appfile}/Contents/PlugIns/printsupport/"
+
+    macdeployqt "${appfile}"
+
+    rm -f "${appfile}/Contents/Frameworks/libjack.0.dylib"
+
+    _postbuild
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
