@@ -11,33 +11,33 @@ cache:
 
 jobs:
   include:
-    # linux native build
-    - os: linux
-      compiler: gcc
-      env:
-        - TARGET="linux"
-        - PLUGINS="abgate artyfx caps fomp mda"
+    ## linux native build
+    #- os: linux
+      #compiler: gcc
+      #env:
+        #- TARGET="linux"
+        #- PLUGINS="abgate artyfx caps fomp mda"
 
-    # linux with macOS cross-compilation
-    - os: linux
-      compiler: gcc
-      env:
-        - TARGET="macos-old"
-        - PLUGINS="abgate artyfx caps fomp mda"
+    ## linux with macOS cross-compilation
+    #- os: linux
+      #compiler: gcc
+      #env:
+        #- TARGET="macos-old"
+        #- PLUGINS="abgate artyfx caps fomp mda"
 
-    # linux with win32 cross-compilation
-    - os: linux
-      compiler: gcc
-      env:
-        - TARGET="win32"
-        - PLUGINS="abgate artyfx caps fomp mda"
+    ## linux with win32 cross-compilation
+    #- os: linux
+      #compiler: gcc
+      #env:
+        #- TARGET="win32"
+        #- PLUGINS="abgate artyfx caps fomp mda"
 
     # linux with win64 cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="win64"
-        - PLUGINS="abgate artyfx caps fomp mda"
+        - PLUGINS="abgate"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
@@ -57,9 +57,10 @@ deploy:
   #api_key: "GITHUB OAUTH TOKEN"
   file_glob: true
   file: setup/inno/PawPaw-*.exe
-  skip_cleanup: true
+  cleanup: false
   on:
-    tags: true
+    all_branches: true
+    #tags: true
 
 #notifications:
   #email: true
