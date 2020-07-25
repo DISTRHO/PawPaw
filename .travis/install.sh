@@ -2,6 +2,9 @@
 
 set -e
 
+# Special handling for caching deb archives
+sudo cp ${HOME}/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
+
 # common
 sudo apt-get install -y build-essential curl cmake jq
 

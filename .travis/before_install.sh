@@ -15,9 +15,6 @@ if [ "${TARGET}" = "win32" ] || [ "${TARGET}" = "win64" ]; then
     sudo add-apt-repository -y ppa:kxstudio-debian/ubuntus
 fi
 
-# Special handling for caching deb archives
-sudo cp ${HOME}/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
-
 sudo apt-get update -qq
 sudo apt-get install kxstudio-repos
 sudo apt-get update -qq
