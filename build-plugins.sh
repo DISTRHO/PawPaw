@@ -10,7 +10,7 @@ PAWPAW_ROOT="${PWD}"
 target="${1}"
 
 if [ -z "${target}" ]; then
-    echo "usage: ${0} <target> <plugin>"
+    echo "usage: ${0} <target> <plugin1> ..."
     exit 1
 fi
 
