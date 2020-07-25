@@ -26,9 +26,9 @@ elif [ "${TARGET}" = "macos-old" ]; then
     popd
 
 elif [ "${TARGET}" = "win32" ]; then
-    sudo apt-get install -y mingw-w64 binutils-mingw-w64-i686 g++-mingw-w64-i686
+    sudo apt-get install -y mingw-w64 binutils-mingw-w64-i686 g++-mingw-w64-i686 wine-stable wine-binfmt
 
 elif [ "${TARGET}" = "win64" ]; then
-    sudo apt-get install -y mingw-w64 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64
+    sudo apt-get install -y mingw-w64 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 wine-stable wine-binfmt
 
 fi
