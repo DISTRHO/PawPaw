@@ -32,6 +32,10 @@ function download_and_install_innosetup {
         curl -L https://jrsoftware.org/download.php/is.exe?site=2 -o "${dlfile}"
     fi
 
+    if [ ! -d "${pkgdir}"/drive_c ]; then
+        env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${pkgdir}" wineboot -u
+    fi
+
     if [ ! -f "${pkgdir}"/drive_c/InnoSeup/ISCC.exe ]; then
         env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
     fi
@@ -41,7 +45,7 @@ function create_innosetup_exe {
     local pkgdir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
     local iscc="${pkgdir}/drive_c/InnoSeup/ISCC.exe"
 
-    env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${iscc}" setup/inno/plugins.iss
+    env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${iscc}" "setup/inno/${PAWPAW_TARGET}.iss"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
