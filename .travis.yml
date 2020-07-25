@@ -8,7 +8,6 @@ cache:
   directories:
   - ${HOME}/PawPawBuilds/debs
   - ${HOME}/PawPawBuilds/downloads
-  - /var/cache/apt/archives
 
 jobs:
   include:

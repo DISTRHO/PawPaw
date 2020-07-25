@@ -35,5 +35,4 @@ elif [ "${TARGET}" = "win64" ]; then
 fi
 
 # Special handling for caching deb archives
-sudo rm -rf /var/cache/apt/archives/lock
-sudo rm -rf /var/cache/apt/archives/partial
+sudo mv /var/cache/apt/archives/*.deb ${HOME}/PawPawBuilds/debs/
