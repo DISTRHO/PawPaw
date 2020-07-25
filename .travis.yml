@@ -52,14 +52,14 @@ script:
 before_deploy:
   - bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
 
-#deploy:
-  #provider: releases
+deploy:
+  provider: releases
   #api_key: "GITHUB OAUTH TOKEN"
-  #file_glob: true
-  #file: setup/inno/PawPaw-*.exe
-  #skip_cleanup: true
-  #on:
-    #tags: true
+  file_glob: true
+  file: setup/inno/PawPaw-*.exe
+  skip_cleanup: true
+  on:
+    tags: true
 
 #notifications:
   #email: true
