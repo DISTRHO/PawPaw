@@ -33,7 +33,7 @@ function download_and_install_innosetup {
     fi
 
     if [ ! -d "${pkgdir}"/drive_c ]; then
-        env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wineboot -i
+        env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${pkgdir}" wineboot -u
     fi
 
     if [ ! -f "${pkgdir}"/drive_c/InnoSeup/ISCC.exe ]; then
