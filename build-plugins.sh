@@ -25,6 +25,11 @@ source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
 
+mkdir -p "${PAWPAW_BUILDDIR}"
+mkdir -p "${PAWPAW_DOWNLOADDIR}"
+mkdir -p "${PAWPAW_PREFIX}"
+mkdir -p "${PAWPAW_TMPDIR}"
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 for plugin in ${@}; do
