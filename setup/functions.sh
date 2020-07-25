@@ -402,6 +402,7 @@ function build_waf() {
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
         ${python} waf install ${WAF_ARGS} --prefix="${PAWPAW_PREFIX}" ${extraconfrules} -j 1
+        rm -f ${PAWPAW_PREFIX}/lib/lv2/*/*.a
         touch .stamp_installed
         popd
     fi

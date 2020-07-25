@@ -4,5 +4,6 @@
     "version": "1.2.4",
     "dlbaseurl": "http://download.drobilla.net",
     "dlext": "tar.bz2",
-    "buildtype": "waf"
+    "buildtype": "waf",
+    "buildargs": "--lv2dir=lib/lv2"
 }

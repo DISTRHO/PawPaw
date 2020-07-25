@@ -16,28 +16,28 @@ jobs:
       compiler: gcc
       env:
         - TARGET="linux"
-        - PLUGINS="artyfx caps-lv2"
+        - PLUGINS="abgate artyfx caps fomp mda"
 
     # linux with macOS cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="macos-old"
-        - PLUGINS="artyfx caps-lv2"
+        - PLUGINS="abgate artyfx caps fomp mda"
 
     # linux with win32 cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="win32"
-        - PLUGINS="artyfx caps-lv2"
+        - PLUGINS="abgate artyfx caps fomp mda"
 
     # linux with win64 cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="win64"
-        - PLUGINS="artyfx caps-lv2"
+        - PLUGINS="abgate artyfx caps fomp mda"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
