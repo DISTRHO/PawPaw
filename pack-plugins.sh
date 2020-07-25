@@ -32,6 +32,10 @@ function download_and_install_innosetup {
         curl -L https://jrsoftware.org/download.php/is.exe?site=2 -o "${dlfile}"
     fi
 
+    if [ ! -d "${pkgdir}"/drive_c ]; then
+        env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wineboot -i
+    fi
+
     if [ ! -f "${pkgdir}"/drive_c/InnoSeup/ISCC.exe ]; then
         env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
     fi
