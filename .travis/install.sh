@@ -5,6 +5,7 @@ set -e
 # common
 sudo apt-get install -y build-essential curl cmake jq
 
+# specific
 if [ "${TARGET}" = "linux" ]; then
     sudo apt-get install -y libglib2.0-dev
 
@@ -26,9 +27,13 @@ elif [ "${TARGET}" = "macos-old" ]; then
     popd
 
 elif [ "${TARGET}" = "win32" ]; then
-    sudo apt-get install -y mingw-w64 binutils-mingw-w64-i686 g++-mingw-w64-i686 wine-stable wine-binfmt
+    sudo apt-get install -y mingw-w64 binutils-mingw-w64-i686 g++-mingw-w64-i686 winehq-stable wine-binfmt
 
 elif [ "${TARGET}" = "win64" ]; then
-    sudo apt-get install -y mingw-w64 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 wine-stable wine-binfmt
+    sudo apt-get install -y mingw-w64 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable wine-binfmt
 
 fi
+
+# Special handling for caching deb archives
+sudo rm -rf /var/cache/apt/archives/lock
+sudo rm -rf /var/cache/apt/archives/partial

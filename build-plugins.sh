@@ -70,11 +70,3 @@ for plugin in ${@}; do
 done
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Special handling for CI builds, caching deb archives
-
-if [ -n "${TRAVIS_BUILD_DIR}" ]; then
-    sudo rm -rf /var/cache/apt/archives/lock
-    sudo rm -rf /var/cache/apt/archives/partial
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------

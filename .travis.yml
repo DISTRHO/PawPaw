@@ -26,12 +26,12 @@ jobs:
         #- TARGET="macos-old"
         #- PLUGINS="abgate artyfx caps fomp mda"
 
-    ## linux with win32 cross-compilation
-    #- os: linux
-      #compiler: gcc
-      #env:
-        #- TARGET="win32"
-        #- PLUGINS="abgate artyfx caps fomp mda"
+    # linux with win32 cross-compilation
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="win32"
+        - PLUGINS="abgate"
 
     # linux with win64 cross-compilation
     - os: linux
