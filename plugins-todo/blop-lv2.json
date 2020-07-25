@@ -1,0 +1,8 @@
+{
+    "name": "blop-lv2",
+    "lv2bundles": ["blop.lv2"],
+    "version": "1.0.0",
+    "dlbaseurl": "http://download.drobilla.net",
+    "dlext": "tar.bz2",
+    "buildtype": "waf"
+}

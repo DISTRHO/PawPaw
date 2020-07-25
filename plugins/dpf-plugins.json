@@ -1,6 +1,0 @@
-{
-    "name": "dpf-plugins",
-    "version": "1.3",
-    "dlbaseurl": "https://github.com/DISTRHO/DPF-Plugins/archive",
-    "buildtype": "make"
-}

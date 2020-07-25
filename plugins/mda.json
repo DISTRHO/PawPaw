@@ -1,0 +1,8 @@
+{
+    "name": "mda-lv2",
+    "lv2bundles": ["mda.lv2"],
+    "version": "1.2.4",
+    "dlbaseurl": "http://download.drobilla.net",
+    "dlext": "tar.bz2",
+    "buildtype": "waf"
+}

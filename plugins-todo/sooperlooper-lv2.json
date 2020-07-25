@@ -1,0 +1,12 @@
+{
+    "name": "tap-lv2",
+    "lv2bundles": [
+        "sooperlooper.lv2",
+        "sooperlooper-2x2.lv2"
+    ],
+    "version": "d3e80029ce4f6ef62b3758e95c5b889cab1db740",
+    "dlbaseurl": "https://github.com/moddevices/sooperlooper-lv2-plugin.git",
+    "dlmethod": "git",
+    "buildtype": "make",
+    "buildargs": "INSTALL_PATH=/usr/lib/lv2"
+}

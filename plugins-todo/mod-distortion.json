@@ -1,0 +1,12 @@
+{
+    "name": "mod-distortion",
+    "lv2bundles": [
+        "mod-bigmuff.lv2",
+        "mod-ds1.lv2"
+    ],
+    "version": "3622901c643570087b9d26fec2fd878384eaa98e",
+    "dlbaseurl": "https://github.com/moddevices/mod-distortion.git",
+    "dlmethod": "git",
+    "buildtype": "make",
+    "buildargs": "INSTALL_PATH=/usr/lib/lv2"
+}

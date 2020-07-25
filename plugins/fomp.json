@@ -1,0 +1,8 @@
+{
+    "name": "fomp",
+    "lv2bundles": ["fomp.lv2"],
+    "version": "1.2.0",
+    "dlbaseurl": "http://download.drobilla.net",
+    "dlext": "tar.bz2",
+    "buildtype": "waf"
+}

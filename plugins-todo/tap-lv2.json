@@ -1,0 +1,29 @@
+{
+    "name": "tap-lv2",
+    "lv2bundles": [
+        "tap-autopan.lv2",
+        "tap-chorusflanger.lv2",
+        "tap-deesser.lv2",
+        "tap-doubler.lv2",
+        "tap-dynamics.lv2",
+        "tap-dynamics-st.lv2",
+        "tap-echo.lv2",
+        "tap-eqbw.lv2",
+        "tap-eq.lv2",
+        "tap-limiter.lv2",
+        "tap-pinknoise.lv2",
+        "tap-pitch.lv2",
+        "tap-reflector.lv2",
+        "tap-reverb.lv2",
+        "tap-rotspeak.lv2",
+        "tap-sigmoid.lv2",
+        "tap-tremolo.lv2",
+        "tap-tubewarmth.lv2",
+        "tap-vibrato.lv2"
+    ],
+    "version": "cab6e0dfb2ce20e4ad34b067d1281ec0b193598a",
+    "dlbaseurl": "https://github.com/moddevices/tap-lv2.git",
+    "dlmethod": "git",
+    "buildtype": "make",
+    "buildargs": "INSTALL_PATH=/usr/lib/lv2"
+}
