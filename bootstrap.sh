@@ -52,6 +52,15 @@ download pkg-config "${PKG_CONFIG_VERSION}" "https://pkg-config.freedesktop.org/
 build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps --with-internal-glib --with-pc-path=${TARGET_PKG_CONFIG_PATH}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# lv2
+
+download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
+build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
+
+# FIXME
+exit 0
+
+# ---------------------------------------------------------------------------------------------------------------------
 # file/magic (posix only)
 
 # if [ "${WIN32}" -eq 0 ]; then
