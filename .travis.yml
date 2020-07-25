@@ -31,6 +31,8 @@ jobs:
       env:
         - TARGET="win32"
         - PLUGINS="abgate"
+      services:
+        - xvfb
 
     # linux with win64 cross-compilation
     - os: linux
@@ -38,6 +40,8 @@ jobs:
       env:
         - TARGET="win64"
         - PLUGINS="abgate"
+      services:
+        - xvfb
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
