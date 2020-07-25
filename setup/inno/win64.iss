@@ -2,9 +2,9 @@
 ArchitecturesInstallIn64BitMode=x64
 AppName=PawPaw
 AppVersion=0.0.0
-DefaultDirName={autopf}\PawPaw
+DefaultDirName={commonpf64}\PawPaw
 DisableDirPage=yes
-OutputBaseFilename=PawPaw-0.0.0
+OutputBaseFilename=PawPaw-win64-0.0.0
 OutputDir=.
 UsePreviousAppDir=no
 

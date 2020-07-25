@@ -41,7 +41,7 @@ function create_innosetup_exe {
     local pkgdir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
     local iscc="${pkgdir}/drive_c/InnoSeup/ISCC.exe"
 
-    env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${iscc}" setup/inno/plugins.iss
+    env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${iscc}" "setup/inno/${PAWPAW_TARGET}.iss"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
