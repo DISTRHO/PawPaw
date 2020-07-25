@@ -3,9 +3,9 @@
 set -e
 
 # Special handling for caching deb archives
-# if [ -d ${HOME}/PawPawBuilds/debs ]; then
-#     sudo cp ${HOME}/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
-# fi
+if [ "$(ls ${HOME}/PawPawBuilds/debs | wc -l)" -ne 0 ]; then
+    sudo cp ${HOME}/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
+fi
 
 # common
 sudo apt-get install -y build-essential curl cmake jq
