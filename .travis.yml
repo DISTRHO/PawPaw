@@ -11,19 +11,19 @@ cache:
 
 jobs:
   include:
-    ## linux native build
-    #- os: linux
-      #compiler: gcc
-      #env:
-        #- TARGET="linux"
-        #- PLUGINS="abgate artyfx caps fomp mda"
+    # linux native build
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="linux"
+        - PLUGINS="abgate artyfx caps fomp mda"
 
-    ## linux with macOS cross-compilation
-    #- os: linux
-      #compiler: gcc
-      #env:
-        #- TARGET="macos-old"
-        #- PLUGINS="abgate artyfx caps fomp mda"
+    # linux with macOS cross-compilation
+    - os: linux
+      compiler: gcc
+      env:
+        - TARGET="macos-old"
+        - PLUGINS="abgate artyfx caps fomp mda"
 
     # linux with win32 cross-compilation
     - os: linux
@@ -46,12 +46,11 @@ install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/install.sh
 
 script:
-  - env WINEARCH=${TARGET} wineboot -i
-  #- bash ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
-  #- bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
+  - bash ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
+  - bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 
-#before_deploy:
-  #- bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
+before_deploy:
+  - bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
 
 #deploy:
   #provider: releases
