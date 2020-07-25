@@ -64,8 +64,7 @@ deploy:
   file: setup/inno/PawPaw-*.exe
   skip_cleanup: true
   on:
-    all_branches: true
-    #tags: true
+    tags: true
 
 #notifications:
   #email: true
