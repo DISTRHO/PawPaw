@@ -46,7 +46,7 @@ install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/install.sh
 
 script:
-  - bash env WINEARCH=${TARGET} wineboot -i
+  - env WINEARCH=${TARGET} wineboot -i
   #- bash ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
   #- bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 
