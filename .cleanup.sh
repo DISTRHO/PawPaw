@@ -27,7 +27,9 @@ rm -rf ${PAWPAW_BUILDDIR}/*/*
 rm -rf ${PAWPAW_BUILDDIR}/*/._*
 rm -rf ${PAWPAW_BUILDDIR}/*/.hg*
 rm -rf ${PAWPAW_BUILDDIR}/*/.git*
-rm -rf ${PAWPAW_BUILDDIR}/*/.libs
 rm -rf ${PAWPAW_BUILDDIR}/*/.waf-*
+rm -rf ${PAWPAW_BUILDDIR}/*/.deps
+rm -rf ${PAWPAW_BUILDDIR}/*/.libs
+rm -rf ${PAWPAW_BUILDDIR}/*/.lock-waf_linux_build
 
 # ---------------------------------------------------------------------------------------------------------------------
