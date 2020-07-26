@@ -15,7 +15,14 @@ if [ "${TARGET}" = "linux" ]; then
     sudo apt-get install -y libglib2.0-dev
 
 elif [ "${TARGET}" = "macos-old" ]; then
-    mkdir -p ${HOME}/PawPawBuilds/debs
+    sudo apt-get install -y binfmt-support dkms fuse libc6-i386
+    # linux-headers
+
+    echo "package darling
+interpreter /usr/bin/darling
+offset 0
+magic \xCA\xFE\xBA\xBE" | tee /usr/share/binfmts/darling
+
     pushd ${HOME}/PawPawBuilds/debs
     if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then
         wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'
@@ -26,9 +33,17 @@ elif [ "${TARGET}" = "macos-old" ]; then
     if [ ! -f 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb' ]; then
         wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
     fi
+    if [ ! -f 'darling-dkms_0.1.20200304ppa1~bionic_amd64.deb' ]; then
+        wget -c 'https://launchpad.net/~d042888-2/+archive/ubuntu/darling-0.1.20200304/+files/darling-dkms_0.1.20200304ppa1~bionic_amd64.deb'
+    fi
+    if [ ! -f 'darling_0.1.20200304ppa1~bionic_amd64.deb' ]; then
+        wget -c 'https://launchpad.net/~d042888-2/+archive/ubuntu/darling-0.1.20200304/+files/darling_0.1.20200304ppa1~bionic_amd64.deb'
+    fi
     sudo dpkg -i 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'
     sudo dpkg -i 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'
     sudo dpkg -i 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
+    sudo dpkg -i 'darling-dkms_0.1.20200304ppa1~bionic_amd64.deb'
+    sudo dpkg -i 'darling_0.1.20200304ppa1~bionic_amd64.deb'
     popd
 
 elif [ "${TARGET}" = "win32" ]; then
