@@ -28,7 +28,7 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 
 if [ "${WIN32}" -eq 1 ] && [ ! -d "${HOME}/.wine" ]; then
-    env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${pkgdir}" wineboot -u
+    env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
