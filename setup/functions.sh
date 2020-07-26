@@ -461,7 +461,9 @@ function patch_file() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    sed -i -e "${rule}" "${pkgdir}/${file}"
+    if [ -e "${pkgdir}/${file}" ]; then
+        sed -i -e "${rule}" "${pkgdir}/${file}"
+    fi
 }
 
 function copy_file() {
