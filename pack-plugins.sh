@@ -63,7 +63,6 @@ if [ "${WIN32}" -eq 1 ]; then
     PAWPAW_WINE_LV2DIR="Z:$(echo ${PAWPAW_PREFIX} | tr -t '/' '\\')\\lib\\lv2\\"
 
 elif [ "${MACOS}" -eq 1 ] && [ "${MACOS_OLD}" -eq 0 ]; then
-    mkdir /tmp/pawpaw
     touch /tmp/pawpaw/choices.xml
     touch /tmp/pawpaw/outlines.xml
 
