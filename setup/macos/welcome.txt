@@ -1,0 +1,4 @@
+PawPaw LV2 plugins
+
+This package installs open-source LV2 plugins, pre-compiled for macOS.
+All plugins are 100% free and open-source.

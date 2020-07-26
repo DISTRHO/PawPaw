@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<installer-gui-script minSpecVersion="1">
+    <title>PawPaw LV2 plugins</title>
+    <domains enable_anywhere="false" enable_currentUserHome="false" enable_localSystem="true" />
+    <options customize="always" hostArchitectures="x86_64" require-scripts="false" />
+    <pkg-ref id="studio.kx.distrho.pawpaw" />
+    <welcome file="@CURDIR@/welcome.txt" mime-type="text/plain" />
+    @CHOICES@
+    <choices-outline>
+        @OUTLINES@
+    </choices-outline>
+</installer-gui-script>
