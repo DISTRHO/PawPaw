@@ -43,6 +43,14 @@ jobs:
       services:
         - xvfb
 
+    # macOS native build
+    - os: osx
+      compiler: gcc
+      env:
+        - TARGET="macos"
+        - PLUGINS="abgate artyfx blop caps fomp mda"
+      osx_image: xcode7.3
+
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
 
