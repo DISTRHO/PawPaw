@@ -2,11 +2,16 @@
 
 [Setup]
 AppName=PawPaw
+AppPublisher=DISTRHO
+AppPublisherURL=https://github.com/DISTRHO/PawPaw/
+AppSupportURL=https://github.com/DISTRHO/PawPaw/issues/
+AppUpdatesURL=https://github.com/DISTRHO/PawPaw/releases/
 AppVersion={#VERSION}
 DefaultDirName={commonpf32}\PawPaw
 DisableDirPage=yes
 OutputBaseFilename=PawPaw-win32-v{#VERSION}
 OutputDir=.
+UninstallDisplayName=PawPaw LV2 plugins
 UsePreviousAppDir=no
 
 [Types]
