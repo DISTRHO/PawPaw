@@ -4,7 +4,7 @@ set -e
 
 # Special macOS native handling
 if [ "${TARGET}" = "macos" ]; then
-    sudo brew install cmake jq
+    brew install cmake jq
     exit 0
 fi
 
