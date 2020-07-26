@@ -92,7 +92,12 @@ function build_qt_conf() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        make ${MAKE_ARGS}
+        # NOTE: Qt win32 builds are very verbose, too many warnings, which makes CI build fail
+        if [ "${WIN32}" -eq 1 ] && [ -n "${TRAVIS_BUILD_DIR}" ]; then
+            make ${MAKE_ARGS} 1>/dev/null
+        else
+            make ${MAKE_ARGS}
+        fi
         touch .stamp_built
         popd
     fi
