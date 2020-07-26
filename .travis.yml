@@ -43,7 +43,14 @@ jobs:
       services:
         - xvfb
 
-    # macOS native build
+    # macOS native build (default)
+    - os: osx
+      compiler: gcc
+      env:
+        - TARGET="macos"
+        - PLUGINS="abgate artyfx blop caps fomp mda"
+
+    # macOS native build (older compatibility mode)
     - os: osx
       compiler: gcc
       env:

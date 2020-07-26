@@ -2,6 +2,11 @@
 
 set -e
 
+# nothing to do for macOS native
+if [ "${TARGET}" = "macos" ]; then
+    exit 0
+fi
+
 # Special handling for caching deb archives
 if [ "$(ls ${HOME}/PawPawBuilds/debs | wc -l)" -ne 0 ]; then
     sudo cp ${HOME}/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
