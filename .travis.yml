@@ -16,7 +16,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="linux"
-        - PLUGINS="abgate artyfx caps fomp mda"
+        - PLUGINS="abgate artyfx blop caps fomp mda"
 
     # linux with macOS cross-compilation
     - os: linux
@@ -30,7 +30,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="win32"
-        - PLUGINS="abgate artyfx caps fomp mda"
+        - PLUGINS="abgate artyfx blop caps fomp mda"
       services:
         - xvfb
 
@@ -39,7 +39,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="win64"
-        - PLUGINS="abgate artyfx caps fomp mda"
+        - PLUGINS="abgate artyfx blop caps fomp mda"
       services:
         - xvfb
 
