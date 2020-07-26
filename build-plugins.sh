@@ -27,6 +27,12 @@ source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
 
+if [ "${WIN32}" -eq 1 ] && [ ! -d "${HOME}/.wine" ]; then
+    env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${pkgdir}" wineboot -u
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+
 for plugin in ${@}; do
     pfile="${PAWPAW_ROOT}/plugins/${plugin}.json"
 
