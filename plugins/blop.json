@@ -4,5 +4,6 @@
     "version": "e76724d58c39a52e3f47dbff40c011c54d9a0fdb",
     "dlbaseurl": "http://git.drobilla.net/blop.lv2.git",
     "dlmethod": "git",
-    "buildtype": "waf"
+    "buildtype": "waf",
+    "buildargs": "--lv2dir=lib/lv2"
 }

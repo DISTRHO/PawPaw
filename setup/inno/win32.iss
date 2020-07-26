@@ -1,9 +1,11 @@
+#include "Z:\tmp\pawpaw\version.iss"
+
 [Setup]
 AppName=PawPaw
-AppVersion=0.0.0
+AppVersion={#VERSION}
 DefaultDirName={commonpf32}\PawPaw
 DisableDirPage=yes
-OutputBaseFilename=PawPaw-win32-0.0.0
+OutputBaseFilename=PawPaw-win32-v{#VERSION}
 OutputDir=.
 UsePreviousAppDir=no
 
@@ -12,7 +14,7 @@ Name: "full"; Description: "Full installation"
 Name: "custom"; Description: "Custom installation"; Flags: iscustom
 
 [Components]
-#include "Z:\tmp\pawpaw\components.txt"
+#include "Z:\tmp\pawpaw\components.iss"
 
 [Files]
-#include "Z:\tmp\pawpaw\lv2bundles.txt"
+#include "Z:\tmp\pawpaw\lv2bundles.iss"

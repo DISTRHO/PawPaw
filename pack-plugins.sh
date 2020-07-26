@@ -45,6 +45,7 @@ function create_innosetup_exe {
     local pkgdir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
     local iscc="${pkgdir}/drive_c/InnoSeup/ISCC.exe"
 
+    echo "#define VERSION \"$(cat VERSION)\"" > /tmp/pawpaw/version.iss
     env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${iscc}" "setup/inno/${PAWPAW_TARGET}.iss"
 }
 
@@ -54,8 +55,8 @@ if [ "${WIN32}" -eq 1 ]; then
     download_and_install_innosetup
     rm -rf /tmp/pawpaw
     mkdir /tmp/pawpaw
-    touch /tmp/pawpaw/components.txt
-    touch /tmp/pawpaw/lv2bundles.txt
+    touch /tmp/pawpaw/components.iss
+    touch /tmp/pawpaw/lv2bundles.iss
     PAWPAW_WINE_LV2DIR="Z:$(echo ${PAWPAW_PREFIX} | tr -t '/' '\\')\\lib\\lv2\\"
 fi
 
@@ -74,12 +75,12 @@ for plugin in ${@}; do
     lv2bundles=($(jq -crM .lv2bundles[] ${pfile}))
 
     if [ "${WIN32}" -eq 1 ]; then
-        echo "Name: ${sname}; Description: \"${name}\"; Types: full;" >> /tmp/pawpaw/components.txt
+        echo "Name: ${sname}; Description: \"${name}\"; Types: full;" >> /tmp/pawpaw/components.iss
     fi
 
     for lv2bundle in ${lv2bundles[@]}; do
         if [ "${WIN32}" -eq 1 ]; then
-            echo "Source: \"${PAWPAW_WINE_LV2DIR}${lv2bundle}\\*\"; DestDir: \"{commoncf}\\LV2\\${lv2bundle}\"; Components: ${sname}; Flags: recursesubdirs" >> /tmp/pawpaw/lv2bundles.txt
+            echo "Source: \"${PAWPAW_WINE_LV2DIR}${lv2bundle}\\*\"; DestDir: \"{commoncf}\\LV2\\${lv2bundle}\"; Components: ${sname}; Flags: recursesubdirs" >> /tmp/pawpaw/lv2bundles.iss
         fi
     done
 done
