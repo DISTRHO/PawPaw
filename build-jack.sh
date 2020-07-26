@@ -105,16 +105,18 @@ build_autoconf opus "${OPUS_VERSION}" "--disable-extra-programs --enable-custom-
 if [ "${WIN32}" -eq 1 ]; then
     download rtaudio "${RTAUDIO_VERSION}" "https://github.com/falkTX/rtaudio.git" "" "git"
     # fixes for portaudio
-    link_file rtaudio "${RTAUDIO_VERSION}" "." "include/common"
-    link_file rtaudio "${RTAUDIO_VERSION}" "." "include/host"
-    link_file rtaudio "${RTAUDIO_VERSION}" "." "include/pc"
+    ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
+    if [ -d "${ASIO_DIR}" ]; then
+        link_file rtaudio "${RTAUDIO_VERSION}" "." "${ASIO_DIR}/common"
+        link_file rtaudio "${RTAUDIO_VERSION}" "." "${ASIO_DIR}/host"
+        link_file rtaudio "${RTAUDIO_VERSION}" "." "${ASIO_DIR}/pc"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # portaudio (win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
-    ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
     export EXTRA_CFLAGS="-I${ASIO_DIR}"
     export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
     export EXTRA_MAKE_ARGS="-j 1"
@@ -154,7 +156,7 @@ fi
 # and finally jack2
 
 jack2_repo="git@github.com:jackaudio/jack2.git"
-jack2_prefix="${PAWPAW_PREFIX}/jack2"
+jack2_prefix="${PAWPAW_PREFIX}-jack2"
 
 jack2_args="--prefix=${jack2_prefix}"
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
@@ -195,11 +197,11 @@ fi
 build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
 
 # remove useless dbus-specific file
-rm -f "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/bin/jack_control"
+rm -f "${jack2_prefix}${jack2_extra_prefix}/bin/jack_control"
 
 # copy jack pkg-config file to main system, so qjackctl can find it
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
-    cp -v "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    cp -v "${jack2_prefix}${jack2_extra_prefix}/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
 
     # patch pkg-config file for static win32 builds in regular prefix
     if [ "${WIN32}" -eq 1 ]; then
@@ -232,13 +234,13 @@ fi
 
 if [ -n "${PACKAGING_BUILD}" ]; then
     if [ "${MACOS}" -eq 1 ]; then
-        for f in $(ls "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/bin"/* \
-                      "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/lib"/*.dylib \
-                      "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/lib/jack"/*); do
+        for f in $(ls "${jack2_prefix}${jack2_extra_prefix}/bin"/* \
+                      "${jack2_prefix}${jack2_extra_prefix}/lib"/*.dylib \
+                      "${jack2_prefix}${jack2_extra_prefix}/lib/jack"/*); do
             patch_osx_binary_libs "${f}"
         done
 
-        ./jack2/macosx/generate-pkg.sh "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/"
+        ./jack2/macosx/generate-pkg.sh "${jack2_prefix}${jack2_extra_prefix}/"
 
         qjackctl_app="${PAWPAW_PREFIX}/bin/qjackctl.app"
         qjackctl_dir="${qjackctl_app}/Contents/MacOS"
@@ -252,7 +254,7 @@ if [ -n "${PACKAGING_BUILD}" ]; then
         tar czf jack2-osx-1.9.14.tar.gz -C jack2/macosx jack2-osx-1.9.14.pkg qjackctl.app
 
     elif [ "${WIN32}" -eq 1 ]; then
-        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${PAWPAW_PREFIX}/jack2/bin/qjackctl.exe"
+        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
 
     fi
 fi
