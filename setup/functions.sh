@@ -501,7 +501,7 @@ function remove_file() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    if [ ! -e "${pkgdir}/${file}" ]; then
+    if [ -e "${pkgdir}/${file}" ]; then
         rm -fv "${pkgdir}/${file}"
     fi
 }

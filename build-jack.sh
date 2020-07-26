@@ -195,11 +195,11 @@ fi
 build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
 
 # remove useless dbus-specific file
-rm "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/bin/jack_control"
+rm -f "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/bin/jack_control"
 
 # copy jack pkg-config file to main system, so qjackctl can find it
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
-    cp -v "${PAWPAW_PREFIX}/jack2/${jack2_extra_prefix}lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    cp -v "${PAWPAW_PREFIX}/jack2${jack2_extra_prefix}/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
 
     # patch pkg-config file for static win32 builds in regular prefix
     if [ "${WIN32}" -eq 1 ]; then
