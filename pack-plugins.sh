@@ -96,7 +96,7 @@ for plugin in ${@}; do
 
         elif [ "${MACOS}" -eq 1 ] && [ "${MACOS_OLD}" -eq 0 ]; then
             bundleref="pawpaw-bundle-${sname}-${lv2bundle}.pkg"
-            echo "        <pkg-ref id=\"studio.kx.distrho.pawpaw.${sname}_${lv2bundle}\">${bundleref}</pkg-ref>" >> /tmp/pawpaw/choices.xml
+            echo "        <pkg-ref id=\"studio.kx.distrho.pawpaw.${sname}_${lv2bundle}\" version=\"0\">${bundleref}</pkg-ref>" >> /tmp/pawpaw/choices.xml
             pkgbuild \
                 --identifier "studio.kx.distrho.pawpaw.${sname}_${lv2bundle}" \
                 --install-location "/Library/Audio/Plug-Ins/LV2/${lv2bundle}/" \
