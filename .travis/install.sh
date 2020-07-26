@@ -2,6 +2,12 @@
 
 set -e
 
+# Special macOS native handling
+if [ "${TARGET}" = "macos" ]; then
+    brew install cmake jq || true
+    exit 0
+fi
+
 # Special handling for caching deb archives
 if [ "$(ls ${HOME}/PawPawBuilds/debs | wc -l)" -ne 0 ]; then
     sudo cp ${HOME}/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
