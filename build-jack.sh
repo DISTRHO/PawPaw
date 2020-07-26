@@ -5,8 +5,8 @@ set -e
 cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
-JACK2_VERSION=git
-QJACKCTL_VERSION=0.6.2
+JACK2_VERSION=${JACK2_VERSION:=git}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.6.2}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -227,7 +227,7 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
     fi
 
-    build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version"
+    build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version --with-jack=\"${jack2_prefix}${jack2_extra_prefix}\""
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
