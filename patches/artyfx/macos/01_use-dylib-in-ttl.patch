@@ -1,0 +1,262 @@
+diff --git a/artyfx.lv2/bitta.ttl b/artyfx.lv2/bitta.ttl
+index 8bb0109..e1f5ef4 100644
+--- a/artyfx.lv2/bitta.ttl
++++ b/artyfx.lv2/bitta.ttl
+@@ -28,7 +28,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#bitta/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/capta.ttl b/artyfx.lv2/capta.ttl
+index 891ce5d..681d716 100644
+--- a/artyfx.lv2/capta.ttl
++++ b/artyfx.lv2/capta.ttl
+@@ -27,7 +27,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#capta/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/della.ttl b/artyfx.lv2/della.ttl
+index 333d341..e4b6105 100644
+--- a/artyfx.lv2/della.ttl
++++ b/artyfx.lv2/della.ttl
+@@ -29,7 +29,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#della/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface ;
+   lv2:extensionData ui:idleInterface .
+diff --git a/artyfx.lv2/driva.ttl b/artyfx.lv2/driva.ttl
+index 9eaced1..111c792 100644
+--- a/artyfx.lv2/driva.ttl
++++ b/artyfx.lv2/driva.ttl
+@@ -30,7 +30,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#driva/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/ducka.ttl b/artyfx.lv2/ducka.ttl
+index bde2763..fdfe9cd 100644
+--- a/artyfx.lv2/ducka.ttl
++++ b/artyfx.lv2/ducka.ttl
+@@ -25,7 +25,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#ducka/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/filta.ttl b/artyfx.lv2/filta.ttl
+index 5acf869..327f4ff 100644
+--- a/artyfx.lv2/filta.ttl
++++ b/artyfx.lv2/filta.ttl
+@@ -25,7 +25,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#filta/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/friza.ttl b/artyfx.lv2/friza.ttl
+index 263e031..c4ff0e5 100644
+--- a/artyfx.lv2/friza.ttl
++++ b/artyfx.lv2/friza.ttl
+@@ -24,7 +24,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#friza/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx.so>;
++  ui:binary <artyfx.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/kuiza.ttl b/artyfx.lv2/kuiza.ttl
+index 99e5dab..d3439cd 100644
+--- a/artyfx.lv2/kuiza.ttl
++++ b/artyfx.lv2/kuiza.ttl
+@@ -24,7 +24,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#kuiza/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/manifest.ttl b/artyfx.lv2/manifest.ttl
+index 6a76ea1..0b3b8b1 100644
+--- a/artyfx.lv2/manifest.ttl
++++ b/artyfx.lv2/manifest.ttl
+@@ -5,61 +5,61 @@
+ @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+ 
+ <http://www.openavproductions.com/artyfx#bitta> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <bitta.ttl> .
+ 
+ # Not tested to standard yet - do not package
+ #<http://www.openavproductions.com/artyfx#capta> a lv2:Plugin ;
+-#  lv2:binary <artyfx.so> ;
++#  lv2:binary <artyfx.dylib> ;
+ #  rdfs:seeAlso <capta.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#della> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <della.ttl> .
+ 
+ # Unfinished for this release - NOT ready for testing / usage.
+ #<http://www.openavproductions.com/artyfx#driva> a lv2:Plugin ;
+-#  lv2:binary <artyfx.so> ;
++#  lv2:binary <artyfx.dylib> ;
+ #  rdfs:seeAlso <driva.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#ducka> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <ducka.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#filta> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <filta.ttl> .
+ 
+ # Unfinished for this release - NOT ready for testing / usage.
+ #<http://www.openavproductions.com/artyfx#friza> a lv2:Plugin ;
+-#  lv2:binary <artyfx.so> ;
++#  lv2:binary <artyfx.dylib> ;
+ #  rdfs:seeAlso <friza.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#kuiza> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <kuiza.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#masha> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <masha.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#panda> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <panda.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#roomy> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <roomy.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#satma> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <satma.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#vihda> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <vihda.ttl> .
+ 
+ <http://www.openavproductions.com/artyfx#whaaa> a lv2:Plugin ;
+-  lv2:binary <artyfx.so> ;
++  lv2:binary <artyfx.dylib> ;
+   rdfs:seeAlso <whaaa.ttl> .
+ 
+diff --git a/artyfx.lv2/masha.ttl b/artyfx.lv2/masha.ttl
+index 95fdb29..0d683c7 100644
+--- a/artyfx.lv2/masha.ttl
++++ b/artyfx.lv2/masha.ttl
+@@ -26,7 +26,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#masha/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/panda.ttl b/artyfx.lv2/panda.ttl
+index 4d76bcf..8b3b3ba 100644
+--- a/artyfx.lv2/panda.ttl
++++ b/artyfx.lv2/panda.ttl
+@@ -27,7 +27,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#panda/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/roomy.ttl b/artyfx.lv2/roomy.ttl
+index 155b484..9160a34 100644
+--- a/artyfx.lv2/roomy.ttl
++++ b/artyfx.lv2/roomy.ttl
+@@ -23,7 +23,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#roomy/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/satma.ttl b/artyfx.lv2/satma.ttl
+index c07cb79..01d8410 100644
+--- a/artyfx.lv2/satma.ttl
++++ b/artyfx.lv2/satma.ttl
+@@ -24,7 +24,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#satma/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/vihda.ttl b/artyfx.lv2/vihda.ttl
+index f162bdc..3fd3489 100644
+--- a/artyfx.lv2/vihda.ttl
++++ b/artyfx.lv2/vihda.ttl
+@@ -27,7 +27,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#vihda/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
+diff --git a/artyfx.lv2/whaaa.ttl b/artyfx.lv2/whaaa.ttl
+index 1251072..8981b0b 100644
+--- a/artyfx.lv2/whaaa.ttl
++++ b/artyfx.lv2/whaaa.ttl
+@@ -27,7 +27,7 @@
+ 
+ <http://www.openavproductions.com/artyfx#whaaa/gui>
+   a ui:X11UI;
+-  ui:binary <artyfx_ui.so>;
++  ui:binary <artyfx_ui.dylib>;
+   lv2:optionalFeature ui:noUserResize ;
+   lv2:extensionData   ui:idleInterface .
+ 
