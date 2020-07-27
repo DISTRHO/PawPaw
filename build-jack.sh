@@ -107,9 +107,9 @@ if [ "${WIN32}" -eq 1 ]; then
     # fixes for portaudio
     ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
     if [ -d "${ASIO_DIR}" ]; then
-        link_file rtaudio "${RTAUDIO_VERSION}" "." "${ASIO_DIR}/common"
-        link_file rtaudio "${RTAUDIO_VERSION}" "." "${ASIO_DIR}/host"
-        link_file rtaudio "${RTAUDIO_VERSION}" "." "${ASIO_DIR}/pc"
+        link_file rtaudio "${RTAUDIO_VERSION}" "." "include/common"
+        link_file rtaudio "${RTAUDIO_VERSION}" "." "include/host"
+        link_file rtaudio "${RTAUDIO_VERSION}" "." "include/pc"
     fi
 fi
 
