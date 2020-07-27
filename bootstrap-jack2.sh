@@ -17,13 +17,11 @@ if [ -z "${target}" ]; then
     exit 1
 fi
 
-if [ -n "${2}" ]; then
-    PACKAGING_BUILD="y"
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 
-# TODO check that bootstrap.sh has been run
+./bootstrap-common.sh "${target}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 
 source setup/check_target.sh
 source setup/env.sh
@@ -143,126 +141,6 @@ fi
 if [ "${WIN32}" -eq 1 ]; then
     download tre "${TRE_VERSION}" "https://laurikari.net/tre"
     build_autoconf tre "${TRE_VERSION}" "--disable-nls"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# stop here if CI test build
-
-if [ -n "${TRAVIS_BUILD_DIR}" ]; then
-    exit 0
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# and finally jack2
-
-jack2_repo="https://github.com/jackaudio/jack2.git"
-jack2_prefix="${PAWPAW_PREFIX}-jack2"
-
-jack2_args="--prefix=${jack2_prefix}"
-# if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
-#     jack2_args="${jack2_args} --mixed"
-# fi
-if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    if [ "${LINUX}" -eq 1 ]; then
-        jack2_args+=" --platform=linux"
-    elif [ "${MACOS}" -eq 1 ]; then
-        jack2_args+=" --platform=darwin"
-    elif [ "${WIN32}" -eq 1 ]; then
-        jack2_args+=" --platform=win32"
-    fi
-fi
-if [ "${MACOS}" -eq 1 ]; then
-    jack2_extra_prefix="/usr/local"
-    jack2_args+=" --prefix=${jack2_extra_prefix}"
-    jack2_args+=" --destdir="${jack2_prefix}""
-fi
-
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    patch_file jack2 "git" "wscript" '/-std=gnu++11/d'
-    patch_file jack2 "git" "wscript" '/-Wno-deprecated-register/d'
-fi
-
-if [ "${JACK2_VERSION}" = "git" ]; then
-    if [ ! -d jack2 ]; then
-        git clone --recursive "${jack2_repo}"
-    fi
-    if [ ! -e "${PAWPAW_BUILDDIR}/jack2-git" ]; then
-        ln -sf "$(pwd)/jack2" "${PAWPAW_BUILDDIR}/jack2-git"
-    fi
-    rm -f "${PAWPAW_BUILDDIR}/jack2-git/.stamp_built"
-else
-    download jack2 "${JACK2_VERSION}" "${jack2_repo}" "" "git"
-fi
-
-build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
-
-# remove useless dbus-specific file
-rm -f "${jack2_prefix}${jack2_extra_prefix}/bin/jack_control"
-
-# copy jack pkg-config file to main system, so qjackctl can find it
-if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
-    cp -v "${jack2_prefix}${jack2_extra_prefix}/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
-
-    # patch pkg-config file for static win32 builds in regular prefix
-    if [ "${WIN32}" -eq 1 ]; then
-        if [ "${WIN64}" -eq 1 ]; then
-            s="64"
-        else
-            s=""
-        fi
-        # FIXME rule that works for server lib too, maybe ignoring suffix even
-        sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
-    fi
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# if qt is available, build qjackctl
-
-if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
-    download qjackctl ${QJACKCTL_VERSION} https://download.sourceforge.net/qjackctl
-
-    if [ "${WIN64}" -eq 1 ]; then
-        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
-    elif [ "${WIN32}" -eq 1 ]; then
-        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
-    elif [ "${MACOS}" -eq 1 ]; then
-        qjackctl_extra_args="--with-jack="${jack2_prefix}${jack2_extra_prefix}""
-    fi
-
-    build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-
-if [ -n "${PACKAGING_BUILD}" ]; then
-    if [ "${MACOS}" -eq 1 ]; then
-        for f in $(ls "${jack2_prefix}${jack2_extra_prefix}/bin"/* \
-                      "${jack2_prefix}${jack2_extra_prefix}/lib"/*.dylib \
-                      "${jack2_prefix}${jack2_extra_prefix}/lib/jack"/*); do
-            patch_osx_binary_libs "${f}"
-        done
-
-        if [ ! -e jack2 ]; then
-            ln -s "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}" jack2
-        fi
-
-        ./jack2/macosx/generate-pkg.sh "${jack2_prefix}${jack2_extra_prefix}/"
-
-        qjackctl_app="${PAWPAW_PREFIX}/bin/qjackctl.app"
-        qjackctl_dir="${qjackctl_app}/Contents/MacOS"
-        patch_osx_qtapp qjackctl "${QJACKCTL_VERSION}" "${qjackctl_app}"
-        patch_osx_binary_libs "${qjackctl_dir}/qjackctl"
-
-        rm -rf jack2/macosx/qjackctl.app
-        cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" jack2/macosx/
-
-        rm -f jack2-macOS-${JACK2_VERSION}.tar.gz
-        tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-*.pkg qjackctl.app
-
-    elif [ "${WIN32}" -eq 1 ]; then
-        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
-
-    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
