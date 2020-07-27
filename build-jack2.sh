@@ -27,10 +27,16 @@ source setup/functions.sh
 source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
-# jack2
 
 jack2_repo="https://github.com/jackaudio/jack2.git"
 jack2_prefix="${PAWPAW_PREFIX}-jack2"
+
+if [ "${MACOS}" -eq 1 ]; then
+    jack2_extra_prefix="/usr/local"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# jack2
 
 jack2_args="--prefix=${jack2_prefix}"
 # if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
@@ -46,14 +52,8 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     fi
 fi
 if [ "${MACOS}" -eq 1 ]; then
-    jack2_extra_prefix="/usr/local"
     jack2_args+=" --prefix=${jack2_extra_prefix}"
     jack2_args+=" --destdir="${jack2_prefix}""
-fi
-
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    patch_file jack2 "git" "wscript" '/-std=gnu++11/d'
-    patch_file jack2 "git" "wscript" '/-Wno-deprecated-register/d'
 fi
 
 if [ "${JACK2_VERSION}" = "git" ]; then

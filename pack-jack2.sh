@@ -17,10 +17,6 @@ if [ -z "${target}" ]; then
     exit 1
 fi
 
-if [ -n "${2}" ]; then
-    PACKAGING_BUILD="y"
-fi
-
 # TODO check that bootstrap-jack.sh has been run
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -31,7 +27,15 @@ source setup/functions.sh
 source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
-# final steps for packaging, if needed
+
+jack2_repo="https://github.com/jackaudio/jack2.git"
+jack2_prefix="${PAWPAW_PREFIX}-jack2"
+
+if [ "${MACOS}" -eq 1 ]; then
+    jack2_extra_prefix="/usr/local"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 
 if [ "${MACOS}" -eq 1 ]; then
     for f in $(ls "${jack2_prefix}${jack2_extra_prefix}/bin"/* \
