@@ -7,7 +7,7 @@ index 3f4814d..265b012 100644
  		s.insert(iPos, "<font color=\"#cc0000\">");
  	#ifndef CONFIG_JACK_XRUN_DELAY
 -		m_tXrunLast.restart();
-+		m_fXrunLast.restart();
++		m_fXrunLast = 0.0f;
  		updateXrunStats(rx.cap(1).toFloat());
  		refreshXrunStats();
  	#endif
