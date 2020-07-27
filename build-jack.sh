@@ -155,7 +155,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # and finally jack2
 
-jack2_repo="git@github.com:jackaudio/jack2.git"
+jack2_repo="https://github.com/jackaudio/jack2.git"
 jack2_prefix="${PAWPAW_PREFIX}-jack2"
 
 jack2_args="--prefix=${jack2_prefix}"

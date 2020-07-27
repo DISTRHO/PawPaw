@@ -58,6 +58,7 @@ install:
 
 script:
   - bash ${TRAVIS_BUILD_DIR}/bootstrap.sh ${TARGET}
+  - bash ${TRAVIS_BUILD_DIR}/build-jack.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 
 before_deploy:
