@@ -256,8 +256,8 @@ if [ -n "${PACKAGING_BUILD}" ]; then
         rm -rf jack2/macosx/qjackctl.app
         cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" jack2/macosx/
 
-        rm -f jack2-osx-1.9.14.tar.gz
-        tar czf jack2-osx-1.9.14.tar.gz -C jack2/macosx jack2-osx-1.9.14.pkg qjackctl.app
+        rm -f jack2-macOS-${JACK2_VERSION}.tar.gz
+        tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-*.pkg qjackctl.app
 
     elif [ "${WIN32}" -eq 1 ]; then
         copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
