@@ -240,6 +240,10 @@ if [ -n "${PACKAGING_BUILD}" ]; then
             patch_osx_binary_libs "${f}"
         done
 
+        if [ ! -e jack2 ]; then
+            ln -s "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}" jack2
+        fi
+
         ./jack2/macosx/generate-pkg.sh "${jack2_prefix}${jack2_extra_prefix}/"
 
         qjackctl_app="${PAWPAW_PREFIX}/bin/qjackctl.app"

@@ -1,0 +1,22 @@
+diff --git a/src/qjackctlMainForm.cpp b/src/qjackctlMainForm.cpp
+index 3f4814d..265b012 100644
+--- a/src/qjackctlMainForm.cpp
++++ b/src/qjackctlMainForm.cpp
+@@ -1836,7 +1836,7 @@ QString& qjackctlMainForm::detectXrun ( QString& s )
+ 		s.insert(iPos + rx.matchedLength(), "</font>");
+ 		s.insert(iPos, "<font color=\"#cc0000\">");
+ 	#ifndef CONFIG_JACK_XRUN_DELAY
+-		m_tXrunLast.restart();
++		m_fXrunLast.restart();
+ 		updateXrunStats(rx.cap(1).toFloat());
+ 		refreshXrunStats();
+ 	#endif
+@@ -3664,7 +3664,7 @@ void qjackctlMainForm::refreshStatus (void)
+ 			m_ui.PauseToolButton->setEnabled(false);
+ 			m_ui.ForwardToolButton->setEnabled(false);
+ 			transportPlayStatus(false);
+-			updateStatusItem(STATUS_TRANSPORT_TIME, m_sTimeDashes);
++			updateStatusItem(STATUS_TRANSPORT_TIME, c_szTimeDashes);
+ 			updateStatusItem(STATUS_TRANSPORT_BBT, b);
+ 			updateStatusItem(STATUS_TRANSPORT_BPM, n);
+ 		#endif // !CONFIG_JACK_TRANSPORT

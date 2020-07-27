@@ -1,0 +1,13 @@
+diff --git a/src/hostapi/asio/iasiothiscallresolver.h b/src/hostapi/asio/iasiothiscallresolver.h
+index 21d53b3..c6aaf32 100644
+--- a/src/hostapi/asio/iasiothiscallresolver.h
++++ b/src/hostapi/asio/iasiothiscallresolver.h
+@@ -130,7 +130,7 @@
+ #endif
+ 
+ #include <windows.h>
+-#include <asiodrvr.h> /* From ASIO SDK */
++#include <iasiodrv.h> /* From ASIO SDK */
+ 
+ 
+ class IASIOThiscallResolver : public IASIO {
