@@ -48,6 +48,7 @@ if [ "${MACOS}" -eq 1 ]; then
         ln -s "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}" jack2
     fi
 
+    jack2_lastversion=$(cat jack2/wscript | awk 'sub("VERSION=","")' | tr -d "'")
     ./jack2/macosx/generate-pkg.sh "${jack2_prefix}${jack2_extra_prefix}/"
 
     qjackctl_app="${PAWPAW_PREFIX}/bin/qjackctl.app"
@@ -59,7 +60,7 @@ if [ "${MACOS}" -eq 1 ]; then
     cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" jack2/macosx/
 
     rm -f jack2-macOS-${JACK2_VERSION}.tar.gz
-    tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-*.pkg qjackctl.app
+    tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-${jack2_lastversion}.pkg qjackctl.app
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
