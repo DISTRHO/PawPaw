@@ -37,6 +37,12 @@ fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
+if [ ! -e jack2 ]; then
+    ln -s "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}" jack2
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+
 if [ "${WIN32}" -eq 1 ]; then
     dlfile="${PAWPAW_DOWNLOADDIR}/innosetup-6.0.5.exe"
     innodir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
@@ -70,10 +76,6 @@ elif [ "${MACOS}" -eq 1 ]; then
                   "${jack2_prefix}${jack2_extra_prefix}/lib/jack"/*); do
         patch_osx_binary_libs "${f}"
     done
-
-    if [ ! -e jack2 ]; then
-        ln -s "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}" jack2
-    fi
 
     jack2_lastversion=$(cat jack2/wscript | awk 'sub("VERSION=","")' | tr -d "'")
     ./jack2/macosx/generate-pkg.sh "${jack2_prefix}${jack2_extra_prefix}/"
