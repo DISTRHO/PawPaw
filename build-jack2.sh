@@ -101,8 +101,12 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
     elif [ "${WIN32}" -eq 1 ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
-    elif [ "${MACOS}" -eq 1 ]; then
+    fi
+
+    if [ "${MACOS}" -eq 1 ]; then
         qjackctl_extra_args="--with-jack="${jack2_prefix}${jack2_extra_prefix}""
+    elif [ "${WIN32}" -eq 1 ]; then
+        qjackctl_extra_args="--enable-portaudio"
     fi
 
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
