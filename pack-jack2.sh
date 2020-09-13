@@ -37,7 +37,34 @@ fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-if [ "${MACOS}" -eq 1 ]; then
+if [ "${WIN32}" -eq 1 ]; then
+    dlfile="${PAWPAW_DOWNLOADDIR}/innosetup-6.0.5.exe"
+    innodir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
+    iscc="${innodir}/drive_c/InnoSeup/ISCC.exe"
+    wine="env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${innodir}" wine"
+
+    if [ ! -f "${dlfile}" ]; then
+        # FIXME proper dl version
+        curl -L https://jrsoftware.org/download.php/is.exe?site=2 -o "${dlfile}"
+    fi
+
+    if [ ! -d "${innodir}"/drive_c ]; then
+        ${wine}boot -u
+    fi
+
+    if [ ! -f "${innodir}"/drive_c/InnoSeup/ISCC.exe ]; then
+        ${wine} "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
+    fi
+
+    pushd "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/windows/inno"
+    echo "#define VERSION \"${JACK2_VERSION}\"" > "version.iss"
+    ln -sf "${PAWPAW_PREFIX}/bin/Qt5"{Core,Gui,Network,Widgets,Xml}".dll" .
+    ln -sf "${PAWPAW_PREFIX}/lib/qt5/plugins/platforms/qwindows.dll" .
+    ln -sf "${jack2_prefix}" "${PAWPAW_TARGET}"
+    ${wine} "${iscc}" "${PAWPAW_TARGET}.iss"
+    popd
+
+elif [ "${MACOS}" -eq 1 ]; then
     for f in $(ls "${jack2_prefix}${jack2_extra_prefix}/bin"/* \
                   "${jack2_prefix}${jack2_extra_prefix}/lib"/*.dylib \
                   "${jack2_prefix}${jack2_extra_prefix}/lib/jack"/*); do

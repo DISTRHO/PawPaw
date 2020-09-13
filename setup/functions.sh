@@ -481,6 +481,21 @@ function copy_file() {
     fi
 }
 
+function install_file() {
+    local name="${1}"
+    local version="${2}"
+    local source="${3}"
+    local targetdir="${4}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ ! -e "${PAWPAW_PREFIX}/${targetdir}/$(basename ${source})" ]; then
+        pushd "${pkgdir}"
+        cp -v "${source}" "${PAWPAW_PREFIX}/${targetdir}/"
+        popd
+    fi
+}
+
 function link_file() {
     local name="${1}"
     local version="${2}"

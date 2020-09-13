@@ -54,6 +54,8 @@ fi
 if [ "${MACOS}" -eq 1 ]; then
     jack2_args+=" --prefix=${jack2_extra_prefix}"
     jack2_args+=" --destdir="${jack2_prefix}""
+elif [ "${WIN32}" -eq 1 ]; then
+    jack2_args+=" --static"
 fi
 
 if [ "${JACK2_VERSION}" = "git" ]; then

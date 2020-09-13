@@ -133,6 +133,7 @@ if [ "${WIN32}" -eq 1 ]; then
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/sal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/structuredquery.h"
     build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir="${ASIO_DIR}" --with-winapi=asio,directx,wasapi,wdmks,wmme"
+    install_file portaudio19 "${PORTAUDIO_VERSION}" "include/pa_asio.h" "include"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
