@@ -70,7 +70,7 @@ if [ "${WIN32}" -eq 1 ]; then
     ${wine} "${iscc}" "${PAWPAW_TARGET}.iss"
     popd
 
-    mv "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/windows/inno/*.exe" .
+    mv "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/windows/inno/"*.exe .
 
 elif [ "${MACOS}" -eq 1 ]; then
     for f in $(ls "${jack2_prefix}${jack2_extra_prefix}/bin"/* \
