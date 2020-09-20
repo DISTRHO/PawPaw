@@ -145,3 +145,23 @@ if [ "${WIN32}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# tre (win64 32bit build)
+# NOTE this must be the last item to build
+
+if [ "${WIN64}" -eq 1 ]; then
+    target="win32"
+    source setup/check_target.sh
+    source setup/env.sh
+    PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/win64"
+    PAWPAW_PREFIX="${PAWPAW_DIR}/targets/win64"
+    source setup/functions.sh
+
+    copy_download tre tre-x32 "${TRE_VERSION}"
+    build_autoconf tre-x32 "${TRE_VERSION}" "--disable-nls --libdir="${PAWPAW_PREFIX}"/lib32"
+
+    if [ ! -e "${PAWPAW_PREFIX}/lib/libtre32.a" ]; then
+        ln -s "${PAWPAW_PREFIX}/lib32/libtre.a" "${PAWPAW_PREFIX}/lib/libtre32.a"
+    fi
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------

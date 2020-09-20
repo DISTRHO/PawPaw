@@ -39,9 +39,7 @@ fi
 # jack2
 
 jack2_args="--prefix=${jack2_prefix}"
-# if [ "${MACOS_OLD}" -eq 1 ] || [ "${WIN64}" -eq 1 ]; then
-#     jack2_args="${jack2_args} --mixed"
-# fi
+
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
         jack2_args+=" --platform=linux"
@@ -51,11 +49,22 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
         jack2_args+=" --platform=win32"
     fi
 fi
+
 if [ "${MACOS}" -eq 1 ]; then
     jack2_args+=" --prefix=${jack2_extra_prefix}"
     jack2_args+=" --destdir="${jack2_prefix}""
 elif [ "${WIN32}" -eq 1 ]; then
     jack2_args+=" --static"
+fi
+
+if [ "${WIN64}" -eq 1 ]; then
+    jack2_args="${jack2_args} --mixed"
+    # win32 toolchain prefix
+    TOOLCHAIN_PREFIX32=$(echo ${TOOLCHAIN_PREFIX} | sed 's/x86_64/i686/')
+    # let jack2 find win32 binaries
+    TARGET_PATH="${TARGET_PATH}:/usr/${TOOLCHAIN_PREFIX32}/bin"
+    # setup linker for our custom folder
+    export EXTRA_LDFLAGS="-L${PAWPAW_PREFIX}/lib32"
 fi
 
 if [ "${JACK2_VERSION}" = "git" ]; then
