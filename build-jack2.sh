@@ -6,14 +6,14 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
-QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.6.2}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.6.3}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
 target="${1}"
 
 if [ -z "${target}" ]; then
-    echo "usage: ${0} <target> [package-build?]"
+    echo "usage: ${0} <target>"
     exit 1
 fi
 
