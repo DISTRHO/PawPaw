@@ -84,6 +84,18 @@ build_waf jack2 "${JACK2_VERSION}" "${jack2_args}"
 # remove useless dbus-specific file
 rm -f "${jack2_prefix}${jack2_extra_prefix}/bin/jack_control"
 
+# generate MSVC lib files
+if [ "${WIN64}" -eq 1 ]; then
+    llvm-dlltool -m i386 -D libjack.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib32/libjack.def -l ${jack2_prefix}${jack2_extra_prefix}/lib32/libjack.lib
+    llvm-dlltool -m i386:x86-64 -D libjack64.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib/libjack64.def -l ${jack2_prefix}${jack2_extra_prefix}/lib/libjack64.lib
+    llvm-dlltool -m i386:x86-64 -D libjacknet64.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib/libjacknet64.def -l ${jack2_prefix}${jack2_extra_prefix}/lib/libjacknet64.lib
+    llvm-dlltool -m i386:x86-64 -D libjackserver64.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib/libjackserver64.def -l ${jack2_prefix}${jack2_extra_prefix}/lib/libjackserver64.lib
+elif [ "${WIN32}" -eq 1 ]; then
+    llvm-dlltool -m i386 -D libjack.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib/libjack.def -l ${jack2_prefix}${jack2_extra_prefix}/lib/libjack.lib
+    llvm-dlltool -m i386 -D libjacknet.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib/libjacknet.def -l ${jack2_prefix}${jack2_extra_prefix}/lib/libjacknet.lib
+    llvm-dlltool -m i386 -D libjackserver.dll -d ${jack2_prefix}${jack2_extra_prefix}/lib/libjackserver.def -l ${jack2_prefix}${jack2_extra_prefix}/lib/libjackserver.lib
+fi
+
 # copy jack pkg-config file to main system, so qjackctl can find it
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
     cp -v "${jack2_prefix}${jack2_extra_prefix}/lib/pkgconfig/jack.pc" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
