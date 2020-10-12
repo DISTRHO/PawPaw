@@ -1,0 +1,22 @@
+diff --git a/src/qjackctlInterfaceComboBox.cpp b/src/qjackctlInterfaceComboBox.cpp
+index b95f4c6..f7962c8 100644
+--- a/src/qjackctlInterfaceComboBox.cpp
++++ b/src/qjackctlInterfaceComboBox.cpp
+@@ -212,7 +212,7 @@ private:
+ 			const PaHostApiIndex iNumHostApi = Pa_GetHostApiCount();
+ 			QString *hostNames = new QString[iNumHostApi];
+ 			for (PaHostApiIndex i = 0; i < iNumHostApi; ++i)
+-				hostNames[i] = QString(Pa_GetHostApiInfo(i)->name);
++				hostNames[i] = QString::fromUtf8(Pa_GetHostApiInfo(i)->name);
+ 
+ 			// Fill device info...
+ 			const PaDeviceIndex iNumDevice = Pa_GetDeviceCount();
+@@ -222,7 +222,7 @@ private:
+ 				if (PortAudioProber::names.isEmpty()) {
+ 					for (PaDeviceIndex i = 0; i < iNumDevice; ++i) {
+ 						PaDeviceInfo *pDeviceInfo = const_cast<PaDeviceInfo *> (Pa_GetDeviceInfo(i));
+-						const QString sName = hostNames[pDeviceInfo->hostApi] + "::" + QString(pDeviceInfo->name);
++						const QString sName = hostNames[pDeviceInfo->hostApi] + "::" + QString::fromUtf8(pDeviceInfo->name);
+ 						PortAudioProber::names.push_back(sName);
+ 					}
+ 				}
