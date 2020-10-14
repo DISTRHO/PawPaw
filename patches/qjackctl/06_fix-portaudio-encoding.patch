@@ -1,22 +1,34 @@
 diff --git a/src/qjackctlInterfaceComboBox.cpp b/src/qjackctlInterfaceComboBox.cpp
-index b95f4c6..f7962c8 100644
+index b95f4c6..a0848e8 100644
 --- a/src/qjackctlInterfaceComboBox.cpp
 +++ b/src/qjackctlInterfaceComboBox.cpp
-@@ -212,7 +212,7 @@ private:
- 			const PaHostApiIndex iNumHostApi = Pa_GetHostApiCount();
- 			QString *hostNames = new QString[iNumHostApi];
- 			for (PaHostApiIndex i = 0; i < iNumHostApi; ++i)
--				hostNames[i] = QString(Pa_GetHostApiInfo(i)->name);
-+				hostNames[i] = QString::fromUtf8(Pa_GetHostApiInfo(i)->name);
+@@ -47,6 +47,9 @@
+ #include <iostream>
+ #include <cstring>
+ #include <portaudio.h>
++#ifdef WIN32
++#include <windows.h>
++#endif
+ #endif
  
- 			// Fill device info...
+ #ifdef CONFIG_ALSA_SEQ
+@@ -218,11 +221,19 @@ private:
  			const PaDeviceIndex iNumDevice = Pa_GetDeviceCount();
-@@ -222,7 +222,7 @@ private:
+ 
+ 			{
++#ifdef WIN32
++				wchar_t wideDeviceName[MAX_PATH];
++#endif
+ 				QMutexLocker locker(&PortAudioProber::mutex);
  				if (PortAudioProber::names.isEmpty()) {
  					for (PaDeviceIndex i = 0; i < iNumDevice; ++i) {
  						PaDeviceInfo *pDeviceInfo = const_cast<PaDeviceInfo *> (Pa_GetDeviceInfo(i));
--						const QString sName = hostNames[pDeviceInfo->hostApi] + "::" + QString(pDeviceInfo->name);
-+						const QString sName = hostNames[pDeviceInfo->hostApi] + "::" + QString::fromUtf8(pDeviceInfo->name);
++#ifdef WIN32
++						MultiByteToWideChar(CP_UTF8, 0, pDeviceInfo->name, -1, wideDeviceName, MAX_PATH-1);
++						const QString sName = hostNames[pDeviceInfo->hostApi] + "::" + QString::fromWCharArray(wideDeviceName);
++#else
+ 						const QString sName = hostNames[pDeviceInfo->hostApi] + "::" + QString(pDeviceInfo->name);
++#endif
  						PortAudioProber::names.push_back(sName);
  					}
  				}
