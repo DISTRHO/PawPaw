@@ -1,3 +1,16 @@
+diff --git a/Makefile b/Makefile
+index 442ad68..598b593 100644
+--- a/Makefile
++++ b/Makefile
+@@ -6,7 +6,7 @@ INSTALL_DIR ?= $(DESTDIR)$(PREFIX)/lib/lv2
+ CXXFLAGS ?= -g -O3
+ CXX ?= g++
+ 
+-$(BUNDLE): manifest.ttl gate.ttl gate.so gate_gui.so bypass_on.png bypass_off.png knob.png background.png abGateQt/libabGateQt.so
++$(BUNDLE): manifest.ttl gate.ttl gate.so
+ 	rm -rf $(BUNDLE)
+ 	mkdir $(BUNDLE)
+ 	cp $^ $(BUNDLE)
 diff -U 3 -H -w -E -d -r -N -- abGate-1.1.7.orig/gate.ttl abGate-1.1.7/gate.ttl
 --- abGate-1.1.7.orig/gate.ttl	2012-04-21 07:18:24.000000000 +0200
 +++ abGate-1.1.7/gate.ttl	2015-07-16 18:28:50.579702673 +0200
