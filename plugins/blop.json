@@ -1,8 +1,8 @@
 {
     "name": "blop-lv2",
     "lv2bundles": ["blop.lv2"],
-    "version": "e76724d58c39a52e3f47dbff40c011c54d9a0fdb",
-    "dlbaseurl": "http://git.drobilla.net/blop.lv2.git",
+    "version": "1dd27f8e78e325b4688cd022343a18453fb9c8f1",
+    "dlbaseurl": "https://gitlab.com/drobilla/blop-lv2.git",
     "dlmethod": "git",
     "buildtype": "waf",
     "buildargs": "--lv2dir=lib/lv2"

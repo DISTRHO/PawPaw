@@ -1,13 +1,16 @@
 diff --git a/wscript b/wscript
-index 2b69029..8784ac2 100644
+index a5bfd28..2421a3b 100644
 --- a/wscript
 +++ b/wscript
-@@ -160,7 +160,7 @@ def build(bld):
+@@ -170,10 +170,7 @@ def build(bld):
  
      # Waveform data source
      for i in ['parabola', 'sawtooth', 'square']:
--        bld(rule = '${SRC} -r %d -f 12 -s 1 -m 128 -g 1.0 -w %s -p %s -o ${TGT}' % (
-+        bld(rule = 'wine ${SRC} -r %d -f 12 -s 1 -m 128 -g 1.0 -w %s -p %s -o ${TGT}' % (
-             Options.options.rate, i, i),
+-        cmd = '${SRC} -r %d -f 12 -s 1 -m 128 -g 1.0 -w %s -p %s -o ${TGT}'
+-        if Options.options.test_wrapper:
+-            cmd = Options.options.test_wrapper + ' ' + cmd
+-
++        cmd = 'wine ${SRC} -r %d -f 12 -s 1 -m 128 -g 1.0 -w %s -p %s -o ${TGT}'
+         bld(rule = cmd % (Options.options.rate, i, i),
              source = wavegen.link_task.outputs[0],
              target = 'src/%s_data.c' % i,
