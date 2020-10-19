@@ -1,0 +1,13 @@
+diff --git a/wscript b/wscript
+index a5bfd28..2cd8846 100644
+--- a/wscript
++++ b/wscript
+@@ -171,8 +171,6 @@ def build(bld):
+     # Waveform data source
+     for i in ['parabola', 'sawtooth', 'square']:
+         cmd = '${SRC} -r %d -f 12 -s 1 -m 128 -g 1.0 -w %s -p %s -o ${TGT}'
+-        if Options.options.test_wrapper:
+-            cmd = Options.options.test_wrapper + ' ' + cmd
+ 
+         bld(rule = cmd % (Options.options.rate, i, i),
+             source = wavegen.link_task.outputs[0],
