@@ -1,7 +1,7 @@
 {
     "name": "artyfx",
     "lv2bundles": ["artyfx.lv2"],
-    "version": "6010d1a6034ea684cc2edb22021f034122ccf814",
+    "version": "f335f8059bddf5d33883600f39a263a8144b351e",
     "dlbaseurl": "https://github.com/openAVproductions/openAV-ArtyFX.git",
     "dlmethod": "git",
     "buildtype": "cmake",
