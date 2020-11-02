@@ -99,6 +99,37 @@ download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
 build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# serd
+
+download serd "${SERD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+build_waf serd "${SERD_VERSION}" "--static --no-shared"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# sord
+
+download sord "${SORD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+build_waf sord "${SORD_VERSION}" "--static --no-shared"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# sratom
+
+download sratom "${SRATOM_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+build_waf sratom "${SRATOM_VERSION}" "--static --no-shared"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# lilv
+
+download lilv "${LILV_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+build_waf lilv "${LILV_VERSION}" "--static --static-progs --no-shared"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# lv2lint
+
+download lv2lint "${LV2LINT_VERSION}" "https://git.open-music-kontrollers.ch/lv2/lv2lint/snapshot/" "tar.xz"
+build_meson lv2lint "${LV2LINT_VERSION}"
+# "-Donline-tests=true -Delf-tests=true"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"

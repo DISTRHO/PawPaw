@@ -309,7 +309,7 @@ function build_meson() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules="--cross-file ${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini ${extraconfrules}"
+        extraconfrules="--cross-file "${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini" ${extraconfrules}"
     fi
 
     _prebuild "${name}" "${pkgdir}"
