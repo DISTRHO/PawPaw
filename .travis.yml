@@ -73,7 +73,6 @@ deploy:
     - setup/macos/PawPaw-*.pkg
   skip_cleanup: true
   on:
-    tags: true
     all_branches: true
 
 #notifications:
