@@ -120,7 +120,8 @@ build_waf sratom "${SRATOM_VERSION}" "--static --no-shared"
 # lilv
 
 download lilv "${LILV_VERSION}" "http://download.drobilla.net/" "tar.bz2"
-build_waf lilv "${LILV_VERSION}" "--static --static-progs --no-shared"
+build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --no-shared --no-utils"
+# --static-progs
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
