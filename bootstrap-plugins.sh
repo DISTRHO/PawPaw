@@ -108,7 +108,7 @@ build_waf serd "${SERD_VERSION}" "--static --no-shared"
 # sord
 
 download sord "${SORD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
-build_waf sord "${SORD_VERSION}" "--static --no-shared"
+build_waf sord "${SORD_VERSION}" "--static --no-shared --no-utils"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sratom
