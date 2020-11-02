@@ -1,0 +1,22 @@
+diff --git a/wscript b/wscript
+index eac32f9..acfa28d 100644
+--- a/wscript
++++ b/wscript
+@@ -192,7 +192,7 @@ def build_util(bld, name, defines, libs=''):
+         obj.use = 'liblilv_static'
+     if bld.env.STATIC_PROGS:
+         if not bld.env.MSVC_COMPILER:
+-            obj.lib = ['m']
++            obj.lib = ['dl', 'm']
+             obj.env.SHLIB_MARKER = obj.env.STLIB_MARKER
+             obj.linkflags        = ['-static', '-Wl,--start-group']
+     return obj
+@@ -427,7 +427,7 @@ def build(bld):
+             not bld.env.STATIC_PROGS):
+             obj = build_util(bld, 'utils/lv2bench', defines)
+             if bld.env.DEST_OS != 'darwin':
+-                obj.lib = ['rt']
++                obj.lib = ['dl', 'rt']
+ 
+     # Documentation
+     autowaf.build_dox(bld, 'LILV', LILV_VERSION, top, out)
