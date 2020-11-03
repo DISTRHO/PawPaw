@@ -4,7 +4,7 @@ set -e
 
 # Special macOS native handling
 if [ "${TARGET}" = "macos" ]; then
-    brew install cmake jq || true
+    brew install cmake jq meson || true
     exit 0
 fi
 
@@ -14,7 +14,7 @@ if [ "$(ls ${HOME}/PawPawBuilds/debs | wc -l)" -ne 0 ]; then
 fi
 
 # common
-sudo apt-get install -y build-essential curl cmake jq
+sudo apt-get install -y build-essential curl cmake jq meson
 
 # specific
 if [ "${TARGET}" = "linux" ]; then
