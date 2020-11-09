@@ -126,7 +126,7 @@ build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
 
-if [ "${TARGET}" != "macos-old" ]; then
+if [ "${MACOS_OLD}" -ne 1 ]; then
     download lv2lint "${LV2LINT_VERSION}" "https://git.open-music-kontrollers.ch/lv2/lv2lint/snapshot/" "tar.xz"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"
