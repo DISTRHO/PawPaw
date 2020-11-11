@@ -39,13 +39,13 @@ elif [ "${TARGET}" = "macos-old" ]; then
 
 elif [ "${TARGET}" = "win32" ]; then
     sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-i686 g++-mingw-w64-i686 winehq-stable wine-binfmt
-    echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
 
 elif [ "${TARGET}" = "win64" ]; then
     sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable wine-binfmt
-    echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
 
 fi
+
+# echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
 
 # Special handling for caching deb archives
 sudo mv /var/cache/apt/archives/*.deb ${HOME}/PawPawBuilds/debs/

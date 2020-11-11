@@ -126,7 +126,7 @@ build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
 
-if [ "${MACOS_OLD}" -ne 1 ] || [ "${CROSS_COMPILING}" -eq 1 ]; then
+if [ "${MACOS_OLD}" -ne 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
     download lv2lint "${LV2LINT_VERSION}" "https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/${LV2LINT_VERSION}"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"
