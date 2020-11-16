@@ -1,0 +1,15 @@
+{
+    "name": "distrho-ports-drowaudio",
+    "lv2bundles": [
+        "drowaudio-distortion.lv2",
+        "drowaudio-distortionshaper.lv2",
+        "drowaudio-flanger.lv2",
+        "drowaudio-reverb.lv2",
+        "drowaudio-tremolo.lv2"
+    ],
+    "version": "596686a957c80b82771483ef489d76a9feacd95c",
+    "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
+    "dlmethod": "git",
+    "buildtype": "meson",
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dplugins=drowaudio-distortion,drowaudio-distortionshaper,drowaudio-flanger,drowaudio-reverb,drowaudio-tremolo"
+}
