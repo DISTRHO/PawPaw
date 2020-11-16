@@ -7,9 +7,9 @@
         "drowaudio-reverb.lv2",
         "drowaudio-tremolo.lv2"
     ],
-    "version": "596686a957c80b82771483ef489d76a9feacd95c",
+    "version": "0c95b34fc8d9bd7a94b11c6aa44c2e645104711f",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
     "buildtype": "meson",
-    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dplugins=drowaudio-distortion,drowaudio-distortionshaper,drowaudio-flanger,drowaudio-reverb,drowaudio-tremolo"
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=drowaudio-distortion,drowaudio-distortionshaper,drowaudio-flanger,drowaudio-reverb,drowaudio-tremolo"
 }
