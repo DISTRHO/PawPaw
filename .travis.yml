@@ -48,7 +48,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="macos"
-        - PLUGINS="abgate artyfx blop dpf-plugins fomp mda"
+        - PLUGINS="abgate artyfx blop dpf-plugins distrho-ports-drowaudio fomp mda"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
