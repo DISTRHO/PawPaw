@@ -7,7 +7,7 @@
         "drowaudio-reverb.lv2",
         "drowaudio-tremolo.lv2"
     ],
-    "version": "df6e0561732294411b9aa816f28205b048d35f57",
+    "version": "5d3771671d118580ea5dc9ee4fbe3f4f5a971321",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
     "buildtype": "meson",

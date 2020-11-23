@@ -30,7 +30,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="win32"
-        - PLUGINS="abgate artyfx blop caps dpf-plugins fomp mda"
+        - PLUGINS="abgate artyfx blop caps dpf-plugins distrho-ports-drowaudio fomp mda"
       services:
         - xvfb
 
@@ -39,7 +39,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="win64"
-        - PLUGINS="abgate artyfx blop caps dpf-plugins fomp mda"
+        - PLUGINS="abgate artyfx blop caps dpf-plugins distrho-ports-drowaudio fomp mda"
       services:
         - xvfb
 
@@ -48,7 +48,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="macos"
-        - PLUGINS="abgate artyfx blop dpf-plugins distrho-ports-drowaudio fomp mda"
+        - PLUGINS="abgate artyfx blop dpf-plugins fomp mda"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
