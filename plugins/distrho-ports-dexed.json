@@ -1,0 +1,11 @@
+{
+    "name": "distrho-ports-dexed",
+    "lv2bundles": [
+        "Dexed.lv2"
+    ],
+    "version": "d2c490cc11faa817648feadb09ea2532e28b887a",
+    "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
+    "dlmethod": "git",
+    "buildtype": "meson",
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=dexed"
+}

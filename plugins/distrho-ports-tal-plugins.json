@@ -1,0 +1,18 @@
+{
+    "name": "distrho-ports-tal-plugins",
+    "lv2bundles": [
+        "TAL-Dub-3.lv2",
+        "TAL-Filter.lv2",
+        "TAL-Filter-2.lv2",
+        "TAL-NoiseMaker.lv2",
+        "TAL-Reverb.lv2",
+        "TAL-Reverb-2.lv2",
+        "TAL-Reverb-3.lv2",
+        "TAL-Vocoder-2.lv2"
+    ],
+    "version": "d2c490cc11faa817648feadb09ea2532e28b887a",
+    "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
+    "dlmethod": "git",
+    "buildtype": "meson",
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=tal-dub-3,tal-filter,tal-filter-2,tal-noisemaker,tal-reverb,tal-reverb-2,tal-reverb-3,tal-vocoder-2"
+}
