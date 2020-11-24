@@ -14,7 +14,8 @@ env:
 jobs:
   include:
     # linux native build
-    - os: linux
+    - name: "Linux native"
+      os: linux
       compiler: gcc
       dist: bionic
       env:
@@ -22,7 +23,8 @@ jobs:
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 
     # linux with macOS cross-compilation
-    - os: linux
+    - name: "macOS cross-compiled"
+      os: linux
       compiler: gcc
       dist: bionic
       env:
@@ -30,7 +32,8 @@ jobs:
         - PLUGINS="${PLUGINS_BASE}"
 
     # linux with win32 cross-compilation
-    - os: linux
+    - name: "win32 cross-compiled"
+      os: linux
       compiler: gcc
       dist: bionic
       env:
@@ -40,7 +43,8 @@ jobs:
         - xvfb
 
     # linux with win64 cross-compilation
-    - os: linux
+    - name: "win64 cross-compiled"
+      os: linux
       compiler: gcc
       dist: bionic
       env:
@@ -50,13 +54,15 @@ jobs:
         - xvfb
 
     # macOS native build
-    - os: osx
+    - name: "macOS native"
+      os: linux
       addons:
         homebrew:
           packages:
             - cmake
             - jq
             - meson
+          update: true
       env:
         - TARGET="macos"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
