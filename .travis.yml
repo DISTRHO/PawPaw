@@ -1,13 +1,9 @@
 language: cpp
 
-os: linux
-
-dist: bionic
-
 cache:
   directories:
-  - ${HOME}/PawPawBuilds/debs
-  - ${HOME}/PawPawBuilds/downloads
+    - ${HOME}/PawPawBuilds/debs
+    - ${HOME}/PawPawBuilds/downloads
 
 env:
   - PLUGINS_BASE="abgate artyfx caps dpf-plugins fomp mda"
@@ -19,6 +15,7 @@ jobs:
     # linux native build
     - os: linux
       compiler: gcc
+      dist: bionic
       env:
         - TARGET="linux"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
@@ -26,6 +23,7 @@ jobs:
     # linux with macOS cross-compilation
     - os: linux
       compiler: gcc
+      dist: bionic
       env:
         - TARGET="macos-old"
         - PLUGINS="${PLUGINS_BASE}"
@@ -33,6 +31,7 @@ jobs:
     # linux with win32 cross-compilation
     - os: linux
       compiler: gcc
+      dist: bionic
       env:
         - TARGET="win32"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
@@ -42,6 +41,7 @@ jobs:
     # linux with win64 cross-compilation
     - os: linux
       compiler: gcc
+      dist: bionic
       env:
         - TARGET="win64"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
@@ -50,10 +50,16 @@ jobs:
 
     # macOS native build
     - os: osx
-      compiler: gcc
+      addons:
+        homebrew:
+          packages:
+            - cmake
+            - jq
+            - meson
       env:
         - TARGET="macos"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
+      osx_image: xcode9.4
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh

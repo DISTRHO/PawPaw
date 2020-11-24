@@ -2,9 +2,8 @@
 
 set -e
 
-# Special macOS native handling
+# nothing to do for macOS native
 if [ "${TARGET}" = "macos" ]; then
-    brew install cmake jq meson || true
     exit 0
 fi
 
@@ -44,8 +43,6 @@ elif [ "${TARGET}" = "win64" ]; then
     sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable wine-binfmt
 
 fi
-
-# echo ':DOSWin:M::MZ::/usr/bin/wine:' > /proc/sys/fs/binfmt_misc/register
 
 # Special handling for caching deb archives
 sudo mv /var/cache/apt/archives/*.deb ${HOME}/PawPawBuilds/debs/
