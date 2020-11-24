@@ -55,7 +55,7 @@ jobs:
 
     # macOS native build
     - name: "macOS native"
-      os: linux
+      os: osx
       addons:
         homebrew:
           packages:
