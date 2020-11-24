@@ -9,6 +9,11 @@ cache:
   - ${HOME}/PawPawBuilds/debs
   - ${HOME}/PawPawBuilds/downloads
 
+env:
+  - PLUGINS_BASE="abgate artyfx caps dpf-plugins fomp mda"
+  - PLUGINS_CROSS="blop"
+  - PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-dexed distrho-ports-drowaudio distrho-ports-klangfalter distrho-ports-luftikus distrho-ports-obxd distrho-ports-pitched-delay distrho-ports-refine distrho-ports-tal-plugins distrho-ports-temper distrho-ports-vex distrho-ports-wolpertinger"
+
 jobs:
   include:
     # linux native build
@@ -16,21 +21,21 @@ jobs:
       compiler: gcc
       env:
         - TARGET="linux"
-        - PLUGINS="abgate artyfx blop caps dpf-plugins fomp mda"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 
     # linux with macOS cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="macos-old"
-        - PLUGINS="abgate artyfx caps dpf-plugins fomp mda"
+        - PLUGINS="${PLUGINS_BASE}"
 
     # linux with win32 cross-compilation
     - os: linux
       compiler: gcc
       env:
         - TARGET="win32"
-        - PLUGINS="abgate artyfx blop caps dpf-plugins distrho-ports-drowaudio fomp mda"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
       services:
         - xvfb
 
@@ -39,7 +44,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="win64"
-        - PLUGINS="abgate artyfx blop caps dpf-plugins distrho-ports-drowaudio fomp mda"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
       services:
         - xvfb
 
@@ -48,7 +53,7 @@ jobs:
       compiler: gcc
       env:
         - TARGET="macos"
-        - PLUGINS="abgate artyfx blop dpf-plugins fomp mda"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
