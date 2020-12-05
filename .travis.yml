@@ -4,8 +4,6 @@ cache:
   directories:
     - ${HOME}/PawPawBuilds/debs
     - ${HOME}/PawPawBuilds/downloads
-    - ${HOME}/Library/Caches/Homebrew
-    - /usr/local/Homebrew
 
 env:
   global:
@@ -58,16 +56,10 @@ jobs:
     # macOS native build
     - name: "macOS native"
       os: osx
-      addons:
-        homebrew:
-          packages:
-            - cmake
-            - jq
-          update: true
+      osx_image: xcode9.4
       env:
         - TARGET="macos"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
-      osx_image: xcode9.4
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
@@ -78,9 +70,6 @@ install:
 script:
   - bash ${TRAVIS_BUILD_DIR}/bootstrap-plugins.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
-
-before_cache:
-  - bash ${TRAVIS_BUILD_DIR}/.travis/before_cache.sh
 
 before_deploy:
   - bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}

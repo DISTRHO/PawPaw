@@ -2,8 +2,9 @@
 
 set -e
 
-# nothing to do for macOS native
+# needed homebrew packages
 if [ "${TARGET}" = "macos" ]; then
+    HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake jq meson
     exit 0
 fi
 
@@ -37,10 +38,10 @@ elif [ "${TARGET}" = "macos-old" ]; then
     popd
 
 elif [ "${TARGET}" = "win32" ]; then
-    sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-i686 g++-mingw-w64-i686 winehq-stable wine-binfmt
+    sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-i686 g++-mingw-w64-i686 winehq-stable
 
 elif [ "${TARGET}" = "win64" ]; then
-    sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable wine-binfmt
+    sudo apt-get install -y mingw-w64 binfmt-support binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable
 
 fi
 
