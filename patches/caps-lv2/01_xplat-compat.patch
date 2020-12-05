@@ -1,7 +1,18 @@
-diff --git a/basics.h b/basics.h
-index 7b1d10d..2f813d3 100644
---- a/basics.h
-+++ b/basics.h
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9: .stamp_applied_01_xplat-compat.patch
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/Makefile.single caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/Makefile.single
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/Makefile.single	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/Makefile.single	2020-12-05 23:43:09.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/basics.h caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/basics.h
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/basics.h	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/basics.h	2020-12-05 23:35:14.000000000 +0000
 @@ -38,6 +38,7 @@
  #define _ISOC99_SOURCE 1
  #define _ISOC9X_SOURCE 1
@@ -33,7 +44,7 @@ index 7b1d10d..2f813d3 100644
  
  #define MIN_GAIN 1e-6 /* -120 dB */
  /* smallest non-denormal 32 bit IEEE float is 1.18e-38 */
-@@ -124,7 +125,7 @@ T clamp (T value, T lower, T upper)
+@@ -124,7 +125,7 @@
  	return value;
  }
  
@@ -42,19 +53,363 @@ index 7b1d10d..2f813d3 100644
  
  /* NB: also true if 0  */
  inline bool 
-diff --git a/dsp/v4f_IIR2.h b/dsp/v4f_IIR2.h
-index 7400e04..1e42b56 100644
---- a/dsp/v4f_IIR2.h
-+++ b/dsp/v4f_IIR2.h
-@@ -32,9 +32,9 @@
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/dsp/v4f.h caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/dsp/v4f.h
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/dsp/v4f.h	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/dsp/v4f.h	2020-12-05 23:37:44.000000000 +0000
+@@ -71,6 +71,13 @@
+ 	return f[0]+f[1]+f[2]+f[3];
+ }
+ 
++#ifdef __clang__
++inline float __builtin_cosf2(float v) { return __builtin_cosf(v); }
++inline float __builtin_sinf2(float v) { return __builtin_sinf(v); }
++#define __builtin_cosf __builtin_cosf2
++#define __builtin_sinf __builtin_sinf2
++#endif
++
+ /* mapping a float to float function [e.g. sinf() e.a.] to a vector */
+ typedef float (*f2f_fn) (float f);
+ 
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/dsp/v4f_IIR2.h caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/dsp/v4f_IIR2.h
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/dsp/v4f_IIR2.h	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/dsp/v4f_IIR2.h	2020-12-05 23:38:47.000000000 +0000
+@@ -32,9 +32,13 @@
  
  namespace DSP {
  
 -#if defined(__APPLE__) || defined(__FreeBSD__)
 +#if defined(__APPLE__) || defined(__FreeBSD__) || defined(_WIN32)
  
--inline float exp10f(float f) {return __exp10f(f);}
++#ifdef __clang__
+ inline float exp10f(float f) {return __exp10f(f);}
++#else
 +inline float exp10f(float f) {return __builtin_exp10f(f);}
++#endif
  
  #endif
  
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-AmpVTS.lv2: .depend
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-AmpVTS.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-AmpVTS.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-AmpVTS.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-AmpVTS.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-AmpVTS.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-AutoFilter.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-AutoFilter.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-AutoFilter.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-AutoFilter.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-AutoFilter.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CEO.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CEO.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CEO.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CEO.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CEO.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CabinetIII.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CabinetIII.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CabinetIII.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CabinetIII.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CabinetIII.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CabinetIV.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CabinetIV.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CabinetIV.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CabinetIV.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CabinetIV.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-ChorusI.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-ChorusI.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-ChorusI.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-ChorusI.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-ChorusI.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Click.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Click.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Click.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Click.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Click.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Compress.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Compress.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Compress.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Compress.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Compress.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CompressX2.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CompressX2.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-CompressX2.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CompressX2.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-CompressX2.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Eq10.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq10.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Eq10.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq10.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq10.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Eq10X2.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq10X2.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Eq10X2.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq10X2.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq10X2.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Eq4p.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq4p.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Eq4p.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq4p.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Eq4p.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-EqFA4p.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-EqFA4p.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-EqFA4p.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-EqFA4p.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-EqFA4p.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Fractal.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Fractal.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Fractal.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Fractal.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Fractal.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Narrower.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Narrower.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Narrower.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Narrower.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Narrower.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Noisegate.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Noisegate.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Noisegate.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Noisegate.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Noisegate.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-PhaserII.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-PhaserII.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-PhaserII.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-PhaserII.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-PhaserII.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Plate.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Plate.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Plate.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Plate.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Plate.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-PlateX2.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-PlateX2.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-PlateX2.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-PlateX2.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-PlateX2.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Saturate.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Saturate.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Saturate.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Saturate.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Saturate.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Scape.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Scape.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Scape.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Scape.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Scape.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Sin.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Sin.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Sin.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Sin.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Sin.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Spice.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Spice.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Spice.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Spice.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Spice.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-SpiceX2.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-SpiceX2.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-SpiceX2.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-SpiceX2.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-SpiceX2.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-ToneStack.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-ToneStack.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-ToneStack.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-ToneStack.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-ToneStack.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-White.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-White.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-White.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-White.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-White.lv2: Makefile-e
+diff -U3 -r caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Wider.lv2/Makefile caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Wider.lv2/Makefile
+--- caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9/plugins/mod-caps-Wider.lv2/Makefile	2020-12-05 21:01:30.000000000 +0000
++++ caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Wider.lv2/Makefile	2020-12-05 23:47:47.000000000 +0000
+@@ -60,6 +60,6 @@
+ 	rm -f $(OBJECTS) $(PLUG).so *.s .depend
+ 
+ .depend: $(SOURCES)
+-	$(CXX) -MM $(CXXFLAGS) $(SOURCES) > .depend
++	touch .depend
+ 
+ -include .depend
+Only in caps-lv2-5d52a0c6e8863c058c2aab2dea9f901a90d96eb9.fix/plugins/mod-caps-Wider.lv2: Makefile-e

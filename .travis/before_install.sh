@@ -3,7 +3,7 @@
 set -e
 
 # nothing to do for macOS native
-if [ "${TARGET}" = "macos" ]; then
+if [ "${TARGET}" = "macos" ] || [ "${TARGET}" = "macos-universal" ]; then
     exit 0
 fi
 

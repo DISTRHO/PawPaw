@@ -38,7 +38,7 @@ jobs:
       dist: bionic
       env:
         - TARGET="win32"
-        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
       services:
         - xvfb
 
@@ -49,16 +49,23 @@ jobs:
       dist: bionic
       env:
         - TARGET="win64"
-        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
       services:
         - xvfb
 
-    # macOS native build
+    # macOS native intel build
     - name: "macOS native"
       os: osx
       osx_image: xcode9.4
       env:
         - TARGET="macos"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
+
+    # macOS native universal build
+    - os: osx
+      osx_image: xcode12u
+      env:
+        - TARGET="macos-universal"
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 
 before_install:
@@ -82,6 +89,7 @@ deploy:
   file:
     - setup/inno/PawPaw-*.exe
     - setup/macos/PawPaw-*.pkg
+    - setup/macos-universal/PawPaw-*.pkg
   skip_cleanup: true
   on:
     all_branches: true

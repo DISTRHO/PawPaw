@@ -28,7 +28,11 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
-FFTW_EXTRAFLAGS="--enable-sse2 --disable-alloca --disable-fortran --with-our-malloc"
+FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
+
+if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    FFTW_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-sse2"
+fi
 
 # if [ "${WIN32}" -eq 0 ]; then
 #     FFTW_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-threads"
@@ -73,7 +77,10 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         export EXTRA_LDFLAGS="-lresolv"
         patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
 
-        if [ "${MACOS_OLD}" -eq 1 ]; then
+        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/G_ATOMIC_NOT_ARM/'
+            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/G_ATOMIC_NOT_X86_64/'
+        elif [ "${MACOS_OLD}" -eq 1 ]; then
             GLIB_EXTRAFLAGS+=" glib_cv_stack_grows=yes"
             GLIB_EXTRAFLAGS+=" glib_cv_rtldglobal_broken=no"
             GLIB_EXTRAFLAGS+=" glib_cv_uscore=no"

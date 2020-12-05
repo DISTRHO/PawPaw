@@ -57,6 +57,9 @@ function build_custom_db() {
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
+    if [ "${MACOS}" -eq 1 ]; then
+        extraconfrules="--enable-posixmutexes ${extraconfrules}"
+    fi
     if [ "${WIN32}" -eq 1 ]; then
         extraconfrules="--enable-mingw ${extraconfrules}"
     fi
