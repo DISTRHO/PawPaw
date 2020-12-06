@@ -62,12 +62,12 @@ jobs:
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 
     # macOS native universal build
-    - name: "macOS native universal"
-      os: osx
-      osx_image: xcode12.2
-      env:
-        - TARGET="macos-universal"
-        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
+    #- name: "macOS native universal"
+      #os: osx
+      #osx_image: xcode12u
+      #env:
+        #- TARGET="macos-universal"
+        #- PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
@@ -90,7 +90,7 @@ deploy:
   file:
     - setup/inno/PawPaw-*.exe
     - setup/macos/PawPaw-*.pkg
-    - setup/macos-universal/PawPaw-*.pkg
+    #- setup/macos-universal/PawPaw-*.pkg
   skip_cleanup: true
   on:
     all_branches: true
