@@ -54,7 +54,7 @@ jobs:
         - xvfb
 
     # macOS native intel build
-    - name: "macOS native"
+    - name: "macOS native intel"
       os: osx
       osx_image: xcode9.4
       env:
@@ -62,7 +62,8 @@ jobs:
         - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 
     # macOS native universal build
-    - os: osx
+    - name: "macOS native universal"
+      os: osx
       osx_image: xcode12u
       env:
         - TARGET="macos-universal"
