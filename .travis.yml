@@ -7,7 +7,7 @@ cache:
 
 env:
   global:
-    - PLUGINS_BASE="abgate artyfx caps dpf-plugins fomp mda"
+    - PLUGINS_BASE="abgate artyfx caps die-plugins dpf-plugins fomp mda"
     - PLUGINS_CROSS="blop"
     - PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-dexed distrho-ports-drowaudio distrho-ports-klangfalter distrho-ports-luftikus distrho-ports-obxd distrho-ports-pitched-delay distrho-ports-refine distrho-ports-tal-plugins distrho-ports-temper distrho-ports-vex distrho-ports-wolpertinger"
 
