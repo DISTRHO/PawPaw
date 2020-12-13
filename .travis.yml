@@ -84,10 +84,7 @@ install:
 script:
   - bash ${TRAVIS_BUILD_DIR}/bootstrap-plugins.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
-  - if [ -z "${TRAVIS_TAG}" ]; then \
-      bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS} && \
-      bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}; \
-    fi
+  - if [ -z "${TRAVIS_TAG}" ]; then bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS} && bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}; fi
 
 before_deploy:
   - bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
