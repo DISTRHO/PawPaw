@@ -55,7 +55,7 @@ fi
 
 if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
+        BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.12 -arch x86_64 -arch arm64 -Wno-unused-command-line-argument"
     elif [ "${MACOS_OLD}" -eq 1 ]; then
         BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.5"
     else
