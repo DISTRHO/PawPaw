@@ -15,8 +15,7 @@ env:
   global:
     - PLUGINS_BASE="abgate artyfx caps die-plugins dpf-plugins fomp mda"
     - PLUGINS_CROSS="blop"
-    - PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-dexed distrho-ports-drowaudio distrho-ports-klangfalter distrho-ports-luftikus"
-# distrho-ports-obxd distrho-ports-pitched-delay distrho-ports-refine distrho-ports-tal-plugins distrho-ports-temper distrho-ports-vex distrho-ports-wolpertinger"
+    - PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-dexed distrho-ports-drowaudio distrho-ports-klangfalter distrho-ports-luftikus distrho-ports-obxd distrho-ports-pitched-delay distrho-ports-refine distrho-ports-tal-plugins distrho-ports-temper distrho-ports-vex distrho-ports-wolpertinger"
 
 jobs:
   include:
@@ -85,10 +84,8 @@ install:
 script:
   - bash ${TRAVIS_BUILD_DIR}/bootstrap-plugins.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
-  - if [ -z "${TRAVIS_TAG}" ]; then bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS} && bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}; fi
-
-before_deploy:
   - bash ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
+  - bash ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
 
 deploy:
