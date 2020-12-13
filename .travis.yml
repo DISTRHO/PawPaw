@@ -44,7 +44,7 @@ jobs:
       dist: bionic
       env:
         - TARGET="win32"
-        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
       services:
         - xvfb
 
@@ -55,7 +55,7 @@ jobs:
       dist: bionic
       env:
         - TARGET="win64"
-        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
       services:
         - xvfb
 
@@ -65,7 +65,7 @@ jobs:
       osx_image: xcode9.4
       env:
         - TARGET="macos"
-        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
+        - PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
 
     # macOS native universal build
     #- name: "macOS native universal"
@@ -73,7 +73,7 @@ jobs:
       #osx_image: xcode12u
       #env:
         #- TARGET="macos-universal"
-        #- PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
+        #- PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
 
 before_install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
