@@ -8,7 +8,7 @@
         "distrho-a-fluidsynth.lv2",
         "distrho-a-reverb.lv2"
     ],
-    "version": "54052b9ca309250943cdf7b15b5afec2f72a9ce6",
+    "version": "bed2a8bed756b35c3bda3dc0ce8109034b2d9fe6",
     "dlbaseurl": "https://github.com/DISTRHO/DIE-Plugins.git",
     "dlmethod": "git",
     "buildtype": "make"
