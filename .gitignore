@@ -1,2 +1,5 @@
+.DS_Store
 *.exe
+*.pkg
+*-e
 /jack2/

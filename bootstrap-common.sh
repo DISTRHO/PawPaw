@@ -67,13 +67,16 @@ build_autoconf libvorbis "${LIBVORBIS_VERSION}" "--disable-examples"
 # ---------------------------------------------------------------------------------------------------------------------
 # flac
 
-FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests"
+FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
 
 if [ "${MACOS_OLD}" -eq 1 ]; then
     FLAC_EXTRAFLAGS="${FLAC_EXTRAFLAGS} --disable-asm-optimizations"
+elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    FLAC_EXTRAFLAGS="${FLAC_EXTRAFLAGS} ac_cv_header_x86intrin_h=yes asm_opt=yes"
 fi
 
 download flac "${FLAC_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/flac" "tar.xz"
+patch_file flac "${FLAC_VERSION}" "configure" 's/amd64|x86_64/amd64|arm|x86_64/'
 build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
