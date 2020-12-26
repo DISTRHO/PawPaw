@@ -31,11 +31,11 @@ source setup/versions.sh
 FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
 
 if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
-    FFTW_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-sse2"
+    FFTW_EXTRAFLAGS+=" --enable-sse2"
 fi
 
 # if [ "${WIN32}" -eq 0 ]; then
-#     FFTW_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-threads"
+#     FFTW_EXTRAFLAGS+=" --enable-threads"
 # fi
 
 download fftw "${FFTW_VERSION}" "http://www.fftw.org"

@@ -9,10 +9,10 @@ if [ "${LINUX}" -eq 1 ]; then
 
 elif [ "${MACOS}" -eq 1 ]; then
     CMAKE_SYSTEM_NAME="Darwin"
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        PAWPAW_TARGET="macos-universal"
-    elif [ "${MACOS_OLD}" -eq 1 ]; then
+    if [ "${MACOS_OLD}" -eq 1 ]; then
         PAWPAW_TARGET="macos-old"
+    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        PAWPAW_TARGET="macos-universal"
     else
         PAWPAW_TARGET="macos"
     fi
@@ -45,26 +45,25 @@ PAWPAW_TMPDIR="/tmp"
 ## build flags
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include"
-BUILD_FLAGS="${BUILD_FLAGS} -mtune=generic -msse -msse2 -ffast-math"
-BUILD_FLAGS="${BUILD_FLAGS} -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
-BUILD_FLAGS="${BUILD_FLAGS} -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
+BUILD_FLAGS+=" -mtune=generic -msse -msse2 -ffast-math"
+BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
+BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
 
-if [ "${MACOS_UNIVERSAL}" -ne 1 ]; then
-    BUILD_FLAGS="${BUILD_FLAGS} -mfpmath=sse"
+if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    BUILD_FLAGS+=" -mfpmath=sse"
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.12 -arch x86_64 -arch arm64 -Wno-unused-command-line-argument"
-    elif [ "${MACOS_OLD}" -eq 1 ]; then
-        BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.5"
+    if [ "${MACOS_OLD}" -eq 1 ]; then
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_5 -mmacosx-version-min=10.5"
+    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
     else
-        BUILD_FLAGS="${BUILD_FLAGS} -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
-    BUILD_FLAGS="${BUILD_FLAGS} -DPTW32_STATIC_LIB -mstackrealign"
+    BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL -DPTW32_STATIC_LIB -mstackrealign"
 fi
-# -DFLUIDSYNTH_NOT_A_DLL
 
 TARGET_CFLAGS="${BUILD_FLAGS}"
 TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
@@ -72,23 +71,22 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 ## link flags
 
 LINK_FLAGS="-L${PAWPAW_PREFIX}/lib"
-LINK_FLAGS="${LINK_FLAGS} -fdata-sections -ffunction-sections -fstack-protector"
+LINK_FLAGS+=" -fdata-sections -ffunction-sections -fstack-protector"
 
 if [ "${MACOS}" -eq 1 ]; then
-    LINK_FLAGS="${LINK_FLAGS} -Wl,-dead_strip -Wl,-dead_strip_dylibs"
+    LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs"
 
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        LINK_FLAGS="${LINK_FLAGS} -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
-    elif [ "${MACOS_OLD}" -eq 1 ]; then
-        LINK_FLAGS="${LINK_FLAGS} -mmacosx-version-min=10.5"
-        # LINK_FLAGS="${LINK_FLAGS} -L/usr/lib/apple/SDKs/MacOSX10.5.sdk/usr/lib"
+    if [ "${MACOS_OLD}" -eq 1 ]; then
+        LINK_FLAGS+=" -mmacosx-version-min=10.5"
+    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        LINK_FLAGS+=" -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
     else
-        LINK_FLAGS="${LINK_FLAGS} -mmacosx-version-min=10.8 -stdlib=libc++"
+        LINK_FLAGS+=" -mmacosx-version-min=10.8 -stdlib=libc++"
     fi
 else
-    LINK_FLAGS="${LINK_FLAGS} -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
+    LINK_FLAGS+=" -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
-        LINK_FLAGS="${LINK_FLAGS} -static -lssp_nonshared -Wl,-Bstatic"
+        LINK_FLAGS+=" -static -lssp_nonshared -Wl,-Bstatic"
     fi
 fi
 
@@ -130,18 +128,21 @@ if which nproc > /dev/null; then
 fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    MAKE_ARGS="${MAKE_ARGS} CROSS_COMPILING=true"
+    MAKE_ARGS+=" CROSS_COMPILING=true"
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    MAKE_ARGS="${MAKE_ARGS} MACOS=true"
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        MAKE_ARGS="${MAKE_ARGS} MACOS_UNIVERSAL=true"
-    elif [ "${MACOS_OLD}" -eq 1 ]; then
-        MAKE_ARGS="${MAKE_ARGS} MACOS_OLD=true"
+    MAKE_ARGS+=" MACOS=true"
+    if [ "${MACOS_OLD}" -eq 1 ]; then
+        MAKE_ARGS+=" MACOS_OLD=true"
+    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        MAKE_ARGS+=" MACOS_UNIVERSAL=true"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
-    MAKE_ARGS="${MAKE_ARGS} WIN32=true WINDOWS=true"
+    MAKE_ARGS+=" WINDOWS=true WIN32=true"
+    if [ "${WIN32}" -eq 1 ]; then
+        MAKE_ARGS+=" WIN64=true"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

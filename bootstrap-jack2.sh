@@ -33,6 +33,9 @@ source setup/versions.sh
 
 if [ "${MACOS}" -eq 1 ]; then
     download aften "${AFTEN_VERSION}" "http://downloads.sourceforge.net/aften" "tar.bz2"
+    if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed" ]; then
+        rm -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs"
+    fi
     build_cmake aften "${AFTEN_VERSION}"
     if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs" ]; then
     	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_pcm.a" "${PAWPAW_PREFIX}/lib/libaften_pcm.a"
@@ -55,13 +58,13 @@ function build_custom_db() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX}"
     fi
     if [ "${MACOS}" -eq 1 ]; then
-        extraconfrules="--enable-posixmutexes ${extraconfrules}"
+        extraconfrules+=" --enable-posixmutexes"
     fi
     if [ "${WIN32}" -eq 1 ]; then
-        extraconfrules="--enable-mingw ${extraconfrules}"
+        extraconfrules+="--enable-mingw"
     fi
 
     _prebuild "${name}" "${pkgdir}"
@@ -149,7 +152,7 @@ fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # tre (win64 32bit build)
-# NOTE this must be the last item to build
+# NOTE: this must be the last item to build
 
 if [ "${WIN64}" -eq 1 ]; then
     target="win32"

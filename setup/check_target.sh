@@ -37,7 +37,7 @@ function check_target() {
         "native")
             target=$(uname -s)
             check_target
-            if [ "$(uname -m)" = "arm64" ]; then
+            if [ "${target}" = "Darwin" ] && [ "$(uname -m)" = "arm64" ]; then
                 MACOS_UNIVERSAL=1
             fi
             ;;
