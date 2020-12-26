@@ -78,8 +78,8 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
 
         if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/G_ATOMIC_NOT_ARM/'
-            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/G_ATOMIC_NOT_X86_64/'
+            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
+            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
         elif [ "${MACOS_OLD}" -eq 1 ]; then
             GLIB_EXTRAFLAGS+=" glib_cv_stack_grows=yes"
             GLIB_EXTRAFLAGS+=" glib_cv_rtldglobal_broken=no"
@@ -133,7 +133,7 @@ build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
 
-if [ "${MACOS_OLD}" -ne 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
+if [ "${MACOS_OLD}" -eq 0 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
     download lv2lint "${LV2LINT_VERSION}" "https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/${LV2LINT_VERSION}"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"
