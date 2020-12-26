@@ -3,7 +3,7 @@
     "lv2bundles": [
         "Luftikus.lv2"
     ],
-    "version": "9f5cd8631bc227c44781d0633c18e0e1df7e757c",
+    "version": "18f868c0f8299c960ba48c9ce78cd0ac329012b6",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
     "buildtype": "meson",
