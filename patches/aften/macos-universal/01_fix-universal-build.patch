@@ -1,0 +1,231 @@
+diff --git a/libaften/a52enc.c b/libaften/a52enc.c
+index 0d1dd65..a95ea0e 100644
+--- a/libaften/a52enc.c
++++ b/libaften/a52enc.c
+@@ -309,19 +309,19 @@ static void
+ select_mdct(A52Context *ctx)
+ {
+ #ifndef CONFIG_DOUBLE
+-#ifdef HAVE_SSE3
++#if defined(HAVE_SSE3) && !defined(__aarch64__)
+     if (cpu_caps_have_sse3()) {
+         sse3_mdct_init(ctx);
+         return;
+     }
+ #endif
+-#ifdef HAVE_SSE
++#if defined(HAVE_SSE) && !defined(__aarch64__)
+     if (cpu_caps_have_sse()) {
+         sse_mdct_init(ctx);
+         return;
+     }
+ #endif
+-#ifdef HAVE_ALTIVEC
++#if defined(HAVE_ALTIVEC) && !defined(__aarch64__)
+     if (cpu_caps_have_altivec()) {
+         mdct_init_altivec(ctx);
+         return;
+@@ -335,19 +335,19 @@ static void
+ select_mdct_thread(A52ThreadContext *tctx)
+ {
+ #ifndef CONFIG_DOUBLE
+-#ifdef HAVE_SSE3
++#if defined(HAVE_SSE3) && !defined(__aarch64__)
+     if (cpu_caps_have_sse3()) {
+         sse3_mdct_thread_init(tctx);
+         return;
+     }
+ #endif
+-#ifdef HAVE_SSE
++#if defined(HAVE_SSE) && !defined(__aarch64__)
+     if (cpu_caps_have_sse()) {
+         sse_mdct_thread_init(tctx);
+         return;
+     }
+ #endif
+-#ifdef HAVE_ALTIVEC
++#if defined(HAVE_ALTIVEC) && !defined(__aarch64__)
+     if (cpu_caps_have_altivec()) {
+         mdct_thread_init_altivec(tctx);
+         return;
+diff --git a/libaften/exponent.c b/libaften/exponent.c
+index 137b930..956ad2e 100644
+--- a/libaften/exponent.c
++++ b/libaften/exponent.c
+@@ -67,13 +67,13 @@ exponent_init(A52Context *ctx)
+         }
+     }
+ 
+-#ifdef HAVE_SSE2
++#if defined(HAVE_SSE2) && !defined(__aarch64__)
+     if (cpu_caps_have_sse2()) {
+         ctx->process_exponents = sse2_process_exponents;
+         return;
+     }
+ #endif /* HAVE_SSE2 */
+-#ifdef HAVE_MMX
++#if defined(HAVE_MMX) && !defined(__aarch64__)
+     if (cpu_caps_have_mmx()) {
+         ctx->process_exponents = mmx_process_exponents;
+         return;
+diff --git a/libaften/window.c b/libaften/window.c
+index f649b5f..f994a86 100644
+--- a/libaften/window.c
++++ b/libaften/window.c
+@@ -78,7 +78,7 @@ kbd_window_init(A52Context *ctx, FLOAT alpha, FLOAT *window, int n, int iter)
+         window[n-1-i] = window[i];
+     }
+ #ifndef CONFIG_DOUBLE
+-#ifdef HAVE_SSE
++#if defined(HAVE_SSE) && !defined(__aarch64__)
+     if (cpu_caps_have_sse()) {
+         ctx->apply_a52_window = sse_apply_a52_window;
+         return;
+diff --git a/libaften/x86/x86_cpu_caps.c b/libaften/x86/x86_cpu_caps.c
+index e5a50a8..07cb4fb 100644
+--- a/libaften/x86/x86_cpu_caps.c
++++ b/libaften/x86/x86_cpu_caps.c
+@@ -37,7 +37,7 @@
+ #define CYRIX_MMXEXT_BIT    24
+ 
+ 
+-#ifdef HAVE_CPU_CAPS_DETECTION
++#if defined(HAVE_CPU_CAPS_DETECTION) && !defined(__aarch64__)
+ #include "asm_support.h"
+ 
+ // derived from loki_cpuinfo.c, 1997-98 by H. Dietz and R. Fisher
+@@ -122,7 +122,7 @@ void cpu_caps_detect(void)
+     /* end compiled in SIMD routines */
+ 
+     /* runtime detection */
+-#ifdef HAVE_CPU_CAPS_DETECTION
++#if defined(HAVE_CPU_CAPS_DETECTION) && !defined(__aarch64__)
+     {
+         uint32_t caps1, caps2, caps3;
+ 
+diff --git a/libaften/x86/x86_mmx_exponent.c b/libaften/x86/x86_mmx_exponent.c
+index b9962f4..2ea545e 100644
+--- a/libaften/x86/x86_mmx_exponent.c
++++ b/libaften/x86/x86_mmx_exponent.c
+@@ -27,6 +27,8 @@
+  */
+ 
+ #include "exponent_common.c"
++
++#ifndef __aarch64__
+ #include "x86_simd_support.h"
+ 
+ #include <mmintrin.h>
+@@ -366,3 +368,4 @@ mmx_process_exponents(A52ThreadContext *tctx)
+     group_exponents(tctx);
+     _mm_empty();
+ }
++#endif // !__aarch64__
+diff --git a/libaften/x86/x86_sse2_exponent.c b/libaften/x86/x86_sse2_exponent.c
+index 4abda29..32a41b5 100644
+--- a/libaften/x86/x86_sse2_exponent.c
++++ b/libaften/x86/x86_sse2_exponent.c
+@@ -27,6 +27,8 @@
+  */
+ 
+ #include "exponent_common.c"
++
++#ifndef __aarch64__
+ #include "x86_simd_support.h"
+ 
+ #include <emmintrin.h>
+@@ -373,3 +375,4 @@ sse2_process_exponents(A52ThreadContext *tctx)
+ 
+     group_exponents(tctx);
+ }
++#endif // !__aarch64__
+diff --git a/libaften/x86/x86_sse_mdct_common.c b/libaften/x86/x86_sse_mdct_common.c
+index 991edeb..e3287b0 100644
+--- a/libaften/x86/x86_sse_mdct_common.c
++++ b/libaften/x86/x86_sse_mdct_common.c
+@@ -49,6 +49,7 @@
+ #include "a52.h"
+ #include "mdct.h"
+ 
++#ifndef __aarch64__
+ #include "x86_simd_support.h"
+ 
+ 
+@@ -683,3 +684,4 @@ mdct_256(A52ThreadContext *tctx, FLOAT *out, FLOAT *in)
+         _mm_store_ps(out + j+4, XMM3);
+     }
+ }
++#endif // !__aarch64__
+diff --git a/libaften/x86/x86_sse_mdct_common_init.c b/libaften/x86/x86_sse_mdct_common_init.c
+index 22bb058..4754a12 100644
+--- a/libaften/x86/x86_sse_mdct_common_init.c
++++ b/libaften/x86/x86_sse_mdct_common_init.c
+@@ -49,6 +49,7 @@
+ #include "a52.h"
+ #include "mdct.h"
+ 
++#ifndef __aarch64__
+ #include "x86_simd_support.h"
+ #include "x86_sse_mdct_common_init.h"
+ 
+@@ -408,3 +409,4 @@ sse_mdct_tctx_close(MDCTThreadContext *tmdct)
+         if(tmdct->buffer1) aligned_free(tmdct->buffer1);
+     }
+ }
++#endif // !__aarch64__
+diff --git a/libaften/x86/x86_sse_mdct_dummy.c b/libaften/x86/x86_sse_mdct_dummy.c
+index f95c5e4..3b95204 100644
+--- a/libaften/x86/x86_sse_mdct_dummy.c
++++ b/libaften/x86/x86_sse_mdct_dummy.c
+@@ -20,6 +20,7 @@
+ #include "x86_sse_mdct_common_init.h"
+ #include "x86_sse_mdct_common.c"
+ 
++#ifndef __aarch64__
+ static void
+ sse_mdct_close(A52Context *ctx)
+ {
+@@ -65,3 +66,4 @@ sse_mdct_thread_init(A52ThreadContext *tctx)
+         aligned_malloc(A52_NUM_BLOCKS * A52_MAX_CHANNELS * (256 + 512) * sizeof(FLOAT));
+     alloc_block_buffers(tctx);
+ }
++#endif // !__aarch64__
+diff --git a/libaften/x86/x86_sse_window.c b/libaften/x86/x86_sse_window.c
+index b8c4ba2..9b323cb 100644
+--- a/libaften/x86/x86_sse_window.c
++++ b/libaften/x86/x86_sse_window.c
+@@ -19,6 +19,7 @@
+  *********************************************************************/
+ #include "window.h"
+ 
++#ifndef __aarch64__
+ #include <xmmintrin.h>
+ 
+ void
+@@ -33,3 +34,4 @@ sse_apply_a52_window(FLOAT *samples)
+         _mm_store_ps(samples+i, input);
+     }
+ }
++#endif // !__aarch64__
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index ba6f0f2..fc2fc45 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -179,7 +179,7 @@ IF(SVN_VERSION)
+ ENDIF(SVN_VERSION)
+ 
+ # do SIMD stuff
+-IF(CMAKE_SYSTEM_MACHINE MATCHES "i.86" OR CMAKE_SYSTEM_MACHINE MATCHES "x86_64")
++IF(CMAKE_SYSTEM_MACHINE MATCHES "i.86" OR CMAKE_SYSTEM_MACHINE MATCHES "x86_64" OR APPLE)
+   CHECK_MMX()
+ 
+   IF(HAVE_MMX)
+@@ -231,7 +231,7 @@ IF(CMAKE_SYSTEM_MACHINE MATCHES "i.86" OR CMAKE_SYSTEM_MACHINE MATCHES "x86_64")
+       CHECK_CASTSI128()
+     ENDIF(HAVE_SSE3)
+   ENDIF(HAVE_MMX)
+-ENDIF(CMAKE_SYSTEM_MACHINE MATCHES "i.86" OR CMAKE_SYSTEM_MACHINE MATCHES "x86_64")
++ENDIF(CMAKE_SYSTEM_MACHINE MATCHES "i.86" OR CMAKE_SYSTEM_MACHINE MATCHES "x86_64" OR APPLE)
+ 
+ IF(CMAKE_SYSTEM_MACHINE MATCHES "Power Macintosh" OR CMAKE_SYSTEM_MACHINE MATCHES "ppc")
+   CHECK_ALTIVEC()

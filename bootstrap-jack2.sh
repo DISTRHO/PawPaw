@@ -36,7 +36,7 @@ if [ "${MACOS}" -eq 1 ]; then
     if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed" ]; then
         rm -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs"
     fi
-    build_cmake aften "${AFTEN_VERSION}"
+    build_cmake aften "${AFTEN_VERSION}" "-DHAVE_MMX=ON -DHAVE_SSE=ON -DHAVE_SSE2=ON"
     if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs" ]; then
     	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_pcm.a" "${PAWPAW_PREFIX}/lib/libaften_pcm.a"
     	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_static.a" "${PAWPAW_PREFIX}/lib/libaften.a"
