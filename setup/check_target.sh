@@ -49,7 +49,11 @@ function check_target() {
             echo "\twin32"
             echo "\twin64"
             echo "\tnative"
-            exit 2
+            if [ -z "${VALIDATE_TARGET}" ]; then
+                exit 2
+            else
+                INVALID_TARGET=1
+            fi
             ;;
     esac
 }
