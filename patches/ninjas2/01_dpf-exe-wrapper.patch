@@ -1,0 +1,62 @@
+diff --git a/dpf/Makefile b/dpf/Makefile
+index d16647c..e573a45 100644
+--- a/dpf/Makefile
++++ b/dpf/Makefile
+@@ -10,6 +10,12 @@ all: dgl examples gen
+ 
+ # --------------------------------------------------------------
+ 
++ifneq ($(CROSS_COMPILING),true)
++CAN_GENERATE_TTL = true
++else ifneq ($(EXE_WRAPPER),)
++CAN_GENERATE_TTL = true
++endif
++
+ dgl:
+ 	$(MAKE) -C dgl
+ 
+@@ -35,7 +41,7 @@ ifneq ($(MACOS_OR_WINDOWS),true)
+ 	install -m 755 examples/ExternalUI/ExternalLauncher.sh bin/d_extui.lv2/d_extui.sh
+ endif
+ 
+-ifneq ($(CROSS_COMPILING),true)
++ifeq ($(CAN_GENERATE_TTL),true)
+ gen: examples utils/lv2_ttl_generator
+ 	@$(CURDIR)/utils/generate-ttl.sh
+ ifeq ($(MACOS),true)
+diff --git a/dpf/utils/generate-ttl.sh b/dpf/utils/generate-ttl.sh
+index 7522b26..26cf663 100755
+--- a/dpf/utils/generate-ttl.sh
++++ b/dpf/utils/generate-ttl.sh
+@@ -9,13 +9,13 @@ else
+   exit
+ fi
+ 
+-PWD="$(dirname "$0")"
++PWD="$(dirname "${0}")"
+ 
+-if [ -f "$PWD/lv2_ttl_generator.exe" ]; then
+-  GEN="$PWD/lv2_ttl_generator.exe"
++if [ -f "${PWD}/lv2_ttl_generator.exe" ]; then
++  GEN="${PWD}/lv2_ttl_generator.exe"
+   EXT=dll
+ else
+-  GEN="$PWD/lv2_ttl_generator"
++  GEN="${PWD}/lv2_ttl_generator"
+   if [ -d /Library/Audio ]; then
+     EXT=dylib
+   else
+@@ -25,9 +25,9 @@ fi
+ 
+ FOLDERS=`find . -type d -name \*.lv2`
+ 
+-for i in $FOLDERS; do
+-  cd $i
+-  FILE="$(ls *.$EXT | sort | head -n 1)"
+-  "$GEN" "./$FILE"
++for i in ${FOLDERS}; do
++  cd ${i}
++  FILE="$(ls *.${EXT} | sort | head -n 1)"
++  ${EXE_WRAPPER} "${GEN}" "./${FILE}"
+   cd ..
+ done
