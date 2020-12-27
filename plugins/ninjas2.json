@@ -3,7 +3,7 @@
     "lv2bundles": [
         "ninjas2.lv2"
     ],
-    "version": "3c2acfad31763e52839802819c685c2a51f24ee8",
+    "version": "91ad447e59bef09bdbc32c564f68b7c9bb80442d",
     "dlbaseurl": "https://github.com/clearly-broken-software/ninjas2.git",
     "dlmethod": "git",
     "buildtype": "make"
