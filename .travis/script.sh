@@ -34,12 +34,8 @@ if [ "${TARGET}" = "linux" ]; then
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 elif [ "${TARGET}" = "macos-old" ]; then
     PLUGINS="${PLUGINS_BASE}"
-elif [ "${TARGET}" = "macos" ] || [ "${TARGET}" = "macos-universal" ]; then
-    PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO1} ${PLUGINS_DISTRHO2}"
-elif [ "${TARGET}" = "win32" ] || [ "${TARGET}" = "win64" ]; then
-    PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO1} ${PLUGINS_DISTRHO2}"
 else
-    exit 1
+    PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
 fi
 
 ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
