@@ -2,10 +2,33 @@
 
 set -e
 
+if [ -z "${BOOTSTRAP_VERSION}" ]; then
+    echo "Script only intended for travis/CI use"
+    exit 1
+fi
+
+if [ -e ${HOME}/PawPawBuilds/builds/.last-bootstrap-version ]; then
+    LAST_BOOTSTRAP_VERSION=$(cat ${HOME}/PawPawBuilds/builds/.last-bootstrap-version)
+else
+    LAST_BOOTSTRAP_VERSION=0
+fi
+
 PLUGINS_BASE="abgate artyfx caps die-plugins dpf-plugins fomp mda"
 PLUGINS_CROSS="blop"
-PLUGINS_DISTRHO1="distrho-ports-arctican distrho-ports-dexed distrho-ports-drowaudio distrho-ports-klangfalter distrho-ports-luftikus distrho-ports-obxd distrho-ports-pitched-delay"
-PLUGINS_DISTRHO2="distrho-ports-refine distrho-ports-tal-plugins distrho-ports-temper distrho-ports-vex distrho-ports-wolpertinger"
+PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
+
+# only build full set of distrho-ports if we have previously cached builds, otherwise we time-out travis
+if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ];
+    PLUGINS_DISTRHO+=" distrho-ports-dexed"
+    PLUGINS_DISTRHO+=" distrho-ports-klangfalter"
+    PLUGINS_DISTRHO+=" distrho-ports-luftikus"
+    PLUGINS_DISTRHO+=" distrho-ports-obxd"
+    PLUGINS_DISTRHO+=" distrho-ports-pitched-delay"
+    PLUGINS_DISTRHO+=" distrho-ports-refine"
+    PLUGINS_DISTRHO+=" distrho-ports-temper"
+    PLUGINS_DISTRHO+=" distrho-ports-vex"
+    PLUGINS_DISTRHO+=" distrho-ports-wolpertinger"
+fi
 
 if [ "${TARGET}" = "linux" ]; then
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
@@ -21,4 +44,10 @@ fi
 
 ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
-${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
+
+# packing of plugins can only be done when doing a full build
+if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ];
+    ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
+fi
+
+echo ${BOOTSTRAP_VERSION} > ${LAST_BOOTSTRAP_VERSION}
