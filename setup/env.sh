@@ -140,9 +140,10 @@ if [ "${MACOS}" -eq 1 ]; then
     fi
 elif [ "${WIN32}" -eq 1 ]; then
     MAKE_ARGS+=" WINDOWS=true WIN32=true"
-    if [ "${WIN32}" -eq 1 ]; then
+    if [ "${WIN64}" -eq 1 ]; then
         MAKE_ARGS+=" WIN64=true"
     fi
+    export EXE_WRAPPER="wine"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
