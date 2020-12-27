@@ -1,0 +1,10 @@
+{
+    "name": "ninjas2",
+    "lv2bundles": [
+        "ninjas2.lv2"
+    ],
+    "version": "3c2acfad31763e52839802819c685c2a51f24ee8",
+    "dlbaseurl": "https://github.com/clearly-broken-software/ninjas2.git",
+    "dlmethod": "git",
+    "buildtype": "make"
+}
