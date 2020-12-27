@@ -1,9 +1,12 @@
 diff --git a/wscript b/wscript
-index eac32f9..acfa28d 100644
+index f6780d0..fa513a4 100644
 --- a/wscript
 +++ b/wscript
-@@ -192,7 +192,7 @@ def build_util(bld, name, defines, libs=''):
+@@ -300,9 +300,10 @@ def build_util(bld, name, defines, libs=''):
+               install_path = '${BINDIR}')
+     if not bld.env.BUILD_SHARED or bld.env.STATIC_PROGS:
          obj.use = 'liblilv_static'
++        obj.lib = ['dl']
      if bld.env.STATIC_PROGS:
          if not bld.env.MSVC_COMPILER:
 -            obj.lib = ['m']
@@ -11,7 +14,7 @@ index eac32f9..acfa28d 100644
              obj.env.SHLIB_MARKER = obj.env.STLIB_MARKER
              obj.linkflags        = ['-static', '-Wl,--start-group']
      return obj
-@@ -427,7 +427,7 @@ def build(bld):
+@@ -543,7 +544,7 @@ def build(bld):
              not bld.env.STATIC_PROGS):
              obj = build_util(bld, 'utils/lv2bench', defines)
              if bld.env.DEST_OS != 'darwin':
