@@ -46,4 +46,4 @@ if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
     ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
 fi
 
-echo ${BOOTSTRAP_VERSION} > ${LAST_BOOTSTRAP_VERSION}
+echo ${BOOTSTRAP_VERSION} > ${HOME}/PawPawBuilds/builds/.last-bootstrap-version
