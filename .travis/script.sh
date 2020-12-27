@@ -18,7 +18,7 @@ PLUGINS_CROSS="blop"
 PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
 
 # only build full set of distrho-ports if we have previously cached builds, otherwise we time-out travis
-if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ];
+if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
     PLUGINS_DISTRHO+=" distrho-ports-dexed"
     PLUGINS_DISTRHO+=" distrho-ports-klangfalter"
     PLUGINS_DISTRHO+=" distrho-ports-luftikus"
