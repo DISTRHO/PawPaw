@@ -15,7 +15,7 @@
         "PingPongPan.lv2",
         "SoulForce.lv2"
     ],
-    "version": "4357803abd24a74ca14dc7339a941edbe5acdf6b",
+    "version": "028a78e679046fe99fbc067ec13c99309acb9a60",
     "dlbaseurl": "https://github.com/DISTRHO/DPF-Plugins.git",
     "dlmethod": "git",
     "buildtype": "make"
