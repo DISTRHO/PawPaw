@@ -1,0 +1,9 @@
+{
+    "name": "adlplug-opn2",
+    "lv2bundles": ["OPNplug.lv2"],
+    "version": "d22fec03db1ab6458c22ea036217983cfb2a82a1",
+    "dlbaseurl": "https://github.com/jpcima/ADLplug.git",
+    "dlmethod": "git",
+    "buildtype": "cmake",
+    "buildargs": "-DADLplug_CHIP=OPN2 -DADLplug_LV2=ON -DADLplug_AU=OFF -DADLplug_Jack=OFF -DADLplug_Standalone=OFF -DADLplug_VST2=OFF ADLplug_VST3=OFF"
+}
