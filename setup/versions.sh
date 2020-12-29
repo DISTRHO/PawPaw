@@ -34,6 +34,7 @@ fi
 
 # carla builds only
 FILE_VERSION=5.34
+PYLIBLO_VERSION=0.9.2
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     CXFREEZE_VERSION=6.4.2
     PYTHON_VERSION=3.9.1

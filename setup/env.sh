@@ -125,6 +125,9 @@ WAF_ARGS=""
 if which nproc > /dev/null; then
     MAKE_ARGS+="-j $(nproc)"
     WAF_ARGS+="-j $(nproc)"
+elif [ "${MACOS}" -eq 1 ]; then
+    MAKE_ARGS+="-j $(sysctl -n hw.logicalcpu)"
+    WAF_ARGS+="-j $(sysctl -n hw.logicalcpu)"
 fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then

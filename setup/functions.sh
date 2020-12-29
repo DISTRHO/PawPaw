@@ -28,7 +28,11 @@ function download() {
         else
             local dlurl
             if echo ${dlbaseurl} | grep -q github.com; then
-                dlurl="${dlbaseurl}/v${version}.${dlext}"
+                if [ x"${dlmethod}" = x"nv" ]; then
+                    dlurl="${dlbaseurl}/${version}.${dlext}"
+                else
+                    dlurl="${dlbaseurl}/v${version}.${dlext}"
+                fi
             elif [ "${dlext}" = "orig.tar.gz" ]; then
                 dlurl="${dlbaseurl}/${name}_${version}.${dlext}"
             else
@@ -351,6 +355,8 @@ function build_python() {
     fi
 
     _prebuild "${name}" "${pkgdir}"
+
+    touch "${pkgdir}/.stamp_configured"
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"

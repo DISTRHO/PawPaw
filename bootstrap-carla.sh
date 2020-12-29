@@ -108,6 +108,12 @@ download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# setuptools_scm
+
+download setuptools_scm "${SETUPTOOLS_SCM_VERSION}" "https://files.pythonhosted.org/packages/ed/b6/979bfa7b81878b2b4475dde092aac517e7f25dd33661796ec35664907b31"
+build_python setuptools_scm "${SETUPTOOLS_SCM_VERSION}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # toml
 
 download toml "${TOML_VERSION}" "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c"
@@ -128,7 +134,7 @@ build_python importlib_metadata "${IMPORTLIB_METADATA_VERSION}"
 # ---------------------------------------------------------------------------------------------------------------------
 # cxfreeze
 
-download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze/archive"
+download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze/archive" "" "nv"
 patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/"python%s.%s"/"python%s.%sm"/'
 patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
 patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
