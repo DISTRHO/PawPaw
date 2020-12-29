@@ -1,0 +1,101 @@
+diff --git a/src/corelib/io/qfilesystemengine_unix.cpp b/src/corelib/io/qfilesystemengine_unix.cpp
+index 5bab897..ef2f6b2 100644
+--- a/src/corelib/io/qfilesystemengine_unix.cpp
++++ b/src/corelib/io/qfilesystemengine_unix.cpp
+@@ -195,7 +195,7 @@ static bool isPackage(const QFileSystemMetaData &data, const QFileSystemEntry &e
+ 
+ namespace {
+ namespace GetFileTimes {
+-#if !QT_CONFIG(futimens) && (QT_CONFIG(futimes))
++#if 1
+ template <typename T>
+ static inline typename QtPrivate::QEnableIf<(&T::st_atim, &T::st_mtim, true)>::Type get(const T *p, struct timeval *access, struct timeval *modification)
+ {
+@@ -1401,7 +1401,7 @@ bool QFileSystemEngine::setFileTime(int fd, const QDateTime &newDate, QAbstractF
+         return false;
+     }
+ 
+-#if QT_CONFIG(futimens)
++#if 0
+     struct timespec ts[2];
+ 
+     ts[0].tv_sec = ts[1].tv_sec = 0;
+diff --git a/src/gui/painting/qdrawhelper.cpp b/src/gui/painting/qdrawhelper.cpp
+index 6265d51..e3d96d7 100644
+--- a/src/gui/painting/qdrawhelper.cpp
++++ b/src/gui/painting/qdrawhelper.cpp
+@@ -6622,3 +6622,5 @@ static void qInitDrawhelperFunctions()
+ Q_CONSTRUCTOR_FUNCTION(qInitDrawhelperFunctions);
+ 
+ QT_END_NAMESPACE
++
++#include "qdrawhelper_sse2.cpp"
+diff --git a/src/gui/painting/qdrawhelper_sse2.cpp b/src/gui/painting/qdrawhelper_sse2.cpp
+index 3212ffd..05ca742 100644
+--- a/src/gui/painting/qdrawhelper_sse2.cpp
++++ b/src/gui/painting/qdrawhelper_sse2.cpp
+@@ -40,7 +40,7 @@
+ 
+ #include <private/qdrawhelper_x86_p.h>
+ 
+-#ifdef QT_COMPILER_SUPPORTS_SSE2
++#ifdef __SSE2__
+ 
+ #include <private/qdrawingprimitive_sse2_p.h>
+ #include <private/qpaintengine_raster_p.h>
+diff --git a/src/plugins/platforms/cocoa/qcocoahelpers.h b/src/plugins/platforms/cocoa/qcocoahelpers.h
+index 69aa793..ba65b74 100644
+--- a/src/plugins/platforms/cocoa/qcocoahelpers.h
++++ b/src/plugins/platforms/cocoa/qcocoahelpers.h
+@@ -178,7 +178,7 @@ T qt_mac_resolveOption(const T &fallback, QWindow *window, const QByteArray &pro
+ 
+ // -------------------------------------------------------------------------
+ 
+-#if !defined(Q_PROCESSOR_X86_64)
++#if !defined(Q_PROCESSOR_X86_64) && !defined(Q_PROCESSOR_ARM_64)
+ #error "32-bit builds are not supported"
+ #endif
+ 
+@@ -281,6 +281,7 @@ ReturnType qt_msgSendSuper(id receiver, SEL selector, Args... args)
+     return superFn(&sup, selector, args...);
+ }
+ 
++#if !defined(Q_PROCESSOR_ARM_64)
+ template <typename ReturnType, typename... Args>
+ ReturnType qt_msgSendSuper_stret(id receiver, SEL selector, Args... args)
+ {
+@@ -295,6 +296,7 @@ ReturnType qt_msgSendSuper_stret(id receiver, SEL selector, Args... args)
+     superStretFn(&ret, &sup, selector, args...);
+     return ret;
+ }
++#endif
+ 
+ template<typename... Args>
+ class QSendSuperHelper {
+@@ -335,11 +337,13 @@ private:
+         return qt_msgSendSuper<ReturnType>(m_receiver, m_selector, std::get<Is>(args)...);
+     }
+ 
++#if !defined(Q_PROCESSOR_ARM_64)
+     template <typename ReturnType, int... Is>
+     if_requires_stret<ReturnType, true> msgSendSuper(std::tuple<Args...>& args, QtPrivate::IndexesList<Is...>)
+     {
+         return qt_msgSendSuper_stret<ReturnType>(m_receiver, m_selector, std::get<Is>(args)...);
+     }
++#endif
+ 
+     template <typename ReturnType>
+     ReturnType msgSendSuper(std::tuple<Args...>& args)
+diff --git a/src/plugins/platforms/cocoa/qcocoahelpers.mm b/src/plugins/platforms/cocoa/qcocoahelpers.mm
+index d36a7f6..039fdf4 100644
+--- a/src/plugins/platforms/cocoa/qcocoahelpers.mm
++++ b/src/plugins/platforms/cocoa/qcocoahelpers.mm
+@@ -372,7 +372,7 @@ QString qt_mac_removeAmpersandEscapes(QString s)
+ 
+ // -------------------------------------------------------------------------
+ 
+-#if !defined(Q_PROCESSOR_X86_64)
++#if !defined(Q_PROCESSOR_X86_64) && !defined(Q_PROCESSOR_ARM_64)
+ #error "32-bit builds are not supported"
+ #endif
+ 

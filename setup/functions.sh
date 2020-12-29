@@ -338,6 +338,37 @@ function build_meson() {
     _postbuild
 }
 
+function build_python() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local python=python3
+
+    if ! which python3 > /dev/null; then
+        python=python
+    fi
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}"
+        ${python} setup.py build ${extraconfrules}
+        touch .stamp_built
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}"
+        ${python} setup.py install --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        touch .stamp_installed
+        popd
+    fi
+
+    _postbuild
+}
+
 function build_qmake() {
     local name="${1}"
     local version="${2}"

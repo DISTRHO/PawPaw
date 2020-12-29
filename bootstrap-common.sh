@@ -6,6 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# check target
 
 target="${1}"
 
@@ -26,10 +27,16 @@ fi
 # - sed
 # - tar
 
+# ---------------------------------------------------------------------------------------------------------------------
+# source setup code
+
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
+
+# ---------------------------------------------------------------------------------------------------------------------
+# create common directories
 
 mkdir -p "${PAWPAW_BUILDDIR}"
 mkdir -p "${PAWPAW_DOWNLOADDIR}"
@@ -39,10 +46,14 @@ mkdir -p "${PAWPAW_TMPDIR}"
 # ---------------------------------------------------------------------------------------------------------------------
 # let's use native glib for linux builds
 
-if [ "${LINUX}" -eq 1 ] && [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
+if [ "${LINUX}" -eq 1 ]; then
     mkdir -p ${TARGET_PKG_CONFIG_PATH}
-    ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
-    ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ "${LINUX}" -eq 1 ] && [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -90,6 +101,6 @@ build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "--disable-fftw --disabl
 
 download libsndfile "${LIBSNDFILE_VERSION}" "http://www.mega-nerd.com/libsndfile/files"
 patch_file libsndfile "${LIBSNDFILE_VERSION}" "configure" 's/ -Wvla//'
-build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-full-suite --disable-alsa --disable-sqlite"
+build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-alsa --disable-full-suite --disable-sqlite"
 
 # ---------------------------------------------------------------------------------------------------------------------

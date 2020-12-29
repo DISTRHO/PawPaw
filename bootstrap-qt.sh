@@ -6,6 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# check target
 
 target="${1}"
 
@@ -15,37 +16,29 @@ if [ -z "${target}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# run bootstrap dependencies
+
+./bootstrap-common.sh "${target}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# source setup code
 
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
 
-mkdir -p "${PAWPAW_BUILDDIR}"
-mkdir -p "${PAWPAW_DOWNLOADDIR}"
-mkdir -p "${PAWPAW_PREFIX}"
-mkdir -p "${PAWPAW_TMPDIR}"
-
 # ---------------------------------------------------------------------------------------------------------------------
-# let's use native glib for linux builds
+# qt package suffix changes depending on the version
 
-if [ "${LINUX}" -eq 1 ] && [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
-    mkdir -p ${TARGET_PKG_CONFIG_PATH}
-    ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
-    ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
+if [ "${QT5_MVERSION}" = "5.12" ]; then
+    qtsuffix="-everywhere-src"
+else
+    qtsuffix="-opensource-src"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# pkgconfig
-
-download pkg-config "${PKG_CONFIG_VERSION}" "https://pkg-config.freedesktop.org/releases"
-build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps --with-internal-glib --with-pc-path=${TARGET_PKG_CONFIG_PATH}"
-
-# ---------------------------------------------------------------------------------------------------------------------
-
-qtsuffix="-opensource-src"
-
-# ---------------------------------------------------------------------------------------------------------------------
+# custom functions for qt handling
 
 function download_qt() {
     local name="${1}"
@@ -62,14 +55,7 @@ function download_qt() {
         mkdir "${dlfolder}"
         tar -xf "${dlfile}" -C "${dlfolder}" --strip-components=1
     fi
-#     if [ ! -d "${dlfolder}" ]; then
-#         unzip "${dlfile}" -d "${PAWPAW_BUILDDIR}"
-#         chmod +x "${dlfolder}/configure"
-#         dos2unix "${dlfolder}/configure"
-#     fi
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
 
 function build_qt_conf() {
     local name="${1}"
@@ -101,10 +87,22 @@ function build_qt_conf() {
         done
     fi
 
+    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ]; then
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch" | sort); do
+            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
+                touch "${pkgdir}/.stamp_applied_${p}"
+            fi
+        done
+    fi
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
         ./configure ${extraconfrules}
         touch .stamp_configured
+        #sed -i -e 's/sub-tests //' Makefile
+        #sed -i -e 's/sub-tests-all //' Makefile
+        #sed -i -e 's/sub-tests-qmake_all //' Makefile
         popd
     fi
 
@@ -134,10 +132,16 @@ function build_qt_conf() {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# qt config
 
 # base
 qtbase_conf_args="-opensource -confirm-license"
-qtbase_conf_args+=" -c++std c++11"
+qtbase_conf_args+=" -c++std"
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    qtbase_conf_args+=" c++14"
+else
+    qtbase_conf_args+=" c++11"
+fi
 # qtbase_conf_args+=" -optimized-qmake"
 qtbase_conf_args+=" -optimize-size"
 qtbase_conf_args+=" -release -strip"
@@ -159,7 +163,12 @@ qtbase_conf_args+=" -libexecdir ${PAWPAW_PREFIX}/libexec"
 qtbase_conf_args+=" -plugindir ${PAWPAW_PREFIX}/lib/qt5/plugins"
 
 # enable optimizations (sse2 only)
-qtbase_conf_args+=" -sse2"
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    # TODO SSE2 and NEON
+    qtbase_conf_args+=" -no-sse2"
+else
+    qtbase_conf_args+=" -sse2"
+fi
 qtbase_conf_args+=" -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 -no-avx -no-avx2 -no-avx512"
 
 # enable some basic stuff
@@ -194,9 +203,11 @@ qtbase_conf_args+=" -no-sctp"
 qtbase_conf_args+=" -no-securetransport"
 qtbase_conf_args+=" -no-syslog"
 qtbase_conf_args+=" -no-tslib"
-qtbase_conf_args+=" -no-xinput2"
-qtbase_conf_args+=" -no-xkbcommon-evdev"
-qtbase_conf_args+=" -no-xkbcommon-x11"
+if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    qtbase_conf_args+=" -no-xinput2"
+    qtbase_conf_args+=" -no-xkbcommon-evdev"
+    qtbase_conf_args+=" -no-xkbcommon-x11"
+fi
 
 # font stuff
 qtbase_conf_args+=" -qt-freetype"
@@ -251,26 +262,47 @@ else
     qtbase_conf_args+=" -qt-zlib"
 fi
 
+# ---------------------------------------------------------------------------------------------------------------------
+# qt build
+
 download_qt qtbase
-# patch_file qtbase${qtsuffix} ${QT5_VERSION} "configure" 's/ --sdk $sdk / /'
-# patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/features/mac/sdk.prf" 's/ --sdk $$sdk / /'
-patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/macx-clang/qmake.conf" 's/10.10/10.8/'
-patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -shared/= -static -shared/'
-patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
+
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QMAKE_APPLE_DEVICE_ARCHS = x86_64/QMAKE_APPLE_DEVICE_ARCHS = arm64 x86_64/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MIN = 10.13/QT_MAC_SDK_VERSION_MIN = 10.12/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MAX = 10.15/QT_MAC_SDK_VERSION_MAX = 10.12/'
+elif [ "${MACOS}" -eq 1 ]; then
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/macx-clang/qmake.conf" 's/10.10/10.8/'
+fi
+if [ "${WIN32}" -eq 1 ]; then
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -shared/= -static -shared/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
+fi
+
 build_qt_conf qtbase "${qtbase_conf_args}"
 
-if [ "${MACOS}" -eq 1 ] && [ ! -e "ln -s ${PAWPAW_PREFIX}/include/qt5/QtCore" ]; then
+if [ "${MACOS}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/include/qt5/QtCore" ]; then
     ln -sfv ${PAWPAW_PREFIX}/lib/QtCore.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtCore
     ln -sfv ${PAWPAW_PREFIX}/lib/QtGui.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtGui
     ln -sfv ${PAWPAW_PREFIX}/lib/QtWidgets.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtWidgets
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# qtmacextras
+
+if [ "${MACOS}" -eq 1 ]; then
+    download_qt qtmacextras
+    build_qmake qtmacextras${qtsuffix} ${QT5_VERSION}
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# qtsvg
 
 download_qt qtsvg
 build_qmake qtsvg${qtsuffix} ${QT5_VERSION}
 
 # ---------------------------------------------------------------------------------------------------------------------
+# qttools (host only, thus not needed if cross-compiling)
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
     download_qt qttools

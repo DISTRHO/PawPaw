@@ -6,6 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# check target
 
 target="${1}"
 
@@ -15,10 +16,12 @@ if [ -z "${target}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# run bootstrap dependencies
 
 ./bootstrap-common.sh "${target}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# source setup code
 
 source setup/check_target.sh
 source setup/env.sh
@@ -86,7 +89,7 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
             GLIB_EXTRAFLAGS+=" glib_cv_uscore=no"
             GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getpwuid_r=yes"
             GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getgrgid_r=yes"
-            patch_file glib ${GLIB_VERSION} "configure.in" 's/G_ATOMIC_I486/G_ATOMIC_I486_NOT/'
+            patch_file glib ${GLIB_VERSION} "configure.in" 's/G_ATOMIC_I486/G_ATOMIC_NOT_I486/'
         fi
     fi
 
