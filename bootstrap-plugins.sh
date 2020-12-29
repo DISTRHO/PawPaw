@@ -170,9 +170,10 @@ FLUIDSYNTH_EXTRAFLAGS+=" -Denable-trap-on-fpe=OFF"
 download fluidsynth ${FLUIDSYNTH_VERSION} "https://github.com/FluidSynth/fluidsynth/archive"
 patch_file fluidsynth ${FLUIDSYNTH_VERSION} "CMakeLists.txt" 's/_init_lib_suffix "64"/_init_lib_suffix ""/'
 build_cmake fluidsynth ${FLUIDSYNTH_VERSION} "${FLUIDSYNTH_EXTRAFLAGS}"
-# touch src/fluidsynth
 
-# sed -i -e "s|-lfluidsynth|-lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -logg -lpthread -lm -liconv|" ${PREFIX}/lib/pkgconfig/fluidsynth.pc
+if [ "${MACOS}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
+    sed -i -e 's/-lfluidsynth/-lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -logg -lpthread -liconv -lm/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
