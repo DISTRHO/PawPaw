@@ -203,7 +203,7 @@ qtbase_conf_args+=" -no-sctp"
 qtbase_conf_args+=" -no-securetransport"
 qtbase_conf_args+=" -no-syslog"
 qtbase_conf_args+=" -no-tslib"
-if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+if [ "${QT5_MVERSION}" = "5.9" ]; then
     qtbase_conf_args+=" -no-xinput2"
     qtbase_conf_args+=" -no-xkbcommon-evdev"
     qtbase_conf_args+=" -no-xkbcommon-x11"
@@ -271,6 +271,7 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QMAKE_APPLE_DEVICE_ARCHS = x86_64/QMAKE_APPLE_DEVICE_ARCHS = arm64 x86_64/'
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MIN = 10.13/QT_MAC_SDK_VERSION_MIN = 10.12/'
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MAX = 10.15/QT_MAC_SDK_VERSION_MAX = 10.12/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/features/toolchain.prf" 's/-arch $$QMAKE_APPLE_DEVICE_ARCHS/-arch arm64/'
 elif [ "${MACOS}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/macx-clang/qmake.conf" 's/10.10/10.8/'
 fi

@@ -25,7 +25,7 @@ ZLIB_VERSION=1.2.11
 
 # qt stuff
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    QT5_VERSION=5.12.5
+    QT5_VERSION=5.12.10
     QT5_MVERSION=5.12
 else
     QT5_VERSION=5.9.8

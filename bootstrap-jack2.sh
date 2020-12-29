@@ -138,7 +138,7 @@ if [ "${WIN32}" -eq 1 ]; then
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/rpcsal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/sal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/structuredquery.h"
-    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir="${ASIO_DIR}" --with-winapi=asio,directx,wasapi,wdmks,wmme"
+    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir='${ASIO_DIR}' --with-winapi=asio,directx,wasapi,wdmks,wmme"
     install_file portaudio19 "${PORTAUDIO_VERSION}" "include/pa_asio.h" "include"
 fi
 
@@ -163,7 +163,7 @@ if [ "${WIN64}" -eq 1 ]; then
     source setup/functions.sh
 
     copy_download tre tre-x32 "${TRE_VERSION}"
-    build_autoconf tre-x32 "${TRE_VERSION}" "--disable-nls --libdir="${PAWPAW_PREFIX}"/lib32"
+    build_autoconf tre-x32 "${TRE_VERSION}" "--disable-nls --libdir='${PAWPAW_PREFIX}/lib32'"
 
     if [ ! -e "${PAWPAW_PREFIX}/lib/libtre32.a" ]; then
         ln -s "${PAWPAW_PREFIX}/lib32/libtre.a" "${PAWPAW_PREFIX}/lib/libtre32.a"

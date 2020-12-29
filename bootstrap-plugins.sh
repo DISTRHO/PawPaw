@@ -106,7 +106,7 @@ build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --d
 # lv2
 
 download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
-build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
+build_waf lv2 "${LV2_VERSION}" "--lv2dir='${PAWPAW_PREFIX}/lib/lv2' --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
@@ -178,14 +178,14 @@ build_cmake fluidsynth ${FLUIDSYNTH_VERSION} "${FLUIDSYNTH_EXTRAFLAGS}"
 # mxml
 
 download mxml ${MXML_VERSION} "https://github.com/michaelrsweet/mxml/archive"
-build_autoconf mxml ${MXML_VERSION} "--disable-shared --prefix=${PAWPAW_PREFIX}"
+build_autoconf mxml ${MXML_VERSION}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # zlib
 
 if [ "${MACOS}" -eq 0 ]; then
     download zlib ${ZLIB_VERSION} "https://github.com/madler/zlib/archive"
-    build_conf zlib ${ZLIB_VERSION} "--static --prefix=${PAWPAW_PREFIX}"
+    build_conf zlib ${ZLIB_VERSION} "--static --prefix='${PAWPAW_PREFIX}'"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
