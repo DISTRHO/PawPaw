@@ -54,7 +54,10 @@ function build_pyqt() {
 
     if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
         pushd "${pkgdir}"
-        ${python} configure.py build ${extraconfrules}
+        ${python} configure.py ${extraconfrules}
+        sed -i -e 's/CFLAGS =/CFLAGS +=/' */Makefile
+        sed -i -e 's/CXXFLAGS =/CXXFLAGS +=/' */Makefile
+        sed -i -e 's/LIBS =/LIBS += $(LDFLAGS)/' */Makefile
         touch .stamp_preconfigured
         popd
     fi
@@ -82,9 +85,9 @@ fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
 if [ "${MACOS}" -eq 0 ]; then
-    sed -i -e "s/#zlib zlibmodule.c/zlib zlibmodule.c/" Modules/Setup.dist
+    patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
 fi
-build_conf Python "${PYTHON_VERSION}" "--enable-optimizations --enable-shared"
+build_conf Python "${PYTHON_VERSION}" "--prefix='${PAWPAW_PREFIX}' --enable-optimizations --enable-shared"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip
@@ -126,9 +129,9 @@ build_python importlib_metadata "${IMPORTLIB_METADATA_VERSION}"
 # cxfreeze
 
 download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze/archive"
-sed -i -e 's/, use_builtin_types=False//' cx_Freeze/macdist.py
-sed -i -e 's/"python%s.%s"/"python%s.%sm"/' setup.py
-sed -i -e 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/' setup.py
+patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/"python%s.%s"/"python%s.%sm"/'
+patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
+patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
 build_python cx_Freeze "${CXFREEZE_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
