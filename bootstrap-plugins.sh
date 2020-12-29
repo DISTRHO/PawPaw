@@ -106,7 +106,7 @@ build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --d
 # lv2
 
 download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
-build_waf lv2 "${LV2_VERSION}" "--lv2dir='${PAWPAW_PREFIX}/lib/lv2' --no-coverage --no-plugins"
+build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
