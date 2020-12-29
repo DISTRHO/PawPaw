@@ -87,7 +87,7 @@ download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_
 if [ "${MACOS}" -eq 0 ]; then
     patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
 fi
-build_conf Python "${PYTHON_VERSION}" "--prefix='${PAWPAW_PREFIX}' --enable-optimizations --enable-shared"
+build_conf Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-optimizations --enable-shared"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip
