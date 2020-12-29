@@ -6,7 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
-QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.6.3}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.0}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -128,6 +128,10 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
         qjackctl_extra_args="--with-jack="${jack2_prefix}${jack2_extra_prefix}""
     elif [ "${WIN32}" -eq 1 ]; then
         qjackctl_extra_args="--enable-portaudio"
+    fi
+
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        export EXTRA_CXXFLAGS="-std=gnu++11"
     fi
 
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
