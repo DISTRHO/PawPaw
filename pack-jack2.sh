@@ -6,7 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
-QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.6.2}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.0}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
