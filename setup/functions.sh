@@ -350,7 +350,7 @@ function build_python() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
     local python=python3
 
-    if ! which python3 > /dev/null; then
+    if [ ! -e "${PAWPAW_PREFIX}/bin/python3" ] && ! which python3 > /dev/null; then
         python=python
     fi
 
