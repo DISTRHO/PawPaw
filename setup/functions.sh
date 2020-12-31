@@ -38,7 +38,7 @@ function download() {
             else
                 dlurl="${dlbaseurl}/${name}-${version}.${dlext}"
             fi
-            curl -L "${dlurl}" -o "${dlfile}"
+            curl -L "${dlurl}" -o "${dlfile}" --fail
         fi
     fi
 
