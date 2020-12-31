@@ -142,7 +142,13 @@ build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
 # ---------------------------------------------------------------------------------------------------------------------
 # pyqt5
 
-download PyQt5_gpl "${PYQT5_VERSION}" "https://files.kde.org/krita/build/dependencies"
+if [ "${PYQT5_VERSION}" = "5.13.1" ]; then
+    PYQT5_DOWNLOAD_URL="https://files.kde.org/krita/build/dependencies"
+else
+    PYQT5_DOWNLOAD_URL="http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-${PYQT5_VERSION}"
+fi
+
+download PyQt5_gpl "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
 build_pyqt PyQt5_gpl "${PYQT5_VERSION}" "--concatenate --confirm-license -c"
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -152,36 +158,46 @@ download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# setuptools_scm
+# setuptools_scm (optional)
 
-download setuptools_scm "${SETUPTOOLS_SCM_VERSION}" "https://files.pythonhosted.org/packages/ed/b6/979bfa7b81878b2b4475dde092aac517e7f25dd33661796ec35664907b31"
-build_python setuptools_scm "${SETUPTOOLS_SCM_VERSION}"
-
-# ---------------------------------------------------------------------------------------------------------------------
-# toml
-
-download toml "${TOML_VERSION}" "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c"
-build_python toml "${TOML_VERSION}"
+if [ -n "${SETUPTOOLS_SCM_VERSION}" ]; then
+    download setuptools_scm "${SETUPTOOLS_SCM_VERSION}" "https://files.pythonhosted.org/packages/ed/b6/979bfa7b81878b2b4475dde092aac517e7f25dd33661796ec35664907b31"
+    build_python setuptools_scm "${SETUPTOOLS_SCM_VERSION}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# zipp
+# toml (optional)
 
-download zipp "${ZIPP_VERSION}" "https://files.pythonhosted.org/packages/ce/b0/757db659e8b91cb3ea47d90350d7735817fe1df36086afc77c1c4610d559"
-build_python zipp "${ZIPP_VERSION}"
+if [ -n "${TOML_VERSION}" ]; then
+    download toml "${TOML_VERSION}" "https://files.pythonhosted.org/packages/be/ba/1f744cdc819428fc6b5084ec34d9b30660f6f9daaf70eead706e3203ec3c"
+    build_python toml "${TOML_VERSION}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# importlib_metadata
+# zipp (optional)
 
-download importlib_metadata "${IMPORTLIB_METADATA_VERSION}" "https://files.pythonhosted.org/packages/3f/a8/16dc098b0addd1c20719c18a86e985be851b3ec1e103e703297169bb22cc"
-build_python importlib_metadata "${IMPORTLIB_METADATA_VERSION}"
+if [ -n "${ZIPP_VERSION}" ]; then
+    download zipp "${ZIPP_VERSION}" "https://files.pythonhosted.org/packages/ce/b0/757db659e8b91cb3ea47d90350d7735817fe1df36086afc77c1c4610d559"
+    build_python zipp "${ZIPP_VERSION}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# importlib_metadata (optional)
+
+if [ -n "${IMPORTLIB_METADATA_VERSION}" ]; then
+    download importlib_metadata "${IMPORTLIB_METADATA_VERSION}" "https://files.pythonhosted.org/packages/3f/a8/16dc098b0addd1c20719c18a86e985be851b3ec1e103e703297169bb22cc"
+    build_python importlib_metadata "${IMPORTLIB_METADATA_VERSION}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # cxfreeze
 
 download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze/archive" "" "nv"
-patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/"python%s.%s"/"python%s.%sm"/'
-patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
-patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
+if [ "${CXFREEZE_VERSION}" = "5.13.1" ]; then
+    patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/"python%s.%s"/"python%s.%sm"/'
+    patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
+    patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
+fi
 build_python cx_Freeze "${CXFREEZE_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
