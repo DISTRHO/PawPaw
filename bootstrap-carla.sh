@@ -44,9 +44,10 @@ function build_conf_python() {
 
     # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
-    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
+    #export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    #export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    #export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -79,32 +80,44 @@ function build_pyqt() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    local EXTRA_CFLAGS2="${EXTRA_CFLAGS}"
-    local EXTRA_CXXFLAGS2="${EXTRA_CXXFLAGS}"
-    local EXTRA_LDFLAGS2="${EXTRA_LDFLAGS}"
-    local EXTRA_MAKE_ARGS2="${EXTRA_MAKE_ARGS}"
-
     _prebuild "${name}" "${pkgdir}"
 
-    if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
+    # remove flags not compatible with python
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
+    #export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility=hidden//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
+    #export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
+    #export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    #export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    #export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+
+    if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
         python3 configure.py ${extraconfrules}
-        sed -i -e 's/CFLAGS =/CFLAGS +=/' */Makefile
-        sed -i -e 's/CXXFLAGS =/CXXFLAGS +=/' */Makefile
-        sed -i -e 's/LIBS =/LIBS += $(LDFLAGS)/' */Makefile
+        # used in sip
+        sed -i -e 's/CFLAGS *=/CFLAGS +=/' */Makefile
+        sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile
+        sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile
         sed -i -e 's|$(DESTDIR)/usr|$(DESTDIR)$(PREFIX)|g' */Makefile
-        touch .stamp_preconfigured
+        touch .stamp_configured
         popd
     fi
 
-    _postbuild
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}"
+        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS}
+        touch .stamp_built
+        popd
+    fi
 
-    export EXTRA_CFLAGS="${EXTRA_CFLAGS2}"
-    export EXTRA_CXXFLAGS="${EXTRA_CXXFLAGS2}"
-    export EXTRA_LDFLAGS="${EXTRA_LDFLAGS2}"
-    export EXTRA_MAKE_ARGS="${EXTRA_MAKE_ARGS2}"
-
-    build_make "${name}" "${version}"
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}"
+        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
+        touch .stamp_installed
+        popd
+    fi
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -356,6 +356,12 @@ function build_python() {
 
     _prebuild "${name}" "${pkgdir}"
 
+    # fix build of python packages
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility=hidden//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
+
     touch "${pkgdir}/.stamp_configured"
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
