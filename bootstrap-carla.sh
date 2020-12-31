@@ -78,11 +78,6 @@ function build_pyqt() {
     local extraconfrules="${3}"
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
-    local python=python3
-
-    if ! which python3 > /dev/null; then
-        python=python
-    fi
 
     local EXTRA_CFLAGS2="${EXTRA_CFLAGS}"
     local EXTRA_CXXFLAGS2="${EXTRA_CXXFLAGS}"
@@ -93,10 +88,11 @@ function build_pyqt() {
 
     if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
         pushd "${pkgdir}"
-        ${python} configure.py ${extraconfrules}
+        python3 configure.py ${extraconfrules}
         sed -i -e 's/CFLAGS =/CFLAGS +=/' */Makefile
         sed -i -e 's/CXXFLAGS =/CXXFLAGS +=/' */Makefile
         sed -i -e 's/LIBS =/LIBS += $(LDFLAGS)/' */Makefile
+        sed -i -e 's|$(DESTDIR)/usr|$(DESTDIR)$(PREFIX)|g' */Makefile
         touch .stamp_preconfigured
         popd
     fi
