@@ -136,16 +136,7 @@ build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
 
-LV2LINT_SUPPORTED="true"
-
-if [ "${MACOS_OLD}" -eq 1 ] || [ "${CROSS_COMPILING}" -eq 1 ]; then
-    LV2LINT_SUPPORTED="false"
-fi
-if [ "${MACOS}" -eq 1 ] && [ "$(uname -r)" = "12.6.0" ]; then
-    LV2LINT_SUPPORTED="false"
-fi
-
-if [ "${LV2LINT_SUPPORTED}" = "true" ]; then
+if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
     download lv2lint "${LV2LINT_VERSION}" "https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/${LV2LINT_VERSION}"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"

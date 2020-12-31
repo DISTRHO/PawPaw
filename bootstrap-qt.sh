@@ -282,7 +282,7 @@ fi
 
 build_qt_conf qtbase "${qtbase_conf_args}"
 
-if [ "${MACOS}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/include/qt5/QtCore" ]; then
+if [ "${MACOS}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/include/qt5/QtWidgets" ]; then
     ln -sfv ${PAWPAW_PREFIX}/lib/QtCore.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtCore
     ln -sfv ${PAWPAW_PREFIX}/lib/QtGui.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtGui
     ln -sfv ${PAWPAW_PREFIX}/lib/QtWidgets.framework/Headers ${PAWPAW_PREFIX}/include/qt5/QtWidgets

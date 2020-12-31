@@ -83,9 +83,13 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # python
 
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    PYTHON_EXTRAFLAGS = "--enable-optimizations"
+fi
+
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
 patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
-build_conf Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-optimizations --enable-shared"
+build_conf Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip
