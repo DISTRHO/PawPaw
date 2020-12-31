@@ -84,16 +84,18 @@ fi
 # python
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
-if [ "${MACOS}" -eq 0 ]; then
-    patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
-fi
+patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
 build_conf Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-optimizations --enable-shared"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip
 
+if [ "${SIP_VERSION}" = "4.19.19" ]; then
+    SIP_EXTRAFLAGS = "--sip-module PyQt5.sip"
+fi
+
 download sip "${SIP_VERSION}" "https://files.kde.org/krita/build/dependencies"
-build_pyqt sip "${SIP_VERSION}" "--sip-module PyQt5.sip"
+build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pyqt5
