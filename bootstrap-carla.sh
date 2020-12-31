@@ -33,6 +33,45 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 # custom function as needed for pyqt packages
 
+function build_conf_python() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    _prebuild "${name}" "${pkgdir}"
+
+    # remove flags not compatible with python
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+
+    if [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        pushd "${pkgdir}"
+        ./configure ${extraconfrules}
+        touch .stamp_configured
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}"
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
+        touch .stamp_built
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}"
+        make ${MAKE_ARGS} -j 1 install
+        touch .stamp_installed
+        popd
+    fi
+
+    _postbuild
+}
+
 function build_pyqt() {
     local name="${1}"
     local version="${2}"
@@ -89,7 +128,7 @@ fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
 patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
-build_conf Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
+build_conf_python Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip
