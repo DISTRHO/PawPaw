@@ -134,10 +134,13 @@ build_conf_python Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable
 # sip
 
 if [ "${SIP_VERSION}" = "4.19.19" ]; then
-    SIP_EXTRAFLAGS = "--sip-module PyQt5.sip"
+    SIP_DOWNLOAD_URL="https://files.kde.org/krita/build/dependencies"
+    SIP_EXTRAFLAGS="--sip-module PyQt5.sip"
+else
+    SIP_DOWNLOAD_URL="http://sourceforge.net/projects/pyqt/files/sip/sip-${SIP_VERSION}"
 fi
 
-download sip "${SIP_VERSION}" "https://files.kde.org/krita/build/dependencies"
+download sip "${SIP_VERSION}" "${SIP_DOWNLOAD_URL}"
 build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
