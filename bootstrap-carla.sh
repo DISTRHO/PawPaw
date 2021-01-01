@@ -85,13 +85,13 @@ function build_pyqt() {
     # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
-    #export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility=hidden//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
-    #export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
-    #export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
-    #export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
-    #export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -132,11 +132,13 @@ fi
 # python
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    PYTHON_EXTRAFLAGS = "--enable-optimizations"
+    PYTHON_EXTRAFLAGS="--enable-optimizations"
 fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
-patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
+if [ "${PYTHON_VERSION}" = "3.7.4" ]; then
+    patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
+fi
 build_conf_python Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -157,12 +159,14 @@ build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
 
 if [ "${PYQT5_VERSION}" = "5.13.1" ]; then
     PYQT5_DOWNLOAD_URL="https://files.kde.org/krita/build/dependencies"
+    PYQT5_SUFFIX="_gpl"
 else
     PYQT5_DOWNLOAD_URL="http://sourceforge.net/projects/pyqt/files/PyQt5/PyQt-${PYQT5_VERSION}"
+    PYQT5_SUFFIX="_gpl"
 fi
 
-download PyQt5_gpl "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
-build_pyqt PyQt5_gpl "${PYQT5_VERSION}" "--concatenate --confirm-license -c"
+download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
+build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "--concatenate --confirm-license -c"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pyliblo
@@ -206,8 +210,7 @@ fi
 # cxfreeze
 
 download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze/archive" "" "nv"
-if [ "${CXFREEZE_VERSION}" = "5.13.1" ]; then
-    patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/"python%s.%s"/"python%s.%sm"/'
+if [ "${CXFREEZE_VERSION}" = "6.4.2" ]; then
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
 fi
