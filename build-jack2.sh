@@ -6,6 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
+JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
 QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.0}
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -113,10 +114,17 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# jack-router (download, win32 only)
+
+if [ "${WIN32}" -eq 1 ]; then
+    download jack-router "${JACK_ROUTER_VERSION}" "https://github.com/jackaudio/jack-router.git" "" "git"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # qjackctl (if qt is available)
 
 if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
-    download qjackctl ${QJACKCTL_VERSION} https://download.sourceforge.net/qjackctl
+    download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
 
     if [ "${WIN64}" -eq 1 ]; then
         patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'

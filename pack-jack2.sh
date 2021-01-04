@@ -6,6 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
+JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
 QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.0}
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -44,24 +45,40 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 
 if [ "${WIN32}" -eq 1 ]; then
+    # setup innosetup
     dlfile="${PAWPAW_DOWNLOADDIR}/innosetup-6.0.5.exe"
     innodir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
     iscc="${innodir}/drive_c/InnoSeup/ISCC.exe"
     wine="env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${innodir}" wine"
 
+    # download it
     if [ ! -f "${dlfile}" ]; then
         # FIXME proper dl version
         curl -L https://jrsoftware.org/download.php/is.exe?site=2 -o "${dlfile}"
     fi
 
+    # initialize wine
     if [ ! -d "${innodir}"/drive_c ]; then
         ${wine}boot -u
     fi
 
+    # install innosetup in custom wineprefix
     if [ ! -f "${innodir}"/drive_c/InnoSeup/ISCC.exe ]; then
         ${wine} "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
     fi
 
+    # copy jackrouter binaries
+    mkdir -p "${jack2_prefix}/jack-router/win32"
+    mkdir -p "${jack2_prefix}/jack-router/win64"
+    copy_file jack-router "${JACK_ROUTER_VERSION}" "README-win" "${jack2_prefix}/jack-router/README.txt"
+    copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win32/JackRouter.dll" "${jack2_prefix}/jack-router/win32/JackRouter.dll"
+    copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win32/JackRouter.ini" "${jack2_prefix}/jack-router/win32/JackRouter.ini"
+    if [ "${WIN64}" -eq 1 ]; then
+        copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win64/JackRouter.dll" "${jack2_prefix}/jack-router/win32/JackRouter.dll"
+        copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win64/JackRouter.ini" "${jack2_prefix}/jack-router/win64/JackRouter.ini"
+    fi
+
+    # finally create the installer file
     pushd "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/windows/inno"
     echo "#define VERSION \"${JACK2_VERSION}\"" > "version.iss"
     ln -sf "${PAWPAW_PREFIX}/bin/Qt5"{Core,Gui,Network,Widgets,Xml}".dll" .
@@ -70,6 +87,7 @@ if [ "${WIN32}" -eq 1 ]; then
     ${wine} "${iscc}" "${PAWPAW_TARGET}.iss"
     popd
 
+    # and move installer file where CI expects it to be
     mv "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/windows/inno/"*.exe .
 
 elif [ "${MACOS}" -eq 1 ]; then

@@ -1,0 +1,12 @@
+diff --git a/src/qjackctlGraph.cpp b/src/qjackctlGraph.cpp
+index bd0ca71..fe45f1f 100644
+--- a/src/qjackctlGraph.cpp
++++ b/src/qjackctlGraph.cpp
+@@ -51,6 +51,7 @@
+ 
+ #include <algorithm>
+ 
++#define _USE_MATH_DEFINES
+ #include <math.h>
+ 
+ 
