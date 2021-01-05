@@ -142,6 +142,9 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
         export EXTRA_CXXFLAGS="-std=gnu++11"
     fi
 
+    # TODO remove once 0.9.1 is out
+    cp "${PAWPAW_ROOT}/patches/qjackctl/clear1.png" "${PAWPAW_BUILDDIR}/qjackctl${name}-${QJACKCTL_VERSION}/src/images/clear1.png"
+
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
 
     if [ "${WIN32}" -eq 1 ]; then

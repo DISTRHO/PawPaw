@@ -74,7 +74,7 @@ if [ "${WIN32}" -eq 1 ]; then
     copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win32/JackRouter.dll" "${jack2_prefix}/jack-router/win32/JackRouter.dll"
     copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win32/JackRouter.ini" "${jack2_prefix}/jack-router/win32/JackRouter.ini"
     if [ "${WIN64}" -eq 1 ]; then
-        copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win64/JackRouter.dll" "${jack2_prefix}/jack-router/win32/JackRouter.dll"
+        copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win64/JackRouter.dll" "${jack2_prefix}/jack-router/win64/JackRouter.dll"
         copy_file jack-router "${JACK_ROUTER_VERSION}" "binaries/win64/JackRouter.ini" "${jack2_prefix}/jack-router/win64/JackRouter.ini"
     fi
 
