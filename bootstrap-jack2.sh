@@ -94,7 +94,12 @@ function build_custom_db() {
 }
 
 patch_file db "${DB_VERSION}" "src/dbinc/atomic.h" 's/__atomic_compare_exchange/__db_atomic_compare_exchange/'
-build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disable-sql --disable-tcl"
+
+# FIXME: db fails for macOS universal builds
+if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disable-sql --disable-tcl"
+fi
+
 # --enable-posixmutexes --enable-compat185 --enable-cxx --enable-dbm --enable-stl
 
 # ---------------------------------------------------------------------------------------------------------------------
