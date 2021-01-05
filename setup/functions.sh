@@ -247,7 +247,17 @@ function build_cmake() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules="-DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME} ${extraconfrules}"
+        extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}"
+    fi
+    if [ "${MACOS}" -eq 1 ]; then
+        if [ "${MACOS_OLD}" -eq 1 ]; then
+            OSX_TARGET="10.5"
+        elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+            OSX_TARGET="10.12"
+        else
+            OSX_TARGET="10.8"
+        fi
+        extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=${OSX_TARGET}"
     fi
 
     _prebuild "${name}" "${pkgdir}"
