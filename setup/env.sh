@@ -65,6 +65,9 @@ elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL -DPTW32_STATIC_LIB -mstackrealign"
 fi
 
+# anything that talks to db should have this
+BUILD_FLAGS+=" -DHAVE_MIXED_SIZE_ADDRESSING"
+
 TARGET_CFLAGS="${BUILD_FLAGS}"
 TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 
