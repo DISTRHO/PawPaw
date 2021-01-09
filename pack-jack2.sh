@@ -105,11 +105,19 @@ elif [ "${MACOS}" -eq 1 ]; then
     patch_osx_qtapp qjackctl "${QJACKCTL_VERSION}" "${qjackctl_app}"
     patch_osx_binary_libs "${qjackctl_dir}/qjackctl"
 
+    cp "${PAWPAW_ROOT}/patches/qjackctl/QjackCtl.icns" "${qjackctl_app}/Contents/Resources/QjackCtl.icns"
+    sed -i -e 's|Created by Qt/QMake|JACK Audio Connection Kit Qt GUI Interface|' "${qjackctl_app}/Contents/Info.plist"
+    sed -i -e 's|com.yourcompany.qjackctl|org.rncbc.QjackCtl|' "${qjackctl_app}/Contents/Info.plist"
+    sed -i -e 's|string>qjackctl</string>|string>QjackCtl</string>|' "${qjackctl_app}/Contents/Info.plist"
+    sed -i -e 's|<string></string>|<string>QjackCtl.icns</string>|' "${qjackctl_app}/Contents/Info.plist"
+    rm "${qjackctl_app}/Contents/Info.plist-e"
+    mv "${qjackctl_app}/Contents/MacOS/qjackctl" "${qjackctl_app}/Contents/MacOS/QjackCtl" 
+
     rm -rf jack2/macosx/qjackctl.app
-    cp -rv "${PAWPAW_PREFIX}/bin/qjackctl.app" jack2/macosx/
+    cp -rv "${qjackctl_app}" jack2/macosx/QjackCtl.app
 
     rm -f jack2-macOS-${JACK2_VERSION}.tar.gz
-    tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-${jack2_lastversion}.pkg qjackctl.app
+    tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-${jack2_lastversion}.pkg QjackCtl.app
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
