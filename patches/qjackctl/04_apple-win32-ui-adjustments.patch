@@ -52,7 +52,7 @@ index ee9afa4..f206270 100644
  	// Register the first timer slot.
  	QTimer::singleShot(QJACKCTL_TIMER_MSECS, this, SLOT(timerSlot()));
  
-+#ifdef __APPLE__
++#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32) || defined(__APPLE__)
 +	// increazing height make UI look ugly and it is not really useful
 +	setFixedHeight(height());
 +#endif
@@ -68,7 +68,7 @@ index 8294606..487b7de 100644
  	}
  	m_settings.endGroup();
  
-+#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32) || defined(__APPLE__)
++#ifdef __APPLE__
 +	// alternative custom defaults, as the mac theme does not look good with our custom widgets
 +	sCustomColorTheme = "KXStudio";
 +	sCustomStyleTheme = "Fusion";
