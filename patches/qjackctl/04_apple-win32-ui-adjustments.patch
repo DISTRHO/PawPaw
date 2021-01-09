@@ -68,7 +68,7 @@ index 8294606..487b7de 100644
  	}
  	m_settings.endGroup();
  
-+#ifdef __APPLE__
++#if defined(__WIN32__) || defined(_WIN32) || defined(WIN32) || defined(__APPLE__)
 +	// alternative custom defaults, as the mac theme does not look good with our custom widgets
 +	sCustomColorTheme = "KXStudio";
 +	sCustomStyleTheme = "Fusion";

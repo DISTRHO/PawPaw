@@ -532,7 +532,7 @@ function copy_file() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    if [ ! -e "${pkgdir}/${target}" ]; then
+    if [ ! -e "${pkgdir}/${target}" ] || [ "${source}" -nt "${target}" ]; then
         pushd "${pkgdir}"
         cp -v "${source}" "${target}"
         popd
