@@ -147,7 +147,12 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
 
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
 
-    if [ "${WIN32}" -eq 1 ]; then
+    if [ "${MACOS}" -eq 1 ]; then
+        cp "${PAWPAW_ROOT}/patches/qjackctl/QjackCtl.icns" "${PAWPAW_BUILDDIR}/qjackctl${name}-${QJACKCTL_VERSION}/src/qjackctl.app/Contents/Resources/QjackCtl.icns"
+        patch_file qjackctl "${QJACKCTL_VERSION}" "src/qjackctl.app/Contents/Info.plist" 's|Created by Qt/QMake|JACK Audio Connection Kit Qt GUI Interface|'
+        patch_file qjackctl "${QJACKCTL_VERSION}" "src/qjackctl.app/Contents/Info.plist" 's|com.yourcompany.qjackctl|org.rncbc.QjackCtl|'
+        patch_file qjackctl "${QJACKCTL_VERSION}" "src/qjackctl.app/Contents/Info.plist" 's|<string></string>|<string>QjackCtl.icns</string>|'
+    elif [ "${WIN32}" -eq 1 ]; then
         copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
     fi
 fi
