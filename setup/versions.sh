@@ -55,14 +55,16 @@ fi
 # carla
 
 FILE_VERSION=5.34
-PYLIBLO_VERSION=0.9.2
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     CXFREEZE_VERSION=6.4.2
     PYTHON_VERSION=3.9.1
+    PYLIBLO_VERSION=0.10.0
     PYQT5_VERSION=5.13.1
     SIP_VERSION=4.19.19
-    # extra, needed only for cxfreeze
+    # extra, needed for pyliblo
+    CYTHON_VERSION=0.29.21
+    # extra, needed for cxfreeze
     IMPORTLIB_METADATA_VERSION=3.1.1
     SETUPTOOLS_SCM_VERSION=5.0.0
     TOML_VERSION=0.10.2
@@ -70,6 +72,7 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
 else
     CXFREEZE_VERSION=6.1
     PYTHON_VERSION=3.7.4
+    PYLIBLO_VERSION=0.9.2
     PYQT5_VERSION=5.9.2
     SIP_VERSION=4.19.13
 fi

@@ -169,6 +169,14 @@ download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
 build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "--concatenate --confirm-license -c"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# cython (optional)
+
+if [ -n "${CYTHON_VERSION}" ]; then
+    download Cython "${CYTHON_VERSION}" "https://files.pythonhosted.org/packages/6c/9f/f501ba9d178aeb1f5bf7da1ad5619b207c90ac235d9859961c11829d0160"
+    build_python Cython "${CYTHON_VERSION}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # pyliblo
 
 download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
