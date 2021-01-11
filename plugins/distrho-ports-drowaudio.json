@@ -11,6 +11,7 @@
     "description": "Open-source audio plugins from David Rowland",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
+    "dlname": "distrho-ports",
     "buildtype": "meson",
     "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=drowaudio-distortion,drowaudio-distortionshaper,drowaudio-flanger,drowaudio-reverb,drowaudio-tremolo"
 }

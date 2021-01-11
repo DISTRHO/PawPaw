@@ -7,6 +7,7 @@
     "description": "Delay that allows pitching the delayed signal within or outside the feedback loop",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
+    "dlname": "distrho-ports",
     "buildtype": "meson",
     "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=pitchedDelay"
 }

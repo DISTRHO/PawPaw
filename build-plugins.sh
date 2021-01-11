@@ -99,8 +99,9 @@ for plugin in ${@}; do
     buildargs=$(echo -e $(jq -ecrM .buildargs ${pfile} || echo '\n\n') | tail -n 1)
     dlext=$(echo -e $(jq -ecrM .dlext ${pfile} || echo '\n\n') | tail -n 1)
     dlmethod=$(echo -e $(jq -ecrM .dlmethod ${pfile} || echo '\n\n') | tail -n 1)
+    dlname=$(echo -e $(jq -ecrM .dlname ${pfile} || echo '\n\n') | tail -n 1)
 
-    download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}"
+    download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}" "${dlname}"
 
     case ${buildtype} in
         "autoconf")

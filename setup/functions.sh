@@ -8,22 +8,26 @@ function download() {
     local dlbaseurl="${3}"
     local dlext="${4}"
     local dlmethod="${5}"
+    local dlname="${6}"
 
     if [ -z "${dlext}" ]; then
         dlext="tar.gz"
     fi
+    if [ -z "${dlname}" ]; then
+        dlname="${name}"
+    fi
 
-    local dlfile="${PAWPAW_DOWNLOADDIR}/${name}-${version}.${dlext}"
+    local dlfile="${PAWPAW_DOWNLOADDIR}/${dlname}-${version}.${dlext}"
     local dlfolder="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ ! -f "${dlfile}" ]; then
         if [ -n "${dlmethod}" ] && [ "${dlmethod}" = "git" ]; then
-            local tmprepodir="${PAWPAW_TMPDIR}/${name}-${version}"
+            local tmprepodir="${PAWPAW_TMPDIR}/${dlname}-${version}"
             rm -rf "${tmprepodir}"
             git clone --recursive "${dlbaseurl}" "${tmprepodir}"
             git -C "${tmprepodir}" checkout "${version}"
             git -C "${tmprepodir}" submodule update
-            tar --exclude=".git" -czf "${dlfile}" -C "${PAWPAW_TMPDIR}" "${name}-${version}"
+            tar --exclude=".git" -czf "${dlfile}" -C "${PAWPAW_TMPDIR}" "${dlname}-${version}"
             rm -rf "${tmprepodir}"
         else
             local dlurl
@@ -34,9 +38,9 @@ function download() {
                     dlurl="${dlbaseurl}/v${version}.${dlext}"
                 fi
             elif [ "${dlext}" = "orig.tar.gz" ]; then
-                dlurl="${dlbaseurl}/${name}_${version}.${dlext}"
+                dlurl="${dlbaseurl}/${dlname}_${version}.${dlext}"
             else
-                dlurl="${dlbaseurl}/${name}-${version}.${dlext}"
+                dlurl="${dlbaseurl}/${dlname}-${version}.${dlext}"
             fi
             curl -L "${dlurl}" -o "${dlfile}" --fail
         fi

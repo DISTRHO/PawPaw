@@ -8,6 +8,7 @@
     "description": "Open-source audio plugins from Arctican",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
+    "dlname": "distrho-ports",
     "buildtype": "meson",
     "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=arctican-function,arctican-pilgrim"
 }
