@@ -103,6 +103,12 @@ download liblo "${LIBLO_VERSION}" "http://download.sourceforge.net/liblo"
 build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tests --disable-tools"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# pcre
+
+download pcre "${PCRE_VERSION}" "https://ftp.pcre.org/pub/pcre"
+build_autoconf pcre "${PCRE_VERSION}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # lv2
 
 download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
@@ -118,7 +124,7 @@ build_waf serd "${SERD_VERSION}" "--static --no-shared"
 # sord
 
 download sord "${SORD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
-build_waf sord "${SORD_VERSION}" "--static --no-shared --no-utils"
+build_waf sord "${SORD_VERSION}" "--static --no-shared"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sratom
