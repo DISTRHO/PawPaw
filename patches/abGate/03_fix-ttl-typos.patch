@@ -1,0 +1,21 @@
+diff --git a/gate.ttl b/gate.ttl
+index dad79df..ced3a54 100644
+--- a/gate.ttl
++++ b/gate.ttl
+@@ -1,7 +1,7 @@
+ @prefix lv2:  <http://lv2plug.in/ns/lv2core#>.
+ @prefix doap: <http://usefulinc.com/ns/doap#>.
+ @prefix ui: <http://lv2plug.in/ns/extensions/ui#>.
+-@prefix units: <http://lv2plug.in/ns/extension/units#>.
++@prefix units: <http://lv2plug.in/ns/extensions/units#>.
+ @prefix pprops: <http://lv2plug.in/ns/ext/port-props#>.
+ @prefix foaf: <http://xmlns.com/foaf/0.1/>.
+ 
+@@ -11,7 +11,6 @@
+ 	lv2:binary <gate.so>;
+ 
+ 	doap:name "abGate";
+-	doap:creator "Antanas Bruzas";
+ 
+ 	doap:developer [
+ 		foaf:name "Antanas Bruzas";
