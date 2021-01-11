@@ -43,7 +43,11 @@ function validate_lv2_bundle() {
     env LANG=C LV2_PATH="${LV2DIR}" PATH="${PAWPAW_PREFIX}/bin:${PATH}" \
         "${PAWPAW_PREFIX}/bin/lv2_validate" \
             "${LV2DIR}/kx-*/*.ttl" \
+            "${LV2DIR}/mod.lv2/*.ttl" \
+            "${LV2DIR}/modgui.lv2/*.ttl" \
             "/tmp/pawpaw-plugin-check/${lv2bundle}/*.ttl" 1>&2
+
+    local ret=$?
 
     if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
         env LANG=C LV2_PATH=/tmp/pawpaw-plugin-check WINEDEBUG=-all \
@@ -52,6 +56,8 @@ function validate_lv2_bundle() {
     fi
 
     rm -rf /tmp/pawpaw-plugin-check
+
+    return ${ret}
 }
 
 function validate_lv2_plugin() {
