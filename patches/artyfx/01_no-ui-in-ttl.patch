@@ -1,0 +1,192 @@
+diff --git a/artyfx.lv2/bitta.ttl b/artyfx.lv2/bitta.ttl
+index 1de0696..c247d61 100644
+--- a/artyfx.lv2/bitta.ttl
++++ b/artyfx.lv2/bitta.ttl
+@@ -51,8 +51,6 @@
+ 
+   lv2:optionalFeature lv2:hardRTCapable ;
+ 
+-  ui:ui <http://www.openavproductions.com/artyfx#bitta/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
+diff --git a/artyfx.lv2/capta.ttl b/artyfx.lv2/capta.ttl
+index 60223d3..5d10bab 100644
+--- a/artyfx.lv2/capta.ttl
++++ b/artyfx.lv2/capta.ttl
+@@ -43,8 +43,6 @@
+ 
+   lv2:requiredFeature urid:map ;
+ 
+-  ui:ui <http://www.openavproductions.com/artyfx#capta/gui>;
+-
+   lv2:optionalFeature lv2:hardRTCapable ;
+ 
+     doap:maintainer  [
+diff --git a/artyfx.lv2/della.ttl b/artyfx.lv2/della.ttl
+index ee9181f..ae9d59e 100644
+--- a/artyfx.lv2/della.ttl
++++ b/artyfx.lv2/della.ttl
+@@ -52,10 +52,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#della/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
+diff --git a/artyfx.lv2/driva.ttl b/artyfx.lv2/driva.ttl
+index 5cba79e..79fd262 100644
+--- a/artyfx.lv2/driva.ttl
++++ b/artyfx.lv2/driva.ttl
+@@ -52,8 +52,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-  ui:ui <http://www.openavproductions.com/artyfx#driva/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
+diff --git a/artyfx.lv2/ducka.ttl b/artyfx.lv2/ducka.ttl
+index 40da5bf..feb8c51 100644
+--- a/artyfx.lv2/ducka.ttl
++++ b/artyfx.lv2/ducka.ttl
+@@ -46,10 +46,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#ducka/gui>;
+-
+   lv2:port [
+     a lv2:AudioPort ,
+       lv2:InputPort ;
+diff --git a/artyfx.lv2/filta.ttl b/artyfx.lv2/filta.ttl
+index 0713ec7..3bc352b 100644
+--- a/artyfx.lv2/filta.ttl
++++ b/artyfx.lv2/filta.ttl
+@@ -48,8 +48,6 @@
+ 
+   lv2:optionalFeature lv2:hardRTCapable;
+ 
+-  ui:ui <http://www.openavproductions.com/artyfx#filta/gui>;
+-
+   lv2:port [
+     a lv2:AudioPort ,
+       lv2:InputPort ;
+diff --git a/artyfx.lv2/friza.ttl b/artyfx.lv2/friza.ttl
+index 9d68900..cf83285 100644
+--- a/artyfx.lv2/friza.ttl
++++ b/artyfx.lv2/friza.ttl
+@@ -44,9 +44,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#friza/gui>;
+-
+   lv2:port [
+     a lv2:AudioPort ,
+       lv2:InputPort ;
+diff --git a/artyfx.lv2/kuiza.ttl b/artyfx.lv2/kuiza.ttl
+index 1b1c223..a3f77be 100644
+--- a/artyfx.lv2/kuiza.ttl
++++ b/artyfx.lv2/kuiza.ttl
+@@ -46,8 +46,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-  ui:ui <http://www.openavproductions.com/artyfx#kuiza/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
+diff --git a/artyfx.lv2/masha.ttl b/artyfx.lv2/masha.ttl
+index 962bee9..a25423b 100644
+--- a/artyfx.lv2/masha.ttl
++++ b/artyfx.lv2/masha.ttl
+@@ -46,8 +46,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-  ui:ui <http://www.openavproductions.com/artyfx#masha/gui>;
+-
+   lv2:port [
+     a lv2:AudioPort ,
+       lv2:InputPort ;
+diff --git a/artyfx.lv2/panda.ttl b/artyfx.lv2/panda.ttl
+index 5547082..88a0341 100644
+--- a/artyfx.lv2/panda.ttl
++++ b/artyfx.lv2/panda.ttl
+@@ -47,9 +47,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#panda/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
+diff --git a/artyfx.lv2/roomy.ttl b/artyfx.lv2/roomy.ttl
+index ee9faa9..2f1d1ee 100644
+--- a/artyfx.lv2/roomy.ttl
++++ b/artyfx.lv2/roomy.ttl
+@@ -43,9 +43,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#roomy/gui>;
+-
+   lv2:port [
+     a lv2:AudioPort ,
+       lv2:InputPort ;
+diff --git a/artyfx.lv2/satma.ttl b/artyfx.lv2/satma.ttl
+index 4022d99..64feb12 100644
+--- a/artyfx.lv2/satma.ttl
++++ b/artyfx.lv2/satma.ttl
+@@ -45,9 +45,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#satma/gui>;
+-
+   lv2:optionalFeature <http://lv2plug.in/ns/lv2core#hardRTCapable> ,
+                       <http://lv2plug.in/ns/ext/buf-size#boundedBlockLength> ;
+ 
+diff --git a/artyfx.lv2/vihda.ttl b/artyfx.lv2/vihda.ttl
+index 8b3e0f7..cc597f6 100644
+--- a/artyfx.lv2/vihda.ttl
++++ b/artyfx.lv2/vihda.ttl
+@@ -47,9 +47,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#vihda/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
+diff --git a/artyfx.lv2/whaaa.ttl b/artyfx.lv2/whaaa.ttl
+index 78849bd..b084b0e 100644
+--- a/artyfx.lv2/whaaa.ttl
++++ b/artyfx.lv2/whaaa.ttl
+@@ -47,9 +47,6 @@
+   doap:license <http://usefulinc.com/doap/licenses/gpl> ;
+   lv2:project <http://www.openavproductions.com/artyfx> ;
+ 
+-
+-  ui:ui <http://www.openavproductions.com/artyfx#whaaa/gui>;
+-
+   lv2:requiredFeature <http://lv2plug.in/ns/ext/urid#map> ;
+ 
+   lv2:port [
