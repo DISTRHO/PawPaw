@@ -103,10 +103,12 @@ download liblo "${LIBLO_VERSION}" "http://download.sourceforge.net/liblo"
 build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tests --disable-tools"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# pcre
+# pcre (needed for sord_validate, only relevant if we can run the resulting binaries)
 
-download pcre "${PCRE_VERSION}" "https://ftp.pcre.org/pub/pcre"
-build_autoconf pcre "${PCRE_VERSION}"
+if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
+    download pcre "${PCRE_VERSION}" "https://ftp.pcre.org/pub/pcre"
+    build_autoconf pcre "${PCRE_VERSION}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
@@ -118,13 +120,17 @@ build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage 
 # serd
 
 download serd "${SERD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
-build_waf serd "${SERD_VERSION}" "--static --no-shared"
+build_waf serd "${SERD_VERSION}" "--static --no-shared --no-utils"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sord
 
+if [ "${CROSS_COMPILING}" -eq 1 ] && [ -z "${EXE_WRAPPER}" ]; then
+    SORD_EXTRAFLAGS="--no-utils"
+fi
+
 download sord "${SORD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
-build_waf sord "${SORD_VERSION}" "--static --no-shared"
+build_waf sord "${SORD_VERSION}" "--static --no-shared ${SORD_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sratom

@@ -129,6 +129,11 @@ for plugin in ${@}; do
         continue
     fi
 
+    # cannot run validation on certain setups
+    if [ "${CROSS_COMPILING}" -eq 1 ] && [ -z "${EXE_WRAPPER}" ]; then
+        continue
+    fi
+
     # validate all bundles
     validationfail=0
     for lv2bundle in ${lv2bundles[@]}; do
