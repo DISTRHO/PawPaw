@@ -13,11 +13,11 @@ else
     LAST_BOOTSTRAP_VERSION=0
 fi
 
-PLUGINS_BASE="abgate artyfx caps die-plugins fomp mda"
-PLUGINS_CROSS="blop dpf-plugins ninjas2"
-PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
+# PLUGINS_BASE="abgate artyfx caps die-plugins fomp mda"
+# PLUGINS_CROSS="blop dpf-plugins ninjas2"
+# PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
 
-# only build full set of distrho-ports if we have previously cached builds, otherwise we time-out travis
+# only build full set of distrho-ports if we have previously cached builds, otherwise we time-out in travis
 if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
     PLUGINS_DISTRHO+=" distrho-ports-dexed"
     PLUGINS_DISTRHO+=" distrho-ports-klangfalter"

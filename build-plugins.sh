@@ -27,11 +27,49 @@ source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
 
+LV2DIR="${PAWPAW_PREFIX}/lib/lv2"
+
 if [ "${WIN32}" -eq 1 ] && [ ! -d "${HOME}/.wine" ]; then
     env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
 fi
 
+function validate_lv2_bundle() {
+    local lv2bundle="${1}"
+
+    rm -rf /tmp/pawpaw-plugin-check
+    mkdir /tmp/pawpaw-plugin-check
+    cp -r "${LV2DIR}/${lv2bundle}" /tmp/pawpaw-plugin-check/
+
+    env LANG=C LV2_PATH="${LV2DIR}" \
+        "${PAWPAW_PREFIX}/bin/lv2_validate" \
+            "${LV2DIR}/kx-*/*.ttl" \
+            "/tmp/pawpaw-plugin-check/${lv2bundle}/*.ttl" 1>&2
+
+    env LANG=C LV2_PATH=/tmp/pawpaw-plugin-check WINEDEBUG=-all \
+        "${EXE_WRAPPER}" \
+        "${PAWPAW_PREFIX}/bin/lv2ls${APP_EXT}" | tr -d '\r'
+
+    rm -rf /tmp/pawpaw-plugin-check
+}
+
+function validate_lv2_plugin() {
+    local lv2plugin="${1}"
+
+    local carlaenv="CARLA_BRIDGE_DUMMY=1 CARLA_BRIDGE_TESTING=1"
+
+    if [ "${WIN64}" -eq 1 ]; then
+        carlaenv+=" CARLA_BRIDGE_PLUGIN_BINARY_TYPE=win64"
+    elif [ "${WIN32}" -eq 1 ]; then
+        carlaenv+=" CARLA_BRIDGE_PLUGIN_BINARY_TYPE=win32"
+    fi
+
+    env LANG=C LV2_PATH="${LV2DIR}" WINEDEBUG=-all ${carlaenv} \
+        carla-single lv2 "${lv2plugin}" 1>/dev/null
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
+
+exitcode=0
 
 for plugin in ${@}; do
     pfile="${PAWPAW_ROOT}/plugins/${plugin}.json"
@@ -45,6 +83,7 @@ for plugin in ${@}; do
     version=$(jq -crM .version ${pfile})
     buildtype=$(jq -crM .buildtype ${pfile})
     dlbaseurl=$(jq -crM .dlbaseurl ${pfile})
+    lv2bundles=($(jq -crM .lv2bundles[] ${pfile}))
 
     # optional args
     buildargs=$(echo -e $(jq -ecrM .buildargs ${pfile} || echo '\n\n') | tail -n 1)
@@ -73,6 +112,33 @@ for plugin in ${@}; do
             build_waf "${name}" "${version}" "${buildargs}"
             ;;
     esac
+
+    # validate all bundles
+    for lv2bundle in ${lv2bundles[@]}; do
+        echo -n "Validating ${lv2bundle}... "
+        if [ ! -f "${LV2DIR}/${lv2bundle}/manifest.ttl" ]; then
+            echo "manifest.ttl file missing"
+            exitcode=1
+            continue
+        fi
+
+        echo
+
+        # lv2 metadata validation
+        lv2plugins=($(validate_lv2_bundle "${lv2bundle}"))
+
+        # lv2 plugin count
+        echo "Found ${#lv2plugins[@]} plugin(s)"
+
+        # real host test
+        for lv2plugin in ${lv2plugins[@]}; do
+            echo -n "Verifying ${lv2plugin}... "
+            validate_lv2_plugin ${lv2plugin}
+            echo "ok"
+        done
+    done
 done
+
+exit ${exitcode}
 
 # ---------------------------------------------------------------------------------------------------------------------

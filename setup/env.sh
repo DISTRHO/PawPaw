@@ -4,10 +4,12 @@
 # OS setup
 
 if [ "${LINUX}" -eq 1 ]; then
+    APP_EXT=""
     CMAKE_SYSTEM_NAME="Linux"
     PAWPAW_TARGET="linux"
 
 elif [ "${MACOS}" -eq 1 ]; then
+    APP_EXT=""
     CMAKE_SYSTEM_NAME="Darwin"
     if [ "${MACOS_OLD}" -eq 1 ]; then
         PAWPAW_TARGET="macos-old"
@@ -18,6 +20,7 @@ elif [ "${MACOS}" -eq 1 ]; then
     fi
 
 elif [ "${WIN32}" -eq 1 ]; then
+    APP_EXT=".exe"
     CMAKE_SYSTEM_NAME="Windows"
     if [ "${WIN64}" -eq 1 ]; then
         PAWPAW_TARGET="win64"
