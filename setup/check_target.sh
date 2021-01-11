@@ -36,6 +36,12 @@ function check_target() {
                 CROSS_COMPILING=1
             fi
             ;;
+        "CYGWIN"*|"MSYS"*)
+            WIN32=1
+            if [ "$(uname -m)" = "x86_64" ]; then
+                WIN64=1
+            fi
+            ;;
         "linux"|"Linux")
             LINUX=1
             ;;
