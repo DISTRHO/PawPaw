@@ -92,7 +92,12 @@ if [ "${MACOS}" -eq 1 ]; then
 else
     LINK_FLAGS+=" -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
-        LINK_FLAGS+=" -static -lssp_nonshared -Wl,-Bstatic"
+        LINK_FLAGS+=" -static -Wl,-Bstatic"
+        if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
+            LINK_FLAGS+=" /usr/lib/libssp.a"
+        else
+            LINK_FLAGS+=" -lssp_nonshared"
+        fi
     fi
 fi
 
