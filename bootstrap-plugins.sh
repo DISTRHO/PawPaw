@@ -196,3 +196,31 @@ if [ "${MACOS}" -eq 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# carla (backend only)
+
+CARLA_EXTRAFLAGS="HAVE_ALSA=false"
+CARLA_EXTRAFLAGS+=" HAVE_JACK=false"
+CARLA_EXTRAFLAGS+=" HAVE_PULSEAUDIO=false"
+CARLA_EXTRAFLAGS+=" HAVE_DGL=false"
+CARLA_EXTRAFLAGS+=" HAVE_HYLIA=false"
+CARLA_EXTRAFLAGS+=" HAVE_GTK2=false"
+CARLA_EXTRAFLAGS+=" HAVE_GTK3=false"
+CARLA_EXTRAFLAGS+=" HAVE_X11=false"
+CARLA_EXTRAFLAGS+=" HAVE_FFMPEG=false"
+CARLA_EXTRAFLAGS+=" HAVE_FLUIDSYNTH=false"
+CARLA_EXTRAFLAGS+=" HAVE_LIBLO=false"
+CARLA_EXTRAFLAGS+=" HAVE_LIBMAGIC=false"
+CARLA_EXTRAFLAGS+=" HAVE_PYQT=false"
+CARLA_EXTRAFLAGS+=" HAVE_QT=false"
+CARLA_EXTRAFLAGS+=" HAVE_QT4=false"
+CARLA_EXTRAFLAGS+=" HAVE_QT5=false"
+CARLA_EXTRAFLAGS+=" HAVE_SNDFILE=false"
+CARLA_EXTRAFLAGS+=" EXTERNAL_PLUGINS=false"
+CARLA_EXTRAFLAGS+=" USING_JUCE=false"
+CARLA_EXTRAFLAGS+=" USING_JUCE_AUDIO_DEVICES=false"
+CARLA_EXTRAFLAGS+=" USING_JUCE_GUI_EXTRA=false"
+
+download carla ${CARLA_VERSION} "https://github.com/falkTX/Carla.git" "" "git"
+build_make carla ${CARLA_VERSION} "${CARLA_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------

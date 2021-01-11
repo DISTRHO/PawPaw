@@ -45,9 +45,11 @@ function validate_lv2_bundle() {
             "${LV2DIR}/kx-*/*.ttl" \
             "/tmp/pawpaw-plugin-check/${lv2bundle}/*.ttl" 1>&2
 
-    env LANG=C LV2_PATH=/tmp/pawpaw-plugin-check WINEDEBUG=-all \
-        "${EXE_WRAPPER}" \
-        "${PAWPAW_PREFIX}/bin/lv2ls${APP_EXT}" | tr -d '\r'
+    if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
+        env LANG=C LV2_PATH=/tmp/pawpaw-plugin-check WINEDEBUG=-all \
+            ${EXE_WRAPPER} \
+            "${PAWPAW_PREFIX}/bin/lv2ls${APP_EXT}" | tr -d '\r'
+    fi
 
     rm -rf /tmp/pawpaw-plugin-check
 }
@@ -55,16 +57,18 @@ function validate_lv2_bundle() {
 function validate_lv2_plugin() {
     local lv2plugin="${1}"
 
-    local carlaenv="CARLA_BRIDGE_DUMMY=1 CARLA_BRIDGE_TESTING=1"
+    local carlaenv="CARLA_BRIDGE_DUMMY=1"
 
     if [ "${WIN64}" -eq 1 ]; then
-        carlaenv+=" CARLA_BRIDGE_PLUGIN_BINARY_TYPE=win64"
+        carlaenv+=" CARLA_BRIDGE_TESTING=win64"
     elif [ "${WIN32}" -eq 1 ]; then
-        carlaenv+=" CARLA_BRIDGE_PLUGIN_BINARY_TYPE=win32"
+        carlaenv+=" CARLA_BRIDGE_TESTING=win32"
+    else
+        carlaenv+=" CARLA_BRIDGE_TESTING=native"
     fi
 
     env LANG=C LV2_PATH="${LV2DIR}" WINEDEBUG=-all ${carlaenv} \
-        carla-single lv2 "${lv2plugin}" 1>/dev/null
+        "${PAWPAW_PREFIX}/bin/carla-single" lv2 "${lv2plugin}" 1>/dev/null
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -22,10 +22,12 @@ LIBVORBIS_VERSION=1.3.7
 # ---------------------------------------------------------------------------------------------------------------------
 # plugins
 
+CARLA_VERSION=1e7c7dc4bd4da0a6593d096e3ea525321b0983cc
 KXSTUDIO_LV2_EXTENSIONS_VERSION=fae65fbc173cd2c4367e85917a6ef97280532d88
 LILV_VERSION=0.24.10
 LV2_VERSION=1.18.0
 LV2LINT_VERSION=0.8.0
+MOD_SDK_VERSION=TODO
 MXML_VERSION=3.1
 SERD_VERSION=0.30.6
 SORD_VERSION=0.16.6
