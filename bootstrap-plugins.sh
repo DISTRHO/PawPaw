@@ -143,6 +143,12 @@ if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# kxstudio lv2 extensions
+
+download kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}" "https://github.com/KXStudio/LV2-Extensions.git" "" "git"
+build_make kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
