@@ -22,14 +22,19 @@ function check_target() {
             MACOS=1
             MACOS_UNIVERSAL=1
             ;;
-        "win32")
+        "win32"|"MINGW32*")
             WIN32=1
             CROSS_COMPILING=1
+            if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
-        "win64")
+        "win64"|"MINGW64*")
             WIN32=1
             WIN64=1
-            CROSS_COMPILING=1
+            if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "linux"|"Linux")
             LINUX=1
