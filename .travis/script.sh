@@ -13,11 +13,12 @@ else
     LAST_BOOTSTRAP_VERSION=0
 fi
 
-# PLUGINS_BASE="abgate artyfx caps die-plugins fomp mda"
-# PLUGINS_CROSS="blop dpf-plugins ninjas2"
+# PLUGINS_BASE="abgate artyfx caps fomp mda"
+# PLUGINS_CROSS="blop dpf-plugins"
 # PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
 
 # TODO
+# die-plugins: hangs during fluidsynth runtime check
 # ninjas2: need to put http://kxstudio.sf.net/ns/lv2ext/props#NonAutomable spec somewhere
 
 # only build full set of distrho-ports if we have previously cached builds, otherwise we time-out in travis
