@@ -17,6 +17,9 @@ fi
 # PLUGINS_CROSS="blop dpf-plugins ninjas2"
 # PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
 
+# TODO
+# ninjas2: need to put http://kxstudio.sf.net/ns/lv2ext/props#NonAutomable spec somewhere
+
 # only build full set of distrho-ports if we have previously cached builds, otherwise we time-out in travis
 if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
     PLUGINS_DISTRHO+=" distrho-ports-dexed"
