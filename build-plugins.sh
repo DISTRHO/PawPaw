@@ -117,12 +117,20 @@ for plugin in ${@}; do
             ;;
     esac
 
+    # check if plugin needs validation
+    pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    if [ -f "${pkgdir}/.stamp_verified" ]; then
+        continue
+    fi
+
     # validate all bundles
+    validationfail=0
     for lv2bundle in ${lv2bundles[@]}; do
         echo -n "Validating ${lv2bundle}... "
         if [ ! -f "${LV2DIR}/${lv2bundle}/manifest.ttl" ]; then
             echo "manifest.ttl file missing"
             exitcode=1
+            validationfail=1
             continue
         fi
 
@@ -141,6 +149,10 @@ for plugin in ${@}; do
             echo "ok"
         done
     done
+
+    if [ "${validationfail}" -eq 0 ]; then
+        touch "${pkgdir}/.stamp_verified"
+    fi
 done
 
 exit ${exitcode}

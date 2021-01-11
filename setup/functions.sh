@@ -108,10 +108,15 @@ function _prebuild() {
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         rm -f "${pkgdir}/.stamp_built"
         rm -f "${pkgdir}/.stamp_installed"
+        rm -f "${pkgdir}/.stamp_verified"
         rm -f "${pkgdir}/CMakeCache.txt"
 
     elif [ ! -f "${pkgdir}/.stamp_built" ]; then
         rm -f "${pkgdir}/.stamp_installed"
+        rm -f "${pkgdir}/.stamp_verified"
+
+    elif [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        rm -f "${pkgdir}/.stamp_verified"
 
     fi
 }
