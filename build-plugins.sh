@@ -40,7 +40,7 @@ function validate_lv2_bundle() {
     mkdir /tmp/pawpaw-plugin-check
     cp -r "${LV2DIR}/${lv2bundle}" /tmp/pawpaw-plugin-check/
 
-    env LANG=C LV2_PATH="${LV2DIR}" \
+    env LANG=C LV2_PATH="${LV2DIR}" PATH="${PAWPAW_PREFIX}/bin:${PATH}" \
         "${PAWPAW_PREFIX}/bin/lv2_validate" \
             "${LV2DIR}/kx-*/*.ttl" \
             "/tmp/pawpaw-plugin-check/${lv2bundle}/*.ttl" 1>&2
