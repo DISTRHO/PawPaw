@@ -8,7 +8,7 @@
         "distrho-a-fluidsynth.lv2",
         "distrho-a-reverb.lv2"
     ],
-    "version": "27be218022fe3f6ef08d3a0949a37f1696954674",
+    "version": "b647e5b623c82a0221c89ac0a547727b0a6608ab",
     "description": "DISTRHO Imported Effect",
     "dlbaseurl": "https://github.com/DISTRHO/DIE-Plugins.git",
     "dlmethod": "git",
