@@ -40,7 +40,8 @@ function validate_lv2_bundle() {
     mkdir /tmp/pawpaw-plugin-check
     cp -r "${LV2DIR}/${lv2bundle}" /tmp/pawpaw-plugin-check/
 
-    env LANG=C LV2_PATH="${LV2DIR}" PATH="${PAWPAW_PREFIX}/bin:${PATH}" \
+    env LANG=C LV2_PATH="${LV2DIR}" PATH="${PAWPAW_PREFIX}/bin:${PATH}" WINEDEBUG=-all \
+        APP_EXT="${APP_EXT}" EXE_WRAPPER="${EXE_WRAPPER}" PAWPAW_PREFIX="${PAWPAW_PREFIX}" \
         "${PAWPAW_PREFIX}/bin/lv2_validate" \
             "${LV2DIR}/kx-*/*.ttl" \
             "${LV2DIR}/mod.lv2/*.ttl" \

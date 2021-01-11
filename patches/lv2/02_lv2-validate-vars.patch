@@ -1,0 +1,13 @@
+diff --git a/util/lv2_validate.in b/util/lv2_validate.in
+index d30cd85..08f662d 100755
+--- a/util/lv2_validate.in
++++ b/util/lv2_validate.in
+@@ -10,7 +10,7 @@ if [ "$#" -eq "0" ]; then
+     exit 1
+ fi
+ 
+-sord_validate \
++exec ${EXE_WRAPPER} "${PAWPAW_PREFIX}/bin/sord_validate${APP_EXT}" \
+     "$LV2DIR/patch.lv2/manifest.ttl" \
+     "$LV2DIR/patch.lv2/patch.meta.ttl" \
+     "$LV2DIR/patch.lv2/patch.ttl" \

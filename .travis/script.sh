@@ -13,9 +13,9 @@ else
     LAST_BOOTSTRAP_VERSION=0
 fi
 
-# PLUGINS_BASE="abgate artyfx caps fomp mda"
-# PLUGINS_CROSS="blop dpf-plugins"
-# PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
+PLUGINS_BASE="abgate artyfx caps fomp mda"
+PLUGINS_CROSS="blop dpf-plugins"
+PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
 
 # TODO
 # die-plugins: hangs during fluidsynth runtime check
@@ -41,6 +41,9 @@ elif [ "${TARGET}" = "macos-old" ]; then
 else
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
 fi
+
+# TODO build plugins after all libs are correct
+PLUGINS=""
 
 ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
