@@ -149,6 +149,12 @@ download kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}" "https://g
 build_make kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# MOD lv2 extensions
+
+download mod-sdk "${MOD_SDK_VERSION}" "https://github.com/moddevices/mod-sdk.git" "" "git"
+build_make mod-sdk "${MOD_SDK_VERSION}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
