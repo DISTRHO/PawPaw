@@ -2,6 +2,7 @@
     "name": "blop-lv2",
     "lv2bundles": ["blop.lv2"],
     "version": "1dd27f8e78e325b4688cd022343a18453fb9c8f1",
+    "description": "Port of the BLOP LADSPA plugins by Mike Rawes to LV2",
     "dlbaseurl": "https://gitlab.com/drobilla/blop-lv2.git",
     "dlmethod": "git",
     "buildtype": "waf",

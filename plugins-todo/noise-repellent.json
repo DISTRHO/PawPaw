@@ -2,6 +2,7 @@
     "name": "noise-repellent",
     "lv2bundles": ["nrepel.lv2"],
     "version": "7f5a8fbef48fed75b9168509a4e3f985ae878988",
+    "description": "",
     "dlbaseurl": "https://github.com/lucianodato/noise-repellent.git",
     "dlmethod": "git",
     "buildtype": "meson"

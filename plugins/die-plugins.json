@@ -9,6 +9,7 @@
         "distrho-a-reverb.lv2"
     ],
     "version": "27be218022fe3f6ef08d3a0949a37f1696954674",
+    "description": "DISTRHO Imported Effect",
     "dlbaseurl": "https://github.com/DISTRHO/DIE-Plugins.git",
     "dlmethod": "git",
     "buildtype": "make"

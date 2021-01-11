@@ -4,6 +4,7 @@
         "Luftikus.lv2"
     ],
     "version": "18f868c0f8299c960ba48c9ce78cd0ac329012b6",
+    "description": "Digital adaptation of an analog EQ with fixed half-octave bands and additional high frequency boost",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
     "buildtype": "meson",

@@ -11,6 +11,7 @@
         "TAL-Vocoder-2.lv2"
     ],
     "version": "18f868c0f8299c960ba48c9ce78cd0ac329012b6",
+    "description": "Open-source audio plugins from Togu Audio Line",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
     "buildtype": "meson",

@@ -80,13 +80,14 @@ for plugin in ${@}; do
 
     name=$(jq -crM .name ${pfile})
     sname=$(echo ${name} | tr -ds '-' '_')
+    description=$(jq -crM .description ${description})
     lv2bundles=($(jq -crM .lv2bundles[] ${pfile}))
 
     if [ "${WIN32}" -eq 1 ]; then
         echo "Name: ${sname}; Description: \"${name}\"; Types: full;" >> /tmp/pawpaw/components.iss
 
     elif [ "${MACOS}" -eq 1 ] && [ "${MACOS_OLD}" -eq 0 ]; then
-        echo "    <choice id=\"studio.kx.distrho.pawpaw.${sname}\" title=\"${name}\" visible=\"true\">" >> /tmp/pawpaw/choices.xml
+        echo "    <choice id=\"studio.kx.distrho.pawpaw.${sname}\" title=\"${name}\" description=\"${description}\" visible=\"true\">" >> /tmp/pawpaw/choices.xml
         echo "        <line choice=\"studio.kx.distrho.pawpaw.${sname}\"/>" >> /tmp/pawpaw/outlines.xml
     fi
 

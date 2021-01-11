@@ -22,6 +22,7 @@
         "tap-vibrato.lv2"
     ],
     "version": "cab6e0dfb2ce20e4ad34b067d1281ec0b193598a",
+    "description": "",
     "dlbaseurl": "https://github.com/moddevices/tap-lv2.git",
     "dlmethod": "git",
     "buildtype": "make",

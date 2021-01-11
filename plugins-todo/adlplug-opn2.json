@@ -2,6 +2,7 @@
     "name": "adlplug-opn2",
     "lv2bundles": ["OPNplug.lv2"],
     "version": "d22fec03db1ab6458c22ea036217983cfb2a82a1",
+    "description": "",
     "dlbaseurl": "https://github.com/jpcima/ADLplug.git",
     "dlmethod": "git",
     "buildtype": "cmake",

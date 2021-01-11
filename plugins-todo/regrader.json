@@ -2,6 +2,7 @@
     "name": "regrader-port",
     "lv2bundles": ["regrader.lv2"],
     "version": "9154881ad6553537cc7f2a743541f6b47de2a207",
+    "description": "",
     "dlbaseurl": "https://github.com/linuxmao-org/regrader-port.git",
     "dlmethod": "git",
     "buildtype": "make"

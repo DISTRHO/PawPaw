@@ -5,6 +5,7 @@
         "sooperlooper-2x2.lv2"
     ],
     "version": "d3e80029ce4f6ef62b3758e95c5b889cab1db740",
+    "description": "",
     "dlbaseurl": "https://github.com/moddevices/sooperlooper-lv2-plugin.git",
     "dlmethod": "git",
     "buildtype": "make",
