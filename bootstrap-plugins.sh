@@ -216,7 +216,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)
 
-CARLA_EXTRAFLAGS="HAVE_ALSA=false"
+CARLA_EXTRAFLAGS="CAN_GENERATE_LV2_TTL=false"
+CARLA_EXTRAFLAGS+=" HAVE_ALSA=false"
 CARLA_EXTRAFLAGS+=" HAVE_JACK=false"
 CARLA_EXTRAFLAGS+=" HAVE_PULSEAUDIO=false"
 CARLA_EXTRAFLAGS+=" HAVE_DGL=false"
