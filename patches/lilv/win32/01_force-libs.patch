@@ -5,5 +5,5 @@
  Description: Simple C library for hosting LV2 plugins
  Requires: @LILV_PKG_DEPS@
 -Libs: -L${libdir} -l@LIB_LILV@ @LILV_PKG_LIBS@
-+Libs: -L${libdir} -l@LIB_LILV@ @LILV_PKG_LIBS@ -lssp
++Libs: -L${libdir} -l@LIB_LILV@ @LILV_PKG_LIBS@ -lssp_nonshared
  Cflags: -I${includedir}/lilv-@LILV_MAJOR_VERSION@

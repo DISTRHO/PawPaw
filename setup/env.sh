@@ -94,7 +94,7 @@ else
     if [ "${WIN32}" -eq 1 ]; then
         LINK_FLAGS+=" -static -Wl,-Bstatic"
         if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
-            LINK_FLAGS+=" /usr/lib/libssp.a"
+            LINK_FLAGS+=" -lssp"
         else
             LINK_FLAGS+=" -lssp_nonshared"
         fi
