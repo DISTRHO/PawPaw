@@ -80,7 +80,7 @@ for plugin in ${@}; do
 
     name=$(jq -crM .name ${pfile})
     sname=$(echo ${name} | tr -ds '-' '_')
-    description=$(jq -crM .description ${description})
+    description=$(jq -crM .description ${pfile})
     lv2bundles=($(jq -crM .lv2bundles[] ${pfile}))
 
     if [ "${WIN32}" -eq 1 ]; then
