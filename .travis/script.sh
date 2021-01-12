@@ -33,6 +33,9 @@ if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
     PLUGINS_DISTRHO+=" distrho-ports-wolpertinger"
 fi
 
+# TODO build plugins after all libs are correct
+PLUGINS_DISTRHO=""
+
 if [ "${TARGET}" = "linux" ]; then
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
 elif [ "${TARGET}" = "macos-old" ]; then
@@ -40,9 +43,6 @@ elif [ "${TARGET}" = "macos-old" ]; then
 else
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO}"
 fi
-
-# TODO build plugins after all libs are correct
-PLUGINS=""
 
 ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
