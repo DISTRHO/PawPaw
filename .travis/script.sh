@@ -48,8 +48,9 @@ ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
 
 # packing of plugins can only be done when doing a full build
-if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
-    ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
-fi
+# TODO enable packaging plugins when CI works again
+# if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
+#     ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
+# fi
 
 echo ${BOOTSTRAP_VERSION} > ${HOME}/PawPawBuilds/builds/.last-bootstrap-version
