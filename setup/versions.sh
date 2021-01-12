@@ -22,7 +22,7 @@ LIBVORBIS_VERSION=1.3.7
 # ---------------------------------------------------------------------------------------------------------------------
 # plugins
 
-CARLA_VERSION=8cd86796986cdc3807b22cb6cfceb92f198e3834
+CARLA_VERSION=07349db166957f4aeac120b4d7bffd08e1232b08
 KXSTUDIO_LV2_EXTENSIONS_VERSION=fae65fbc173cd2c4367e85917a6ef97280532d88
 LILV_VERSION=0.24.12
 LV2_VERSION=1.18.0
