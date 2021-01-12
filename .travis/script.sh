@@ -21,20 +21,18 @@ PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-ta
 # ninjas2: need to put http://kxstudio.sf.net/ns/lv2ext/props#NonAutomable spec somewhere
 
 # only build full set of distrho-ports if we have previously cached builds, otherwise we time-out in travis
-if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
-    PLUGINS_DISTRHO+=" distrho-ports-dexed"
-    PLUGINS_DISTRHO+=" distrho-ports-klangfalter"
-    PLUGINS_DISTRHO+=" distrho-ports-luftikus"
-    PLUGINS_DISTRHO+=" distrho-ports-obxd"
-    PLUGINS_DISTRHO+=" distrho-ports-pitched-delay"
-    PLUGINS_DISTRHO+=" distrho-ports-refine"
-    PLUGINS_DISTRHO+=" distrho-ports-temper"
-    PLUGINS_DISTRHO+=" distrho-ports-vex"
-    PLUGINS_DISTRHO+=" distrho-ports-wolpertinger"
-fi
-
 # TODO build plugins after all libs are correct
-PLUGINS_DISTRHO=""
+# if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
+#     PLUGINS_DISTRHO+=" distrho-ports-dexed"
+#     PLUGINS_DISTRHO+=" distrho-ports-klangfalter"
+#     PLUGINS_DISTRHO+=" distrho-ports-luftikus"
+#     PLUGINS_DISTRHO+=" distrho-ports-obxd"
+#     PLUGINS_DISTRHO+=" distrho-ports-pitched-delay"
+#     PLUGINS_DISTRHO+=" distrho-ports-refine"
+#     PLUGINS_DISTRHO+=" distrho-ports-temper"
+#     PLUGINS_DISTRHO+=" distrho-ports-vex"
+#     PLUGINS_DISTRHO+=" distrho-ports-wolpertinger"
+# fi
 
 if [ "${TARGET}" = "linux" ]; then
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
