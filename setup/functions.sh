@@ -260,12 +260,16 @@ function build_cmake() {
     fi
     if [ "${MACOS}" -eq 1 ]; then
         if [ "${MACOS_OLD}" -eq 1 ]; then
+            OSX_ARCHS="i686"
             OSX_TARGET="10.5"
         elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+            OSX_ARCHS="arm64,x86_64"
             OSX_TARGET="10.12"
         else
+            OSX_ARCHS="x86_64"
             OSX_TARGET="10.8"
         fi
+        extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES=${OSX_ARCHS}"
         extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=${OSX_TARGET}"
     fi
 
