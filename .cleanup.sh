@@ -33,6 +33,7 @@ rm -rf ${PAWPAW_BUILDDIR}/*/.libs
 rm -rf ${PAWPAW_BUILDDIR}/*/.lock-waf_linux_build
 
 for dir in $(find ${PAWPAW_BUILDDIR} -type d -depth 1); do
+    echo "Directory '${dir}' is now clean"
     touch ${dir}/.stamp_cleanup
 done
 
