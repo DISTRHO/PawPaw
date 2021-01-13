@@ -10,7 +10,7 @@
         "TAL-Reverb-3.lv2",
         "TAL-Vocoder-2.lv2"
     ],
-    "version": "7536a096ba2b52eee963e8bf837b90aaaf5e6b30",
+    "version": "d6465b3eeddac02259556ac8cd908e1eb6d42747",
     "description": "Open-source audio plugins from Togu Audio Line",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
