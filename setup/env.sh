@@ -58,11 +58,11 @@ fi
 
 if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_OLD}" -eq 1 ]; then
-        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_5 -mmacosx-version-min=10.5"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_5 -mmacosx-version-min=10.5 -arch i686"
     elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
     else
-        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations -arch x86_64"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL -DPTW32_STATIC_LIB -mstackrealign"
@@ -83,11 +83,11 @@ if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs"
 
     if [ "${MACOS_OLD}" -eq 1 ]; then
-        LINK_FLAGS+=" -mmacosx-version-min=10.5"
+        LINK_FLAGS+=" -mmacosx-version-min=10.5 -arch i686"
     elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         LINK_FLAGS+=" -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
     else
-        LINK_FLAGS+=" -mmacosx-version-min=10.8 -stdlib=libc++"
+        LINK_FLAGS+=" -mmacosx-version-min=10.8 -stdlib=libc++ -arch x86_64"
     fi
 else
     LINK_FLAGS+=" -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
