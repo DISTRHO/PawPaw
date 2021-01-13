@@ -91,7 +91,7 @@ function _prebuild() {
     export OLD_PATH="${PATH}"
     export PATH="${TARGET_PATH}"
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}" ]; then
+    if [ -d "${PAWPAW_ROOT}/patches/${name}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
         for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
                 patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
@@ -100,7 +100,7 @@ function _prebuild() {
         done
     fi
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ]; then
+    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
         for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
                 patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
