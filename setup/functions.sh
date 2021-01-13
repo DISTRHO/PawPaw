@@ -263,7 +263,7 @@ function build_cmake() {
             OSX_ARCHS="i686"
             OSX_TARGET="10.5"
         elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-            OSX_ARCHS="arm64,x86_64"
+            OSX_ARCHS="arm64;x86_64"
             OSX_TARGET="10.12"
         else
             OSX_ARCHS="x86_64"

@@ -76,6 +76,11 @@ function validate_lv2_plugin() {
 
     env LANG=C LV2_PATH="${LV2DIR}" WINEDEBUG=-all ${carlaenv} \
         "${PAWPAW_PREFIX}/bin/carla-single" lv2 "${lv2plugin}" 1>/dev/null
+
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        env LANG=C LV2_PATH="${LV2DIR}" ${carlaenv} \
+            arch -arch x86_64 "${PAWPAW_PREFIX}/bin/carla-single" lv2 "${lv2plugin}" 1>/dev/null
+    fi
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
