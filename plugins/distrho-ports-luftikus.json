@@ -3,7 +3,7 @@
     "lv2bundles": [
         "Luftikus.lv2"
     ],
-    "version": "18f868c0f8299c960ba48c9ce78cd0ac329012b6",
+    "version": "7536a096ba2b52eee963e8bf837b90aaaf5e6b30",
     "description": "Digital adaptation of an analog EQ with fixed half-octave bands and additional high frequency boost",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
