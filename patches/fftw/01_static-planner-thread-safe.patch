@@ -1,0 +1,25 @@
+--- fftw3-static-3.3.5~git20160520.orig/api/apiplan.c
++++ fftw3-static-3.3.5~git20160520/api/apiplan.c
+@@ -19,8 +19,21 @@
+  */
+ 
+ #include "api/api.h"
++#include <pthread.h>
+ 
+-static planner_hook_t before_planner_hook = 0, after_planner_hook = 0;
++static pthread_mutex_t planner_mutex = PTHREAD_MUTEX_INITIALIZER;
++
++static void lock_planner_mutex(void)
++{
++     pthread_mutex_lock(&planner_mutex);
++}
++
++static void unlock_planner_mutex(void)
++{
++     pthread_mutex_unlock(&planner_mutex);
++}
++
++static planner_hook_t before_planner_hook = lock_planner_mutex, after_planner_hook = unlock_planner_mutex;
+ 
+ void X(set_planner_hooks)(planner_hook_t before, planner_hook_t after)
+ {
