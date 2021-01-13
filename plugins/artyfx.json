@@ -1,7 +1,7 @@
 {
     "name": "artyfx",
     "lv2bundles": ["artyfx.lv2"],
-    "version": "f335f8059bddf5d33883600f39a263a8144b351e",
+    "version": "cb7e58c2e47aad86aeb7ecc22d0c82bef2dfea39",
     "description": "ArtyFX plugin suite",
     "dlbaseurl": "https://github.com/openAVproductions/openAV-ArtyFX.git",
     "dlmethod": "git",
