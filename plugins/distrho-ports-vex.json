@@ -3,7 +3,7 @@
     "lv2bundles": [
         "vex.lv2"
     ],
-    "version": "d6465b3eeddac02259556ac8cd908e1eb6d42747",
+    "version": "575d56057ba9cee8505839e4ee00cc26d0193fc9",
     "description": "Wavetable polyphonic synth",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
