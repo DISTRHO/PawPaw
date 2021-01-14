@@ -34,7 +34,7 @@ Additonally, PawPaw is used to build library dependencies for
 ## For developers
 
 Proper documentation on how to setup PawPaw for your own project will come at a later date.  
-But roughly all that is needed is something like: (example of building blop, fomp and mda)
+But roughly all that is needed is something like:
 
 ```bash
 # change dir to PawPaw root folder
