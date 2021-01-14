@@ -91,11 +91,11 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
             GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getgrgid_r=yes"
             patch_file glib ${GLIB_VERSION} "configure.in" 's/G_ATOMIC_I486/G_ATOMIC_NOT_I486/'
         fi
-    elif [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ]; then
-        patch_file glib ${GLIB_VERSION} "gobject/Makefile.in" "s|glib_genmarshal = ./glib-genmarshal|glib_genmarshal = ${EXE_WRAPPER} ./glib-genmarshal.exe|"
+#     elif [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ]; then
+#         patch_file glib ${GLIB_VERSION} "gobject/Makefile.in" "s|glib_genmarshal = ./glib-genmarshal|glib_genmarshal = ${EXE_WRAPPER} ./glib-genmarshal.exe|"
     fi
 
-    build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
+    build_autoconfgen glib ${GLIB_VERSION} "--disable-rebuilds ${GLIB_EXTRAFLAGS}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
