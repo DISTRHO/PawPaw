@@ -7,7 +7,7 @@ index 3402627..27210f1 100644
  TEST_PROGS = 
  AUTOMAKE_OPTIONS = 1.7
 -SUBDIRS = . m4macros glib gmodule gthread gobject gio tests po docs
-+SUBDIRS = . m4macros glib gmodule gthread gobject gio tests po
++SUBDIRS = . m4macros glib gmodule gthread gobject gio po
  DIST_SUBDIRS = $(SUBDIRS) build
  bin_SCRIPTS = glib-gettextize
  AM_CPPFLAGS = \
