@@ -1,8 +1,8 @@
 diff --git a/api/apiplan.c b/api/apiplan.c
-index b8642a9..d63f2e4 100644
+index b8642a9..c7df958 100644
 --- a/api/apiplan.c
 +++ b/api/apiplan.c
-@@ -20,7 +20,48 @@
+@@ -20,7 +20,50 @@
  
  #include "api/api.h"
  
@@ -13,6 +13,8 @@ index b8642a9..d63f2e4 100644
 +   definition into another name unlikely to cause a conflict */
 +#define INT magnus_ab_INTegro_seclorum_nascitur_ordo
 +#include <windows.h>
++#include <process.h>
++#include <intrin.h>
 +#undef INT
 +
 +/* windows does not have statically-initialized mutexes---fake a
