@@ -40,6 +40,11 @@ function build_conf_python() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=x86_64-linux-gnu"
+        export PYTHON_FOR_BUILD=python3
+    fi
+
     _prebuild "${name}" "${pkgdir}"
 
     # remove flags not compatible with python
@@ -48,6 +53,13 @@ function build_conf_python() {
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+
+    if [ ! -f "${pkgdir}/.stamp_preconfigured" ] && [ "${WIN32}" -eq 1 ]; then
+        pushd "${pkgdir}"
+        autoreconf -vfi
+        touch .stamp_preconfigured
+        popd
+    fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -58,6 +70,11 @@ function build_conf_python() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
+        if [ "${WIN32}" -eq 1 ]; then
+            sed -i -e 's|./Programs/_freeze_importlib zipimport|./Programs/_freeze_importlib$(EXE) zipimport|' Makefile
+            sed -i -e 's|\twindres|\tx86_64-w64-mingw32-windres|' Makefile
+            make regen-importlib
+        fi
         make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
         touch .stamp_built
         popd
@@ -133,6 +150,29 @@ fi
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS="--enable-optimizations"
+elif [ "${WIN32}" -eq 1 ]; then
+    export EXTRA_CFLAGS=" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601"
+    export EXTRA_CXXFLAGS=" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601"
+    PYTHON_EXTRAFLAGS="--with-nt-threads"
+    PYTHON_EXTRAFLAGS+=" --without-ensurepip"
+    PYTHON_EXTRAFLAGS+=" --without-c-locale-coercion"
+    # PYTHON_EXTRAFLAGS+=" --enable-optimizations"
+    # Workaround for conftest error on 64-bit builds
+    PYTHON_EXTRAFLAGS+=" ac_cv_working_tzset=no"
+    # Workaround for when dlfcn exists on Windows, which causes
+    # some conftests to succeed when they shouldn't (we don't use dlfcn).
+    PYTHON_EXTRAFLAGS+=" ac_cv_header_dlfcn_h=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_lib_dl_dlopen=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_GLOBAL=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_LAZY=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_LOCAL=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NOW=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_DEEPBIND=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_MEMBER=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NODELETE=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NOLOAD=no"
+    PYTHON_EXTRAFLAGS+=" OPT="
+    export MSYSTEM=MINGW
 fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
@@ -140,6 +180,10 @@ if [ "${PYTHON_VERSION}" = "3.7.4" ]; then
     patch_file Python "${PYTHON_VERSION}" "Modules/Setup.dist" 's/#zlib zlibmodule.c/zlib zlibmodule.c/'
 fi
 build_conf_python Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
+
+if [ "${WIN32}" -eq 1 ]; then
+    unset MSYSTEM
+endif
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip

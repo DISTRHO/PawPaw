@@ -73,6 +73,8 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     SETUPTOOLS_SCM_VERSION=5.0.0
     TOML_VERSION=0.10.2
     ZIPP_VERSION=3.4.0
+elif [ "${WIN32}" -eq 1 ]; then
+    PYTHON_VERSION=3.8.7
 else
     CXFREEZE_VERSION=6.1
     PYTHON_VERSION=3.7.4
