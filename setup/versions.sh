@@ -76,6 +76,7 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     ZIPP_VERSION=3.4.0
 elif [ "${WIN32}" -eq 1 ]; then
     PYTHON_VERSION=3.8.7
+    PYLIBLO_VERSION=0.9.2
     PYQT5_VERSION=5.13.1
     SIP_VERSION=4.19.19
 else

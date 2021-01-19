@@ -375,7 +375,9 @@ function build_python() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
     local python=python3
 
-    if [ ! -e "${PAWPAW_PREFIX}/bin/python3" ] && ! which python3 > /dev/null; then
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        python="${EXE_WRAPPER} ${PAWPAW_PREFIX}/bin/python3${APP_EXT}"
+    elif [ ! -e "${PAWPAW_PREFIX}/bin/python3" ] && ! which python3 > /dev/null; then
         python=python
     fi
 

@@ -145,6 +145,12 @@ function build_pyqt() {
         sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile
         sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile
 
+        if [ -f "QtCore/Makefile.Release" ]; then
+            sed -i -e 's/CFLAGS *=/CFLAGS +=/' */Makefile.Release
+            sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile.Release
+            sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile.Release
+        fi
+
         # use abstract python3 path
         sed -i -e 's|/usr/bin/python3|python3|g' Makefile
 
