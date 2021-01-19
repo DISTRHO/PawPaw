@@ -121,12 +121,28 @@ function build_pyqt() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        python3 configure.py ${extraconfrules}
-        # used in sip
+        ${EXE_WRAPPER} "${PAWPAW_PREFIX}/bin/python3${APP_EXT}" configure.py ${extraconfrules}
+        # use env vars
+        sed -i -e 's/CC = gcc/CC ?= gcc/' */Makefile
+        sed -i -e 's/CXX = g++/CXX ?= g++/' */Makefile
+        sed -i -e 's/LINK = g++/LINK = $(CXX)/' */Makefile
         sed -i -e 's/CFLAGS *=/CFLAGS +=/' */Makefile
         sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile
         sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile
+        # use PREFIX var
         sed -i -e 's|$(DESTDIR)/usr|$(DESTDIR)$(PREFIX)|g' */Makefile
+        # fix win32 linkage
+        if [ "${WIN32}" -eq 1 ]; then
+            sed -i -e 's|config -lpython|config-3.8 -Wl,-Bdynamic -lpython|' */Makefile
+        fi
+        # fix cross-compiling (wine)
+        if [ "${CROSS_COMPILING}" -eq 1 ]; then
+            sed -i -e 's|\\|/|g' Makefile */Makefile installed.txt
+            sed -i -e "s|H:|${HOME}|g" Makefile */Makefile installed.txt
+            sed -i -e "s|Z:||g" Makefile */Makefile installed.txt
+            sed -i -e "s|.exe.exe|.exe|g" installed.txt
+            sed -i -e "s|${PAWPAW_PREFIX}/bin/python3${APP_EXT}|python3|" Makefile */Makefile
+        fi
         touch .stamp_configured
         popd
     fi
@@ -197,11 +213,6 @@ if [ "${PYTHON_VERSION}" = "3.7.4" ]; then
 fi
 build_conf_python Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
 
-# TODO: finish this
-if [ "${WIN32}" -eq 1 ]; then
-    exit 0
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 # sip
 
@@ -212,8 +223,17 @@ else
     SIP_DOWNLOAD_URL="http://sourceforge.net/projects/pyqt/files/sip/sip-${SIP_VERSION}"
 fi
 
+if [ "${WIN32}" -eq 1 ]; then
+    SIP_EXTRAFLAGS+=" --platform win32-g++"
+fi
+
 download sip "${SIP_VERSION}" "${SIP_DOWNLOAD_URL}"
 build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
+
+# TODO: finish this
+if [ "${WIN32}" -eq 1 ]; then
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pyqt5
