@@ -121,7 +121,22 @@ function build_pyqt() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ${EXE_WRAPPER} "${PAWPAW_PREFIX}/bin/python3${APP_EXT}" configure.py ${extraconfrules}
+
+        # Place link to Qt DLLs for PyQt tests
+        if [ "${WIN32}" -eq 1 ] && [ "${name}" = "PyQt5_gpl" ]; then
+            mkdir -p release
+            ln -sf "${PAWPAW_PREFIX}/bin"/Qt* release/
+        fi
+
+        python3 configure.py ${extraconfrules}
+
+        # build sip as host tool first
+        if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${name}" = "sip" ]; then
+            pushd "sipgen"
+            PATH="${OLD_PATH}" make sip LFLAGS="-Wl,-s" ${MAKE_ARGS}
+            popd
+        fi
+
         # use env vars
         sed -i -e 's/CC = gcc/CC ?= gcc/' */Makefile
         sed -i -e 's/CXX = g++/CXX ?= g++/' */Makefile
@@ -129,20 +144,27 @@ function build_pyqt() {
         sed -i -e 's/CFLAGS *=/CFLAGS +=/' */Makefile
         sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile
         sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile
+
+        # use abstract python3 path
+        sed -i -e 's|/usr/bin/python3|python3|g' Makefile
+
         # use PREFIX var
-        sed -i -e 's|$(DESTDIR)/usr|$(DESTDIR)$(PREFIX)|g' */Makefile
+        sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" installed.txt Makefile */Makefile
+
+        if [ -f "QtCore/Makefile.Release" ]; then
+            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" */Makefile.Release
+        fi
+
         # fix win32 linkage
         if [ "${WIN32}" -eq 1 ]; then
             sed -i -e 's|config -lpython|config-3.8 -Wl,-Bdynamic -lpython|' */Makefile
+            if [ -f "QtCore/Makefile.Release" ]; then
+                for mak in $(find -maxdepth 2 -type f -name Makefile.Release); do
+                    echo "LIBS += -L${PAWPAW_PREFIX}/lib/python3.8/config-3.8 -Wl,-Bdynamic -lpython3.8" >> ${mak}
+                done
+            fi
         fi
-        # fix cross-compiling (wine)
-        if [ "${CROSS_COMPILING}" -eq 1 ]; then
-            sed -i -e 's|\\|/|g' Makefile */Makefile installed.txt
-            sed -i -e "s|H:|${HOME}|g" Makefile */Makefile installed.txt
-            sed -i -e "s|Z:||g" Makefile */Makefile installed.txt
-            sed -i -e "s|.exe.exe|.exe|g" installed.txt
-            sed -i -e "s|${PAWPAW_PREFIX}/bin/python3${APP_EXT}|python3|" Makefile */Makefile
-        fi
+
         touch .stamp_configured
         popd
     fi
@@ -157,6 +179,17 @@ function build_pyqt() {
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
         make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
+
+        if [ "${name}" = "PyQt5_gpl" ]; then
+            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/pylupdate5
+            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/pyrcc5
+            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/pyuic5
+            if [ -n "${EXE_WRAPPER}" ]; then
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|g" ${PAWPAW_PREFIX}/bin/pylupdate5
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|g" ${PAWPAW_PREFIX}/bin/pyrcc5
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|g" ${PAWPAW_PREFIX}/bin/pyuic5
+            fi
+        fi
         touch .stamp_installed
         popd
     fi
@@ -230,11 +263,6 @@ fi
 download sip "${SIP_VERSION}" "${SIP_DOWNLOAD_URL}"
 build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
 
-# TODO: finish this
-if [ "${WIN32}" -eq 1 ]; then
-    exit 0
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 # pyqt5
 
@@ -246,8 +274,15 @@ else
     PYQT5_SUFFIX="_gpl"
 fi
 
+PYQT5_EXTRAFLAGS="--qmake ${PAWPAW_PREFIX}/bin/qmake --sip ${PAWPAW_PREFIX}/bin/sip"
+
 download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
-build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "--concatenate --confirm-license -c"
+build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_EXTRAFLAGS} --concatenate --confirm-license -c"
+
+# TODO: finish this
+if [ "${WIN32}" -eq 1 ]; then
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # cython (optional)

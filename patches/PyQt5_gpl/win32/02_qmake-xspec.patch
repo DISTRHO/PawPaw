@@ -1,0 +1,31 @@
+diff --git a/configure.py b/configure.py
+index 7d13747..a1cd0e9 100644
+--- a/configure.py
++++ b/configure.py
+@@ -768,7 +768,7 @@ class TargetConfiguration:
+         self.qsci_api = os.path.isdir(self.qsci_api_dir)
+ 
+         # Save the default qmake spec. and finalise the value we want to use.
+-        self.qmake_spec_default = qt_config.QMAKE_SPEC
++        self.qmake_spec_default = qt_config.QMAKE_XSPEC or qt_config.QMAKE_SPEC
+ 
+         # On Windows for Qt versions prior to v5.9.0 we need to be explicit
+         # about the qmake spec.
+@@ -1908,7 +1908,7 @@ def pro_sources(src_dir, other_headers=None, other_sources=None):
+ def module_file_name(target_config, name):
+     """ Return the name of a file implementing a module. """
+ 
+-    if sys.platform == 'win32':
++    if sys.platform == 'win32' or target_config.qmake_spec == 'win32-g++':
+         fs = '{}.lib' if target_config.static else '{}.pyd'
+     else:
+         fs = 'lib{}.a' if target_config.static else '{}.so'
+@@ -2514,7 +2514,7 @@ def get_sip_flags(target_config):
+         sip_flags.append('-D')
+ 
+     # Handle the platform tag.  (Allow for win32-g++.)
+-    if target_config.py_platform.startswith('win32'):
++    if target_config.py_platform.startswith('win32') or target_config.qmake_spec == 'win32-g++':
+         plattag = 'WS_WIN'
+     elif target_config.py_platform == 'darwin':
+         plattag = 'WS_MACX'
