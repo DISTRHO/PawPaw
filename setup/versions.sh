@@ -59,6 +59,7 @@ fi
 # carla
 
 FILE_VERSION=5.34
+LIBFFI_VERSION=3.3
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     CXFREEZE_VERSION=6.4.2

@@ -155,6 +155,14 @@ if [ "${WIN32}" -eq 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# libffi (for python, not needed in macOS)
+
+if [ "${MACOS}" -eq 0 ]; then
+    download libffi "${LIBFFI_VERSION}" "https://sourceware.org/pub/libffi"
+    build_autoconf libffi "${LIBFFI_VERSION}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # python
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
