@@ -69,7 +69,7 @@ diff -Naur Python-3.8.0-orig/Makefile.pre.in Python-3.8.0/Makefile.pre.in
  	else true; \
  	fi
  
-+ifeq (Msys,Msys)
++ifeq ($(shell uname -o),Msys)
 +DESTDIRFINAL=$(DESTDIR)
 +else
 +DESTDIRFINAL=$(DESTDIR)/

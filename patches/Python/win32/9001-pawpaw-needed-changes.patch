@@ -1,0 +1,21 @@
+diff --git a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
+index dddf412..b0a18a7 100644
+--- a/Lib/distutils/cygwinccompiler.py
++++ b/Lib/distutils/cygwinccompiler.py
+@@ -263,6 +263,8 @@ class CygwinCCompiler(UnixCCompiler):
+         if not debug and not hasattr(sys, 'gettotalrefcount'):
+             extra_preargs.append("-s")
+ 
++        extra_preargs.append("-Wl,-Bdynamic")
++
+         UnixCCompiler.link(self, target_desc, objects, output_filename,
+                            output_dir, libraries, library_dirs,
+                            runtime_library_dirs,
+@@ -413,6 +415,7 @@ def _find_exe_version(cmd):
+         out_string = out.read()
+     finally:
+         out.close()
++    out_string = out_string.split(b'\n',1)[0].replace(b'-win32',b'')
+     result = RE_VERSION.search(out_string)
+     if result is None:
+         return None

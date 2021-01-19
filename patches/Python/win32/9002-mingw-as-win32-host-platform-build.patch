@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index a80e6b2..3a7a2e7 100644
+--- a/setup.py
++++ b/setup.py
+@@ -51,7 +51,7 @@ if sys.platform == "win32" and "MSYSTEM" in os.environ:
+ 
+ CROSS_COMPILING = ("_PYTHON_HOST_PLATFORM" in os.environ)
+ HOST_PLATFORM = get_platform()
+-MS_WINDOWS = (HOST_PLATFORM == 'win32')
++MS_WINDOWS = (HOST_PLATFORM in ('mingw', 'win32'))
+ CYGWIN = (HOST_PLATFORM == 'cygwin')
+ MACOS = (HOST_PLATFORM == 'darwin')
+ AIX = (HOST_PLATFORM.startswith('aix'))

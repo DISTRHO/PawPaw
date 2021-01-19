@@ -6,7 +6,7 @@ diff -Naur Python-3.8.0-orig/configure.ac Python-3.8.0/configure.ac
  	*)	   SHLIB_SUFFIX=.so;;
  	esac
 +	case $host_os in
-+	*)    SHLIB_SUFFIX=.dll;;
++	mingw*)    SHLIB_SUFFIX=.dll;;
 +	esac
  fi
  AC_MSG_RESULT($SHLIB_SUFFIX)
@@ -16,7 +16,7 @@ diff -Naur Python-3.8.0-orig/configure.ac Python-3.8.0/configure.ac
  	;;
  	esac
 +	case $host in
-+	*)
++	*-*-mingw*)
 +	DYNLOADFILE="dynload_win.o"
 +	extra_machdep_objs="$extra_machdep_objs PC/dl_nt.o"
 +	;;
@@ -29,7 +29,7 @@ diff -Naur Python-3.8.0-orig/configure.ac Python-3.8.0/configure.ac
  	EXT_SUFFIX=${SHLIB_SUFFIX};;
  esac
 +case $host_os in
-+    *)
++    mingw*)
 +	dnl Synchronized with _PyImport_DynLoadFiletab (dynload_win.c)
 +	dnl Do not use more then one dot on this platform !
 +	EXT_SUFFIX=-$SOABI$SHLIB_SUFFIX;;

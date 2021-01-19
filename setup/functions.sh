@@ -80,6 +80,7 @@ function _prebuild() {
     export AR="${TARGET_AR}"
     export CC="${TARGET_CC}"
     export CXX="${TARGET_CXX}"
+    export DLLWRAP="${TARGET_DLLWRAP}"
     export LD="${TARGET_LD}"
     export STRIP="${TARGET_STRIP}"
     export CFLAGS="${TARGET_CFLAGS} ${EXTRA_CFLAGS}"
@@ -129,6 +130,7 @@ function _postbuild() {
     unset AR
     unset CC
     unset CXX
+    unset DLLWRAP
     unset LD
     unset STRIP
     unset CFLAGS

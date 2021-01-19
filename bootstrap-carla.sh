@@ -42,7 +42,6 @@ function build_conf_python() {
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=x86_64-linux-gnu"
-        export PYTHON_FOR_BUILD=python3
     fi
 
     _prebuild "${name}" "${pkgdir}"
@@ -71,11 +70,21 @@ function build_conf_python() {
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
         if [ "${WIN32}" -eq 1 ]; then
+            # adds -Wl,-Bdynamic so we link to shared python lib
+            sed -i -e 's|BLDLIBRARY=     -L.|BLDLIBRARY=     -Wl,-Bdynamic -L.|' Makefile
+            # EXE suffix missing
             sed -i -e 's|./Programs/_freeze_importlib zipimport|./Programs/_freeze_importlib$(EXE) zipimport|' Makefile
-            sed -i -e 's|\twindres|\tx86_64-w64-mingw32-windres|' Makefile
+            # inject exe-wrapper
+            if [ -n "${EXE_WRAPPER}" ]; then
+                sed -i -e "s|\t./Programs/_freeze_importlib|\t${EXE_WRAPPER} ./Programs/_freeze_importlib|" Makefile
+            fi
+            # use toolchain prefix on windres tool if cross-compiling
+            if [ "${CROSS_COMPILING}" -eq 1 ]; then
+                sed -i -e "s|\twindres|\t${TOOLCHAIN_PREFIX_}windres|" Makefile
+            fi
             make regen-importlib
         fi
-        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
+        make ${MAKE_ARGS}
         touch .stamp_built
         popd
     fi
@@ -172,7 +181,6 @@ elif [ "${WIN32}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NODELETE=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NOLOAD=no"
     PYTHON_EXTRAFLAGS+=" OPT="
-    export MSYSTEM=MINGW
 fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
@@ -181,9 +189,10 @@ if [ "${PYTHON_VERSION}" = "3.7.4" ]; then
 fi
 build_conf_python Python "${PYTHON_VERSION}" "--prefix=${PAWPAW_PREFIX} --enable-shared ${PYTHON_EXTRAFLAGS}"
 
+# TODO: finish this
 if [ "${WIN32}" -eq 1 ]; then
-    unset MSYSTEM
-endif
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sip

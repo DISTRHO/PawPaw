@@ -6,7 +6,7 @@ diff -Naur Python-3.8.0-orig/Lib/distutils/command/build_ext.py Python-3.8.0/Lib
          # for Release and Debug builds.
          # also Python's library directory must be appended to library_dirs
 -        if os.name == 'nt':
-+        if False:
++        if os.name == 'nt' and not self.plat_name.startswith(('mingw')):
              # the 'libs' directory is for binary installs - we assume that
              # must be the *native* platform.  But we don't really support
              # cross-compiling via a binary install anyway, so we let it go.
@@ -17,7 +17,7 @@ diff -Naur Python-3.8.0-orig/Lib/distutils/command/build_ext.py Python-3.8.0/Lib
 +
 +        # Use self.plat_name as it works even in case of
 +        # cross-compilation (at least for mingw build).
-+        if True:
++        if self.plat_name.startswith('mingw'):
 +            from distutils import sysconfig
 +            extra = []
 +            for lib in (
@@ -38,7 +38,7 @@ diff -Naur Python-3.8.0-orig/Lib/distutils/util.py Python-3.8.0/Lib/distutils/ut
  
      """
      if os.name == 'nt':
-+        if True:
++        if 'GCC' in sys.version:
 +            return 'mingw'
          if 'amd64' in sys.version.lower():
              return 'win-amd64'
@@ -50,7 +50,7 @@ diff -Naur Python-3.8.0-orig/Lib/sysconfig.py Python-3.8.0/Lib/sysconfig.py
  
      """
      if os.name == 'nt':
-+        if True:
++        if 'GCC' in sys.version:
 +            return 'mingw'
          if 'amd64' in sys.version.lower():
              return 'win-amd64'
