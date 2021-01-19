@@ -139,6 +139,9 @@ function build_pyqt() {
             pushd "sipgen"
             PATH="${OLD_PATH}" make sip LFLAGS="-Wl,-s" ${MAKE_ARGS}
             popd
+            if [ "${WIN32}" -eq 1 ]; then
+                sed -i -e "s/sip.so/sip.pyd/" installed.txt
+            fi
         fi
 
         # use env vars
@@ -267,7 +270,7 @@ else
 fi
 
 if [ "${WIN32}" -eq 1 ]; then
-    SIP_EXTRAFLAGS+=" --platform win32-g++"
+    SIP_EXTRAFLAGS+=" --platform win32-g++ EXTENSION_PLUGIN=pyd"
 fi
 
 download sip "${SIP_VERSION}" "${SIP_DOWNLOAD_URL}"
