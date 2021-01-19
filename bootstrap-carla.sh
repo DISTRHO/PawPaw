@@ -119,6 +119,10 @@ function build_pyqt() {
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
+    if [ "${WIN32}" -eq 1 ]; then
+        export CXXFLAGS+=" -Wno-deprecated-copy"
+    fi
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
 
@@ -163,10 +167,10 @@ function build_pyqt() {
 
         # fix win32 linkage
         if [ "${WIN32}" -eq 1 ]; then
-            sed -i -e 's|config -lpython|config-3.8 -Wl,-Bdynamic -lpython|' */Makefile
+            sed -i -e 's|config -lpython3.8|config-3.8 -Wl,-Bdynamic -lpython3.8 -Wl,-Bstatic|' */Makefile
             if [ -f "QtCore/Makefile.Release" ]; then
                 for mak in $(find -maxdepth 2 -type f -name Makefile.Release); do
-                    echo "LIBS += -L${PAWPAW_PREFIX}/lib/python3.8/config-3.8 -Wl,-Bdynamic -lpython3.8" >> ${mak}
+                    echo "LIBS += -L${PAWPAW_PREFIX}/lib/python3.8/config-3.8 -Wl,-Bdynamic -lpython3.8 -Wl,-Bstatic" >> ${mak}
                 done
             fi
         fi
