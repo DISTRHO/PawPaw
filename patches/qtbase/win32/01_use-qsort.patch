@@ -1,0 +1,31 @@
+diff --git a/src/widgets/dialogs/qfilesystemmodel.cpp b/src/widgets/dialogs/qfilesystemmodel.cpp
+index bf88aaa..1df99a8 100644
+--- a/src/widgets/dialogs/qfilesystemmodel.cpp
++++ b/src/widgets/dialogs/qfilesystemmodel.cpp
+@@ -1109,7 +1109,7 @@ void QFileSystemModelPrivate::sortChildren(int column, const QModelIndex &parent
+         }
+     }
+     QFileSystemModelSorter ms(column);
+-    std::sort(values.begin(), values.end(), ms);
++    qStableSort(values.begin(), values.end(), ms);
+     // First update the new visible list
+     indexNode->visibleChildren.clear();
+     //No more dirty item we reset our internal dirty index
+@@ -1660,7 +1660,7 @@ void QFileSystemModelPrivate::_q_directoryChanged(const QString &directory, cons
+         return;
+     QStringList toRemove;
+     QStringList newFiles = files;
+-    std::sort(newFiles.begin(), newFiles.end());
++    qSort(newFiles.begin(), newFiles.end());
+     for (auto i = parentNode->children.constBegin(), cend = parentNode->children.constEnd(); i != cend; ++i) {
+         QStringList::iterator iterator = std::lower_bound(newFiles.begin(), newFiles.end(), i.value()->fileName);
+         if ((iterator == newFiles.end()) || (i.value()->fileName < *iterator))
+@@ -1840,7 +1840,7 @@ void QFileSystemModelPrivate::_q_fileSystemChanged(const QString &path, const QV
+     }
+ 
+     // bundle up all of the changed signals into as few as possible.
+-    std::sort(rowsToUpdate.begin(), rowsToUpdate.end());
++    qSort(rowsToUpdate.begin(), rowsToUpdate.end());
+     QString min;
+     QString max;
+     for (int i = 0; i < rowsToUpdate.count(); ++i) {

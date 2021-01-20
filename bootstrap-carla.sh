@@ -51,6 +51,7 @@ function build_conf_python() {
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     if [ ! -f "${pkgdir}/.stamp_preconfigured" ] && [ "${WIN32}" -eq 1 ]; then
@@ -117,6 +118,7 @@ function build_pyqt() {
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     if [ "${WIN32}" -eq 1 ]; then
@@ -132,7 +134,13 @@ function build_pyqt() {
             ln -sf "${PAWPAW_PREFIX}/bin"/Qt* release/
         fi
 
-        python3 configure.py ${extraconfrules}
+        local python3=python3
+
+        if [ "${CROSS_COMPILING}" -eq 1 ]; then
+            python3=python3.8
+        fi
+
+        ${python3} configure.py ${extraconfrules}
 
         # build sip as host tool first
         if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${name}" = "sip" ]; then
@@ -194,13 +202,15 @@ function build_pyqt() {
         make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
 
         if [ "${name}" = "PyQt5_gpl" ]; then
-            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/pylupdate5
-            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/pyrcc5
-            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/pyuic5
+            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/py*5
+            if [ -n "${APP_EXT}" ]; then
+                sed -i -e "s|3.8 -m|3.8${APP_EXT} -m|" ${PAWPAW_PREFIX}/bin/py*5
+            fi
             if [ -n "${EXE_WRAPPER}" ]; then
-                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|g" ${PAWPAW_PREFIX}/bin/pylupdate5
-                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|g" ${PAWPAW_PREFIX}/bin/pyrcc5
-                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|g" ${PAWPAW_PREFIX}/bin/pyuic5
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" ${PAWPAW_PREFIX}/bin/py*5
+            fi
+            if [ "${WIN32}" -eq 1 ]; then
+                sed -i -e "s|d ||" ${PAWPAW_PREFIX}/lib/pkgconfig/Qt5*.pc
             fi
         fi
         touch .stamp_installed
