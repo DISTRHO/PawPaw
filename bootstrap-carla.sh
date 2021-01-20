@@ -302,11 +302,6 @@ PYQT5_EXTRAFLAGS="--qmake ${PAWPAW_PREFIX}/bin/qmake --sip ${PAWPAW_PREFIX}/bin/
 download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
 build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_EXTRAFLAGS} --concatenate --confirm-license -c"
 
-# TODO: finish this
-if [ "${WIN32}" -eq 1 ]; then
-    exit 0
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 # cython (optional)
 
@@ -318,8 +313,25 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # pyliblo
 
+export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/python3-config --cflags | awk 'sub("-ne","")')"
+export EXTRA_CFLAGS+=" $(pkg-config --cflags liblo)"
+
+export EXTRA_LDFLAGS="-shared -L/home/falktx/PawPawBuilds/targets/win64/bin $(${PAWPAW_PREFIX}/bin/python3-config --ldflags | awk 'sub("-ne","")' | awk 'sub("/lib -lpython3.8","/lib -Wl,-Bdynamic -lpython3.8")')"
+export EXTRA_LDFLAGS+=" -Wl,-Bstatic $(pkg-config --libs liblo)"
+
+# export LINK="${TARGET_CXX}"
+# export LINKER="${TARGET_CXX}"
+export LDSHARED="${TARGET_CXX}"
+
+# export PYTHONPATH="/home/falktx/PawPawBuilds/targets/win64/lib/python3.8"
+
 download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
+
+# TODO: finish this
+if [ "${WIN32}" -eq 1 ]; then
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # setuptools_scm (optional)

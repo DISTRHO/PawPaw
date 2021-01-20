@@ -375,11 +375,11 @@ function build_python() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
     local python=python3
 
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        python="${EXE_WRAPPER} ${PAWPAW_PREFIX}/bin/python3${APP_EXT}"
-    elif [ ! -e "${PAWPAW_PREFIX}/bin/python3" ] && ! which python3 > /dev/null; then
-        python=python
-    fi
+#     if [ "${CROSS_COMPILING}" -eq 1 ]; then
+#         python="${EXE_WRAPPER} ${PAWPAW_PREFIX}/bin/python3${APP_EXT}"
+#     elif [ ! -e "${PAWPAW_PREFIX}/bin/python3" ] && ! which python3 > /dev/null; then
+        python=python3.8
+#     fi
 
     _prebuild "${name}" "${pkgdir}"
 
@@ -392,20 +392,21 @@ function build_python() {
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     touch "${pkgdir}/.stamp_configured"
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        ${python} setup.py build ${extraconfrules}
+        ${python} setup.py build ${extraconfrules} --verbose
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ${python} setup.py install --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ${python} setup.py install --prefix="${PAWPAW_PREFIX}" ${extraconfrules} --verbose
         touch .stamp_installed
         popd
     fi
