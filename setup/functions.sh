@@ -83,6 +83,8 @@ function _prebuild() {
     export DLLWRAP="${TARGET_DLLWRAP}"
     export LD="${TARGET_LD}"
     export STRIP="${TARGET_STRIP}"
+    export WINDRES="${TARGET_WINDRES}"
+
     export CFLAGS="${TARGET_CFLAGS} ${EXTRA_CFLAGS}"
     export CXXFLAGS="${TARGET_CXXFLAGS} ${EXTRA_CXXFLAGS}"
     export LDFLAGS="${TARGET_LDFLAGS} ${EXTRA_LDFLAGS}"
@@ -93,7 +95,7 @@ function _prebuild() {
     export PATH="${TARGET_PATH}"
 
     if [ -d "${PAWPAW_ROOT}/patches/${name}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch" | sort); do
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch$" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
                 patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
                 touch "${pkgdir}/.stamp_applied_${p}"
@@ -102,7 +104,7 @@ function _prebuild() {
     fi
 
     if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch" | sort); do
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch$" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
                 patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
                 touch "${pkgdir}/.stamp_applied_${p}"
@@ -133,6 +135,8 @@ function _postbuild() {
     unset DLLWRAP
     unset LD
     unset STRIP
+    unset WINDRES
+
     unset CFLAGS
     unset CPPFLAGS
     unset CXXFLAGS
@@ -373,13 +377,7 @@ function build_python() {
     local extraconfrules="${3}"
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
-    local python=python3
-
-#     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-#         python="${EXE_WRAPPER} ${PAWPAW_PREFIX}/bin/python3${APP_EXT}"
-#     elif [ ! -e "${PAWPAW_PREFIX}/bin/python3" ] && ! which python3 > /dev/null; then
-        python=python3.8
-#     fi
+    local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
     _prebuild "${name}" "${pkgdir}"
 
@@ -393,6 +391,7 @@ function build_python() {
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--gc-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     touch "${pkgdir}/.stamp_configured"
