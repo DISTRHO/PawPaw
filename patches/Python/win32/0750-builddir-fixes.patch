@@ -1,7 +1,8 @@
-diff -Naur Python-3.8.0-orig/Makefile.pre.in Python-3.8.0/Makefile.pre.in
---- Python-3.8.0-orig/Makefile.pre.in	2019-10-22 10:03:21.368190400 +0300
-+++ Python-3.8.0/Makefile.pre.in	2019-10-22 10:03:31.336607900 +0300
-@@ -710,20 +710,20 @@
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index e2143a2..4ee959f 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -730,26 +730,26 @@ Programs/_testembed: Programs/_testembed.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
  
  Programs/_freeze_importlib.o: Programs/_freeze_importlib.c Makefile
  
@@ -26,7 +27,14 @@ diff -Naur Python-3.8.0-orig/Makefile.pre.in Python-3.8.0/Makefile.pre.in
  	    $(srcdir)/Lib/importlib/_bootstrap.py \
  	    $(srcdir)/Python/importlib.h.new
  	$(UPDATE_FILE) $(srcdir)/Python/importlib.h $(srcdir)/Python/importlib.h.new
-@@ -1781,7 +1781,7 @@
+ 	# Regenerate Python/importlib_zipimport.h from Lib/zipimport.py
+ 	# using _freeze_importlib
+-	./Programs/_freeze_importlib zipimport \
++	./Programs/_freeze_importlib$(EXE) zipimport \
+ 	    $(srcdir)/Lib/zipimport.py \
+ 	    $(srcdir)/Python/importlib_zipimport.h.new
+ 	$(UPDATE_FILE) $(srcdir)/Python/importlib_zipimport.h $(srcdir)/Python/importlib_zipimport.h.new
+@@ -1807,7 +1807,7 @@ clean: pycremoval
  	find build -name '*.py[co]' -exec rm -f {} ';' || true
  	-rm -f pybuilddir.txt
  	-rm -f Lib/lib2to3/*Grammar*.pickle

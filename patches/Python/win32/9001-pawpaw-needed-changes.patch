@@ -1,16 +1,40 @@
+diff --git a/configure.ac b/configure.ac
+index 6210e41..51432a8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1297,7 +1297,7 @@ if test $enable_shared = "yes"; then
+     *-*-mingw*)
+         LDLIBRARY='libpython$(LDVERSION).dll.a'
+         DLLLIBRARY='libpython$(LDVERSION).dll'
+-        BLDLIBRARY='-L. -lpython$(LDVERSION)'
++        BLDLIBRARY='-L. -Wl,-Bdynamic -lpython$(LDVERSION) -Wl,-Bstatic'
+         ;;
+   esac
+ else # shared is disabled
+diff --git a/Lib/distutils/ccompiler.py b/Lib/distutils/ccompiler.py
+index 0ea9cfe..1a24d5b 100644
+--- a/Lib/distutils/ccompiler.py
++++ b/Lib/distutils/ccompiler.py
+@@ -1098,6 +1098,8 @@ def gen_lib_options (compiler, library_dirs, runtime_library_dirs, libraries):
+         else:
+             lib_opts.append(opt)
+ 
++    lib_opts.append("-Wl,-Bdynamic")
++
+     # XXX it's important that we *not* remove redundant library mentions!
+     # sometimes you really do have to say "-lfoo -lbar -lfoo" in order to
+     # resolve all symbols.  I just hope we never have to say "-lfoo obj.o
+@@ -1115,4 +1117,6 @@ def gen_lib_options (compiler, library_dirs, runtime_library_dirs, libraries):
+                               "'%s' found (skipping)" % lib)
+         else:
+             lib_opts.append(compiler.library_option (lib))
++
++    lib_opts.append("-Wl,-Bstatic")
+     return lib_opts
 diff --git a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
 index dddf412..b0a18a7 100644
 --- a/Lib/distutils/cygwinccompiler.py
 +++ b/Lib/distutils/cygwinccompiler.py
-@@ -263,6 +263,8 @@ class CygwinCCompiler(UnixCCompiler):
-         if not debug and not hasattr(sys, 'gettotalrefcount'):
-             extra_preargs.append("-s")
- 
-+        extra_preargs.append("-Wl,-Bdynamic")
-+
-         UnixCCompiler.link(self, target_desc, objects, output_filename,
-                            output_dir, libraries, library_dirs,
-                            runtime_library_dirs,
 @@ -413,6 +415,7 @@ def _find_exe_version(cmd):
          out_string = out.read()
      finally:
@@ -19,3 +43,14 @@ index dddf412..b0a18a7 100644
      result = RE_VERSION.search(out_string)
      if result is None:
          return None
+diff --git a/Misc/python.pc.in b/Misc/python.pc.in
+index 3900190..8bdd635 100644
+--- a/Misc/python.pc.in
++++ b/Misc/python.pc.in
+@@ -9,5 +9,5 @@ Description: Build a C extension for Python
+ Requires:
+ Version: @VERSION@
+ Libs.private: @LIBS@
+-Libs: -L${libdir} -lpython@VERSION@@ABIFLAGS@
++Libs: -L${libdir} -L${prefix}/bin -Wl,-Bdynamic -lpython@VERSION@@ABIFLAGS@ -Wl,-Bstatic
+ Cflags: -I${includedir}/python@VERSION@@ABIFLAGS@
