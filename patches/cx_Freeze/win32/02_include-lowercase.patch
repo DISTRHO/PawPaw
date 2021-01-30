@@ -1,0 +1,13 @@
+diff --git a/source/util.c b/source/util.c
+index 6c9077b..f6397a9 100644
+--- a/source/util.c
++++ b/source/util.c
+@@ -8,7 +8,7 @@
+ #ifdef MS_WINDOWS
+ #include <windows.h>
+ #include <imagehlp.h>
+-#include <Shlwapi.h>
++#include <shlwapi.h>
+ 
+ #pragma pack(2)
+ 

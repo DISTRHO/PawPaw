@@ -278,11 +278,6 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     unset PKG_CONFIG_SYSROOT_DIR
 fi
 
-# TODO: finish this
-if [ "${WIN32}" -eq 1 ]; then
-    exit 0
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 # cython (optional)
 
@@ -300,13 +295,13 @@ if [ "${WIN32}" -eq 1 ]; then
     export LDSHARED="${TARGET_CXX}"
 fi
 
-# export LINK="${TARGET_CXX}"
-# export LINKER="${TARGET_CXX}"
-
 download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
 
 if [ "${WIN32}" -eq 1 ]; then
+    if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/lib/python3.8/liblo.pyd" ]; then
+        ln -sv "${PAWPAW_PREFIX}/lib/python3.8/site-packages"/pyliblo-*.egg/*.so "${PAWPAW_PREFIX}/lib/python3.8/liblo.pyd"
+    fi
     unset LDSHARED
 fi
 
