@@ -347,4 +347,13 @@ if [ "${CXFREEZE_VERSION}" = "6.4.2" ]; then
 fi
 build_python cx_Freeze "${CXFREEZE_VERSION}"
 
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ ! -e "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze" ]; then
+        ln -sv "${PAWPAW_PREFIX}/lib/python3.8/site-packages"/cx_Freeze-*.egg/cx_Freeze "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze"
+    fi
+    if [ ! -e "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze/util.pyd" ]; then
+        ln -sv "$(realpath "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze"/util.*)" "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze/util.pyd"
+    fi
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
