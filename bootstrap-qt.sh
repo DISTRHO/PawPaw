@@ -76,7 +76,7 @@ function build_qt_conf() {
     export PKG_CONFIG="${TARGET_PKG_CONFIG}"
     export PKG_CONFIG_LIBDIR="${TARGET_PKG_CONFIG_PATH}"
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
-    export PKG_CONFIG_SYSROOT_DIR="${TARGET_PKG_CONFIG_PATH}"
+    export PKG_CONFIG_SYSROOT_DIR="/"
 
     if [ -d "${PAWPAW_ROOT}/patches/${name}" ]; then
         for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch" | sort); do
@@ -100,9 +100,6 @@ function build_qt_conf() {
         pushd "${pkgdir}"
         ./configure ${extraconfrules}
         touch .stamp_configured
-        #sed -i -e 's/sub-tests //' Makefile
-        #sed -i -e 's/sub-tests-all //' Makefile
-        #sed -i -e 's/sub-tests-qmake_all //' Makefile
         popd
     fi
 
@@ -121,6 +118,9 @@ function build_qt_conf() {
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
         make ${MAKE_ARGS} -j 1 install
+        if [ "${WIN32}" -eq 1 ]; then
+            sed -i -e "s|d ||" ${PAWPAW_PREFIX}/lib/pkgconfig/Qt5*.pc
+        fi
         touch .stamp_installed
         popd
     fi

@@ -1,0 +1,13 @@
+diff --git a/siputils.py b/siputils.py
+index 457e417..050b130 100644
+--- a/siputils.py
++++ b/siputils.py
+@@ -951,7 +951,7 @@ class Makefile:
+         elif sys.platform == "darwin" and framework:
+             plib = "-framework " + clib
+         else:
+-            plib = "-l" + clib
++            plib = "-Wl,-Bdynamic -l" + clib + " -Wl,-Bstatic"
+ 
+         return plib
+ 

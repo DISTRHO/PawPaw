@@ -1,0 +1,13 @@
+diff --git a/configure.py b/configure.py
+index 6cea574..b7e4ba3 100644
+--- a/configure.py
++++ b/configure.py
+@@ -464,7 +464,7 @@ def create_makefiles(macros):
+     all_installs.extend(module_installs)
+ 
+     if not opts.no_module:
+-        if sys.platform == 'win32':
++        if sys.platform == 'win32' or opts.platform == 'win32-g++':
+             mod = 'sip.lib' if opts.static else 'sip.pyd'
+         else:
+             mod = 'libsip.a' if opts.static else 'sip.so'

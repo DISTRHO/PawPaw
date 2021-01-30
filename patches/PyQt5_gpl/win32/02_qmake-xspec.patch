@@ -11,6 +11,15 @@ index 7d13747..a1cd0e9 100644
  
          # On Windows for Qt versions prior to v5.9.0 we need to be explicit
          # about the qmake spec.
+@@ -1558,7 +1558,7 @@ def generate_makefiles(target_config, verbose, parts, tracing, fatal_warnings, d
+     inf = open_for_writing('__init__.py')
+     inf.write(contents)
+ 
+-    if target_config.py_platform == 'win32':
++    if target_config.py_platform == 'win32' or target_config.qmake_spec == 'win32-g++':
+         # On Windows we try and make sure the Qt DLLs can be found, either any
+         # bundled copies or an existing installation (using the traditional
+         # Windows DLL search).  We don't raise an exception in case the
 @@ -1908,7 +1908,7 @@ def pro_sources(src_dir, other_headers=None, other_sources=None):
  def module_file_name(target_config, name):
      """ Return the name of a file implementing a module. """
@@ -20,6 +29,30 @@ index 7d13747..a1cd0e9 100644
          fs = '{}.lib' if target_config.static else '{}.pyd'
      else:
          fs = 'lib{}.a' if target_config.static else '{}.so'
+@@ -1930,6 +1930,9 @@ def generate_tool_wrapper(target_config, wrapper, module):
+ 
+     exe = quote(target_config.pyuic_interpreter)
+ 
++    if target_config.qmake_spec == 'win32-g++':
++        exe += ".exe"
++
+     wf = open_for_writing(wrapper)
+ 
+     if target_config.py_platform == 'win32':
+@@ -2124,11 +2124,8 @@ def run_make(target_config, verbose, exe, makefile_name):
+ 
+     # Guess the name of make and set the default target and platform specific
+     # name of the executable.
+-    if target_config.py_platform == 'win32':
+-        if target_config.qmake_spec == 'win32-g++':
+-            make = 'mingw32-make'
+-        else:
+-            make = 'nmake'
++    if True: # there should be a better way to do this..
++        make = 'make'
+ 
+         if target_config.debug:
+             makefile_target = 'debug'
 @@ -2514,7 +2514,7 @@ def get_sip_flags(target_config):
          sip_flags.append('-D')
  

@@ -41,7 +41,7 @@ function build_conf_python() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=x86_64-linux-gnu"
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=$(gcc -dumpmachine)"
     fi
 
     _prebuild "${name}" "${pkgdir}"
@@ -71,17 +71,9 @@ function build_conf_python() {
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
         if [ "${WIN32}" -eq 1 ]; then
-            # adds -Wl,-Bdynamic so we link to shared python lib
-            sed -i -e 's|BLDLIBRARY=     -L.|BLDLIBRARY=     -Wl,-Bdynamic -L.|' Makefile
-            # EXE suffix missing
-            sed -i -e 's|./Programs/_freeze_importlib zipimport|./Programs/_freeze_importlib$(EXE) zipimport|' Makefile
             # inject exe-wrapper
             if [ -n "${EXE_WRAPPER}" ]; then
                 sed -i -e "s|\t./Programs/_freeze_importlib|\t${EXE_WRAPPER} ./Programs/_freeze_importlib|" Makefile
-            fi
-            # use toolchain prefix on windres tool if cross-compiling
-            if [ "${CROSS_COMPILING}" -eq 1 ]; then
-                sed -i -e "s|\twindres|\t${TOOLCHAIN_PREFIX_}windres|" Makefile
             fi
             make regen-importlib
         fi
@@ -119,70 +111,38 @@ function build_pyqt() {
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--gc-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
 
     if [ "${WIN32}" -eq 1 ]; then
         export CXXFLAGS+=" -Wno-deprecated-copy"
     fi
 
+    # non-standard vars used by sip/pyqt
+    export LFLAGS="${LDFLAGS}"
+    export LINK="${CXX}"
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
 
+        local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
+
         # Place link to Qt DLLs for PyQt tests
-        if [ "${WIN32}" -eq 1 ] && [ "${name}" = "PyQt5_gpl" ]; then
-            mkdir -p release
+        if [ "${WIN32}" -eq 1 ] && [ -d "pyuic" ] && [ ! -d "release" ]; then
+            mkdir release
             ln -sf "${PAWPAW_PREFIX}/bin"/Qt* release/
         fi
 
-        local python3=python3
+        ${python} configure.py ${extraconfrules}
 
         if [ "${CROSS_COMPILING}" -eq 1 ]; then
-            python3=python3.8
-        fi
+            # use abstract python3 path
+            sed -i -e 's|/usr/bin/python3|python3|g' Makefile
 
-        ${python3} configure.py ${extraconfrules}
-
-        # build sip as host tool first
-        if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${name}" = "sip" ]; then
-            pushd "sipgen"
-            PATH="${OLD_PATH}" make sip LFLAGS="-Wl,-s" ${MAKE_ARGS}
-            popd
-            if [ "${WIN32}" -eq 1 ]; then
-                sed -i -e "s/sip.so/sip.pyd/" installed.txt
-            fi
-        fi
-
-        # use env vars
-        sed -i -e 's/CC = gcc/CC ?= gcc/' */Makefile
-        sed -i -e 's/CXX = g++/CXX ?= g++/' */Makefile
-        sed -i -e 's/LINK = g++/LINK = $(CXX)/' */Makefile
-        sed -i -e 's/CFLAGS *=/CFLAGS +=/' */Makefile
-        sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile
-        sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile
-
-        if [ -f "QtCore/Makefile.Release" ]; then
-            sed -i -e 's/CFLAGS *=/CFLAGS +=/' */Makefile.Release
-            sed -i -e 's/CXXFLAGS *=/CXXFLAGS +=/' */Makefile.Release
-            sed -i -e 's/LIBS *=/LIBS += $(LDFLAGS)/' */Makefile.Release
-        fi
-
-        # use abstract python3 path
-        sed -i -e 's|/usr/bin/python3|python3|g' Makefile
-
-        # use PREFIX var
-        sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" installed.txt Makefile */Makefile
-
-        if [ -f "QtCore/Makefile.Release" ]; then
-            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" */Makefile.Release
-        fi
-
-        # fix win32 linkage
-        if [ "${WIN32}" -eq 1 ]; then
-            sed -i -e 's|config -lpython3.8|config-3.8 -Wl,-Bdynamic -lpython3.8 -Wl,-Bstatic|' */Makefile
+            # use PREFIX var
+            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" installed.txt Makefile */Makefile
             if [ -f "QtCore/Makefile.Release" ]; then
-                for mak in $(find -maxdepth 2 -type f -name Makefile.Release); do
-                    echo "LIBS += -L${PAWPAW_PREFIX}/lib/python3.8/config-3.8 -Wl,-Bdynamic -lpython3.8 -Wl,-Bstatic" >> ${mak}
-                done
+                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" */Makefile.Release
             fi
         fi
 
@@ -192,6 +152,14 @@ function build_pyqt() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
+
+        # build sip as host tool first
+        if [ "${CROSS_COMPILING}" -eq 1 ] && [ -d "sipgen" ] && [ ! -f "sipgen/sip" ]; then
+            pushd "sipgen"
+            PATH="${OLD_PATH}" make sip CC="gcc" LINK="gcc" LFLAGS="-Wl,-s" ${MAKE_ARGS}
+            popd
+        fi
+
         make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS}
         touch .stamp_built
         popd
@@ -200,22 +168,18 @@ function build_pyqt() {
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
         make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
-
-        if [ "${name}" = "PyQt5_gpl" ]; then
+        if [ "${CROSS_COMPILING}" -eq 1 ]; then
             sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/py*5
-            if [ -n "${APP_EXT}" ]; then
-                sed -i -e "s|3.8 -m|3.8${APP_EXT} -m|" ${PAWPAW_PREFIX}/bin/py*5
-            fi
-            if [ -n "${EXE_WRAPPER}" ]; then
-                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" ${PAWPAW_PREFIX}/bin/py*5
-            fi
-            if [ "${WIN32}" -eq 1 ]; then
-                sed -i -e "s|d ||" ${PAWPAW_PREFIX}/lib/pkgconfig/Qt5*.pc
-            fi
+        fi
+        if [ -n "${EXE_WRAPPER}" ]; then
+            sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" ${PAWPAW_PREFIX}/bin/py*5
         fi
         touch .stamp_installed
         popd
     fi
+
+    unset LFLAGS
+    unset LINK
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -245,7 +209,6 @@ elif [ "${WIN32}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS="--with-nt-threads"
     PYTHON_EXTRAFLAGS+=" --without-ensurepip"
     PYTHON_EXTRAFLAGS+=" --without-c-locale-coercion"
-    # PYTHON_EXTRAFLAGS+=" --enable-optimizations"
     # Workaround for conftest error on 64-bit builds
     PYTHON_EXTRAFLAGS+=" ac_cv_working_tzset=no"
     # Workaround for when dlfcn exists on Windows, which causes
@@ -260,7 +223,6 @@ elif [ "${WIN32}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_MEMBER=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NODELETE=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NOLOAD=no"
-    PYTHON_EXTRAFLAGS+=" OPT="
 fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
@@ -280,7 +242,10 @@ else
 fi
 
 if [ "${WIN32}" -eq 1 ]; then
-    SIP_EXTRAFLAGS+=" --platform win32-g++ EXTENSION_PLUGIN=pyd"
+    SIP_EXTRAFLAGS="--platform win32-g++"
+    SIP_EXTRAFLAGS+=" EXTENSION_PLUGIN=pyd"
+    SIP_EXTRAFLAGS+=" INCDIR=${PAWPAW_PREFIX}/include/python3.8"
+    SIP_EXTRAFLAGS+=" LIBDIR=${PAWPAW_PREFIX}/lib/python3.8/config-3.8"
 fi
 
 download sip "${SIP_VERSION}" "${SIP_DOWNLOAD_URL}"
@@ -297,10 +262,26 @@ else
     PYQT5_SUFFIX="_gpl"
 fi
 
+# qmake needs this
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    export PKG_CONFIG_LIBDIR="${TARGET_PKG_CONFIG_PATH}"
+    export PKG_CONFIG_SYSROOT_DIR="/"
+fi
+
 PYQT5_EXTRAFLAGS="--qmake ${PAWPAW_PREFIX}/bin/qmake --sip ${PAWPAW_PREFIX}/bin/sip"
 
 download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
-build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_EXTRAFLAGS} --concatenate --confirm-license -c"
+build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_EXTRAFLAGS} --concatenate --confirm-license"
+
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    unset PKG_CONFIG_LIBDIR
+    unset PKG_CONFIG_SYSROOT_DIR
+fi
+
+# TODO: finish this
+if [ "${WIN32}" -eq 1 ]; then
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # cython (optional)
@@ -313,24 +294,20 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # pyliblo
 
-export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/python3-config --cflags | awk 'sub("-ne","")')"
-export EXTRA_CFLAGS+=" $(pkg-config --cflags liblo)"
-
-export EXTRA_LDFLAGS="-shared -L/home/falktx/PawPawBuilds/targets/win64/bin $(${PAWPAW_PREFIX}/bin/python3-config --ldflags | awk 'sub("-ne","")' | awk 'sub("/lib -lpython3.8","/lib -Wl,-Bdynamic -lpython3.8")')"
-export EXTRA_LDFLAGS+=" -Wl,-Bstatic $(pkg-config --libs liblo)"
+if [ "${WIN32}" -eq 1 ]; then
+    export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 liblo)"
+    export EXTRA_LDFLAGS="-shared $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 liblo)"
+    export LDSHARED="${TARGET_CXX}"
+fi
 
 # export LINK="${TARGET_CXX}"
 # export LINKER="${TARGET_CXX}"
-export LDSHARED="${TARGET_CXX}"
-
-# export PYTHONPATH="/home/falktx/PawPawBuilds/targets/win64/lib/python3.8"
 
 download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
 
-# TODO: finish this
 if [ "${WIN32}" -eq 1 ]; then
-    exit 0
+    unset LDSHARED
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

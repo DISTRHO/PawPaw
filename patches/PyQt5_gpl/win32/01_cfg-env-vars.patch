@@ -2,35 +2,12 @@ diff --git a/configure.py b/configure.py
 index d893ae8..7d13747 100644
 --- a/configure.py
 +++ b/configure.py
-@@ -1558,7 +1558,7 @@ def generate_makefiles(target_config, verbose, parts, tracing, fatal_warnings, d
-     inf = open_for_writing('__init__.py')
-     inf.write(contents)
- 
--    if target_config.py_platform == 'win32':
-+    if target_config.py_platform == 'win32' or True:
-         # On Windows we try and make sure the Qt DLLs can be found, either any
-         # bundled copies or an existing installation (using the traditional
-         # Windows DLL search).  We don't raise an exception in case the
-@@ -2124,11 +2124,8 @@ def run_make(target_config, verbose, exe, makefile_name):
- 
-     # Guess the name of make and set the default target and platform specific
-     # name of the executable.
--    if target_config.py_platform == 'win32':
--        if target_config.qmake_spec == 'win32-g++':
--            make = 'mingw32-make'
--        else:
--            make = 'nmake'
-+    if target_config.py_platform == 'win32' or True:
-+        make = 'make'
- 
-         if target_config.debug:
-             makefile_target = 'debug'
 @@ -2421,6 +2418,10 @@ def compile_test_program(target_config, verbose, mname, source=None, debug=None)
      pro_lines.append('TARGET = %s' % name)
  
      pro_lines.append('SOURCES = %s' % qmake_quote(name_source))
-+    pro_lines.append('QMAKE_CXXFLAGS += $$(CXXFLAGS)')
 +    pro_lines.append('QMAKE_CFLAGS += $$(CFLAGS)')
++    pro_lines.append('QMAKE_CXXFLAGS += $$(CXXFLAGS)')
 +    pro_lines.append('QMAKE_LFLAGS += $$(LDFLAGS)')
 +
  
@@ -51,3 +28,17 @@ index d893ae8..7d13747 100644
  
      if not os.access(out_file, os.F_OK):
          error("%s failed to create %s. Make sure your Qt installation is correct." % (test, out_file))
+@@ -2751,6 +2751,13 @@ def generate_module_makefile(target_config, verbose, mname, include_paths=None,
+         # qmake is run otherwise the install and uninstall targets are not
+         # generated.
+         shared = '''
++CONFIG += link_pkgconfig
++PKGCONFIG += python3
++
++QMAKE_CFLAGS += $$(CFLAGS)
++QMAKE_CXXFLAGS += $$(CXXFLAGS)
++QMAKE_LFLAGS += $$(LDFLAGS)
++
+ win32 {
+     PY_MODULE = %s%s.pyd
+     PY_MODULE_SRC = $(DESTDIR_TARGET)

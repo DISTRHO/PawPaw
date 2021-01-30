@@ -1,0 +1,36 @@
+diff --git a/siputils.py b/siputils.py
+index e0efcf5..5da51f8 100644
+--- a/siputils.py
++++ b/siputils.py
+@@ -1162,9 +1162,9 @@ class Makefile:
+         if self._deployment_target:
+             mfile.write("export MACOSX_DEPLOYMENT_TARGET = %s\n" % self._deployment_target)
+ 
+-        mfile.write("CC = %s\n" % self.required_string("CC"))
+-        mfile.write("CXX = %s\n" % self.required_string("CXX"))
+-        mfile.write("LINK = %s\n" % self.required_string("LINK"))
++        mfile.write("CC ?= %s\n" % self.required_string("CC"))
++        mfile.write("CXX ?= %s\n" % self.required_string("CXX"))
++        mfile.write("LINK ?= %s\n" % self.required_string("LINK"))
+ 
+         cppflags = []
+ 
+@@ -1194,13 +1194,13 @@ class Makefile:
+ 
+         libs.extend(self.optional_list("LIBS"))
+ 
+-        mfile.write("CPPFLAGS = %s\n" % ' '.join(cppflags))
++        mfile.write("CPPFLAGS += %s\n" % ' '.join(cppflags))
+ 
+-        mfile.write("CFLAGS = %s\n" % self.optional_string("CFLAGS"))
+-        mfile.write("CXXFLAGS = %s\n" % self.optional_string("CXXFLAGS"))
+-        mfile.write("LFLAGS = %s\n" % self.optional_string("LFLAGS"))
++        mfile.write("CFLAGS += %s\n" % self.optional_string("CFLAGS"))
++        mfile.write("CXXFLAGS += %s\n" % self.optional_string("CXXFLAGS"))
++        mfile.write("LFLAGS += %s\n" % self.optional_string("LFLAGS"))
+ 
+-        mfile.write("LIBS = %s\n" % ' '.join(libs))
++        mfile.write("LIBS += %s\n" % ' '.join(libs))
+ 
+         if self._qt:
+             mfile.write("MOC = %s\n" % _quote(self.required_string("MOC")))

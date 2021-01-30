@@ -85,7 +85,7 @@ diff -uNr sip-4.16.2/siputils.py sip-4.16.2-mingw/siputils.py
  
          # Get these once and make them available to sub-classes.
 -        if sys.platform == "win32":
-+        if False:
++        if sys.platform == "win32" and not "MSYSTEM" in os.environ:
              def_copy = "copy"
              def_rm = "del"
              def_mkdir = "mkdir"
