@@ -168,11 +168,13 @@ function build_pyqt() {
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
         make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
-        if [ "${CROSS_COMPILING}" -eq 1 ]; then
-            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/py*5
-        fi
-        if [ -n "${EXE_WRAPPER}" ]; then
-            sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" ${PAWPAW_PREFIX}/bin/py*5
+        if [ -f "QtCore/Makefile.Release" ]; then
+            if [ "${CROSS_COMPILING}" -eq 1 ]; then
+                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/py*5
+            fi
+            if [ -n "${EXE_WRAPPER}" ]; then
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" ${PAWPAW_PREFIX}/bin/py*5
+            fi
         fi
         touch .stamp_installed
         popd
@@ -293,16 +295,18 @@ if [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 liblo)"
     export EXTRA_LDFLAGS="-shared $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 liblo)"
     export LDSHARED="${TARGET_CXX}"
+    export PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
 fi
 
 download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
 
 if [ "${WIN32}" -eq 1 ]; then
-    if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/lib/python3.8/liblo.pyd" ]; then
-        ln -sv "${PAWPAW_PREFIX}/lib/python3.8/site-packages"/pyliblo-*.egg/*.so "${PAWPAW_PREFIX}/lib/python3.8/liblo.pyd"
+    if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PYTHONPATH}/liblo.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pyliblo-*.egg/*.so "${PYTHONPATH}/liblo.pyd"
     fi
     unset LDSHARED
+    unset PYTHONPATH
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -341,19 +345,27 @@ fi
 # cxfreeze
 
 download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze/archive" "" "nv"
+
 if [ "${CXFREEZE_VERSION}" = "6.4.2" ]; then
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
 fi
+if [ "${WIN32}" -eq 1 ]; then
+    export PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+fi
+
 build_python cx_Freeze "${CXFREEZE_VERSION}"
 
-if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
-    if [ ! -e "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze" ]; then
-        ln -sv "${PAWPAW_PREFIX}/lib/python3.8/site-packages"/cx_Freeze-*.egg/cx_Freeze "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze"
+if [ "${WIN32}" -eq 1 ]; then
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        if [ ! -e "${PYTHONPATH}/cx_Freeze" ]; then
+            ln -sv "${PYTHONPATH}"/cx_Freeze-*.egg/cx_Freeze "${PYTHONPATH}/cx_Freeze"
+        fi
+        if [ ! -e "${PYTHONPATH}/cx_Freeze/util.pyd" ]; then
+            ln -sv "$(realpath "${PYTHONPATH}/cx_Freeze"/util.*)" "${PYTHONPATH}/cx_Freeze/util.pyd"
+        fi
     fi
-    if [ ! -e "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze/util.pyd" ]; then
-        ln -sv "$(realpath "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze"/util.*)" "${PAWPAW_PREFIX}/lib/python3.8/cx_Freeze/util.pyd"
-    fi
+    unset PYTHONPATH
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
