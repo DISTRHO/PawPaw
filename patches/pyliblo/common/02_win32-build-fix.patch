@@ -1,0 +1,13 @@
+diff --git a/setup.py b/setup.py
+index fae6090..c5a5b35 100755
+--- a/setup.py
++++ b/setup.py
+@@ -46,7 +46,7 @@ ext_modules = [
+             '-Werror-implicit-function-declaration',
+             '-Wfatal-errors',
+         ],
+-        libraries = ['lo']
++        libraries = ['lo', 'ws2_32', 'iphlpapi']
+     )
+ ]
+ 
