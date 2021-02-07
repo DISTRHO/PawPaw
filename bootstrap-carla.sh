@@ -170,10 +170,14 @@ function build_pyqt() {
         make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
         if [ -f "QtCore/Makefile.Release" ]; then
             if [ "${CROSS_COMPILING}" -eq 1 ]; then
-                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" ${PAWPAW_PREFIX}/bin/py*5
+                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/bin"/py*5
             fi
             if [ -n "${EXE_WRAPPER}" ]; then
-                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" ${PAWPAW_PREFIX}/bin/py*5
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" "${PAWPAW_PREFIX}/bin"/py*5
+            fi
+        else
+            if [ "${CROSS_COMPILING}" -eq 1 ]; then
+                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/lib/python3/dist-packages/sipconfig.py"
             fi
         fi
         touch .stamp_installed

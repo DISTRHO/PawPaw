@@ -1,6 +1,7 @@
 #!/bin/bash
 
 CROSS_COMPILING=0
+INVALID_TARGET=0
 LINUX=0
 MACOS=0
 MACOS_OLD=0
@@ -52,7 +53,7 @@ function check_target() {
                 MACOS_UNIVERSAL=1
             fi
             ;;
-        default)
+        default|*)
             echo "Invalid target '${target}', possible values are:"
             echo "\tmacos"
             echo "\tmacos-old"
@@ -60,7 +61,7 @@ function check_target() {
             echo "\twin32"
             echo "\twin64"
             echo "\tnative"
-            if [ -z "${VALIDATE_TARGET}" ]; then
+            if [ -z "${SOURCING_FILES}" ]; then
                 exit 2
             else
                 INVALID_TARGET=1

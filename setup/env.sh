@@ -30,7 +30,14 @@ elif [ "${WIN32}" -eq 1 ]; then
 
 else
     echo "Unknown target '${target}'"
-    exit 4
+    if [ -z "${SOURCING_FILES}" ]; then
+        exit 4
+    else
+        APP_EXT=""
+        CMAKE_SYSTEM_NAME="Unknown"
+        PAWPAW_TARGET="unknown"
+        INVALID_TARGET=1
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -116,6 +123,9 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
         TOOLCHAIN_PREFIX="i686-w64-mingw32"
         TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
     fi
+else
+    unset TOOLCHAIN_PREFIX
+    unset TOOLCHAIN_PREFIX_
 fi
 
 TARGET_AR="${TOOLCHAIN_PREFIX_}ar"
@@ -134,6 +144,7 @@ TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 
 MAKE_ARGS=""
 WAF_ARGS=""
+unset EXE_WRAPPER
 
 if which nproc > /dev/null; then
     MAKE_ARGS+="-j $(nproc)"
