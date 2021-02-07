@@ -248,7 +248,7 @@ else
 fi
 
 if [ "${WIN32}" -eq 1 ]; then
-    SIP_EXTRAFLAGS="--platform win32-g++"
+    SIP_EXTRAFLAGS+=" --platform win32-g++"
     SIP_EXTRAFLAGS+=" EXTENSION_PLUGIN=pyd"
     SIP_EXTRAFLAGS+=" INCDIR=${PAWPAW_PREFIX}/include/python3.8"
     SIP_EXTRAFLAGS+=" LIBDIR=${PAWPAW_PREFIX}/lib/python3.8/config-3.8"
