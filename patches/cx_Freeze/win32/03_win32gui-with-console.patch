@@ -1,0 +1,96 @@
+diff --git a/source/bases/Win32GUI.c b/source/bases/Win32GUI.c
+index 490cdd3..f350d5f 100644
+--- a/source/bases/Win32GUI.c
++++ b/source/bases/Win32GUI.c
+@@ -220,26 +220,85 @@ static int FatalScriptError()
+ #include "Common.c"
+ 
+ 
++/* the code below is based on https://www.tillett.info/2013/05/13/how-to-create-a-windows-program-that-works-as-both-as-a-gui-and-console-application/
++ */
++
++static BOOL has_console = FALSE;
++
++// Attach output of application to parent console
++static BOOL attachOutputToConsole(void)
++{
++    HANDLE consoleHandleOut, consoleHandleError;
++
++    if (AttachConsole(ATTACH_PARENT_PROCESS))
++    {
++        // Redirect unbuffered STDOUT to the console
++        consoleHandleOut = GetStdHandle(STD_OUTPUT_HANDLE);
++        if (consoleHandleOut != INVALID_HANDLE_VALUE)
++        {
++            freopen("CONOUT$", "w", stdout);
++            setvbuf(stdout, NULL, _IONBF, 0);
++        }
++
++        // Redirect unbuffered STDERR to the console
++        consoleHandleError = GetStdHandle(STD_ERROR_HANDLE);
++        if (consoleHandleError != INVALID_HANDLE_VALUE)
++        {
++            freopen("CONOUT$", "w", stderr);
++            setvbuf(stderr, NULL, _IONBF, 0);
++        }
++
++        return TRUE;
++    }
++
++    //Not a console application
++    return FALSE;
++}
++
++static void closeConsole()
++{
++    // Send "enter" to release application from the console
++    // This is a hack, but if not used the console doesn't know the application has
++    // returned. The "enter" key only sent if the console window is in focus.
++    if (has_console && (GetConsoleWindow() == GetForegroundWindow() || SetFocus(GetConsoleWindow()) != NULL))
++    {
++        INPUT ip;
++        // Set up a generic keyboard event.
++        ip.type = INPUT_KEYBOARD;
++        ip.ki.wScan = 0; // hardware scan code for key
++        ip.ki.time = 0;
++        ip.ki.dwExtraInfo = 0;
++
++        // Send the "Enter" key
++        ip.ki.wVk = 0x0D; // virtual-key code for the "Enter" key
++        ip.ki.dwFlags = 0; // 0 for key press
++        SendInput(1, &ip, sizeof(INPUT));
++
++        // Release the "Enter" key
++        ip.ki.dwFlags = KEYEVENTF_KEYUP; // KEYEVENTF_KEYUP for key release
++        SendInput(1, &ip, sizeof(INPUT));
++    }
++}
++
+ //-----------------------------------------------------------------------------
+ // WinMain()
+ //   Main routine for the executable in Windows.
+ //-----------------------------------------------------------------------------
+-int WINAPI wWinMain(
+-    HINSTANCE instance,                 // handle to application
+-    HINSTANCE prevInstance,             // previous handle to application
+-    wchar_t *commandLine,               // command line
+-    int showFlag)                       // show flag
++int wmain(int argc, wchar_t **argv)
+ {
++    has_console = attachOutputToConsole();
++    atexit(closeConsole);
+     int status = 0;
+ 
+     // initialize Python
+-    if (InitializePython(__argc, __wargv) < 0)
++    if (InitializePython(argc, argv) < 0)
+         status = 1;
+ 
+     // do the work
+     if (status == 0 && ExecuteScript() < 0)
+         status = 1;
+     Py_Finalize();
++
+     return status;
+ }
+ 
