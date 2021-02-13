@@ -1,0 +1,71 @@
+From c4c4ec510dbeff61982e4aee7d1b379539319cd9 Mon Sep 17 00:00:00 2001
+From: David Robillard <d@drobilla.net>
+Date: Sun, 17 Jan 2021 11:10:10 +0100
+Subject: [PATCH] Remove aligned_alloc support
+
+This causes build issues when targeting older versions of MacOS.  That could be
+fixed, but I don't have the ability to reproduce it at the moment, and it's a
+problem in the build system check code which is about to be entirely replaced
+anyway.
+
+Since, as far as I know, this does not actually add aligned allocation support
+to any real system (they all support one of the other methods), just remove it
+for now.
+---
+ NEWS              |  3 ++-
+ src/serd_config.h | 17 -----------------
+ src/system.c      |  2 --
+ wscript           |  7 -------
+ 4 files changed, 2 insertions(+), 27 deletions(-)
+
+diff --git a/src/serd_config.h b/src/serd_config.h
+index 0cb83b2f..2566f4be 100644
+--- a/src/serd_config.h
++++ b/src/serd_config.h
+@@ -88,12 +77,6 @@
+   if the build system defines them all.
+ */
+ 
+-#ifdef HAVE_ALIGNED_ALLOC
+-#  define USE_ALIGNED_ALLOC 1
+-#else
+-#  define USE_ALIGNED_ALLOC 0
+-#endif
+-
+ #ifdef HAVE_FILENO
+ #  define USE_FILENO 1
+ #else
+diff --git a/src/system.c b/src/system.c
+index 12672d47..6bc93ca6 100644
+--- a/src/system.c
++++ b/src/system.c
+@@ -55,8 +55,6 @@ serd_malloc_aligned(const size_t alignment, const size_t size)
+ {
+ #if defined(_WIN32)
+   return _aligned_malloc(size, alignment);
+-#elif USE_ALIGNED_ALLOC
+-  return aligned_alloc(alignment, size);
+ #elif USE_POSIX_MEMALIGN
+   void*     ptr = NULL;
+   const int ret = posix_memalign(&ptr, alignment, size);
+diff --git a/wscript b/wscript
+index 70f08a74..d6b0677b 100644
+--- a/wscript
++++ b/wscript
+@@ -123,13 +123,6 @@ def configure(conf):
+     if Options.options.largefile:
+         conf.env.append_unique('DEFINES', ['_FILE_OFFSET_BITS=64'])
+ 
+-    conf.check_function('c', 'aligned_alloc',
+-                        header_name = 'stdlib.h',
+-                        return_type = 'void*',
+-                        arg_types   = 'size_t,size_t',
+-                        define_name = 'HAVE_ALIGNED_ALLOC',
+-                        mandatory   = False)
+-
+     if not Options.options.no_posix:
+         funcs = {'posix_memalign': ('stdlib.h', 'int', 'void**,size_t,size_t'),
+                  'posix_fadvise':  ('fcntl.h', 'int', 'int,off_t,off_t,int'),
+-- 
+GitLab
+
