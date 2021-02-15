@@ -216,6 +216,7 @@ fi
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS="--enable-optimizations"
+    PYTHON_EXTRAFLAGS+=" ac_cv_lib_intl_textdomain=no"
 elif [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS=" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601"
     export EXTRA_CXXFLAGS=" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601"
