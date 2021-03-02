@@ -1,0 +1,13 @@
+{
+    "name": "distrho-ports-vitalium",
+    "lv2bundles": [
+        "vitalium.lv2"
+    ],
+    "version": "67cdebbd2472380ac5c4339ac82fba4749b0e6da",
+    "description": "Spectral warping wavetable synth",
+    "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
+    "dlmethod": "git",
+    "dlname": "distrho-ports",
+    "buildtype": "meson",
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dplugins=vitalium"
+}
