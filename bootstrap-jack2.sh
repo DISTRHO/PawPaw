@@ -105,8 +105,15 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # opus
 
+OPUS_EXTRAFLAGS="--disable-extra-programs --enable-custom-modes --enable-float-approx"
+
+# FIXME
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    OPUS_EXTRAFLAGS+=" --disable-asm --disable-rtcd --disable-intrinsics"
+fi
+
 download opus "${OPUS_VERSION}" "https://archive.mozilla.org/pub/opus"
-build_autoconf opus "${OPUS_VERSION}" "--disable-extra-programs --enable-custom-modes --enable-float-approx"
+build_autoconf opus "${OPUS_VERSION}" "${OPUS_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # rtaudio (download, win32 only)
