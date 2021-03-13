@@ -8,6 +8,7 @@ cache:
     - ${HOME}/PawPawBuilds/targets/linux
     - ${HOME}/PawPawBuilds/targets/macos
     - ${HOME}/PawPawBuilds/targets/macos-old
+    - ${HOME}/PawPawBuilds/targets/macos-universal
     - ${HOME}/PawPawBuilds/targets/win32
     - ${HOME}/PawPawBuilds/targets/win64
 
