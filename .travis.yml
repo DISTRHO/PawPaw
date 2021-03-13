@@ -61,7 +61,7 @@ jobs:
       env:
         - TARGET="macos"
 
-    macOS native universal build
+    # macOS native universal build
     - name: "macOS native universal"
       os: osx
       osx_image: xcode12.3

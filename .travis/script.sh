@@ -28,8 +28,10 @@ if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
     PLUGINS_DISTRHO+=" distrho-ports-obxd"
     PLUGINS_DISTRHO+=" distrho-ports-pitched-delay"
     PLUGINS_DISTRHO+=" distrho-ports-refine"
+    PLUGINS_DISTRHO+=" distrho-ports-swankyamp"
     PLUGINS_DISTRHO+=" distrho-ports-temper"
     PLUGINS_DISTRHO+=" distrho-ports-vex"
+    PLUGINS_DISTRHO+=" distrho-ports-vitalium"
     PLUGINS_DISTRHO+=" distrho-ports-wolpertinger"
 fi
 

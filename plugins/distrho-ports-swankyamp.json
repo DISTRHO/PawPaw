@@ -1,13 +1,13 @@
 {
-    "name": "distrho-ports-vitalium",
+    "name": "distrho-ports-swankyamp",
     "lv2bundles": [
-        "vitalium.lv2"
+        "SwankyAmp.lv2"
     ],
     "version": "bc2fd1c9e78efeb2d716b0f1c875030236c88a94",
-    "description": "Spectral warping wavetable synth",
+    "description": "Tube amplifier simulation plugin",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
     "dlname": "distrho-ports",
     "buildtype": "meson",
-    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dplugins=vitalium"
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dplugins=swankyamp"
 }
