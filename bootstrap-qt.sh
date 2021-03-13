@@ -132,6 +132,33 @@ function build_qt_conf() {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# NOTE: on CI, qt build takes too long on macos-universal target, download and use premade builds
+
+if [ -n "${TRAVIS_BUILD_DIR}" ] && [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    mkdir -p "${PAWPAW_BUILDDIR}/qtbase${qtsuffix}-${QT5_VERSION}"
+    touch "${PAWPAW_BUILDDIR}/qtbase${qtsuffix}-${QT5_VERSION}/.stamp_configured"
+    touch "${PAWPAW_BUILDDIR}/qtbase${qtsuffix}-${QT5_VERSION}/.stamp_built"
+    touch "${PAWPAW_BUILDDIR}/qtbase${qtsuffix}-${QT5_VERSION}/.stamp_installed"
+    touch "${PAWPAW_BUILDDIR}/qtbase${qtsuffix}-${QT5_VERSION}/.stamp_applied_01_force-10.12-universal-build.patch"
+    mkdir -p "${PAWPAW_BUILDDIR}/qtmacextras${qtsuffix}-${QT5_VERSION}"
+    touch "${PAWPAW_BUILDDIR}/qtmacextras${qtsuffix}-${QT5_VERSION}/.stamp_configured"
+    touch "${PAWPAW_BUILDDIR}/qtmacextras${qtsuffix}-${QT5_VERSION}/.stamp_built"
+    touch "${PAWPAW_BUILDDIR}/qtmacextras${qtsuffix}-${QT5_VERSION}/.stamp_installed"
+    mkdir -p "${PAWPAW_BUILDDIR}/qtsvg${qtsuffix}-${QT5_VERSION}"
+    touch "${PAWPAW_BUILDDIR}/qtsvg${qtsuffix}-${QT5_VERSION}/.stamp_configured"
+    touch "${PAWPAW_BUILDDIR}/qtsvg${qtsuffix}-${QT5_VERSION}/.stamp_built"
+    touch "${PAWPAW_BUILDDIR}/qtsvg${qtsuffix}-${QT5_VERSION}/.stamp_installed"
+    mkdir -p "${PAWPAW_BUILDDIR}/qttools${qtsuffix}-${QT5_VERSION}"
+    touch "${PAWPAW_BUILDDIR}/qttools${qtsuffix}-${QT5_VERSION}/.stamp_configured"
+    touch "${PAWPAW_BUILDDIR}/qttools${qtsuffix}-${QT5_VERSION}/.stamp_built"
+    touch "${PAWPAW_BUILDDIR}/qttools${qtsuffix}-${QT5_VERSION}/.stamp_installed"
+    pushd "${PAWPAW_DIR}/targets"
+    curl -L "https://falktx.com/data/pawpaw-qt-macos-universal.tar.xz" -o "pawpaw-qt-macos-universal.tar.xz" --fail
+    tar xvf pawpaw-qt-macos-universal.tar.xz
+    popd
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # qt config
 
 # base
