@@ -6,5 +6,5 @@
     "dlbaseurl": "https://github.com/openAVproductions/openAV-ArtyFX.git",
     "dlmethod": "git",
     "buildtype": "cmake",
-    "buildargs": "-DBUILD_GUI=OFF"
+    "buildargs": "-DBUILD_GUI=OFF -DBUILD_SSE=OFF"
 }

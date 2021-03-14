@@ -96,7 +96,7 @@ build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
 OPUS_EXTRAFLAGS="--disable-extra-programs --enable-custom-modes --enable-float-approx"
 
 # FIXME
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${MACOS_OLD}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-asm --disable-rtcd --disable-intrinsics"
 fi
 
