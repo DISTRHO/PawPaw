@@ -115,11 +115,6 @@ for plugin in ${@}; do
 
     download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}" "${dlname}"
 
-    # cleanup previous bundles before building
-    for lv2bundle in ${lv2bundles[@]}; do
-        rm -rf "${LV2DIR}/${lv2bundle}"
-    done
-
     case ${buildtype} in
         "autoconf")
             build_autoconf "${name}" "${version}" "${buildargs}"
