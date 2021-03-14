@@ -12,5 +12,6 @@
     "description": "DISTRHO Imported Effect",
     "dlbaseurl": "https://github.com/DISTRHO/DIE-Plugins.git",
     "dlmethod": "git",
-    "buildtype": "make"
+    "buildtype": "make",
+    "buildargs": "NOOPT=true"
 }
