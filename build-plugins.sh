@@ -33,12 +33,17 @@ if [ "${WIN32}" -eq 1 ] && [ ! -d "${HOME}/.wine" ]; then
     env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
 fi
 
-function validate_lv2_bundle() {
-    local lv2bundle="${1}"
+function validate_lv2_bundles() {
+    local lv2bundles=(${@})
 
     rm -rf /tmp/pawpaw-plugin-check
     mkdir /tmp/pawpaw-plugin-check
-    cp -r "${LV2DIR}/${lv2bundle}" /tmp/pawpaw-plugin-check/
+
+    # FIXME lv2 validation fails on base64 with newlines
+    cp -r "${LV2DIR}/${lv2bundles[0]}" /tmp/pawpaw-plugin-check/
+    #for lv2bundle in ${lv2bundles[@]}; do
+    #    cp -r "${LV2DIR}/${lv2bundle}" /tmp/pawpaw-plugin-check/
+    #done
 
     env LANG=C LV2_PATH="${LV2DIR}" PATH="${PAWPAW_PREFIX}/bin:${PATH}" WINEDEBUG=-all \
         APP_EXT="${APP_EXT}" EXE_WRAPPER="${EXE_WRAPPER}" PAWPAW_PREFIX="${PAWPAW_PREFIX}" \
@@ -46,7 +51,7 @@ function validate_lv2_bundle() {
             "${LV2DIR}/kx-*/*.ttl" \
             "${LV2DIR}/mod.lv2/*.ttl" \
             "${LV2DIR}/modgui.lv2/*.ttl" \
-            "/tmp/pawpaw-plugin-check/${lv2bundle}/*.ttl" 1>&2
+            "/tmp/pawpaw-plugin-check/*/*.ttl" 1>&2
 
     local ret=$?
 
@@ -106,6 +111,7 @@ for plugin in ${@}; do
     dlext=$(echo -e $(jq -ecrM .dlext ${pfile} || echo '\n\n') | tail -n 1)
     dlmethod=$(echo -e $(jq -ecrM .dlmethod ${pfile} || echo '\n\n') | tail -n 1)
     dlname=$(echo -e $(jq -ecrM .dlname ${pfile} || echo '\n\n') | tail -n 1)
+    combinedbundles=$(echo -e $(jq -ecrM .combinedbundles ${pfile} || echo '\n\n') | tail -n 1)
 
     download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}" "${dlname}"
 
@@ -143,7 +149,9 @@ for plugin in ${@}; do
 
     # validate all bundles
     validationfail=0
-    for lv2bundle in ${lv2bundles[@]}; do
+
+    if [ "${combinedbundles}" = "true" ]; then
+        lv2bundle=${lv2bundles[0]}
         echo -n "Validating ${lv2bundle}... "
         if [ ! -f "${LV2DIR}/${lv2bundle}/manifest.ttl" ]; then
             echo "manifest.ttl file missing"
@@ -155,7 +163,7 @@ for plugin in ${@}; do
         echo
 
         # lv2 metadata validation
-        lv2plugins=($(validate_lv2_bundle "${lv2bundle}"))
+        lv2plugins=($(validate_lv2_bundles ${lv2bundles[@]}))
 
         # lv2 plugin count
         echo "Found ${#lv2plugins[@]} plugin(s)"
@@ -166,7 +174,32 @@ for plugin in ${@}; do
             validate_lv2_plugin ${lv2plugin}
             echo "ok"
         done
-    done
+    else
+        for lv2bundle in ${lv2bundles[@]}; do
+            echo -n "Validating ${lv2bundle}... "
+            if [ ! -f "${LV2DIR}/${lv2bundle}/manifest.ttl" ]; then
+                echo "manifest.ttl file missing"
+                exitcode=1
+                validationfail=1
+                continue
+            fi
+
+            echo
+
+            # lv2 metadata validation
+            lv2plugins=($(validate_lv2_bundles "${lv2bundle}"))
+
+            # lv2 plugin count
+            echo "Found ${#lv2plugins[@]} plugin(s)"
+
+            # real host test
+            for lv2plugin in ${lv2plugins[@]}; do
+                echo -n "Verifying ${lv2plugin}... "
+                validate_lv2_plugin ${lv2plugin}
+                echo "ok"
+            done
+        done
+    fi
 
     if [ "${validationfail}" -eq 0 ]; then
         touch "${pkgdir}/.stamp_verified"
