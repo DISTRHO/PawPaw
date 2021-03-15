@@ -5,7 +5,7 @@
         "Vitalium-unfa.lv2"
     ],
     "combinedbundles": true,
-    "version": "c81c63cb42b866ab47b1c3749ef7251e0e5b0818",
+    "version": "fe5bf2e87dd440ba98d3e8ac647b8518e2851f74",
     "description": "Spectral warping wavetable synth",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
