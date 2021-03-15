@@ -7,27 +7,54 @@ if [ -z "${BOOTSTRAP_VERSION}" ]; then
     exit 1
 fi
 
-if [ -e ${HOME}/PawPawBuilds/builds/.last-bootstrap-version ]; then
-    LAST_BOOTSTRAP_VERSION=$(cat ${HOME}/PawPawBuilds/builds/.last-bootstrap-version)
+# ---------------------------------------------------------------------------------------------------------------------
+# check build step
+
+PAWPAW_DIR="${HOME}/PawPawBuilds"
+PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/${TARGET}"
+
+if [ -e ${PAWPAW_BUILDDIR}/.last-bootstrap-version ]; then
+    LAST_BOOTSTRAP_VERSION=$(cat ${PAWPAW_BUILDDIR}/.last-bootstrap-version)
 else
     LAST_BOOTSTRAP_VERSION=0
 fi
 
-PLUGINS_BASE="abgate artyfx caps die-plugins fomp mda"
-PLUGINS_CROSS="blop dpf-plugins"
-PLUGINS_DISTRHO="distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins"
+if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ] && [ -e ${PAWPAW_BUILDDIR}/.last-build-version ]; then
+    LAST_BUILD_VERSION=$(cat ${PAWPAW_BUILDDIR}/.last-build-version)
+else
+    LAST_BUILD_VERSION=0
+fi
+
+BUILD_VERSION=$((${LAST_BUILD_VERSION} + 1))
+
+echo "PawPaw build v${BUILD_VERSION}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# build plugins according to version/step, caching files along the way
 
 # TODO
 # ninjas2: need to put http://kxstudio.sf.net/ns/lv2ext/props#NonAutomable spec somewhere
 
-# only build full set of distrho-ports if we have previously cached builds, otherwise we time-out in travis
-if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
+PLUGINS_BASE="abgate artyfx caps die-plugins fomp mda"
+PLUGINS_CROSS="blop dpf-plugins"
+PLUGINS_DISTRHO=""
+
+if [ ${BUILD_VERSION} -ge 2 ]; then
+    PLUGINS_DISTRHO+=" distrho-ports-arctican"
+    PLUGINS_DISTRHO+=" distrho-ports-drowaudio"
+    PLUGINS_DISTRHO+=" distrho-ports-tal-plugins"
+fi
+
+if [ ${BUILD_VERSION} -ge 3 ]; then
     PLUGINS_DISTRHO+=" distrho-ports-dexed"
     PLUGINS_DISTRHO+=" distrho-ports-klangfalter"
     PLUGINS_DISTRHO+=" distrho-ports-luftikus"
     PLUGINS_DISTRHO+=" distrho-ports-obxd"
     PLUGINS_DISTRHO+=" distrho-ports-pitched-delay"
     PLUGINS_DISTRHO+=" distrho-ports-refine"
+fi
+
+if [ ${BUILD_VERSION} -ge 4 ]; then
     PLUGINS_DISTRHO+=" distrho-ports-swankyamp"
     PLUGINS_DISTRHO+=" distrho-ports-temper"
     PLUGINS_DISTRHO+=" distrho-ports-vex"
@@ -37,6 +64,9 @@ if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
         PLUGINS_DISTRHO+=" distrho-ports-vitalium"
     fi
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# build plugins according to target
 
 if [ "${TARGET}" = "linux" ]; then
     PLUGINS="${PLUGINS_BASE} ${PLUGINS_CROSS}"
@@ -49,9 +79,20 @@ fi
 ${TRAVIS_BUILD_DIR}/build-plugins.sh ${TARGET} ${PLUGINS}
 ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
 
-# packing of plugins can only be done when doing a full build
-if [ ${LAST_BOOTSTRAP_VERSION} -eq ${BOOTSTRAP_VERSION} ]; then
+# ---------------------------------------------------------------------------------------------------------------------
+# packaging, only be done when doing a full build
+
+if [ ${BUILD_VERSION} -ge 4 ]; then
     ${TRAVIS_BUILD_DIR}/pack-plugins.sh ${TARGET} ${PLUGINS}
 fi
 
-echo ${BOOTSTRAP_VERSION} > ${HOME}/PawPawBuilds/builds/.last-bootstrap-version
+# ---------------------------------------------------------------------------------------------------------------------
+# set env for next builds
+
+echo ${BOOTSTRAP_VERSION} > ${PAWPAW_BUILDDIR}/.last-bootstrap-version
+
+if [ ${BUILD_VERSION} -le 4 ]; then
+    echo ${BUILD_VERSION} > ${PAWPAW_BUILDDIR}/.last-build-version
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
