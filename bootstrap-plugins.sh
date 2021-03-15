@@ -115,7 +115,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
 
-download lv2 "${LV2_VERSION}" "http://lv2plug.in/spec" "tar.bz2"
+download lv2 "${LV2_VERSION}" "https://gitlab.com/lv2/lv2.git" "" "git"
 build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
