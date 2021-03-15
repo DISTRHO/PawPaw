@@ -115,6 +115,11 @@ if [ "${WIN32}" -eq 1 ]; then
     create_innosetup_exe
 
 elif [ "${MACOS}" -eq 1 ] && [ "${MACOS_OLD}" -eq 0 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        suffix="universal"
+    else
+        suffix="intel"
+    fi
     pushd setup/macos
     python -c "
 with open('package.xml.in', 'r') as fh:
@@ -129,7 +134,7 @@ print(packagexml.replace('@CURDIR@','${PWD}').replace('@CHOICES@',choicesxml).re
         --identifier studio.kx.distrho.pawpaw \
         --package-path "${PWD}" \
         --version ${VERSION} \
-        PawPaw-macOS-v${VERSION}.pkg
+        PawPaw-macOS-${suffix}-v${VERSION}.pkg
     rm package.xml pawpaw-bundle-*
     popd
 fi
