@@ -75,7 +75,7 @@ install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/install.sh
 
 script:
-  - rm -rf ${HOME}/PawPawBuilds/builds/macos-universal/dpf-plugins-bec7befcde9469bdbc0f7846fe89b82612181edc
+  - rm -rf ${HOME}/PawPawBuilds/builds/macos-universal/distrho-ports-arctican-575d56057ba9cee8505839e4ee00cc26d0193fc9
   - rm -rf ${HOME}/PawPawBuilds/builds/win32/distrho-ports-vitalium-c81c63cb42b866ab47b1c3749ef7251e0e5b0818
   - bash ${TRAVIS_BUILD_DIR}/bootstrap-plugins.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}

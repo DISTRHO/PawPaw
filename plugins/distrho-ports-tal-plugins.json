@@ -16,5 +16,5 @@
     "dlmethod": "git",
     "dlname": "distrho-ports",
     "buildtype": "meson",
-    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=tal-dub-3,tal-filter,tal-filter-2,tal-noisemaker,tal-reverb,tal-reverb-2,tal-reverb-3,tal-vocoder-2"
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Doptimizations=false -Dplugins=tal-dub-3,tal-filter,tal-filter-2,tal-noisemaker,tal-reverb,tal-reverb-2,tal-reverb-3,tal-vocoder-2"
 }

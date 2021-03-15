@@ -9,5 +9,5 @@
     "dlmethod": "git",
     "dlname": "distrho-ports",
     "buildtype": "meson",
-    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=klangfalter"
+    "buildargs": "-Dbuild-vst2=false -Dbuild-vst3=false -Dbuild-legacy-only=true -Doptimizations=false -Dplugins=klangfalter"
 }

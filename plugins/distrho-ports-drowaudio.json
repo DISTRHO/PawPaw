@@ -13,5 +13,5 @@
     "dlmethod": "git",
     "dlname": "distrho-ports",
     "buildtype": "meson",
-    "buildargs": "-Dbuild-vst3=false -Dbuild-legacy-only=true -Dplugins=drowaudio-distortion,drowaudio-distortionshaper,drowaudio-flanger,drowaudio-reverb,drowaudio-tremolo"
+    "buildargs": "-Dbuild-vst3=false -Dbuild-legacy-only=true -Doptimizations=false -Dplugins=drowaudio-distortion,drowaudio-distortionshaper,drowaudio-flanger,drowaudio-reverb,drowaudio-tremolo"
 }
