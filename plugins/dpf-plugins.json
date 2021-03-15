@@ -19,5 +19,6 @@
     "description": "Collection of DPF-based plugins",
     "dlbaseurl": "https://github.com/DISTRHO/DPF-Plugins.git",
     "dlmethod": "git",
-    "buildtype": "make"
+    "buildtype": "make",
+    "buildargs": "NOOPT=true"
 }
