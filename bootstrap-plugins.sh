@@ -251,3 +251,10 @@ download carla ${CARLA_VERSION} "https://github.com/falkTX/Carla.git" "" "git"
 build_make carla ${CARLA_VERSION} "${CARLA_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# wine bootstrap for python (needed for cross-compilation)
+
+if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ]; then
+    env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------

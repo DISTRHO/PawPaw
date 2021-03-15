@@ -75,6 +75,7 @@ install:
   - bash ${TRAVIS_BUILD_DIR}/.travis/install.sh
 
 script:
+  - rm -rf ${HOME}/PawPawBuilds/builds/macos-universal/die-plugins-6c693aab4bbd8bb7b15b2423202248f66f1990fe
   - bash ${TRAVIS_BUILD_DIR}/bootstrap-plugins.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/.cleanup.sh ${TARGET}
   - bash ${TRAVIS_BUILD_DIR}/.travis/script.sh
