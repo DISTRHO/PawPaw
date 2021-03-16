@@ -89,6 +89,7 @@ deploy:
     - setup/macos/PawPaw-*.pkg
   on:
     tags: true
+  skip_cleanup: true
 
 #notifications:
   #email: true
