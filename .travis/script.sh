@@ -58,11 +58,8 @@ if [ ${BUILD_VERSION} -ge 4 ]; then
     PLUGINS_DISTRHO+=" distrho-ports-swankyamp"
     PLUGINS_DISTRHO+=" distrho-ports-temper"
     PLUGINS_DISTRHO+=" distrho-ports-vex"
+    PLUGINS_DISTRHO+=" distrho-ports-vitalium"
     PLUGINS_DISTRHO+=" distrho-ports-wolpertinger"
-    # FIXME
-    if [ "${TARGET}" != "win32" ]; then
-        PLUGINS_DISTRHO+=" distrho-ports-vitalium"
-    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

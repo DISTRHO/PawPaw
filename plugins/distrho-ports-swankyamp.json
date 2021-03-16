@@ -3,7 +3,7 @@
     "lv2bundles": [
         "SwankyAmp.lv2"
     ],
-    "version": "fe5bf2e87dd440ba98d3e8ac647b8518e2851f74",
+    "version": "00bd0b1510ef3ad87d06770dc509f85af82a7134",
     "description": "Tube amplifier simulation plugin",
     "dlbaseurl": "https://github.com/DISTRHO/DISTRHO-Ports.git",
     "dlmethod": "git",
