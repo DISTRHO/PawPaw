@@ -7,6 +7,6 @@ index bd0ca71..fe45f1f 100644
  #include <algorithm>
  
 +#define _USE_MATH_DEFINES
- #include <math.h>
+ #include <cmath>
  
  

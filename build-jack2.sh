@@ -7,7 +7,7 @@ PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
 JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
-QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.0}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.2}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -141,9 +141,6 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         export EXTRA_CXXFLAGS="-std=gnu++11"
     fi
-
-    # TODO remove once 0.9.1 is out
-    cp "${PAWPAW_ROOT}/patches/qjackctl/clear1.png" "${PAWPAW_BUILDDIR}/qjackctl${name}-${QJACKCTL_VERSION}/src/images/clear1.png"
 
     build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
 
