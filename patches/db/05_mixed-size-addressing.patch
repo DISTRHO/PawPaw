@@ -1,0 +1,113 @@
+diff --git a/build_windows/db.h b/build_windows/db.h
+index 31d7775..00ec457 100644
+--- a/build_windows/db.h
++++ b/build_windows/db.h
+@@ -133,7 +133,7 @@ typedef u_int32_t uintptr_t;
+ typedef int64_t off_t;
+ typedef int32_t pid_t;
+ #ifdef HAVE_MIXED_SIZE_ADDRESSING
+-typedef u_int32_t db_size_t;
++typedef u_int64_t db_size_t;
+ #else
+ typedef size_t db_size_t;
+ #endif
+@@ -143,7 +143,7 @@ typedef int64_t ssize_t;
+ typedef int32_t ssize_t;
+ #endif
+ #ifdef HAVE_MIXED_SIZE_ADDRESSING
+-typedef int32_t db_ssize_t;
++typedef int64_t db_ssize_t;
+ #else
+ typedef ssize_t db_ssize_t;
+ #endif
+diff --git a/build_windows/db_int.h b/build_windows/db_int.h
+index b1453d5..d78e52e 100644
+--- a/build_windows/db_int.h
++++ b/build_windows/db_int.h
+@@ -196,9 +196,11 @@ typedef SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
+  * HAVE_MIXED_SIZE_ADDRESSING is defined.
+  */
+ #ifdef HAVE_MIXED_SIZE_ADDRESSING
+-#define DB_ALIGN8 __declspec(align(8))
++#define DB_ALIGN8_BEFORE __declspec(align(8))
++#define DB_ALIGN8_AFTER
+ #else
+-#define DB_ALIGN8
++#define DB_ALIGN8_BEFORE
++#define DB_ALIGN8_AFTER
+ #endif
+ 
+ /*
+diff --git a/src/dbinc/db.in b/src/dbinc/db.in
+index 92ac822..7722ed1 100644
+--- a/src/dbinc/db.in
++++ b/src/dbinc/db.in
+@@ -105,13 +105,13 @@ extern "C" {
+ @pid_t_decl@
+ @size_t_decl@
+ #ifdef HAVE_MIXED_SIZE_ADDRESSING
+-typedef u_int32_t db_size_t;
++typedef u_int64_t db_size_t;
+ #else
+ typedef size_t db_size_t;
+ #endif
+ @ssize_t_decl@
+ #ifdef HAVE_MIXED_SIZE_ADDRESSING
+-typedef int32_t db_ssize_t;
++typedef int64_t db_ssize_t;
+ #else
+ typedef ssize_t db_ssize_t;
+ #endif
+diff --git a/src/dbinc/db_int.in b/src/dbinc/db_int.in
+index eae85c9..e3da14c 100644
+--- a/src/dbinc/db_int.in
++++ b/src/dbinc/db_int.in
+@@ -195,9 +195,11 @@ typedef SH_TAILQ_HEAD(__hash_head) DB_HASHTAB;
+  * HAVE_MIXED_SIZE_ADDRESSING is defined.
+  */
+ #ifdef HAVE_MIXED_SIZE_ADDRESSING
+-#define DB_ALIGN8 @DB_STRUCT_ALIGN8@
++#define DB_ALIGN8_BEFORE
++#define DB_ALIGN8_AFTER @DB_STRUCT_ALIGN8@
+ #else
+-#define DB_ALIGN8
++#define DB_ALIGN8_BEFORE
++#define DB_ALIGN8_AFTER
+ #endif
+ 
+ /*
+diff --git a/src/dbinc/mp.h b/src/dbinc/mp.h
+index e00055f..c4a9e87 100644
+--- a/src/dbinc/mp.h
++++ b/src/dbinc/mp.h
+@@ -573,7 +573,7 @@ struct __bh { /* SHARED */
+ 	 * (We guarantee size_t alignment to applications in the documentation,
+ 	 * too.)
+ 	 */
+-	DB_ALIGN8	u_int8_t buf[1];	/* Variable length data. */
++	DB_ALIGN8_BEFORE u_int8_t buf[1] DB_ALIGN8_AFTER; /* Variable length data. */
+ };
+ 
+ /*
+diff --git a/src/dbinc/txn.h b/src/dbinc/txn.h
+index 9b04727..7943f5f 100644
+--- a/src/dbinc/txn.h
++++ b/src/dbinc/txn.h
+@@ -47,7 +47,7 @@ struct __txn_logrec;	typedef struct __txn_logrec DB_TXNLOGREC;
+  * except for any pointer fields that are filled in only when the struct is
+  * being populated for output through the API.
+  */
+-DB_ALIGN8 struct __db_txn_stat_int { /* SHARED */
++DB_ALIGN8_BEFORE struct __db_txn_stat_int { /* SHARED */
+ 	u_int32_t st_nrestores;		/* number of restored transactions
+ 					   after recovery. */
+ #ifndef __TEST_DB_NO_STATISTICS
+@@ -67,7 +67,7 @@ DB_ALIGN8 struct __db_txn_stat_int { /* SHARED */
+ 	uintmax_t st_region_nowait;	/* Region lock granted without wait. */
+ 	roff_t	  st_regsize;		/* Region size. */
+ #endif
+-};
++} DB_ALIGN8_AFTER;
+ 
+ /*
+  * Internal data maintained in shared memory for each transaction.

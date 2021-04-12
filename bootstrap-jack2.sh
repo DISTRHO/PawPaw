@@ -61,7 +61,6 @@ function build_custom_db() {
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX}"
     fi
     if [ "${MACOS}" -eq 1 ]; then
-        # NOTE: this doesn't actually work..
         extraconfrules+=" --with-mutex=x86_64/gcc-assembly"
     fi
     if [ "${WIN32}" -eq 1 ]; then
@@ -94,10 +93,7 @@ function build_custom_db() {
     _postbuild
 }
 
-# FIXME: db fails to work properly under macOS, even if it builds fine
-if [ "${MACOS}" -eq 0 ]; then
-    build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disable-sql --disable-tcl"
-fi
+build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disable-sql --disable-tcl"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # rtaudio (download, win32 only)
