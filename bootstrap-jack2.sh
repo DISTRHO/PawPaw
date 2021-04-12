@@ -61,7 +61,8 @@ function build_custom_db() {
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX}"
     fi
     if [ "${MACOS}" -eq 1 ]; then
-        extraconfrules+=" --enable-posixmutexes"
+        # NOTE: this doesn't actually work..
+        extraconfrules+=" --with-mutex=x86_64/gcc-assembly"
     fi
     if [ "${WIN32}" -eq 1 ]; then
         extraconfrules+=" --enable-mingw"
@@ -93,14 +94,10 @@ function build_custom_db() {
     _postbuild
 }
 
-patch_file db "${DB_VERSION}" "src/dbinc/atomic.h" 's/__atomic_compare_exchange/__db_atomic_compare_exchange/'
-
-# FIXME: db fails for macOS universal builds
-if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+# FIXME: db fails to work properly under macOS, even if it builds fine
+if [ "${MACOS}" -eq 0 ]; then
     build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disable-sql --disable-tcl"
 fi
-
-# --enable-posixmutexes --enable-compat185 --enable-cxx --enable-dbm --enable-stl
 
 # ---------------------------------------------------------------------------------------------------------------------
 # rtaudio (download, win32 only)
