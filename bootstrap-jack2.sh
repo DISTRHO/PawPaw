@@ -61,7 +61,7 @@ function build_custom_db() {
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX}"
     fi
     if [ "${MACOS}" -eq 1 ]; then
-        extraconfrules+=" --with-mutex=x86_64/gcc-assembly"
+        extraconfrules+=" --with-mutex=x86_64/gcc-assembly db_cv_atomic=x86/gcc-assembly"
     fi
     if [ "${WIN32}" -eq 1 ]; then
         extraconfrules+=" --enable-mingw"

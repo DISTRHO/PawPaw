@@ -1,0 +1,107 @@
+diff --git a/src/dbinc/atomic.h b/src/dbinc/atomic.h
+index 9f338dc..ac116e6 100644
+--- a/src/dbinc/atomic.h
++++ b/src/dbinc/atomic.h
+@@ -140,6 +140,28 @@ typedef LONG volatile *interlocked_val;
+ #endif
+ 
+ #if defined(HAVE_ATOMIC_X86_GCC_ASSEMBLY)
++#ifdef __aarch64__
++/* generic */
++#define atomic_inc(env, p)	\
++	__atomic_add_fetch(&(p)->value, 1, __ATOMIC_SEQ_CST)
++#define atomic_dec(env, p)	\
++	__atomic_sub_fetch(&(p)->value, 1, __ATOMIC_SEQ_CST)
++#define atomic_add(env, p, val)	\
++	__atomic_add_fetch(&(p)->value, (val), __ATOMIC_SEQ_CST)
++#define atomic_compare_exchange(env, p, oval, nval)	\
++	__atomic_compare_exchange_int((p), (oval), (nval))
++static inline int __atomic_compare_exchange_int(
++	db_atomic_t *p, atomic_value_t oldval, atomic_value_t newval)
++{
++	atomic_value_t expected;
++	int ret;
++
++	expected = oldval;
++	ret = __atomic_compare_exchange_n(&p->value, &expected,
++	    newval, 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
++	return (ret);
++}
++#else
+ /* x86/x86_64 gcc  */
+ #define	atomic_inc(env, p)	__atomic_inc(p)
+ #define	atomic_dec(env, p)	__atomic_dec(p)
+@@ -190,6 +212,7 @@ static inline int __atomic_compare_exchange_db(
+ 	return (was == oldval);
+ }
+ #endif
++#endif
+ 
+ #else
+ /*
+diff --git a/src/dbinc/mutex_int.h b/src/dbinc/mutex_int.h
+index a6e5751..0fdb7fa 100644
+--- a/src/dbinc/mutex_int.h
++++ b/src/dbinc/mutex_int.h
+@@ -799,6 +799,21 @@ MUTEX_UNSET(tsl_t *tsl) {
+ typedef volatile unsigned char tsl_t;
+ 
+ #ifdef LOAD_ACTUAL_MUTEX_CODE
++#ifdef __aarch64__
++/* gcc/arm: 0 is clear, 1 is set. */
++#define	MUTEX_SET(tsl) ({						\
++	register tsl_t __r, __old;					\
++	__asm__ volatile(						\
++		"ldxr	%w1, [%3]\n\t"					\
++		"stxr	%w0, %w2, [%3]\n\t"				\
++		"orr	%w0, %w0, %w1\n\t"				\
++		"mvn	%w0, %w0\n\t"					\
++	    : "=&r" (__r), "+r" (__old)					\
++	    : "r" (1), "r" (tsl)					\
++	    );								\
++	__r & 1;							\
++})
++#else
+ /* gcc/x86: 0 is clear, 1 is set. */
+ #define	MUTEX_SET(tsl) ({						\
+ 	tsl_t __r;							\
+@@ -809,8 +824,9 @@ typedef volatile unsigned char tsl_t;
+ 	    : "memory", "cc");						\
+ 	!__r;	/* return 1 on success, 0 on failure */			\
+ })
++#endif
+ 
+-#define	MUTEX_UNSET(tsl)        (*(tsl_t *)(tsl) = 0)
++#define	MUTEX_UNSET(tsl)        (*(volatile tsl_t *)(tsl) = 0)
+ #define	MUTEX_INIT(tsl)		(MUTEX_UNSET(tsl), 0)
+ /*
+  * We need to pass a valid address to generate the memory barrier
+@@ -821,9 +837,14 @@ typedef volatile unsigned char tsl_t;
+ #define	MUTEX_MEMBAR(addr)						\
+     ({ __asm__ volatile ("lock; addl $0, %0" ::"m" (addr): "memory"); 1; })
+ #else
++#ifdef __aarch64__
++#define	MUTEX_MEMBAR(x) \
++	({ __asm__ volatile ("dsb sy"); })
++#else
+ #define	MUTEX_MEMBAR(addr)						\
+     ({ __asm__ volatile ("mfence" ::: "memory"); 1; })
+ #endif
++#endif
+ 
+ /*
+  * From Intel's performance tuning documentation (and see SR #6975):
+@@ -834,9 +855,13 @@ typedef volatile unsigned char tsl_t;
+  * instruction does not affect the correctness of programs on existing
+  * platforms, and it improves performance on Pentium 4 processor platforms."
+  */
++#ifdef __aarch64__
++#define	MUTEX_PAUSE		__asm__ volatile ("isb\n");
++#else
+ #define	MUTEX_PAUSE		__asm__ volatile ("rep; nop" : : );
+ #endif
+ #endif
++#endif
+ 
+ /* End of operating system & hardware architecture-specific definitions */
+ 
