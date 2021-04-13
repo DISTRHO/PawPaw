@@ -206,7 +206,11 @@ function build_autoconfgen() {
 
     if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
         pushd "${pkgdir}"
-        autoconf
+        if [ -f utils/autogen.sh ]; then
+            ./utils/autogen.sh
+        else
+            autoconf
+        fi
         touch .stamp_preconfigured
         popd
     fi

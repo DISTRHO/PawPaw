@@ -96,6 +96,6 @@ DB_VERSION=5.3.28
 OPUS_VERSION=1.3.1
 PORTAUDIO_VERSION=19.6.0
 RTAUDIO_VERSION=e03448bd15c1c34e842459939d755f5f89e880ed
-TRE_VERSION=0.8.0
+TRE_VERSION=6092368aabdd0dbb0fbceb2766a37b98e0ff6911
 
 # ---------------------------------------------------------------------------------------------------------------------

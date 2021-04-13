@@ -138,8 +138,8 @@ fi
 # tre (win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
-    download tre "${TRE_VERSION}" "https://laurikari.net/tre"
-    build_autoconf tre "${TRE_VERSION}" "--disable-nls"
+    download tre "${TRE_VERSION}" "https://github.com/laurikari/tre.git" "" "git"
+    build_autoconfgen tre "${TRE_VERSION}" "--disable-nls"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -155,7 +155,7 @@ if [ "${WIN64}" -eq 1 ]; then
     source setup/functions.sh
 
     copy_download tre tre-x32 "${TRE_VERSION}"
-    build_autoconf tre-x32 "${TRE_VERSION}" "--disable-nls --libdir=${PAWPAW_PREFIX}/lib32"
+    build_autoconfgen tre-x32 "${TRE_VERSION}" "--disable-nls --libdir=${PAWPAW_PREFIX}/lib32"
 
     if [ ! -e "${PAWPAW_PREFIX}/lib/libtre32.a" ]; then
         ln -s "${PAWPAW_PREFIX}/lib32/libtre.a" "${PAWPAW_PREFIX}/lib/libtre32.a"
