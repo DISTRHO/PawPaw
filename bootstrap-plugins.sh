@@ -74,7 +74,7 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS="--with-threads=posix"
     fi
 
-    download glib ${GLIB_VERSION} "http://caesar.ftp.acc.umu.se/pub/GNOME/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
+    download glib ${GLIB_VERSION} "http://download.gnome.org/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
 
     if [ "${MACOS}" -eq 1 ]; then
         export EXTRA_LDFLAGS="-lresolv"
