@@ -116,8 +116,14 @@ elif [ "${MACOS}" -eq 1 ]; then
     rm -rf jack2/macosx/qjackctl.app
     cp -rv "${qjackctl_app}" jack2/macosx/QjackCtl.app
 
-    rm -f jack2-macOS-${JACK2_VERSION}.tar.gz
-    tar czf jack2-macOS-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-${jack2_lastversion}.pkg QjackCtl.app
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        variant="universal"
+    else
+        variant="intel"
+    fi
+
+    rm -f jack2-macOS-${variant}-${JACK2_VERSION}.tar.gz
+    tar czf jack2-macOS-${variant}-${JACK2_VERSION}.tar.gz -C jack2/macosx jack2-osx-${jack2_lastversion}.pkg QjackCtl.app
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
