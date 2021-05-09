@@ -1,0 +1,25 @@
+diff --git a/lib-src/portmixer/src/px_win_endpoint.c b/lib-src/portmixer/src/px_win_endpoint.c
+index 34c7f30..d742667 100644
+--- a/lib-src/portmixer/src/px_win_endpoint.c
++++ b/lib-src/portmixer/src/px_win_endpoint.c
+@@ -75,8 +75,6 @@ DEFINE_GUID(CLSID_MMDeviceEnumerator, 0xBCDE0395, 0xE52F, 0x467C,
+             0x8E, 0x3D, 0xC4, 0x57, 0x92, 0x91, 0x69, 0x2E);
+ DEFINE_GUID(IID_IMMDeviceEnumerator, 0xA95664D2, 0x9614, 0x4F35,
+             0xA7, 0x46, 0xDE, 0x8D, 0xB6, 0x36, 0x17, 0xE6);
+-DEFINE_GUID(IID_IAudioEndpointVolume, 0x5CDF2C82, 0x841E, 0x4546,
+-            0x97, 0x22, 0x0C, 0xF7, 0x40, 0x78, 0x22, 0x9A);
+ 
+ #define DRV_RESERVED                      0x0800
+ #define DRV_QUERYFUNCTIONINSTANCEID       (DRV_RESERVED + 17)
+diff --git a/lib-src/portsmf/allegro.h b/lib-src/portsmf/allegro.h
+index d528c73..ad03353 100644
+--- a/lib-src/portsmf/allegro.h
++++ b/lib-src/portsmf/allegro.h
+@@ -49,6 +49,7 @@
+ #ifndef ALLEGRO_H
+ #define ALLEGRO_H
+ #include <assert.h>
++#include <string.h>
+ #include <istream>
+ #include <ostream>
+ 

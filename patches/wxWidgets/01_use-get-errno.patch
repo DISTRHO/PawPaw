@@ -1,0 +1,24 @@
+diff --git a/src/common/filefn.cpp b/src/common/filefn.cpp
+index a18d4f4..83562ab 100644
+--- a/src/common/filefn.cpp
++++ b/src/common/filefn.cpp
+@@ -1138,14 +1138,15 @@ wxRenameFile(const wxString& file1, const wxString& file2, bool overwrite)
+     // For explanation, see:  (warning...based mostly on observed behavior)
+     //   http://bugzilla.audacityteam.org/show_bug.cgi?id=1266
+     //   https://github.com/audacity/audacity/pull/94
+-  unsigned long doserrno = 0;
+   for (int i = 0; i < 2000; i++)
+   {
+     if ( wxRename (file1, file2) == 0 )
+       return true;
+-    unsigned long doserrno;
+-    _get_doserrno(&doserrno);
+-    if (doserrno != ERROR_ACCESS_DENIED && (doserrno != ERROR_ALREADY_EXISTS || exists))
++    // https://docs.microsoft.com/en-us/cpp/c-runtime-library/reference/get-doserrno?view=msvc-160
++    // We recommend _get_errno instead of _get_doserrno for portable error codes
++    int wxerrno;
++    _get_errno(&wxerrno);
++    if (wxerrno != EACCES && (wxerrno != EEXIST || exists))
+         break;
+     wxMilliSleep(1);
+   }
