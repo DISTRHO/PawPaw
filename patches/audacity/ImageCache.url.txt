@@ -1,0 +1,22 @@
+20:36  * falktx is thinking of using "DarkCity" as name in the end
+20:37 < falktx> obvious needs a working dark theme
+20:38  * LAM604 uploaded an image: (176KiB) < https://matrix.org/_matrix/media/r0/download/matrix.org/YnpZTRzWKqUTgeMYvgrQVnEr/2021-04-09_23.16.40.318.png >
+20:38 < LAM604> like this?
+20:42  * LAM604 uploaded an image: (39KiB) < https://matrix.org/_matrix/media/r0/download/matrix.org/maJzHBKfsVTyENGXnwtwBywz/ImageCache.png >
+20:42 < LAM604> here's the theme file
+20:43 < falktx> LAM604: oh that looks quite cool. how do you do this?
+20:44 < LAM604> I took the svg posted by someone in the Audacity forum a couple of years ago
+20:44 < LAM604> and i modified with colors took from https://yeun.github.io/open-color/
+20:45 < falktx> LAM604: but is that a mockup or real screenshot?
+20:45 < LAM604> I have a bash script that create skins or gtk from a terminal theme, it's just sed :P
+20:45 < LAM604> this is a real screenshot
+20:47 < LAM604> If you take taht ImageCache.png file and you put in ~/.audacity-data/Theme/ you can use it
+20:47 < LAM604>  * If you take that ImageCache.png file and you put in ~/.audacity-data/Theme/ you can use it
+20:49 < falktx> LAM604: what license is this under?
+20:50 < LAM604> Idk :P I modified the svg with my colors, maybe I have to check if the svg has a license?
+20:50 < falktx> well yes
+21:00 < LAM604> This is the original post, i cant' find any info on the license. https://forum.audacityteam.org/viewtopic.php?t=101347
+21:03 < falktx> LAM604: thanks. that is something. I can reference that post. do you give permission to reuse and redistribute your version?
+21:04 < LAM604> Sure :D
+
+https://forum.audacityteam.org/viewtopic.php?t=101347

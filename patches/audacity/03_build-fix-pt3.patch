@@ -1,0 +1,27 @@
+diff --git a/src/widgets/FileDialog/win/FileDialogPrivate.cpp b/src/widgets/FileDialog/win/FileDialogPrivate.cpp
+index 255c287..43bd18b 100644
+--- a/src/widgets/FileDialog/win/FileDialogPrivate.cpp
++++ b/src/widgets/FileDialog/win/FileDialogPrivate.cpp
+@@ -78,10 +78,6 @@ static wxRect gs_rectDialog(0, 0, 428, 266);
+ // implementation
+ // ============================================================================
+ 
+-IMPLEMENT_CLASS(FileDialog, wxFileDialogBase)
+-
+-// ----------------------------------------------------------------------------
+-
+ namespace
+ {
+ 
+diff --git a/src/widgets/FileDialog/win/FileDialogPrivate.h b/src/widgets/FileDialog/win/FileDialogPrivate.h
+index dfc95d9..ce732eb 100644
+--- a/src/widgets/FileDialog/win/FileDialogPrivate.h
++++ b/src/widgets/FileDialog/win/FileDialogPrivate.h
+@@ -116,7 +116,6 @@ private:
+       int mModalCount;
+    } mDisabler;
+ 
+-   DECLARE_DYNAMIC_CLASS(FileDialog)
+    DECLARE_NO_COPY_CLASS(FileDialog)
+ };
+ 
