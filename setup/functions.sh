@@ -265,6 +265,9 @@ function build_cmake() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
+    _prebuild "${name}" "${pkgdir}"
+    mkdir -p "${pkgdir}/build"
+
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}"
     fi
@@ -282,9 +285,9 @@ function build_cmake() {
         extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES=${OSX_ARCHS}"
         extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=${OSX_TARGET}"
     fi
-
-    _prebuild "${name}" "${pkgdir}"
-    mkdir -p "${pkgdir}/build"
+    if [ "${WIN32}" -eq 1 ]; then
+        extraconfrules+=" -DCMAKE_RC_COMPILER=${WINDRES}"
+    fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"

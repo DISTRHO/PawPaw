@@ -213,14 +213,6 @@ download mxml ${MXML_VERSION} "https://github.com/michaelrsweet/mxml/archive"
 build_autoconf mxml ${MXML_VERSION}
 
 # ---------------------------------------------------------------------------------------------------------------------
-# zlib
-
-if [ "${MACOS}" -eq 0 ]; then
-    download zlib ${ZLIB_VERSION} "https://github.com/madler/zlib/archive"
-    build_conf zlib ${ZLIB_VERSION} "--static --prefix=${PAWPAW_PREFIX}"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)
 
 CARLA_EXTRAFLAGS="CAN_GENERATE_LV2_TTL=false"
