@@ -1,0 +1,64 @@
+diff --git a/cmake-proxies/cmake-modules/CopyLibs.cmake b/cmake-proxies/cmake-modules/CopyLibs.cmake
+index ddb5d9a..eb00020 100644
+--- a/cmake-proxies/cmake-modules/CopyLibs.cmake
++++ b/cmake-proxies/cmake-modules/CopyLibs.cmake
+@@ -95,7 +95,8 @@ function( gather_libs src )
+    set( postcmds ${postcmds} PARENT_SCOPE )
+ endfunction()
+ 
+-gather_libs( "${SRC}" )
++set( libs "${WXWIN}/wxmsw313u_gcc_custom.dll" )
++set( postcmds "" )
+ 
+ list( REMOVE_DUPLICATES libs )
+ 
+diff --git a/cmake-proxies/cmake-modules/FindwxWidgets.cmake b/cmake-proxies/cmake-modules/FindwxWidgets.cmake
+index cb2f6f6..b5c88a6 100644
+--- a/cmake-proxies/cmake-modules/FindwxWidgets.cmake
++++ b/cmake-proxies/cmake-modules/FindwxWidgets.cmake
+@@ -217,15 +217,7 @@ endif()
+ if(wxWidgets_FIND_STYLE STREQUAL "win32")
+   # Useful common wx libs needed by almost all components.
+   set(wxWidgets_COMMON_LIBRARIES png tiff jpeg zlib regex expat)
+-
+-  # DEPRECATED: Use find_package(wxWidgets COMPONENTS mono) instead.
+-  if(NOT wxWidgets_FIND_COMPONENTS)
+-    if(wxWidgets_USE_MONOLITHIC)
+-      set(wxWidgets_FIND_COMPONENTS mono)
+-    else()
+-      set(wxWidgets_FIND_COMPONENTS core base) # this is default
+-    endif()
+-  endif()
++  set(wxWidgets_FIND_COMPONENTS mono)
+ 
+   # Add the common (usually required libs) unless
+   # wxWidgets_EXCLUDE_COMMON_LIBRARIES has been set.
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 79e8f3c..e4c0f62 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -1120,14 +1120,16 @@ if( CMAKE_SYSTEM_NAME MATCHES "Windows" )
+       POST_BUILD
+    )
+ 
+-   # Copy the VC runtime libraries as well
+-   add_custom_command(
+-      TARGET
+-         ${TARGET}
+-      COMMAND
+-         ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} ${_DEST}
+-      POST_BUILD
+-   )
++   if(MSVC)
++       # Copy the VC runtime libraries as well
++       add_custom_command(
++          TARGET
++             ${TARGET}
++          COMMAND
++             ${CMAKE_COMMAND} -E copy ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS} ${_DEST}
++          POST_BUILD
++       )
++   endif(MSVC)
+ elseif( CMAKE_SYSTEM_NAME MATCHES "Darwin" )
+    # Bug 2400 workaround
+    #

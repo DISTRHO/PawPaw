@@ -68,12 +68,15 @@ audacity_args+=" -Daudacity_use_pa_jack=off"
 if [ "${WIN32}" -eq 1 ]; then
     audacity_args+=" -DwxWidgets_FIND_STYLE=win32" # FIXME needs forcing
     audacity_args+=" -DwxWidgets_ROOT_DIR=${PAWPAW_PREFIX}"
-    audacity_args+=" -DwxWidgets_LIB_DIR=${PAWPAW_PREFIX}/lib/gcc_x64_dll"
+    if [ "${WIN64}" -eq 1 ]; then
+        audacity_args+=" -DwxWidgets_LIB_DIR=${PAWPAW_PREFIX}/lib/gcc_x64_dll"
+    else
+        audacity_args+=" -DwxWidgets_LIB_DIR=${PAWPAW_PREFIX}/lib/gcc_dll"
+    fi
     audacity_args+=" -DwxWidgets_CONFIGURATION=mswu"
     audacity_args+=" -DWX_ROOT_DIR=${PAWPAW_PREFIX}"
     win32_target=_WIN32_WINNT_WIN7
     export EXTRA_CXXFLAGS="-DWINVER=${win32_target} -D_WIN32_WINNT=${win32_target} -D_WIN32_IE=${win32_target}"
-    export EXTRA_LDFLAGS="-lpthread -lz" # FIXME not working!
 fi
 
 if [ ${using_qt} -eq 1 ]; then
@@ -81,9 +84,9 @@ if [ ${using_qt} -eq 1 ]; then
     export EXTRA_CXXFLAGS+=" -I${PAWPAW_PREFIX}/include/qt5"
 fi
 
-# TODO
-# 1. linker flags end up with -lLIB_m-NOTFOUND
-# 2. win32 build requires copying std mingw mutex workarounds
+if [ ! -e ${PAWPAW_PREFIX}/include/mutex ]; then
+    cp patches/audacity/mingw/* ${PAWPAW_PREFIX}/include/
+fi
 
 download audacity "e93fdd16c50d9d4630bc64595990e2ee0f96bc17" "https://github.com/KXStudio/audacity.git" "" "git"
 build_cmake audacity "e93fdd16c50d9d4630bc64595990e2ee0f96bc17" "${audacity_args}"
