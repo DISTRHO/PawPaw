@@ -14,6 +14,8 @@ if [ -z "${target}" ]; then
     exit 1
 fi
 
+using_qt=0
+
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependency
 
@@ -72,6 +74,11 @@ if [ "${WIN32}" -eq 1 ]; then
     win32_target=_WIN32_WINNT_WIN7
     export EXTRA_CXXFLAGS="-DWINVER=${win32_target} -D_WIN32_WINNT=${win32_target} -D_WIN32_IE=${win32_target}"
     export EXTRA_LDFLAGS="-lpthread -lz" # FIXME not working!
+fi
+
+if [ ${using_qt} -eq 1 ]; then
+    audacity_args+=" -DwxWidgets_CONFIGURATION=qtu"
+    export EXTRA_CXXFLAGS+=" -I${PAWPAW_PREFIX}/include/qt5"
 fi
 
 # TODO

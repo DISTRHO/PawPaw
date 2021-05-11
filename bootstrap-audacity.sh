@@ -15,11 +15,17 @@ if [ -z "${target}" ]; then
     exit 1
 fi
 
+using_qt=0
+
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
 ./bootstrap-common.sh "${target}"
 # ./bootstrap-plugins.sh "${target}"
+
+if [ ${using_qt} -eq 1 ]; then
+    ./bootstrap-qt.sh "${target}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # source setup code
@@ -46,6 +52,10 @@ wxwidgets_args+=" -DwxUSE_LIBPNG=builtin"
 wxwidgets_args+=" -DwxUSE_LIBTIFF=builtin"
 wxwidgets_args+=" -DwxUSE_REGEX=builtin"
 wxwidgets_args+=" -DwxUSE_ZLIB=builtin"
+
+if [ ${using_qt} -eq 1 ]; then
+    wxwidgets_args+=" -DwxBUILD_TOOLKIT=qt"
+fi
 
 # these match upstream cmake setup
 if [ "${MACOS}" -eq 1 ]; then
