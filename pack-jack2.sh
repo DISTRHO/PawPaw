@@ -110,6 +110,7 @@ elif [ "${MACOS}" -eq 1 ]; then
     sed -i -e 's|com.yourcompany.qjackctl|org.rncbc.QjackCtl|' "${qjackctl_app}/Contents/Info.plist"
     sed -i -e 's|string>qjackctl</string>|string>QjackCtl</string>|' "${qjackctl_app}/Contents/Info.plist"
     sed -i -e 's|<string></string>|<string>QjackCtl.icns</string>|' "${qjackctl_app}/Contents/Info.plist"
+    sed -i -e '/\/dict/i\'$'\n''\'$'\t''\<key\>NSMicrophoneUsageDescription\<\/key\>\'$'\n''\'$'\t''\<string\>Jack wants to use your microphone or sound input\<\/string\>'$'\n'$'\n' "${qjackctl_app}/Contents/Info.plist"
     rm "${qjackctl_app}/Contents/Info.plist-e"
     mv "${qjackctl_app}/Contents/MacOS/qjackctl" "${qjackctl_app}/Contents/MacOS/QjackCtl" 
 
