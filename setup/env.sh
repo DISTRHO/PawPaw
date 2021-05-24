@@ -87,7 +87,7 @@ LINK_FLAGS="-L${PAWPAW_PREFIX}/lib"
 LINK_FLAGS+=" -fdata-sections -ffunction-sections -fstack-protector"
 
 if [ "${MACOS}" -eq 1 ]; then
-    LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs"
+    LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs -Wl,-x"
 
     if [ "${MACOS_OLD}" -eq 1 ]; then
         LINK_FLAGS+=" -mmacosx-version-min=10.5 -arch i686"
