@@ -199,9 +199,9 @@ build_cmake fluidsynth ${FLUIDSYNTH_VERSION} "${FLUIDSYNTH_EXTRAFLAGS}"
 
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
     if [ "${MACOS}" -eq 1 ]; then
-        sed -i -e 's/-lfluidsynth/-lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -logg -lpthread -liconv -lm/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
+        sed -i -e 's/-lfluidsynth/-lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -liconv -lm/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
     elif [ "${WIN32}" -eq 1 ]; then
-        sed -i -e 's/-L${libdir} -lfluidsynth/-L${libdir}  -lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -logg -lpthread -lm -lole32 -lws2_32/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
+        sed -i -e 's/-L${libdir} -lfluidsynth/-L${libdir}  -lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -lm -lole32 -lws2_32/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
         touch "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e"
     fi
 fi

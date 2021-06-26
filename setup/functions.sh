@@ -31,7 +31,7 @@ function download() {
             rm -rf "${tmprepodir}"
         else
             local dlurl
-            if echo ${dlbaseurl} | grep -q github.com; then
+            if echo ${dlbaseurl} | grep -q github.com | grep -q -v releases; then
                 if [ x"${dlmethod}" = x"nv" ]; then
                     dlurl="${dlbaseurl}/${version}.${dlext}"
                 else
