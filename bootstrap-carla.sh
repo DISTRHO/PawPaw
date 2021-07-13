@@ -207,8 +207,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap for python (needed for cross-compilation)
 
-if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ]; then
-    env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
+if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
+    wineboot -u
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -35,11 +35,11 @@ function download_and_install_innosetup {
     fi
 
     if [ ! -d "${pkgdir}"/drive_c ]; then
-        env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${pkgdir}" wineboot -u
+        env WINEPREFIX="${pkgdir}" wineboot -u
     fi
 
     if [ ! -f "${pkgdir}"/drive_c/InnoSeup/ISCC.exe ]; then
-        env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
+        env WINEPREFIX="${pkgdir}" wine "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
     fi
 }
 
@@ -48,7 +48,7 @@ function create_innosetup_exe {
     local iscc="${pkgdir}/drive_c/InnoSeup/ISCC.exe"
 
     echo "#define VERSION \"${VERSION}\"" > /tmp/pawpaw/version.iss
-    env WINEARCH="${PAWPAW_TARGET}" WINEPREFIX="${pkgdir}" wine "${iscc}" "setup/inno/${PAWPAW_TARGET}.iss"
+    env WINEPREFIX="${pkgdir}" wine "${iscc}" "setup/inno/${PAWPAW_TARGET}.iss"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

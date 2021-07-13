@@ -49,7 +49,6 @@ if [ "${WIN32}" -eq 1 ]; then
     dlfile="${PAWPAW_DOWNLOADDIR}/innosetup-6.0.5.exe"
     innodir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
     iscc="${innodir}/drive_c/InnoSeup/ISCC.exe"
-    wine="env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" WINEPREFIX="${innodir}" wine"
 
     # download it
     if [ ! -f "${dlfile}" ]; then
@@ -59,12 +58,12 @@ if [ "${WIN32}" -eq 1 ]; then
 
     # initialize wine
     if [ ! -d "${innodir}"/drive_c ]; then
-        ${wine}boot -u
+        env WINEPREFIX="${innodir}" wineboot -u
     fi
 
     # install innosetup in custom wineprefix
     if [ ! -f "${innodir}"/drive_c/InnoSeup/ISCC.exe ]; then
-        ${wine} "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
+        env WINEPREFIX="${innodir}" wine "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
     fi
 
     # copy jackrouter binaries
@@ -84,7 +83,7 @@ if [ "${WIN32}" -eq 1 ]; then
     ln -sf "${PAWPAW_PREFIX}/bin/Qt5"{Core,Gui,Network,Widgets,Xml}".dll" .
     ln -sf "${PAWPAW_PREFIX}/lib/qt5/plugins/platforms/qwindows.dll" .
     ln -sf "${jack2_prefix}" "${PAWPAW_TARGET}"
-    ${wine} "${iscc}" "${PAWPAW_TARGET}.iss"
+    env WINEPREFIX="${innodir}" wine "${iscc}" "${PAWPAW_TARGET}.iss"
     popd
 
     # and move installer file where CI expects it to be

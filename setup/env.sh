@@ -145,6 +145,9 @@ TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 MAKE_ARGS=""
 WAF_ARGS=""
 unset EXE_WRAPPER
+unset WINEARCH
+unset WINEDLLOVERRIDES
+unset WINEPREFIX
 
 if which nproc > /dev/null; then
     MAKE_ARGS+="-j $(nproc)"
@@ -156,6 +159,12 @@ fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     MAKE_ARGS+=" CROSS_COMPILING=true"
+    if [ "${WIN32}" -eq 1 ]; then
+        export EXE_WRAPPER="wine"
+        export WINEARCH="${PAWPAW_TARGET}"
+        export WINEDLLOVERRIDES="mscoree,mshtml="
+        export WINEPREFIX="${PAWPAW_PREFIX}/wine"
+    fi
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
@@ -170,7 +179,6 @@ elif [ "${WIN32}" -eq 1 ]; then
     if [ "${WIN64}" -eq 1 ]; then
         MAKE_ARGS+=" WIN64=true"
     fi
-    export EXE_WRAPPER="wine"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

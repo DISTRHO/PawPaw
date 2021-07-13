@@ -29,8 +29,8 @@ source setup/versions.sh
 
 LV2DIR="${PAWPAW_PREFIX}/lib/lv2"
 
-if [ "${WIN32}" -eq 1 ] && [ ! -d "${HOME}/.wine" ]; then
-    env WINEARCH="${PAWPAW_TARGET}" WINEDLLOVERRIDES="mscoree,mshtml=" wineboot -u
+if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
+    wineboot -u
 fi
 
 function validate_lv2_bundles() {
