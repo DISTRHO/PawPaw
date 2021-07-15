@@ -644,7 +644,7 @@ function patch_osx_qtapp() {
 
     macdeployqt "${appfile}"
 
-    rm -f "${appfile}/Contents/Frameworks/libjack.*.dylib"
+    rm -f "${appfile}/Contents/Frameworks/libjack.0.1.0.dylib"
 
     _postbuild
 }
