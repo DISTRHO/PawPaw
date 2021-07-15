@@ -1,0 +1,23 @@
+diff --git a/src/.obj/qjackctlPaletteForm.o b/src/.obj/qjackctlPaletteForm.o
+index e853f8c..d9a3976 100644
+Binary files a/src/.obj/qjackctlPaletteForm.o and b/src/.obj/qjackctlPaletteForm.o differ
+diff --git a/src/qjackctlPaletteForm.cpp b/src/qjackctlPaletteForm.cpp
+index 33feae7..635ac6d 100644
+--- a/src/qjackctlPaletteForm.cpp
++++ b/src/qjackctlPaletteForm.cpp
+@@ -1203,14 +1203,10 @@ void qjackctlPaletteForm::ColorDelegate::updateEditorGeometry ( QWidget *editor,
+ 
+ 
+ void qjackctlPaletteForm::ColorDelegate::paint ( QPainter *painter,
+-	const QStyleOptionViewItem& option, const QModelIndex& index ) const
++	const QStyleOptionViewItem& opt, const QModelIndex& index ) const
+ {
+-	QStyleOptionViewItem opt = option;
+-
+ 	const bool masked
+ 		= index.model()->data(index, Qt::EditRole).value<bool>();
+-	if (index.column() == 0 && masked)
+-		opt.font.setBold(true);
+ 
+ 	QItemDelegate::paint(painter, opt, index);
+ 
