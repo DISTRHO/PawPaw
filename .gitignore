@@ -1,5 +1,6 @@
 .DS_Store
 *.exe
 *.pkg
+*.tar.gz
 *-e
 /jack2/
