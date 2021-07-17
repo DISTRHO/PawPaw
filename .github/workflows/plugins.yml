@@ -30,7 +30,7 @@ jobs:
     - name: Bootstrap Linux native
       shell: bash
       run: |
-        ./bootstrap-plugins.sh linux && .cleanup.sh linux
+        ./bootstrap-plugins.sh linux && ./.cleanup.sh linux
     - name: Build Linux native
       shell: bash
       run: |
@@ -71,7 +71,7 @@ jobs:
     - name: Bootstrap macOS cross-compiled
       shell: bash
       run: |
-        ./bootstrap-plugins.sh macos-old && .cleanup.sh macos-old
+        ./bootstrap-plugins.sh macos-old && ./.cleanup.sh macos-old
     - name: Build macOS cross-compiled
       shell: bash
       run: |
