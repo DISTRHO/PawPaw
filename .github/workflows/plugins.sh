@@ -7,6 +7,13 @@ if [ -z "${BOOTSTRAP_VERSION}" ]; then
     exit 1
 fi
 
+TARGET="${1}"
+
+if [ -z "${TARGET}" ]; then
+    echo "TARGET is not set"
+    exit 1
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 # check build step
 
