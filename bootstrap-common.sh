@@ -113,7 +113,11 @@ build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "--disable-fftw --disabl
 # libsndfile
 
 download libsndfile "${LIBSNDFILE_VERSION}" "https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}" "tar.bz2"
-patch_file libsndfile "${LIBSNDFILE_VERSION}" "configure" 's/ -Wvla//'
+
+if [ "${MACOS_OLD}" -eq 1 ]; then
+    patch_file libsndfile "${LIBSNDFILE_VERSION}" "src/sfconfig.h" 's/#define USE_SSE2/#undef USE_SSE2/'
+fi
+
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-alsa --disable-full-suite --disable-sqlite"
 
 # ---------------------------------------------------------------------------------------------------------------------
