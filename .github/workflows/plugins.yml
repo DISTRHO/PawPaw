@@ -1,0 +1,37 @@
+name: build
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+env:
+  BOOTSTRAP_VERSION: 1
+
+jobs:
+  linux_native:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up repositories
+      run: |
+        sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio && \
+        sudo add-apt-repository -y ppa:kxstudio-debian/toolchain && \
+        sudo apt-get update -qq && \
+        sudo apt-get install kxstudio-repos && \
+        sudo apt-get update -qq
+    - name: Set up dependencies
+      run: |
+        sudo apt-get install -y build-essential curl cmake jq meson libglib2.0-dev
+    - name: Bootstrap Linux native
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      run: |
+        ./bootstrap-plugins.sh linux && .cleanup.sh linux
+    - name: Build Linux native
+      shell: bash
+      working-directory: ${{runner.workspace}}
+      run: |
+        .github/workflows/plugins.sh
