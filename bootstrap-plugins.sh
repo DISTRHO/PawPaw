@@ -193,7 +193,7 @@ FLUIDSYNTH_EXTRAFLAGS+=" -Denable-pulseaudio=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-readline=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-trap-on-fpe=OFF"
 
-download fluidsynth ${FLUIDSYNTH_VERSION} "https://github.com/FluidSynth/fluidsynth/archive"
+download fluidsynth ${FLUIDSYNTH_VERSION} "https://github.com/FluidSynth/fluidsynth.git" "" "git"
 patch_file fluidsynth ${FLUIDSYNTH_VERSION} "CMakeLists.txt" 's/_init_lib_suffix "64"/_init_lib_suffix ""/'
 build_cmake fluidsynth ${FLUIDSYNTH_VERSION} "${FLUIDSYNTH_EXTRAFLAGS}"
 
@@ -209,7 +209,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
 
-download mxml ${MXML_VERSION} "https://github.com/michaelrsweet/mxml/archive"
+download mxml ${MXML_VERSION} "https://github.com/michaelrsweet/mxml.git" "" "git"
 build_autoconf mxml ${MXML_VERSION}
 
 # ---------------------------------------------------------------------------------------------------------------------
