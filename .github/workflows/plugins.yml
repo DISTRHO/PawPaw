@@ -13,7 +13,7 @@ env:
 
 jobs:
   # linux native build
-  linux_native:
+  linux:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
@@ -37,7 +37,7 @@ jobs:
         .github/workflows/plugins.sh linux
 
   # linux with macOS cross-compilation
-  linux_native:
+  macos_old:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
