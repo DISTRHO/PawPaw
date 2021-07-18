@@ -10,6 +10,7 @@ on:
 env:
   BOOTSTRAP_VERSION: 1
   DEBIAN_FRONTEND: noninteractive
+  HOMEBREW_NO_AUTO_UPDATE: 1
 
 jobs:
   # linux native build
@@ -40,7 +41,8 @@ jobs:
         sudo apt-get update -qq
     - name: Set up dependencies
       run: |
-        sudo apt-get install -yq build-essential curl cmake jq meson libglib2.0-dev
+        sudo apt-get install -yq build-essential curl cmake jq meson \
+          libglib2.0-dev
     - name: Cache debian packages
       run: |
         mkdir -p ~/PawPawBuilds/debs && \
@@ -111,3 +113,103 @@ jobs:
       shell: bash
       run: |
         .github/workflows/plugins.sh macos-old
+
+  # linux with win64 cross-compilation
+  win64:
+    runs-on: ubuntu-18.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/debs
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/win64
+        key: cache-win64
+    - name: Restore debian packages cache
+      run: |
+        if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+          sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+        fi
+    - name: Set up repositories
+      run: |
+        wget -qO- https://dl.winehq.org/wine-builds/winehq.key | sudo apt-key add - && \
+        sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio && \
+        sudo add-apt-repository -y ppa:kxstudio-debian/toolchain && \
+        sudo add-apt-repository -y ppa:kxstudio-debian/ubuntus && \
+        sudo apt-add-repository -y 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main' && \
+        sudo apt-get update -qq && \
+        sudo apt-get install -y kxstudio-repos && \
+        sudo apt-get update -qq
+    - name: Set up dependencies
+      run: |
+        sudo apt-get install -y build-essential curl cmake jq meson \
+          mingw-w64 binfmt-support binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable
+    - name: Cache debian packages
+      run: |
+        sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
+    - name: Bootstrap win64 cross-compiled
+      shell: bash
+      run: |
+        ./bootstrap-plugins.sh win64 && ./.cleanup.sh win64
+    - name: Build win64 cross-compiled
+      shell: bash
+      run: |
+        .github/workflows/plugins.sh win64
+
+    - name: "macOS native intel"
+      osx_image: xcode9.4
+    - name: "macOS native universal"
+      osx_image: xcode12.3
+
+  # macOS native intel build
+  macos:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/macos
+        key: cache-macos
+    - name: Set up dependencies
+      run: |
+        brew install cmake jq meson
+    - name: Bootstrap macOS intel
+      shell: bash
+      run: |
+        ./bootstrap-plugins.sh macos && ./.cleanup.sh macos
+    - name: Build macOS intel
+      shell: bash
+      run: |
+        .github/workflows/plugins.sh macos
+
+  # macOS native universal build
+  macos_universal:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/macos-universal
+        key: cache-macos-universal
+    - name: Set up dependencies
+      run: |
+        brew install cmake jq meson
+    - name: Bootstrap macOS universal
+      shell: bash
+      run: |
+        ./bootstrap-plugins.sh macos-universal && ./.cleanup.sh macos-universal
+    - name: Build macOS universal
+      shell: bash
+      run: |
+        .github/workflows/plugins.sh macos-universal
