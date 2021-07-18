@@ -158,11 +158,10 @@ jobs:
       shell: bash
       run: |
         .github/workflows/plugins.sh win64
-
-    - name: "macOS native intel"
-      osx_image: xcode9.4
-    - name: "macOS native universal"
-      osx_image: xcode12.3
+    - uses: actions/upload-artifact@v2
+      with:
+        name: win64 installer
+        path: setup/inno/PawPaw-*.exe
 
   # macOS native intel build
   macos:
@@ -188,6 +187,10 @@ jobs:
       shell: bash
       run: |
         .github/workflows/plugins.sh macos
+    - uses: actions/upload-artifact@v2
+      with:
+        name: macOS intel package
+        path: setup/macos/PawPaw-*.pkg
 
   # macOS native universal build
   macos_universal:
@@ -213,3 +216,7 @@ jobs:
       shell: bash
       run: |
         .github/workflows/plugins.sh macos-universal
+    - uses: actions/upload-artifact@v2
+      with:
+        name: macOS universal package
+        path: setup/macos/PawPaw-*.pkg
