@@ -213,13 +213,12 @@ jobs:
     - name: Bootstrap macOS universal
       shell: bash
       run: |
-        ./bootstrap-plugins.sh macos-universal || cat ~/PawPawBuilds/builds/macos-universal/libogg-1.3.5/config.log
-    # && ./.cleanup.sh macos-universal 
-    #- name: Build macOS universal
-      #shell: bash
-      #run: |
-        #.github/workflows/plugins.sh macos-universal
-    #- uses: actions/upload-artifact@v2
-      #with:
-        #name: macOS universal package
-        #path: setup/macos/PawPaw-*.pkg
+        ./bootstrap-plugins.sh macos-universal && ./.cleanup.sh macos-universal
+    - name: Build macOS universal
+      shell: bash
+      run: |
+        .github/workflows/plugins.sh macos-universal
+    - uses: actions/upload-artifact@v2
+      with:
+        name: macOS universal package
+        path: setup/macos/PawPaw-*.pkg

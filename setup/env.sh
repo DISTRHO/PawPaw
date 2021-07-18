@@ -52,9 +52,20 @@ PAWPAW_TMPDIR="/tmp"
 # ---------------------------------------------------------------------------------------------------------------------
 # build environment
 
+# Force compiler path on macOS universal builds
+# FIXME remove this after github actions macos-11 image is available for public use
+if [ "${MACOS_UNIVERSAL}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
+    xcode_sysroot=""$(xcrun --sdk macosx --show-sdk-path)""
+    EXTRA_FLAGS="-isysroot ${xcode_sysroot} -isystem ${xcode_sysroot}"
+    EXTRA_FLAGS+=" -DHAVE_FCNTL_H=1"
+    EXTRA_FLAGS+=" -DHAVE_LRINT=1"
+    EXTRA_FLAGS+=" -DHAVE_LRINTF=1"
+    EXTRA_FLAGS+=" -DSTDC_HEADERS=1"
+fi
+
 ## build flags
 
-BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include"
+BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -mtune=generic -msse -msse2 -ffast-math"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
@@ -83,7 +94,7 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 
 ## link flags
 
-LINK_FLAGS="-L${PAWPAW_PREFIX}/lib"
+LINK_FLAGS="-L${PAWPAW_PREFIX}/lib ${EXTRA_FLAGS}"
 LINK_FLAGS+=" -fdata-sections -ffunction-sections -fstack-protector"
 
 if [ "${MACOS}" -eq 1 ]; then
@@ -140,14 +151,11 @@ TARGET_PKG_CONFIG="${PAWPAW_PREFIX}/bin/pkg-config --static"
 TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 
 # Force compiler path on macOS universal builds
+# FIXME remove this after github actions macos-11 image is available for public use
 if [ "${MACOS_UNIVERSAL}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
     xcode_dir="$(xcode-select -p | head -1)"
-    sysroot=""$(xcrun --sdk macosx --show-sdk-path)""
     TARGET_CC="${xcode_dir}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
     TARGET_CXX="${xcode_dir}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
-    TARGET_CFLAGS="${TARGET_CFLAGS} -isysroot ${sysroot} -isystem ${sysroot} -DSTDC_HEADERS=1 -DHAVE_FCNTL_H"
-    TARGET_CXXFLAGS="${TARGET_CXXFLAGS} -isysroot ${sysroot} -isystem ${sysroot} -DSTDC_HEADERS=1 -DHAVE_FCNTL_H"
-    LINK_FLAGS="${LINK_FLAGS} -isysroot ${sysroot} -isystem ${sysroot}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
