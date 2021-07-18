@@ -19,14 +19,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up cache
-      uses: actions/cache@v2
+      uses: actions/always-cache@v1
       with:
         path: |
           ~/PawPawBuilds/builds
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/linux
-        key: cache-linux-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+        key: cache-linux
     - name: Restore debian package cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -62,13 +62,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up cache
-      uses: actions/cache@v2
+      uses: actions/always-cache@v1
       with:
         path: |
           ~/PawPawBuilds/builds
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/macos
-        key: cache-macos-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+        key: cache-macos
     - name: Set up dependencies
       run: |
         brew install cmake jq meson
@@ -91,14 +91,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up cache
-      uses: actions/cache@v2
+      uses: actions/always-cache@v1
       with:
         path: |
           ~/PawPawBuilds/builds
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/macos-old
-        key: cache-macos-old-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+        key: cache-macos-old
     - name: Restore debian packages cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -149,13 +149,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up cache
-      uses: actions/cache@v2
+      uses: actions/always-cache@v1
       with:
         path: |
           ~/PawPawBuilds/builds
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/macos-universal
-        key: cache-macos-universal-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+        key: cache-macos-universal
     - name: Set up dependencies
       run: |
         brew install cmake jq meson
@@ -178,14 +178,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up cache
-      uses: actions/cache@v2
+      uses: actions/always-cache@v1
       with:
         path: |
           ~/PawPawBuilds/builds
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/win64
-        key: cache-win64-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+        key: cache-win64
     - name: Restore debian packages cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
