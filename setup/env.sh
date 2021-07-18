@@ -52,17 +52,6 @@ PAWPAW_TMPDIR="/tmp"
 # ---------------------------------------------------------------------------------------------------------------------
 # build environment
 
-# Force compiler path on macOS universal builds
-# FIXME remove this after github actions macos-11 image is available for public use
-if [ "${MACOS_UNIVERSAL}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
-    xcode_sysroot=""$(xcrun --sdk macosx --show-sdk-path)""
-    EXTRA_FLAGS="-isysroot ${xcode_sysroot} -isystem ${xcode_sysroot}"
-    EXTRA_FLAGS+=" -DHAVE_FCNTL_H=1"
-    EXTRA_FLAGS+=" -DHAVE_LRINT=1"
-    EXTRA_FLAGS+=" -DHAVE_LRINTF=1"
-    EXTRA_FLAGS+=" -DSTDC_HEADERS=1"
-fi
-
 ## build flags
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
@@ -149,14 +138,6 @@ TARGET_WINDRES="${TOOLCHAIN_PREFIX_}windres"
 TARGET_PATH="${PAWPAW_PREFIX}/bin:/usr/${TOOLCHAIN_PREFIX}/bin:${PATH}"
 TARGET_PKG_CONFIG="${PAWPAW_PREFIX}/bin/pkg-config --static"
 TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
-
-# Force compiler path on macOS universal builds
-# FIXME remove this after github actions macos-11 image is available for public use
-if [ "${MACOS_UNIVERSAL}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
-    xcode_dir="$(xcode-select -p | head -1)"
-    TARGET_CC="${xcode_dir}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
-    TARGET_CXX="${xcode_dir}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
-fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # other
