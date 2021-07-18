@@ -81,7 +81,7 @@ else
 fi
 
 ./build-plugins.sh ${TARGET} ${PLUGINS}
-.cleanup.sh ${TARGET}
+./.cleanup.sh ${TARGET}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # packaging, only be done when doing a full build

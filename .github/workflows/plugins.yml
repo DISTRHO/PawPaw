@@ -17,6 +17,20 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/debs
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/linux
+        key: cache-linux
+    - name: Restore debian package cache
+      run: |
+        if [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+          sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+        fi
     - name: Set up repositories
       run: |
         sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio && \
@@ -27,6 +41,9 @@ jobs:
     - name: Set up dependencies
       run: |
         sudo apt-get install -yq build-essential curl cmake jq meson libglib2.0-dev
+    - name: Cache debian packages
+      run: |
+        sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
     - name: Bootstrap Linux native
       shell: bash
       run: |
@@ -41,6 +58,20 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/debs
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/macos-old
+        key: cache-linux
+    - name: Restore debian packages cache
+      run: |
+        if [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+          sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+        fi
     - name: Set up repositories
       run: |
         sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio && \
@@ -53,21 +84,24 @@ jobs:
         sudo apt-get install -y build-essential curl cmake jq meson
     - name: Set up cross-compiler
       run: |
-        mkdir -p ${HOME}/PawPawBuilds/debs && \
-        cd ${HOME}/PawPawBuilds/debs && \
+        mkdir -p ~/PawPawBuilds/debs && \
+        cd ~/PawPawBuilds/debs && \
         if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then \
-            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'; \
+          wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'; \
         fi && \
         if [ ! -f 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' ]; then \
-            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'; \
+          wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'; \
         fi && \
         if [ ! -f 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb' ]; then \
-            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'; \
+          wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'; \
         fi && \
         sudo dpkg -i \
-            'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' \
-            'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
-            'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
+          'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' \
+          'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
+          'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
+    - name: Cache debian packages
+      run: |
+        sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
     - name: Bootstrap macOS cross-compiled
       shell: bash
       run: |
