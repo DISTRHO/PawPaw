@@ -67,7 +67,7 @@ jobs:
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/macos-old
-        key: cache-linux
+        key: cache-macos-old
     - name: Restore debian packages cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
