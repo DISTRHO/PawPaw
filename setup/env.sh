@@ -139,6 +139,13 @@ TARGET_PATH="${PAWPAW_PREFIX}/bin:/usr/${TOOLCHAIN_PREFIX}/bin:${PATH}"
 TARGET_PKG_CONFIG="${PAWPAW_PREFIX}/bin/pkg-config --static"
 TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
 
+# Force compiler path on macOS universal builds
+if [ "${MACOS_UNIVERSAL}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 0 ]; then
+    xcode_dir="$(xcode-select -p | head -1)"
+    TARGET_CC="${xcode_dir}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+    TARGET_CXX="${xcode_dir}/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 # other
 
