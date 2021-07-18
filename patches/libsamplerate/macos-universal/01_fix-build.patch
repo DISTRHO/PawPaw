@@ -1,0 +1,13 @@
+diff --git a/src/float_cast.h b/src/float_cast.h
+index 0318427..b891b68 100644
+--- a/src/float_cast.h
++++ b/src/float_cast.h
+@@ -209,7 +209,7 @@
+ 		return res [1] ;
+ 	} /* double2int */
+ 
+-#elif (defined (__MACH__) && defined (__APPLE__))
++#elif (defined (__MACH__) && defined (__APPLE__) && !defined(__aarch64__))
+ 
+ 	/* For Apple MacOSX. */
+ 

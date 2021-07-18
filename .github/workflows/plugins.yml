@@ -26,7 +26,7 @@ jobs:
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/linux
-        key: cache-linux
+        key: cache-linux-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
     - name: Restore debian package cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -56,6 +56,35 @@ jobs:
       run: |
         .github/workflows/plugins.sh linux
 
+  # macOS native intel build
+  macos:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/macos
+        key: cache-macos-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+    - name: Set up dependencies
+      run: |
+        brew install cmake jq meson
+    - name: Bootstrap macOS intel
+      shell: bash
+      run: |
+        ./bootstrap-plugins.sh macos && ./.cleanup.sh macos
+    - name: Build macOS intel
+      shell: bash
+      run: |
+        .github/workflows/plugins.sh macos
+    - uses: actions/upload-artifact@v2
+      with:
+        name: macOS intel package
+        path: setup/macos/PawPaw-*.pkg
+
   # linux with macOS cross-compilation
   macos_old:
     runs-on: ubuntu-18.04
@@ -69,7 +98,7 @@ jobs:
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/macos-old
-        key: cache-macos-old
+        key: cache-macos-old-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
     - name: Restore debian packages cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -114,6 +143,35 @@ jobs:
       run: |
         .github/workflows/plugins.sh macos-old
 
+  # macOS native universal build
+  macos_universal:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up cache
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/PawPawBuilds/builds
+          ~/PawPawBuilds/downloads
+          ~/PawPawBuilds/targets/macos-universal
+        key: cache-macos-universal-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
+    - name: Set up dependencies
+      run: |
+        brew install cmake jq meson
+    - name: Bootstrap macOS universal
+      shell: bash
+      run: |
+        ./bootstrap-plugins.sh macos-universal && ./.cleanup.sh macos-universal
+    - name: Build macOS universal
+      shell: bash
+      run: |
+        .github/workflows/plugins.sh macos-universal
+    - uses: actions/upload-artifact@v2
+      with:
+        name: macOS universal package
+        path: setup/macos/PawPaw-*.pkg
+
   # linux with win64 cross-compilation
   win64:
     runs-on: ubuntu-18.04
@@ -127,7 +185,7 @@ jobs:
           ~/PawPawBuilds/debs
           ~/PawPawBuilds/downloads
           ~/PawPawBuilds/targets/win64
-        key: cache-win64
+        key: cache-win64-${{ hashFiles('~/PawPawBuilds/builds/.last-bootstrap-version', '~/PawPawBuilds/builds/.last-build-version') }}
     - name: Restore debian packages cache
       run: |
         if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -164,61 +222,3 @@ jobs:
       with:
         name: win64 installer
         path: setup/inno/PawPaw-*.exe
-
-  # macOS native intel build
-  macos:
-    runs-on: macos-10.15
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/PawPawBuilds/builds
-          ~/PawPawBuilds/downloads
-          ~/PawPawBuilds/targets/macos
-        key: cache-macos
-    - name: Set up dependencies
-      run: |
-        brew install cmake jq meson
-    - name: Bootstrap macOS intel
-      shell: bash
-      run: |
-        ./bootstrap-plugins.sh macos && ./.cleanup.sh macos
-    - name: Build macOS intel
-      shell: bash
-      run: |
-        .github/workflows/plugins.sh macos
-    - uses: actions/upload-artifact@v2
-      with:
-        name: macOS intel package
-        path: setup/macos/PawPaw-*.pkg
-
-  # macOS native universal build
-  macos_universal:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - name: Set up cache
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/PawPawBuilds/builds
-          ~/PawPawBuilds/downloads
-          ~/PawPawBuilds/targets/macos-universal
-        key: cache-macos-universal
-    - name: Set up dependencies
-      run: |
-        brew install cmake jq meson
-    - name: Bootstrap macOS universal
-      shell: bash
-      run: |
-        ./bootstrap-plugins.sh macos-universal && ./.cleanup.sh macos-universal
-    - name: Build macOS universal
-      shell: bash
-      run: |
-        .github/workflows/plugins.sh macos-universal
-    - uses: actions/upload-artifact@v2
-      with:
-        name: macOS universal package
-        path: setup/macos/PawPaw-*.pkg
