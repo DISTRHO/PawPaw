@@ -150,6 +150,7 @@ jobs:
           mingw-w64 binfmt-support binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 winehq-stable wine-stable
     - name: Cache debian packages
       run: |
+        mkdir -p ~/PawPawBuilds/debs && \
         sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
     - name: Bootstrap win64 cross-compiled
       shell: bash
