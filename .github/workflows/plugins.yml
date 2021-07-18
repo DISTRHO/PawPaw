@@ -212,7 +212,8 @@ jobs:
     - name: Bootstrap macOS universal
       shell: bash
       run: |
-        ./bootstrap-plugins.sh macos-universal && ./.cleanup.sh macos-universal
+        ./bootstrap-plugins.sh macos-universal || cat ~/PawPawBuilds/builds/macos-universal/libogg-1.3.5/config.log
+    # && ./.cleanup.sh macos-universal 
     - name: Build macOS universal
       shell: bash
       run: |
