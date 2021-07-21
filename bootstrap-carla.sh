@@ -363,6 +363,8 @@ download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx
 if [ "${CXFREEZE_VERSION}" = "e1c33afea842bc61dac82145a8a0be5fbd318a92" ]; then
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
+    # FIXME
+    exit 0
 fi
 if [ "${WIN32}" -eq 1 ]; then
     export PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
