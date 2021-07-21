@@ -65,10 +65,10 @@ jobs:
       shell: bash
       run: |
         ./bootstrap-plugins.sh linux && ./.cleanup.sh linux
-    - name: Build Linux native
-      shell: bash
-      run: |
-        ./build-plugins.sh linux ${PLUGINS_BASE} ${PLUGINS_CROSS} && ./.cleanup.sh linux
+    #- name: Build Linux native
+      #shell: bash
+      #run: |
+        #./build-plugins.sh linux ${PLUGINS_BASE} ${PLUGINS_CROSS} && ./.cleanup.sh linux
 
   # macOS native intel build
   macos:
@@ -90,14 +90,14 @@ jobs:
       shell: bash
       run: |
         ./bootstrap-plugins.sh macos && ./.cleanup.sh macos
-    - name: Build macOS intel
-      shell: bash
-      run: |
-        ./build-plugins.sh macos ${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO_PORTS} && ./.cleanup.sh macos
-    - uses: actions/upload-artifact@v2
-      with:
-        name: macOS intel package
-        path: setup/macos/PawPaw-*.pkg
+    #- name: Build macOS intel
+      #shell: bash
+      #run: |
+        #./build-plugins.sh macos ${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO_PORTS} && ./.cleanup.sh macos
+    #- uses: actions/upload-artifact@v2
+      #with:
+        #name: macOS intel package
+        #path: setup/macos/PawPaw-*.pkg
 
   # linux with macOS cross-compilation
   macos_old:
@@ -152,10 +152,10 @@ jobs:
       shell: bash
       run: |
         ./bootstrap-plugins.sh macos-old && ./.cleanup.sh macos-old
-    - name: Build macOS cross-compiled
-      shell: bash
-      run: |
-        ./build-plugins.sh macos-old ${PLUGINS_BASE} && ./.cleanup.sh macos-old
+    #- name: Build macOS cross-compiled
+      #shell: bash
+      #run: |
+        #./build-plugins.sh macos-old ${PLUGINS_BASE} && ./.cleanup.sh macos-old
 
   # macOS native universal build
   macos_universal:
@@ -181,14 +181,14 @@ jobs:
       shell: bash
       run: |
         ./bootstrap-plugins.sh macos-universal && ./.cleanup.sh macos-universal
-    - name: Build macOS universal
-      shell: bash
-      run: |
-        ./build-plugins.sh macos-universal ${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO_PORTS} && ./.cleanup.sh macos-universal
-    - uses: actions/upload-artifact@v2
-      with:
-        name: macOS universal package
-        path: setup/macos/PawPaw-*.pkg
+    #- name: Build macOS universal
+      #shell: bash
+      #run: |
+        #./build-plugins.sh macos-universal ${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO_PORTS} && ./.cleanup.sh macos-universal
+    #- uses: actions/upload-artifact@v2
+      #with:
+        #name: macOS universal package
+        #path: setup/macos/PawPaw-*.pkg
 
   # linux with win64 cross-compilation
   win64:
@@ -232,11 +232,11 @@ jobs:
       shell: bash
       run: |
         ./bootstrap-plugins.sh win64 && ./.cleanup.sh win64
-    - name: Build win64 cross-compiled
-      shell: bash
-      run: |
-        ./build-plugins.sh win64 ${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO_PORTS} && ./.cleanup.sh win64
-    - uses: actions/upload-artifact@v2
-      with:
-        name: win64 installer
-        path: setup/inno/PawPaw-*.exe
+    #- name: Build win64 cross-compiled
+      #shell: bash
+      #run: |
+        #./build-plugins.sh win64 ${PLUGINS_BASE} ${PLUGINS_CROSS} ${PLUGINS_DISTRHO_PORTS} && ./.cleanup.sh win64
+    #- uses: actions/upload-artifact@v2
+      #with:
+        #name: win64 installer
+        #path: setup/inno/PawPaw-*.exe
