@@ -1,7 +1,7 @@
 {
     "name": "abGate",
     "lv2bundles": ["abGate.lv2"],
-    "version": "45b4762ef163b3880a840b1d90afacfa3e2c691f",
+    "version": "c416c29d66c09da610dc632605adad14781ede8d",
     "description": "Noise gate",
     "dlbaseurl": "https://github.com/antanasbruzas/abGate.git",
     "dlmethod": "git",

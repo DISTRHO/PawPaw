@@ -1,0 +1,27 @@
+From c8f19294b1566b48faf61678fc2c842fd8ca9410 Mon Sep 17 00:00:00 2001
+From: falkTX <falktx@falktx.com>
+Date: Wed, 4 Aug 2021 10:19:01 +0100
+Subject: [PATCH] Fix wrong dB to seconds conversion Likely due to copy&paste 1
+ step too much
+
+Signed-off-by: falkTX <falktx@falktx.com>
+---
+ gate.ttl | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/gate.ttl b/gate.ttl
+index e1ca44a..4a89196 100644
+--- a/gate.ttl
++++ b/gate.ttl
+@@ -75,11 +75,6 @@
+ 	    	lv2:default -70;
+ 		lv2:portProperty pprops:hasStrictBounds;
+ 		units:unit units:db;
+-		units:conversion [
+-			units:to units:s;
+-			units:factor 0.001;
+-		];
+-
+ 	],
+ 
+ 	[
