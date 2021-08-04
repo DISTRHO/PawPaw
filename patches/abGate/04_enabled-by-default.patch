@@ -1,0 +1,27 @@
+From 98a96c098f80e50eae2a47c726371da3c5de3ebf Mon Sep 17 00:00:00 2001
+From: falkTX <falktx@falktx.com>
+Date: Wed, 4 Aug 2021 10:51:36 +0100
+Subject: [PATCH] Enable noise-gate by default, map switch to host
+ enable/bypass
+
+Signed-off-by: falkTX <falktx@falktx.com>
+---
+ gate.ttl | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/gate.ttl b/gate.ttl
+index e1ca44a..cd3fc35 100644
+--- a/gate.ttl
++++ b/gate.ttl
+@@ -60,9 +60,10 @@
+ 	    	lv2:name "Switch";
+ 	    	lv2:minimum 0;
+ 	    	lv2:maximum 1;
+-	    	lv2:default 0;
++	    	lv2:default 1;
+ 		lv2:portProperty pprops:hasStrictBounds;
+ 		lv2:portProperty lv2:toggled;
++		lv2:designation lv2:enabled;
+ 	],
+ 
+ 	[
