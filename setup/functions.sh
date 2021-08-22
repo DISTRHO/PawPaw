@@ -71,6 +71,35 @@ function copy_download() {
     fi
 }
 
+function git_clone() {
+    local name="${1}"
+    local hash="${2}"
+    local repourl="${3}"
+    local dlname="${4}"
+
+    if [ -z "${dlname}" ]; then
+        dlname="${name}"
+    fi
+
+    local dlfile="${PAWPAW_DOWNLOADDIR}/${dlname}-${hash}.tar.gz"
+    local dlfolder="${PAWPAW_BUILDDIR}/${name}-${hash}"
+
+    if [ ! -f "${dlfile}" ]; then
+        local tmprepodir="${PAWPAW_TMPDIR}/${dlname}-${hash}"
+        rm -rf "${tmprepodir}"
+        git clone --recursive "${repourl}" "${tmprepodir}"
+        git -C "${tmprepodir}" checkout "${hash}"
+        git -C "${tmprepodir}" submodule update
+        tar --exclude=".git" -czf "${dlfile}" -C "${PAWPAW_TMPDIR}" "${dlname}-${hash}"
+        rm -rf "${tmprepodir}"
+    fi
+
+    if [ ! -d "${dlfolder}" ]; then
+        mkdir "${dlfolder}"
+        tar -xf "${dlfile}" -C "${dlfolder}" --strip-components=1
+    fi
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 function _prebuild() {
@@ -486,6 +515,27 @@ function build_waf() {
         ${python} waf install ${WAF_ARGS} --prefix="${PAWPAW_PREFIX}" ${extraconfrules} -j 1
         rm -f ${PAWPAW_PREFIX}/lib/lv2/*/*.a
         touch .stamp_installed
+        popd
+    fi
+
+    _postbuild
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+function run_make() {
+    local name="${1}"
+    local version="${2}"
+    local makerule="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_custom_run" ]; then
+        pushd "${pkgdir}"
+        make ${makerule}
+        touch .stamp_custom_run
         popd
     fi
 

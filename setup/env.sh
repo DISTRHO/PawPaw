@@ -106,7 +106,7 @@ else
             LINK_FLAGS+=" -lssp_nonshared"
         fi
     else
-        LINK_FLAGS+=" -static-libgcc -static-libstdc++ -Wl,-Bstatic"
+        LINK_FLAGS+=" -static-libgcc -static-libstdc++"
     fi
 fi
 

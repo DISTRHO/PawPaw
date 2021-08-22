@@ -51,7 +51,7 @@ if [ "${LINUX}" -eq 1 ]; then
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
         ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
     fi
-    if [ "${LINUX}" -eq 1 ] && [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
         ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
     fi
 fi
@@ -59,73 +59,115 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # pkgconfig
 
-download pkg-config "${PKG_CONFIG_VERSION}" "https://pkg-config.freedesktop.org/releases"
+download pkg-config "${PKG_CONFIG_VERSION}" "${PKG_CONFIG_URL}"
 build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps --with-internal-glib --with-pc-path=${TARGET_PKG_CONFIG_PATH}"
+
+if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/bin/${TOOLCHAIN_PREFIX_}pkg-config" ]; then
+    ln -s pkg-config "${PAWPAW_PREFIX}/bin/${TOOLCHAIN_PREFIX_}pkg-config"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libogg
 
-download libogg "${LIBOGG_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/ogg"
-patch_file libogg "${LIBOGG_VERSION}" "include/ogg/os_types.h" 's/__MACH__/__MACH_SKIP__/'
+download libogg "${LIBOGG_VERSION}" "${LIBOGG_URL}"
 build_autoconf libogg "${LIBOGG_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libvorbis
 
-download libvorbis "${LIBVORBIS_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/vorbis"
-build_autoconf libvorbis "${LIBVORBIS_VERSION}" "--disable-examples"
+LIBVORBIS_EXTRAFLAGS="--disable-examples"
+
+download libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_URL}"
+build_autoconf libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# flac
+# flac (forces intrinsic optimizations on macos-universal target)
 
 FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
 
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    FLAC_EXTRAFLAGS+=" --disable-asm-optimizations"
-elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes asm_opt=yes"
 fi
 
-download flac "${FLAC_VERSION}" "https://ftp.osuosl.org/pub/xiph/releases/flac" "tar.xz"
-patch_file flac "${FLAC_VERSION}" "configure" 's/amd64|x86_64/amd64|arm|x86_64/'
+download flac "${FLAC_VERSION}" "${FLAC_URL}" "tar.xz"
+
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    patch_file flac "${FLAC_VERSION}" "configure" 's/amd64|x86_64/amd64|arm|x86_64/'
+fi
+
 build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make flac "${FLAC_VERSION}" check
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # opus
 
-OPUS_EXTRAFLAGS="--disable-extra-programs --enable-custom-modes --enable-float-approx"
+# FIXME macos-universal proper optimizations
 
-# FIXME
-if [ "${MACOS_OLD}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    OPUS_EXTRAFLAGS+=" --disable-asm --disable-rtcd --disable-intrinsics"
+OPUS_EXTRAFLAGS="--enable-custom-modes --enable-float-approx"
+
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    OPUS_EXTRAFLAGS+=" --disable-extra-programs"
+fi
+if [ "${MACOS_OLD}" -eq 1 ]; then
+    OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 fi
 
-download opus "${OPUS_VERSION}" "https://archive.mozilla.org/pub/opus"
+download opus "${OPUS_VERSION}" "${OPUS_URL}"
 build_autoconf opus "${OPUS_VERSION}" "${OPUS_EXTRAFLAGS}"
 
-# ---------------------------------------------------------------------------------------------------------------------
-# libsamplerate
-
-download libsamplerate "${LIBSAMPLERATE_VERSION}" "http://www.mega-nerd.com/SRC"
-build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "--disable-fftw --disable-sndfile"
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make opus "${OPUS_VERSION}" check
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libsndfile
 
-download libsndfile "${LIBSNDFILE_VERSION}" "https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}" "tar.bz2"
+LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
+
+# otherwise tests fail
+export EXTRA_CFLAGS="-frounding-math -fsignaling-nans"
+
+if [ "${MACOS_OLD}" -eq 0 ]; then
+    export EXTRA_CFLAGS+=" -fno-associative-math"
+fi
+
+download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
 
 if [ "${MACOS_OLD}" -eq 1 ]; then
     patch_file libsndfile "${LIBSNDFILE_VERSION}" "src/sfconfig.h" 's/#define USE_SSE2/#undef USE_SSE2/'
 fi
 
-build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "--disable-alsa --disable-full-suite --disable-sqlite"
+build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make libsndfile "${LIBSNDFILE_VERSION}" "check -j 8"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# libsamplerate
+
+LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
+
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    LIBSAMPLERATE_EXTRAFLAGS+=" --disable-sndfile"
+fi
+
+download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}"
+build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make libsamplerate "${LIBSAMPLERATE_VERSION}" check
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # zlib (skipped on macOS)
 
 if [ "${MACOS}" -eq 0 ]; then
-    download zlib ${ZLIB_VERSION} "https://github.com/madler/zlib.git" "" "git"
-    build_conf zlib ${ZLIB_VERSION} "--static --prefix=${PAWPAW_PREFIX}"
+    git_clone zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib.git"
+    build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

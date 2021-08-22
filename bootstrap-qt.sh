@@ -306,8 +306,11 @@ build_qmake qtsvg${qtsuffix} ${QT5_VERSION}
 # qttools (host only, thus not needed if cross-compiling)
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    if [ "${QT5_MVERSION}" = "5.12" ]; then
+        QTTOOLS_EXTRAFLAGS=". -- -no-feature-qdoc"
+    fi
     download_qt qttools
-    build_qmake qttools${qtsuffix} ${QT5_VERSION} ". -- -no-feature-qdoc"
+    build_qmake qttools${qtsuffix} ${QT5_VERSION} "${QTTOOLS_EXTRAFLAGS}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

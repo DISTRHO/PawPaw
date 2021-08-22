@@ -1,26 +1,47 @@
 #!/bin/bash
 
 # ---------------------------------------------------------------------------------------------------------------------
-# base
+# common URLs
 
+XIPH_URL=https://downloads.xiph.org/releases
+
+# ---------------------------------------------------------------------------------------------------------------------
+# bootstrap base
+
+PKG_CONFIG_URL=https://pkg-config.freedesktop.org/releases
 PKG_CONFIG_VERSION=0.28
 
 # ---------------------------------------------------------------------------------------------------------------------
-# common
+# bootstrap common
 
+LIBOGG_URL=${XIPH_URL}/ogg
+LIBOGG_VERSION=1.3.5
+
+LIBVORBIS_URL=${XIPH_URL}/vorbis
+LIBVORBIS_VERSION=1.3.7
+
+FLAC_URL=${XIPH_URL}/flac
 FLAC_VERSION=1.3.3
+
+OPUS_URL=https://archive.mozilla.org/pub/opus
+OPUS_VERSION=1.3.1
+
+LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/1.0.31
+LIBSNDFILE_VERSION=1.0.31
+
+LIBSAMPLERATE_URL=http://www.mega-nerd.com/SRC
+LIBSAMPLERATE_VERSION=0.1.9
+
+ZLIB_URL=https://github.com/madler/zlib.git
+ZLIB_VERSION=cacf7f1d4e3d44d871b605da3b647f07d718623f # 1.2.11
+
+# ---------------------------------------------------------------------------------------------------------------------
+# bootstrap plugins
+
 FLUIDSYNTH_VERSION=f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
 GLIB_VERSION=2.22.5
 GLIB_MVERSION=2.22
 LIBLO_VERSION=0.30
-LIBOGG_VERSION=1.3.5
-LIBSAMPLERATE_VERSION=0.1.9
-LIBSNDFILE_VERSION=1.0.31
-LIBVORBIS_VERSION=1.3.7
-OPUS_VERSION=1.3.1
-
-# ---------------------------------------------------------------------------------------------------------------------
-# plugins
 
 CARLA_VERSION=ca44f4bc538690e76f4e02544f047ad9d559a1b8
 FFTW_VERSION=3.3.9
@@ -34,7 +55,6 @@ PCRE_VERSION=8.44
 SERD_VERSION=0.30.8
 SORD_VERSION=0.16.8
 SRATOM_VERSION=0.6.8
-ZLIB_VERSION=cacf7f1d4e3d44d871b605da3b647f07d718623f # 1.2.11
 
 LV2LINT_SUPPORTED=1
 
