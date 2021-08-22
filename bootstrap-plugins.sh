@@ -41,7 +41,7 @@ fi
 #     FFTW_EXTRAFLAGS+=" --enable-threads"
 # fi
 
-download fftw "${FFTW_VERSION}" "http://www.fftw.org"
+download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 
 if [ "${MACOS_OLD}" -eq 1 ]; then
     patch_file fftw "${FFTW_VERSION}" "configure" 's/CFLAGS="$CFLAGS -Wl,-no_compact_unwind"/CFLAGS="$CFLAGS"/'
@@ -74,7 +74,7 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS="--with-threads=posix"
     fi
 
-    download glib ${GLIB_VERSION} "http://download.gnome.org/sources/glib/${GLIB_MVERSION}" "${GLIB_TAR_EXT}"
+    download glib ${GLIB_VERSION} "${GLIB_URL}" "${GLIB_TAR_EXT}"
 
     if [ "${MACOS}" -eq 1 ]; then
         export EXTRA_LDFLAGS="-lresolv"
@@ -101,27 +101,27 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # liblo
 
-download liblo "${LIBLO_VERSION}" "http://download.sourceforge.net/liblo"
+download liblo "${LIBLO_VERSION}" "${LIBLO_URL}"
 build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tests --disable-tools"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pcre (needed for sord_validate, only relevant if we can run the resulting binaries)
 
 if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
-    download pcre "${PCRE_VERSION}" "https://ftp.pcre.org/pub/pcre"
+    download pcre "${PCRE_VERSION}" "${PCRE_URL}"
     build_autoconf pcre "${PCRE_VERSION}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
 
-download lv2 "${LV2_VERSION}" "https://gitlab.com/lv2/lv2.git" "" "git"
+git_clone lv2 "${LV2_VERSION}" "${LV2_URL}"
 build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
 
-download serd "${SERD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+download serd "${SERD_VERSION}" "${SERD_URL}" "tar.bz2"
 build_waf serd "${SERD_VERSION}" "--static --no-shared --no-utils"
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -131,19 +131,19 @@ if [ "${CROSS_COMPILING}" -eq 1 ] && [ -z "${EXE_WRAPPER}" ]; then
     SORD_EXTRAFLAGS="--no-utils"
 fi
 
-download sord "${SORD_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+download sord "${SORD_VERSION}" "${SORD_URL}" "tar.bz2"
 build_waf sord "${SORD_VERSION}" "--static --no-shared ${SORD_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # sratom
 
-download sratom "${SRATOM_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+download sratom "${SRATOM_VERSION}" "${SRATOM_URL}" "tar.bz2"
 build_waf sratom "${SRATOM_VERSION}" "--static --no-shared"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lilv
 
-download lilv "${LILV_VERSION}" "http://download.drobilla.net/" "tar.bz2"
+download lilv "${LILV_VERSION}" "${LILV_URL}" "tar.bz2"
 build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --no-shared"
 # --static-progs
 
@@ -151,7 +151,7 @@ build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --
 # lv2lint
 
 if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
-    download lv2lint "${LV2LINT_VERSION}" "https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/${LV2LINT_VERSION}"
+    download lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"
 fi
@@ -159,13 +159,13 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # kxstudio lv2 extensions
 
-download kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}" "https://github.com/KXStudio/LV2-Extensions.git" "" "git"
+git_clone kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}" "${KXSTUDIO_LV2_EXTENSIONS_URL}"
 build_make kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # MOD lv2 extensions
 
-download mod-sdk "${MOD_SDK_VERSION}" "https://github.com/moddevices/mod-sdk.git" "" "git"
+git_clone mod-sdk "${MOD_SDK_VERSION}" "${MOD_SDK_URL}"
 build_make mod-sdk "${MOD_SDK_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -193,9 +193,9 @@ FLUIDSYNTH_EXTRAFLAGS+=" -Denable-pulseaudio=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-readline=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-trap-on-fpe=OFF"
 
-download fluidsynth ${FLUIDSYNTH_VERSION} "https://github.com/FluidSynth/fluidsynth.git" "" "git"
-patch_file fluidsynth ${FLUIDSYNTH_VERSION} "CMakeLists.txt" 's/_init_lib_suffix "64"/_init_lib_suffix ""/'
-build_cmake fluidsynth ${FLUIDSYNTH_VERSION} "${FLUIDSYNTH_EXTRAFLAGS}"
+git_clone fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_URL}"
+patch_file fluidsynth "${FLUIDSYNTH_VERSION}" "CMakeLists.txt" 's/_init_lib_suffix "64"/_init_lib_suffix ""/'
+build_cmake fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_EXTRAFLAGS}"
 
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
     if [ "${MACOS}" -eq 1 ]; then
@@ -209,8 +209,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
 
-download mxml ${MXML_VERSION} "https://github.com/michaelrsweet/mxml.git" "" "git"
-build_autoconf mxml ${MXML_VERSION}
+git_clone mxml "${MXML_VERSION}" "${MXML_URL}"
+build_autoconf mxml "${MXML_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)
@@ -239,8 +239,8 @@ CARLA_EXTRAFLAGS+=" USING_JUCE=false"
 CARLA_EXTRAFLAGS+=" USING_JUCE_AUDIO_DEVICES=false"
 CARLA_EXTRAFLAGS+=" USING_JUCE_GUI_EXTRA=false"
 
-download carla ${CARLA_VERSION} "https://github.com/falkTX/Carla.git" "" "git"
-build_make carla ${CARLA_VERSION} "${CARLA_EXTRAFLAGS}"
+git_clone carla "${CARLA_VERSION}" "${CARLA_URL}"
+build_make carla "${CARLA_VERSION}" "${CARLA_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap (needed for cross-compilation)
