@@ -12,15 +12,44 @@ env:
   HOMEBREW_NO_AUTO_UPDATE: 1
 
 jobs:
-  # linux native build
-  linux:
+  linux-bootstrap-common:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
-      - name: Download bootstrap-common artifact
-        uses: actions/download-artifact@v2
+      - name: Set up cache
+        uses: actions/cache@v2
         with:
-          name: bootstrap-common
+          path: |
+            ~/PawPawBuilds/builds
+            ~/PawPawBuilds/debs
+            ~/PawPawBuilds/downloads
+            ~/PawPawBuilds/targets
+          key: bootstrap-common-linux
+      - name: Restore debian package cache
+        run: |
+          if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+            sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+          fi
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yq build-essential curl cmake jq meson
+          # extra, for using system libraries
+          sudo apt-get install -yq libglib2.0-dev
+      - name: Cache debian packages
+        run: |
+            mkdir -p ~/PawPawBuilds/debs
+            sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
+      - name: Bootstrap Linux native
+        shell: bash
+        run: |
+          ./bootstrap-common.sh linux && ./.cleanup.sh linux
+
+  linux-bootstrap-plugins:
+    needs: linux-bootstrap-common
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
       - name: Set up cache
         uses: actions/cache@v2
         with:
