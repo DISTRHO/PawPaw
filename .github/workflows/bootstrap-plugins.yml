@@ -12,23 +12,13 @@ env:
   HOMEBREW_NO_AUTO_UPDATE: 1
 
 jobs:
-  bootstrap:
+  bootstrap-common:
     strategy:
       matrix:
         include:
-          - name: linux-common
+          - target: linux
             os: ubuntu-18.04
-            build: common
-            dependencies:
-            target: linux
-          - name: linux-plugins
-            os: ubuntu-18.04
-            build: plugins
-            dependencies: common
-            target: linux
     runs-on: ${{ matrix.os }}
-    needs: bootstrap
-      if: ${{ matrix.dependencies }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up cache
@@ -39,7 +29,7 @@ jobs:
             ~/PawPawBuilds/debs
             ~/PawPawBuilds/downloads
             ~/PawPawBuilds/targets
-          key: bootstrap-${{ matrix.build }}-${{ matrix.target }}
+          key: bootstrap-common-${{ matrix.target }}
       - name: Restore debian package cache
         run: |
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -55,87 +45,76 @@ jobs:
         run: |
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
-      - name: Download bootstrap-${{ matrix.depends }}-${{ matrix.target }}
-        if: ${{ matrix.dependencies }}
+      - name: Run bootstrap
+        shell: bash
+        run: |
+          ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+      - name: Pack bootstrap build
+        shell: bash
+        run: |
+          tar -C ~/PawPawBuilds -czf bootstrap-common-${{ matrix.target }}.tar.gz builds targets
+      - uses: actions/upload-artifact@v2
+        with:
+          name: bootstrap-common-${{ matrix.target }}
+          path: bootstrap-common-${{ matrix.target }}.tar.gz
+
+  bootstrap-plugins:
+    strategy:
+      matrix:
+        include:
+          - target: linux
+            os: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
+    needs: bootstrap-common
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/PawPawBuilds/builds
+            ~/PawPawBuilds/debs
+            ~/PawPawBuilds/downloads
+            ~/PawPawBuilds/targets
+          key: bootstrap-plugins-${{ matrix.target }}
+      - name: Restore debian package cache
+        run: |
+          if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+            sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+          fi
+      - name: Set up dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yq build-essential curl cmake jq meson
+          # extra, for using system libraries
+          sudo apt-get install -yq libglib2.0-dev
+      - name: Cache debian packages
+        run: |
+            mkdir -p ~/PawPawBuilds/debs
+            sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
+      - name: Download bootstrap-common-${{ matrix.target }}
         uses: actions/download-artifact@v2
         with:
-          name: bootstrap-${{ matrix.depends }}-${{ matrix.target }}
+          name: bootstrap-common-${{ matrix.target }}
           path: ~/PawPawBuilds
       - name: Display structure of downloaded files
         run: ls ~/PawPawBuilds
       - name: Extract downloaded artifact
-        if: ${{ matrix.dependencies }}
         shell: bash
         run: |
             cd ~/PawPawBuilds && \
-            tar xf bootstrap-${{ matrix.depends }}-${{ matrix.target }}.tar.gz
+            tar xf bootstrap-common-${{ matrix.target }}.tar.gz
       - name: Display structure of downloaded files
         run: find ~/PawPawBuilds
       - name: Run bootstrap
         shell: bash
         run: |
-          ./bootstrap-${{ matrix.build }}.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+          ./bootstrap-plugins.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
         run: |
-          tar -C ~/PawPawBuilds -czf bootstrap-${{ matrix.build }}-${{ matrix.target }}.tar.gz builds targets
+          tar -C ~/PawPawBuilds -czf bootstrap-plugins-${{ matrix.target }}.tar.gz builds targets
       - uses: actions/upload-artifact@v2
         with:
-          name: bootstrap-${{ matrix.build }}-${{ matrix.target }}
-          path: bootstrap-${{ matrix.build }}-${{ matrix.target }}.tar.gz
-
-  #linux-bootstrap-plugins:
-    #needs: linux-bootstrap-common
-    #runs-on: ubuntu-18.04
-    #steps:
-      #- uses: actions/checkout@v2
-      #- name: Set up cache
-        #uses: actions/cache@v2
-        #with:
-          #path: |
-            #~/PawPawBuilds/builds
-            #~/PawPawBuilds/debs
-            #~/PawPawBuilds/downloads
-            #~/PawPawBuilds/targets
-          #key: bootstrap-plugins-linux
-      #- name: Restore debian package cache
-        #run: |
-          #if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
-            #sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
-          #fi
-      #- name: Set up dependencies
-        #run: |
-          #sudo apt-get update -qq
-          #sudo apt-get install -yq build-essential curl cmake jq meson
-          ## extra, for using system libraries
-          #sudo apt-get install -yq libglib2.0-dev
-      #- name: Cache debian packages
-        #run: |
-            #mkdir -p ~/PawPawBuilds/debs
-            #sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
-      #- name: Download bootstrap-common-linux
-        #uses: actions/download-artifact@v2
-        #with:
-          #name: bootstrap-common-linux
-          #path: ~/PawPawBuilds
-      #- name: Display structure of downloaded files
-        #run: ls ~/PawPawBuilds
-      #- name: Extract downloaded artifact
-        #shell: bash
-        #run: |
-            #cd ~/PawPawBuilds && \
-            #tar xf bootstrap-common-linux.tar.gz
-      #- name: Display structure of downloaded files
-        #run: find ~/PawPawBuilds
-      #- name: Bootstrap Linux native
-        #shell: bash
-        #run: |
-          #./bootstrap-plugins.sh linux && ./.cleanup.sh linux
-      #- name: Pack current build for artifact
-        #shell: bash
-        #run: |
-          #tar -C ~/PawPawBuilds -czf bootstrap-plugins-linux.tar.gz builds targets
-      #- uses: actions/upload-artifact@v2
-        #with:
-          #name: bootstrap-plugins-linux
-          #path: bootstrap-plugins-linux.tar.gz
+          name: bootstrap-plugins-${{ matrix.target }}
+          path: bootstrap-plugins-${{ matrix.target }}.tar.gz
