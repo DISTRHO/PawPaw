@@ -18,6 +18,8 @@ jobs:
         include:
           - target: linux
             os: ubuntu-18.04
+          - target: macos-old
+            os: ubuntu-18.04
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -35,6 +37,32 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
+      - name: Set up repositories
+        if: ${{ matrix.target }} == 'macos-old'
+        run: |
+          sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio
+          sudo add-apt-repository -y ppa:kxstudio-debian/toolchain
+          sudo apt-get update -qq
+          sudo apt-get install -y kxstudio-repos
+          sudo apt-get update -qq
+      - name: Set up cross-compiler
+        if: ${{ matrix.target }} == 'macos-old'
+        run: |
+          mkdir -p ~/PawPawBuilds/debs
+          cd ~/PawPawBuilds/debs && \
+          if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'; \
+          fi && \
+          if [ ! -f 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'; \
+          fi && \
+          if [ ! -f 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'; \
+          fi && \
+          sudo dpkg -i \
+            'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' \
+            'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
+            'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
       - name: Set up dependencies
         run: |
           sudo apt-get update -qq
@@ -64,6 +92,8 @@ jobs:
         include:
           - target: linux
             os: ubuntu-18.04
+          - target: macos-old
+            os: ubuntu-18.04
     runs-on: ${{ matrix.os }}
     needs: bootstrap-common
     steps:
@@ -82,6 +112,32 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
+      - name: Set up repositories
+        if: ${{ matrix.target }} == 'macos-old'
+        run: |
+          sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio
+          sudo add-apt-repository -y ppa:kxstudio-debian/toolchain
+          sudo apt-get update -qq
+          sudo apt-get install -y kxstudio-repos
+          sudo apt-get update -qq
+      - name: Set up cross-compiler
+        if: ${{ matrix.target }} == 'macos-old'
+        run: |
+          mkdir -p ~/PawPawBuilds/debs
+          cd ~/PawPawBuilds/debs && \
+          if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'; \
+          fi && \
+          if [ ! -f 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'; \
+          fi && \
+          if [ ! -f 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'; \
+          fi && \
+          sudo dpkg -i \
+            'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' \
+            'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
+            'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
       - name: Set up dependencies
         run: |
           sudo apt-get update -qq
