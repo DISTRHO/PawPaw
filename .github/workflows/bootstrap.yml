@@ -509,12 +509,12 @@ jobs:
       - name: Download bootstrap-qt-${{ matrix.target }}
         uses: actions/download-artifact@v2
         with:
-          name: bootstrap-plugins-${{ matrix.target }}
+          name: bootstrap-qt-${{ matrix.target }}
           path: ~/PawPawBuilds
       - name: Download bootstrap-plugins-${{ matrix.target }}
         uses: actions/download-artifact@v2
         with:
-          name: bootstrap-qt-${{ matrix.target }}
+          name: bootstrap-plugins-${{ matrix.target }}
           path: ~/PawPawBuilds
       - name: Extract bootstrap-{common,plugins,qt}-${{ matrix.target }}
         shell: bash

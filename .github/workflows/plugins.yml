@@ -1,0 +1,162 @@
+name: plugins
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+env:
+  DEBIAN_FRONTEND: noninteractive
+  HOMEBREW_NO_AUTO_UPDATE: 1
+
+  plugins-base:
+    strategy:
+      matrix:
+        include:
+          - name: linux-plugins-base
+            installer: apt
+            os: ubuntu-18.04
+            target: linux
+          - name: macos-old-plugins-base
+            installer: apt
+            os: ubuntu-18.04
+            target: macos-old
+          - name: macos-universal-plugins-base
+            installer: brew
+            os: macos-10.15
+            target: macos-universal
+          - name: win32-plugins-base
+            installer: apt
+            os: ubuntu-20.04
+            target: win32
+          - name: win64-plugins-base
+            installer: apt
+            os: ubuntu-20.04
+            target: win64
+    runs-on: ${{ matrix.os }}
+    needs: bootstrap-plugins
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/PawPawBuilds/builds
+            ~/PawPawBuilds/debs
+            ~/PawPawBuilds/downloads
+            ~/PawPawBuilds/targets
+          key: plugins-${{ matrix.target }}
+      - name: Restore debian package cache
+        if: ${{ matrix.installer == 'apt' }}
+        run: |
+          if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+            sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+          fi
+      - name: Set up repositories (macos-old)
+        if: ${{ matrix.target == 'macos-old' }}
+        run: |
+          sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio
+          sudo add-apt-repository -y ppa:kxstudio-debian/toolchain
+          sudo apt-get update -qq
+          sudo apt-get install -y kxstudio-repos
+          sudo apt-get update -qq
+      - name: Set up cross-compiler (macos-old)
+        if: ${{ matrix.target == 'macos-old' }}
+        run: |
+          mkdir -p ~/PawPawBuilds/debs
+          cd ~/PawPawBuilds/debs && \
+          if [ ! -f 'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb'; \
+          fi && \
+          if [ ! -f 'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-odcctools_758.159-0kxstudio2_amd64.deb'; \
+          fi && \
+          if [ ! -f 'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb' ]; then \
+            wget -c 'https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'; \
+          fi && \
+          sudo dpkg -i \
+            'apple-uni-sdk-10.5_20110407-0.flosoft1_amd64.deb' \
+            'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
+            'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
+      - name: Set up dependencies (apt)
+        if: ${{ matrix.installer == 'apt' }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -yq autopoint build-essential curl cmake jq meson
+          # extra, for using system libraries
+          if [ '${{ matrix.target }}' == 'linux' ]; then \
+            sudo apt-get install -yq libglib2.0-dev; \
+          fi
+          # extra, for win32
+          if [ '${{ matrix.target }}' == 'win32' ]; then \
+            sudo dpkg --add-architecture i386; \
+            sudo apt-get update -qq; \
+            sudo apt-get install -yq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 wine-stable:i386; \
+          fi
+          # extra, for win64
+          if [ '${{ matrix.target }}' == 'win64' ]; then \
+            sudo apt-get install -yq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable; \
+          fi
+      - name: Set up dependencies (brew)
+        if: ${{ matrix.installer == 'brew' }}
+        run: |
+          brew install cmake jq meson
+      - name: Fix up Xcode
+        if: ${{ matrix.target == 'macos-universal' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
+      - name: Cache debian packages
+        if: ${{ matrix.installer == 'apt' }}
+        run: |
+            mkdir -p ~/PawPawBuilds/debs
+            sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
+      - name: Download bootstrap-common-${{ matrix.target }}
+        uses: actions/download-artifact@v2
+        with:
+          name: bootstrap-common-${{ matrix.target }}
+          path: ~/PawPawBuilds
+      - name: Download bootstrap-plugins-${{ matrix.target }}
+        uses: actions/download-artifact@v2
+        with:
+          name: bootstrap-plugins-${{ matrix.target }}
+          path: ~/PawPawBuilds
+      - name: Extract bootstrap-{common,plugins}-${{ matrix.target }}
+        shell: bash
+        run: |
+            cd ~/PawPawBuilds && \
+            tar xf bootstrap-common-${{ matrix.target }}.tar.gz && \
+            tar xf bootstrap-plugins-${{ matrix.target }}.tar.gz
+      - name: Re-run bootstrap
+        shell: bash
+        run: |
+          ./bootstrap-plugins.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+      - name: Build plugins
+        shell: bash
+        run: |
+          ./build-plugins.sh ${{ matrix.target }} abgate artyfx caps die-plugins fomp mda && ./.cleanup.sh ${{ matrix.target }}
+      - name: Pack plugins build
+        shell: bash
+        run: |
+          tar -C ~/PawPawBuilds -czf plugins-base-${{ matrix.target }}.tar.gz builds targets
+      - uses: actions/upload-artifact@v2
+        with:
+          name: plugins-base-${{ matrix.target }}
+          path: plugins-base-${{ matrix.target }}.tar.gz
+
+  # PLUGINS_BASE: abgate artyfx caps die-plugins fomp mda
+  # PLUGINS_CROSS: blop dpf-plugins
+  # PLUGINS_DISTRHO_PORTS: distrho-ports-arctican distrho-ports-drowaudio distrho-ports-tal-plugins
+#distrho-ports-dexed
+#distrho-ports-klangfalter
+#distrho-ports-luftikus
+#distrho-ports-obxd
+#distrho-ports-pitched-delay
+#distrho-ports-refine
+#distrho-ports-swankyamp
+#distrho-ports-temper
+#distrho-ports-vex
+#distrho-ports-vitalium
+#distrho-ports-wolpertinger
