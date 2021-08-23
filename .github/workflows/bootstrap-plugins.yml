@@ -19,6 +19,7 @@ jobs:
           - name: linux-common
             os: ubuntu-18.04
             build: common
+            dependencies:
             target: linux
           - name: linux-plugins
             os: ubuntu-18.04
