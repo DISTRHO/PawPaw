@@ -88,13 +88,12 @@ jobs:
           name: bootstrap-common-linux
           path: ~/PawPawBuilds
       - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: ~/PawPawBuilds
+        run: ls -R ~/PawPawBuilds
       - name: Extract downloaded artifact
         run: tar xf bootstrap-common-linux.tar.gz
-      - name: Display structure of downloaded files
-        run: find .
         working-directory: ~/PawPawBuilds
+      - name: Display structure of downloaded files
+        run: find ~/PawPawBuilds
       - name: Bootstrap Linux native
         shell: bash
         run: |
