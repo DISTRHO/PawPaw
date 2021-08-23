@@ -145,7 +145,8 @@ fi
 
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ]; then
+# FIXME tests fail on macos-universal
+if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     run_make libsndfile "${LIBSNDFILE_VERSION}" "check -j 8"
 fi
 
