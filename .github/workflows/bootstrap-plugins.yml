@@ -13,7 +13,12 @@ env:
 
 jobs:
   linux-bootstrap-common:
-    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up cache
@@ -24,7 +29,7 @@ jobs:
             ~/PawPawBuilds/debs
             ~/PawPawBuilds/downloads
             ~/PawPawBuilds/targets
-          key: bootstrap-common-linux
+          key: bootstrap-common-${{ matrix.name }}
       - name: Restore debian package cache
         run: |
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
@@ -40,18 +45,18 @@ jobs:
         run: |
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
-      - name: Bootstrap Linux native
+      - name: Bootstrap
         shell: bash
         run: |
-          ./bootstrap-common.sh linux && ./.cleanup.sh linux
+          ./bootstrap-common.sh ${{ matrix.name }} && ./.cleanup.sh ${{ matrix.name }}
       - name: Pack current build for artifact
         shell: bash
         run: |
-          tar -C ~/PawPawBuilds -czf bootstrap-common-linux.tar.gz builds targets
+          tar -C ~/PawPawBuilds -czf bootstrap-common-${{ matrix.name }}.tar.gz builds targets
       - uses: actions/upload-artifact@v2
         with:
-          name: bootstrap-common-linux
-          path: bootstrap-common-linux.tar.gz
+          name: bootstrap-common-${{ matrix.name }}
+          path: bootstrap-common-${{ matrix.name }}.tar.gz
 
   linux-bootstrap-plugins:
     needs: linux-bootstrap-common
