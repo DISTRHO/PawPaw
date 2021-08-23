@@ -104,14 +104,17 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # opus
 
-# FIXME macos-universal proper optimizations
-
 OPUS_EXTRAFLAGS="--enable-custom-modes --enable-float-approx"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-extra-programs"
 fi
 if [ "${MACOS_OLD}" -eq 1 ]; then
+    OPUS_EXTRAFLAGS+=" --disable-intrinsics"
+fi
+
+# FIXME macos-universal proper optimizations
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 fi
 

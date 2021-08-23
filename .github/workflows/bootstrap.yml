@@ -16,18 +16,26 @@ jobs:
     strategy:
       matrix:
         include:
-          - displayTargetName: linux-common
+          - name: linux-common
             installer: apt
             os: ubuntu-18.04
             target: linux
-          - displayTargetName: macos-old-common
+          - name: macos-old-common
             installer: apt
             os: ubuntu-18.04
             target: macos-old
-          - displayTargetName: macos-universal-common
+          - name: macos-universal-common
             installer: brew
             os: macos-10.15
             target: macos-universal
+          - name: win32-common
+            installer: apt
+            os: ubuntu-20.04
+            target: win32
+          - name: win64-common
+            installer: apt
+            os: ubuntu-20.04
+            target: win64
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -78,13 +86,25 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yq build-essential curl cmake jq meson
           # extra, for using system libraries
-          sudo apt-get install -yq libglib2.0-dev
+          if [ '${{ matrix.target }}' == 'linux' ]; then \
+            sudo apt-get install -yq libglib2.0-dev; \
+          fi
+          # extra, for win32
+          if [ '${{ matrix.target' == 'win32' ]; then \
+            sudo dpkg --add-architecture i386; \
+            sudo apt-get update -qq; \
+            sudo apt-get install -yq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 wine-stable:i386; \
+          fi
+          # extra, for win64
+          if [ '${{ matrix.target' == 'win64' ]; then \
+            sudo apt-get install -yq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable; \
+          fi
       - name: Set up dependencies (brew)
         if: ${{ matrix.installer == 'brew' }}
         run: |
           brew install cmake jq meson
       - name: Fix up Xcode
-        if: ${{ matrix.installer == 'brew' }}
+        if: ${{ matrix.target == 'macos-universal' }}
         run: |
           sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
           sudo xcode-select -s "/Applications/Xcode_12.3.app"
@@ -122,6 +142,14 @@ jobs:
             installer: brew
             os: macos-10.15
             target: macos-universal
+          - name: win32-plugins
+            installer: apt
+            os: ubuntu-20.04
+            target: win32
+          - name: win64-plugins
+            installer: apt
+            os: ubuntu-20.04
+            target: win64
     runs-on: ${{ matrix.os }}
     needs: bootstrap-common
     steps:
@@ -176,10 +204,25 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux' ]; then \
             sudo apt-get install -yq libglib2.0-dev; \
           fi
+          # extra, for win32
+          if [ '${{ matrix.target' == 'win32' ]; then \
+            sudo dpkg --add-architecture i386; \
+            sudo apt-get update -qq; \
+            sudo apt-get install -yq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 wine-stable:i386; \
+          fi
+          # extra, for win64
+          if [ '${{ matrix.target' == 'win64' ]; then \
+            sudo apt-get install -yq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable; \
+          fi
       - name: Set up dependencies (brew)
         if: ${{ matrix.installer == 'brew' }}
         run: |
           brew install cmake jq meson
+      - name: Fix up Xcode
+        if: ${{ matrix.target == 'macos-universal' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
