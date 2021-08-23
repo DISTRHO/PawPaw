@@ -27,7 +27,8 @@ jobs:
             dependencies: common
             target: linux
     runs-on: ${{ matrix.os }}
-    needs: ${{ matrix.dependencies }}
+    needs: bootstrap
+      if: ${{ matrix.dependencies }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up cache
