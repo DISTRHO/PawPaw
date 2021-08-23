@@ -16,15 +16,15 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: linux-common
+          - displayTargetName: linux-common
             installer: apt
             os: ubuntu-18.04
             target: linux
-          - name: macos-old-common
+          - displayTargetName: macos-old-common
             installer: apt
             os: ubuntu-18.04
             target: macos-old
-          - name: macos-universal-common
+          - displayTargetName: macos-universal-common
             installer: brew
             os: macos-10.15
             target: macos-universal
@@ -41,13 +41,13 @@ jobs:
             ~/PawPawBuilds/targets
           key: bootstrap-common-${{ matrix.target }}
       - name: Restore debian package cache
-        if: ${{ matrix.installer }} == 'apt'
+        if: ${{ matrix.installer == 'apt' }}
         run: |
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
       - name: Set up repositories
-        if: ${{ matrix.target }} == 'macos-old'
+        if: ${{ matrix.target == 'macos-old' }}
         run: |
           sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio
           sudo add-apt-repository -y ppa:kxstudio-debian/toolchain
@@ -55,7 +55,7 @@ jobs:
           sudo apt-get install -y kxstudio-repos
           sudo apt-get update -qq
       - name: Set up cross-compiler
-        if: ${{ matrix.target }} == 'macos-old'
+        if: ${{ matrix.target == 'macos-old' }}
         run: |
           mkdir -p ~/PawPawBuilds/debs
           cd ~/PawPawBuilds/debs && \
@@ -73,18 +73,18 @@ jobs:
             'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
             'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
       - name: Set up dependencies
-        if: ${{ matrix.installer }} == 'apt'
+        if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -yq build-essential curl cmake jq meson
           # extra, for using system libraries
           sudo apt-get install -yq libglib2.0-dev
-      - name: Set up dependencies (brew)
-        if: ${{ matrix.installer }} == 'brew'
+      - name: Set up dependencies
+        if: ${{ matrix.installer == 'brew' }}
         run: |
           brew install cmake jq meson
       - name: Cache debian packages
-        if: ${{ matrix.installer }} == 'apt'
+        if: ${{ matrix.installer == 'apt' }}
         run: |
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
@@ -131,13 +131,13 @@ jobs:
             ~/PawPawBuilds/targets
           key: bootstrap-plugins-${{ matrix.target }}
       - name: Restore debian package cache
-        if: ${{ matrix.installer }} == 'apt'
+        if: ${{ matrix.installer == 'apt' }}
         run: |
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
       - name: Set up repositories
-        if: ${{ matrix.target }} == 'macos-old'
+        if: ${{ matrix.target == 'macos-old' }}
         run: |
           sudo add-apt-repository -y ppa:kxstudio-debian/kxstudio
           sudo add-apt-repository -y ppa:kxstudio-debian/toolchain
@@ -145,7 +145,7 @@ jobs:
           sudo apt-get install -y kxstudio-repos
           sudo apt-get update -qq
       - name: Set up cross-compiler
-        if: ${{ matrix.target }} == 'macos-old'
+        if: ${{ matrix.target == 'macos-old' }}
         run: |
           mkdir -p ~/PawPawBuilds/debs
           cd ~/PawPawBuilds/debs && \
@@ -163,7 +163,7 @@ jobs:
             'apple-x86-odcctools_758.159-0kxstudio2_amd64.deb' \
             'apple-x86-gcc_4.2.1~5646-1kxstudio2_amd64.deb'
       - name: Set up dependencies
-        if: ${{ matrix.installer }} == 'apt'
+        if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
           sudo apt-get install -yq build-essential curl cmake jq meson
@@ -172,11 +172,11 @@ jobs:
             sudo apt-get install -yq libglib2.0-dev; \
           fi
       - name: Set up dependencies
-        if: ${{ matrix.installer }} == 'brew'
+        if: ${{ matrix.installer == 'brew' }}
         run: |
           brew install cmake jq meson
       - name: Cache debian packages
-        if: ${{ matrix.installer }} == 'apt'
+        if: ${{ matrix.installer == 'apt' }}
         run: |
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
