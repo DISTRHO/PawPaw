@@ -1,0 +1,12 @@
+diff --git a/src/corelib/global/qglobal.h b/src/corelib/global/qglobal.h
+index 35c35ac6..38c08ccb 100644
+--- a/src/corelib/global/qglobal.h
++++ b/src/corelib/global/qglobal.h
+@@ -45,6 +45,7 @@
+ #  include <type_traits>
+ #  include <cstddef>
+ #  include <utility>
++#  include <limits>
+ #endif
+ 
+ #include <stddef.h>
