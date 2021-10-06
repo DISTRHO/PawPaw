@@ -7,7 +7,7 @@ PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
 JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
-QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.4}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.5}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -126,26 +126,25 @@ fi
 if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
     download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
 
-    if [ "${WIN64}" -eq 1 ]; then
-        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack64 -Wl,-Bstatic /'
-    elif [ "${WIN32}" -eq 1 ]; then
-        patch_file qjackctl "${QJACKCTL_VERSION}" "configure" 's/-ljack /-Wl,-Bdynamic -ljack -Wl,-Bstatic /'
+    # Join $2+ arguments into a string separated by $1
+    function join() {
+        local IFS=$1
+        shift
+        echo "$*"
+    }
+
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        # Use system's Qt tools for translations
+        qjackctl_CMAKE_PREFIX_PATH="${PAWPAW_PREFIX}/lib/cmake;$(join ';' /usr/{lib/$(gcc -print-multiarch),lib*,share}/cmake)"
+        echo "Using CMake prefix: ${qjackctl_CMAKE_PREFIX_PATH}"
+    else
+        qjackctl_CMAKE_PREFIX_PATH="${PAWPAW_PREFIX}/lib/cmake"
     fi
 
-    if [ "${MACOS}" -eq 1 ]; then
-        qjackctl_extra_args="--with-jack="${jack2_prefix}${jack2_extra_prefix}""
-    elif [ "${WIN32}" -eq 1 ]; then
-        qjackctl_extra_args="--enable-portaudio"
-    fi
-
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        export EXTRA_CXXFLAGS="-std=gnu++11"
-    fi
-
-    build_autoconf qjackctl "${QJACKCTL_VERSION}" "--enable-jack-version ${qjackctl_extra_args}"
+    build_cmake qjackctl "${QJACKCTL_VERSION}" "-DCMAKE_PREFIX_PATH=${qjackctl_CMAKE_PREFIX_PATH} -DJack_ROOT=${jack2_prefix}${jack2_extra_prefix} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
 
     if [ "${WIN32}" -eq 1 ]; then
-        copy_file qjackctl "${QJACKCTL_VERSION}" "src/release/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
+        copy_file qjackctl "${QJACKCTL_VERSION}" "build/src/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
     fi
 fi
 
