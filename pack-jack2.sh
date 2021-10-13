@@ -48,7 +48,7 @@ if [ "${WIN32}" -eq 1 ]; then
     # setup innosetup
     dlfile="${PAWPAW_DOWNLOADDIR}/innosetup-6.0.5.exe"
     innodir="${PAWPAW_BUILDDIR}/innosetup-6.0.5"
-    iscc="${innodir}/drive_c/InnoSeup/ISCC.exe"
+    iscc="${innodir}/drive_c/InnoSetup/ISCC.exe"
 
     # download it
     if [ ! -f "${dlfile}" ]; then
@@ -62,8 +62,8 @@ if [ "${WIN32}" -eq 1 ]; then
     fi
 
     # install innosetup in custom wineprefix
-    if [ ! -f "${innodir}"/drive_c/InnoSeup/ISCC.exe ]; then
-        env WINEPREFIX="${innodir}" wine "${dlfile}" /allusers /dir=C:\\InnoSeup /nocancel /norestart /verysilent
+    if [ ! -f "${innodir}"/drive_c/InnoSetup/ISCC.exe ]; then
+        env WINEPREFIX="${innodir}" wine "${dlfile}" /allusers /dir=C:\\InnoSetup /nocancel /norestart /verysilent
     fi
 
     # copy jackrouter binaries
