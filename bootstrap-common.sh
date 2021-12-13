@@ -44,15 +44,48 @@ mkdir -p "${PAWPAW_PREFIX}"
 mkdir -p "${PAWPAW_TMPDIR}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# let's use native glib for linux builds
+# let's use some native libs for linux builds
 
 if [ "${LINUX}" -eq 1 ]; then
     mkdir -p ${TARGET_PKG_CONFIG_PATH}
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/dbus-1.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir dbus-1)/dbus-1.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
         ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
         ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/gl.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir gl)/gl.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir pthread-stubs)/pthread-stubs.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/x11.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir x11)/x11.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcb.pc" ]; then
+        ln -sf $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcursor.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir xcursor)/xcursor.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xext.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir xext)/xext.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xfixes.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir xfixes)/xfixes.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xproto.pc" ]; then
+        ln -sf $(pkg-config --variable=pcfiledir xproto)/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrandr.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir xrandr)/xrandr.pc ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrender.pc" ]; then
+        ln -s $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
     fi
 fi
 
@@ -153,6 +186,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libsamplerate
 
+if [ -z "${PAWPAW_SKIP_SAMPLERATE}" ]; then
+
 LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
 
 # NOTE: sndfile tests use Carbon, not available on macos-universal
@@ -167,10 +202,12 @@ if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     run_make libsamplerate "${LIBSAMPLERATE_VERSION}" check
 fi
 
+fi # PAWPAW_SKIP_SAMPLERATE
+
 # ---------------------------------------------------------------------------------------------------------------------
 # zlib (skipped on macOS)
 
-if [ "${MACOS}" -eq 0 ]; then
+if [ "${MACOS}" -eq 0 ] && [ -z "${PAWPAW_SKIP_ZLIB}" ]; then
     git_clone zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib.git"
     build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
 fi
