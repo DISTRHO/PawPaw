@@ -63,10 +63,9 @@ if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
 elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ]; then
     BUILD_FLAGS+=" -msse -msse2"
-fi
-
-if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
-    BUILD_FLAGS+=" -mfpmath=sse"
+    if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+        BUILD_FLAGS+=" -mfpmath=sse"
+    fi
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
