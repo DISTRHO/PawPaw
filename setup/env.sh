@@ -55,9 +55,15 @@ PAWPAW_TMPDIR="/tmp"
 ## build flags
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
-BUILD_FLAGS+=" -mtune=generic -msse -msse2 -ffast-math"
+BUILD_FLAGS+=" -mtune=generic -ffast-math"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
+
+if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
+    BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
+elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ]; then
+    BUILD_FLAGS+=" -msse -msse2"
+fi
 
 if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     BUILD_FLAGS+=" -mfpmath=sse"
