@@ -46,6 +46,23 @@ function check_target() {
         "linux"|"Linux")
             LINUX=1
             ;;
+        "linux-aarch64")
+            LINUX=1
+            CROSS_COMPILING=1
+            TOOLCHAIN_PREFIX="aarch64-linux-gnu"
+            TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            ;;
+        "linux-armhf")
+            LINUX=1
+            CROSS_COMPILING=1
+            TOOLCHAIN_PREFIX="arm-linux-gnueabihf"
+            TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            ;;
+        "linux-i686")
+            LINUX=1
+            TOOLCHAIN_PREFIX="i686-linux-gnu"
+            TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            ;;
         "native")
             target=$(uname -s)
             check_target
