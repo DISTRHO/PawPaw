@@ -73,7 +73,7 @@ if [ "${LINUX}" -eq 1 ]; then
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/x11.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcb.pc" ]; then
-        cpf $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{xau,xcb,xdmcp}.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcursor.pc" ]; then
