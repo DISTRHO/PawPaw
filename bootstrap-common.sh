@@ -54,7 +54,7 @@ if [ "${LINUX}" -eq 1 ]; then
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/gl.pc" ]; then
         cp $(pkg-config --variable=pcfiledir gl)/gl.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/gl.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
         cp $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
