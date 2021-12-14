@@ -49,43 +49,56 @@ mkdir -p "${PAWPAW_TMPDIR}"
 if [ "${LINUX}" -eq 1 ]; then
     mkdir -p ${TARGET_PKG_CONFIG_PATH}
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/dbus-1.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir dbus-1)/dbus-1.pc ${TARGET_PKG_CONFIG_PATH}/
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir dbus-1)/dbus-1.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/dbus-1.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/gl.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir gl)/gl.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir gl)/gl.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/g{io,lib,module,object,thread}-2.0.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/libpcre.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir pthread-stubs)/pthread-stubs.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir pthread-stubs)/pthread-stubs.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/x11.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir x11)/x11.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir x11)/x11.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/x11.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcb.pc" ]; then
-        ln -sf $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
+        cpf $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{xau,xcb,xdmcp}.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcursor.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir xcursor)/xcursor.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xcursor)/xcursor.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xcursor.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xext.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir xext)/xext.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xext)/xext.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xext.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xfixes.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir xfixes)/xfixes.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xfixes)/xfixes.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xfixes.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xproto.pc" ]; then
-        ln -sf $(pkg-config --variable=pcfiledir xproto)/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xproto)/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrandr.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir xrandr)/xrandr.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xrandr)/xrandr.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrandr.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrender.pc" ]; then
-        ln -s $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrender.pc
     fi
 fi
 
