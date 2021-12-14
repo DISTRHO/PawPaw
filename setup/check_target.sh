@@ -60,6 +60,7 @@ function check_target() {
             ;;
         "linux-i686")
             LINUX=1
+            EXTRA_FLAGS="-m32"
             TOOLCHAIN_PREFIX="i686-linux-gnu"
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             ;;
