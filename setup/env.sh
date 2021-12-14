@@ -55,7 +55,7 @@ PAWPAW_TMPDIR="/tmp"
 ## build flags
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
-BUILD_FLAGS+=" -ffast-math"
+BUILD_FLAGS+=" -ffast-math -fno-strict-aliasing -flto"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
 
@@ -89,6 +89,7 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 ## link flags
 
 LINK_FLAGS="-L${PAWPAW_PREFIX}/lib ${EXTRA_FLAGS}"
+LINK_FLAGS+=" -fno-strict-aliasing -flto -Werror=odr -Werror=lto-type-mismatch"
 LINK_FLAGS+=" -fdata-sections -ffunction-sections -fstack-protector"
 
 if [ "${MACOS}" -eq 1 ]; then

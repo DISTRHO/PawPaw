@@ -207,7 +207,7 @@ fi # PAWPAW_SKIP_SAMPLERATE
 # ---------------------------------------------------------------------------------------------------------------------
 # zlib (skipped on macOS)
 
-if [ "${MACOS}" -eq 0 ] && [ -z "${PAWPAW_SKIP_ZLIB}" ]; then
+if [ "${MACOS}" -eq 0 ]; then
     git_clone zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib.git"
     build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
 fi

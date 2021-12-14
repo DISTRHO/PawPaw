@@ -19,7 +19,6 @@ fi
 # run bootstrap dependencies
 
 export PAWPAW_SKIP_SAMPLERATE=1
-export PAWPAW_SKIP_ZLIB=1
 
 ./bootstrap-common.sh "${target}"
 
