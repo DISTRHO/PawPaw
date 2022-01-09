@@ -183,8 +183,10 @@ fi
 
 LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 
-if [ "${MACOS}" -eq 0 ]; then
-    # otherwise tests fail
+# otherwise tests fail
+if [ "${MACOS}" -eq 1 ]; then
+    export EXTRA_CFLAGS="-fno-finite-math-only"
+else
     export EXTRA_CFLAGS="-frounding-math -fsignaling-nans"
 fi
 

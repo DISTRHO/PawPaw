@@ -301,10 +301,7 @@ function build_cmake() {
         extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}"
     fi
     if [ "${MACOS}" -eq 1 ]; then
-        if [ "${MACOS_OLD}" -eq 1 ]; then
-            OSX_ARCHS="i686"
-            OSX_TARGET="10.5"
-        elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
             OSX_ARCHS="arm64;x86_64"
             OSX_TARGET="10.12"
         else

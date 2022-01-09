@@ -42,12 +42,6 @@ fi
 # fi
 
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
-
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    patch_file fftw "${FFTW_VERSION}" "configure" 's/CFLAGS="$CFLAGS -Wl,-no_compact_unwind"/CFLAGS="$CFLAGS"/'
-    patch_file fftw "${FFTW_VERSION}" "libbench2/timer.c" 's/#if defined(HAVE_GETTIMEOFDAY) && !defined(HAVE_TIMER)/#ifndef HAVE_TIMER/'
-fi
-
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -56,12 +50,6 @@ build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
 
 copy_download fftw fftwf "${FFTW_VERSION}"
-
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    patch_file fftwf "${FFTW_VERSION}" "configure" 's/CFLAGS="$CFLAGS -Wl,-no_compact_unwind"/CFLAGS="$CFLAGS"/'
-    patch_file fftwf "${FFTW_VERSION}" "libbench2/timer.c" 's/#if defined(HAVE_GETTIMEOFDAY) && !defined(HAVE_TIMER)/#ifndef HAVE_TIMER/'
-fi
-
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -83,13 +71,6 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
             patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
             patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
-        elif [ "${MACOS_OLD}" -eq 1 ]; then
-            GLIB_EXTRAFLAGS+=" glib_cv_stack_grows=yes"
-            GLIB_EXTRAFLAGS+=" glib_cv_rtldglobal_broken=no"
-            GLIB_EXTRAFLAGS+=" glib_cv_uscore=no"
-            GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getpwuid_r=yes"
-            GLIB_EXTRAFLAGS+=" ac_cv_func_posix_getgrgid_r=yes"
-            patch_file glib ${GLIB_VERSION} "configure.in" 's/G_ATOMIC_I486/G_ATOMIC_NOT_I486/'
         fi
 #     elif [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ]; then
 #         patch_file glib ${GLIB_VERSION} "gobject/Makefile.in" "s|glib_genmarshal = ./glib-genmarshal|glib_genmarshal = ${EXE_WRAPPER} ./glib-genmarshal.exe|"
