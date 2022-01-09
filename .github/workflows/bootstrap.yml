@@ -12,7 +12,7 @@ env:
   HOMEBREW_NO_AUTO_UPDATE: 1
 
 jobs:
-  bootstrap-common:
+  common:
     strategy:
       matrix:
         include:
@@ -40,7 +40,7 @@ jobs:
         with:
           path: |
             ~/PawPawBuilds
-          key: bootstrap-common-${{ matrix.target }}
+          key: common-${{ matrix.target }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -52,7 +52,7 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal
+          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -90,15 +90,15 @@ jobs:
       - name: Run bootstrap
         shell: bash
         run: |
-          ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+          ./common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
         run: |
-          tar -C ~/PawPawBuilds -czf bootstrap-common-${{ matrix.target }}.tar.gz builds targets
+          tar -C ~/PawPawBuilds -czf common-${{ matrix.target }}.tar.gz builds targets
       - uses: actions/upload-artifact@v2
         with:
-          name: bootstrap-common-${{ matrix.target }}
-          path: bootstrap-common-${{ matrix.target }}.tar.gz
+          name: common-${{ matrix.target }}
+          path: common-${{ matrix.target }}.tar.gz
 
   #bootstrap-plugins:
     #strategy:
