@@ -48,6 +48,7 @@ jobs:
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
       - name: (apt) Fix GitHub's mess
+        if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
