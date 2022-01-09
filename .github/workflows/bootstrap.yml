@@ -41,18 +41,18 @@ jobs:
           path: |
             ~/PawPawBuilds
           key: bootstrap-common-${{ matrix.target }}
-      - name: [apt] Restore debian package cache
+      - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: [apt] Fix GitHub's mess
+      - name: (apt) Fix GitHub's mess
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal
-      - name: [apt] Set up dependencies (apt)
+      - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
@@ -71,16 +71,16 @@ jobs:
           if [ '${{ matrix.target }}' == 'win64' ]; then \
             sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable; \
           fi
-      - name: [homebrew] Set up dependencies
+      - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: [homebrew] Fix up Xcode
+      - name: (homebrew) Fix up Xcode
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
           sudo xcode-select -s "/Applications/Xcode_12.3.app"
-      - name: [apt] Cache debian packages
+      - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
             mkdir -p ~/PawPawBuilds/debs
