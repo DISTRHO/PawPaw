@@ -212,15 +212,15 @@ if [ -z "${PAWPAW_SKIP_SAMPLERATE}" ]; then
 
 LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
 
-# NOTE: sndfile tests use Carbon, not available on macos-universal
-if [ "${CROSS_COMPILING}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+# NOTE: sndfile tests use Carbon, which is not always available on macOS
+if [ "${CROSS_COMPILING}" -eq 1 ] || [ "${MACOS}" -eq 1 ]; then
     LIBSAMPLERATE_EXTRAFLAGS+=" --disable-sndfile"
 fi
 
 download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}"
 build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS}" -eq 0 ]; then
     run_make libsamplerate "${LIBSAMPLERATE_VERSION}" check
 fi
 
