@@ -183,14 +183,17 @@ fi
 
 LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 
-# otherwise tests fail
-export EXTRA_CFLAGS="-fno-associative-math -frounding-math"
-
-if [ "${MACOS}" -eq 1 ]; then
-    export EXTRA_CFLAGS+=" -fsignaling-math"
-else
-    export EXTRA_CFLAGS+=" -fsignaling-nans"
+# force intrinsic optimizations on macos-universal target
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    LIBSNDFILE_EXTRAFLAGS+=" ac_cv_header_immintrin_h=yes"
 fi
+
+# otherwise tests fail
+export EXTRA_CFLAGS="-fno-associative-math -fno-reciprocal-math -frounding-math"
+
+# if [ "${MACOS}" -eq 0 ]; then
+#     export EXTRA_CFLAGS+=" -fsignaling-nans"
+# fi
 
 download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
 
