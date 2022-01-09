@@ -531,7 +531,7 @@ function run_make() {
 
     if [ ! -f "${pkgdir}/.stamp_custom_run" ]; then
         pushd "${pkgdir}"
-        make ${makerule}
+        make ${MAKE_ARGS} ${makerule}
         touch .stamp_custom_run
         popd
     fi

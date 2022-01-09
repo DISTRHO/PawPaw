@@ -3,7 +3,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 # common URLs
 
-DROBILLA_URL=http://download.drobilla.net
+DROBILLA_URL=https://download.drobilla.net/
 XIPH_URL=https://downloads.xiph.org/releases
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -40,14 +40,14 @@ ZLIB_VERSION=cacf7f1d4e3d44d871b605da3b647f07d718623f # 1.2.11
 # bootstrap plugins
 
 FFTW_URL=http://www.fftw.org
-FFTW_VERSION=3.3.9
+FFTW_VERSION=3.3.10
 
 GLIB_URL=http://download.gnome.org/sources/glib/2.22
 GLIB_MVERSION=2.22
 GLIB_VERSION=2.22.5
 
 LIBLO_URL=http://download.sourceforge.net/liblo
-LIBLO_VERSION=0.30
+LIBLO_VERSION=0.31
 
 PCRE_URL=https://ftp.pcre.org/pub/pcre
 PCRE_VERSION=8.44
@@ -67,14 +67,14 @@ SRATOM_VERSION=0.6.8
 LILV_URL=${DROBILLA_URL}
 LILV_VERSION=0.24.12
 
-LV2LINT_URL=https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/0.8.0
-LV2LINT_VERSION=0.8.0
+LV2LINT_URL=https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/0.14.0
+LV2LINT_VERSION=0.14.0
 
 KXSTUDIO_LV2_EXTENSIONS_URL=https://github.com/KXStudio/LV2-Extensions.git
-KXSTUDIO_LV2_EXTENSIONS_VERSION=fae65fbc173cd2c4367e85917a6ef97280532d88
+KXSTUDIO_LV2_EXTENSIONS_VERSION=4f6802f9f0ac9f5e2a909e4ab2cfbf71648a1b1d
 
 MOD_SDK_URL=https://github.com/moddevices/mod-sdk.git
-MOD_SDK_VERSION=2fe7c7728faa551b2838baa49c0d1953c64f2151
+MOD_SDK_VERSION=21a80729dde1439dcea03bfafbc42981fb503d8a
 
 FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 FLUIDSYNTH_VERSION=f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
@@ -83,7 +83,7 @@ MXML_URL=https://github.com/michaelrsweet/mxml.git
 MXML_VERSION=38b044ed8ca2a611ed9ed3e26c4b46416335194e # 3.2
 
 CARLA_URL=https://github.com/falkTX/Carla.git
-CARLA_VERSION=ca44f4bc538690e76f4e02544f047ad9d559a1b8
+CARLA_VERSION=613e6950581ad0cb3c037fac7f0db89633e099e6
 
 # ---------------------------------------------------------------------------------------------------------------------
 # check if lv2lint is supported

@@ -33,6 +33,7 @@ source setup/versions.sh
 
 FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
 
+# FIXME macos-universal proper optimizations
 if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     FFTW_EXTRAFLAGS+=" --enable-sse2"
 fi
@@ -44,6 +45,10 @@ fi
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make fftw "${FFTW_VERSION}" check
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 # fftwf
 
@@ -51,6 +56,10 @@ FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
 
 copy_download fftw fftwf "${FFTW_VERSION}"
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make fftwf "${FFTW_VERSION}" check
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # glib
@@ -88,10 +97,11 @@ build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --d
 # ---------------------------------------------------------------------------------------------------------------------
 # pcre (needed for sord_validate, only relevant if we can run the resulting binaries)
 
-if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
-    download pcre "${PCRE_VERSION}" "${PCRE_URL}"
-    build_autoconf pcre "${PCRE_VERSION}"
-fi
+# FIXME down at the moment
+# if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
+#     download pcre "${PCRE_VERSION}" "${PCRE_URL}"
+#     build_autoconf pcre "${PCRE_VERSION}"
+# fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
@@ -179,12 +189,14 @@ patch_file fluidsynth "${FLUIDSYNTH_VERSION}" "CMakeLists.txt" 's/_init_lib_suff
 build_cmake fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_EXTRAFLAGS}"
 
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
+    FLUIDSYNTH_EXTRALIBS="-lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -lm"
     if [ "${MACOS}" -eq 1 ]; then
-        sed -i -e 's/-lfluidsynth/-lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -liconv -lm/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
+        FLUIDSYNTH_EXTRALIBS+=" -liconv"
     elif [ "${WIN32}" -eq 1 ]; then
-        sed -i -e 's/-L${libdir} -lfluidsynth/-L${libdir}  -lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -lm -lole32 -lws2_32/' "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
-        touch "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e"
+        FLUIDSYNTH_EXTRALIBS+=" -lole32 -lws2_32"
     fi
+    sed -i -e "s/-L${libdir} -lfluidsynth/-L${libdir}  -lfluidsynth ${FLUIDSYNTH_EXTRALIBS}/" "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
+    touch "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

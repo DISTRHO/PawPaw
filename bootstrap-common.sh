@@ -184,10 +184,12 @@ fi
 LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 
 # otherwise tests fail
+export EXTRA_CFLAGS="-fno-associative-math -frounding-math"
+
 if [ "${MACOS}" -eq 1 ]; then
-    export EXTRA_CFLAGS="-fno-finite-math-only"
+    export EXTRA_CFLAGS+=" -fsignaling-math"
 else
-    export EXTRA_CFLAGS="-frounding-math -fsignaling-nans"
+    export EXTRA_CFLAGS+=" -fsignaling-nans"
 fi
 
 download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
@@ -195,7 +197,7 @@ download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make libsndfile "${LIBSNDFILE_VERSION}" "check ${MAKE_ARGS}"
+    run_make libsndfile "${LIBSNDFILE_VERSION}" check
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -223,8 +225,12 @@ fi # PAWPAW_SKIP_SAMPLERATE
 # zlib (skipped on macOS)
 
 if [ "${MACOS}" -eq 0 ]; then
-    git_clone zlib "${ZLIB_VERSION}" "https://github.com/madler/zlib.git"
+    git_clone zlib "${ZLIB_VERSION}" "${ZLIB_URL}"
     build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX}"
+
+    if [ "${CROSS_COMPILING}" -eq 0 ]; then
+        run_make zlib "${ZLIB_VERSION}" check
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
