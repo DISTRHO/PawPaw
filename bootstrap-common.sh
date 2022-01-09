@@ -189,11 +189,13 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
 fi
 
 # otherwise tests fail
-export EXTRA_CFLAGS="-fno-associative-math -fno-reciprocal-math -frounding-math"
+export EXTRA_CFLAGS="-fno-associative-math -frounding-math"
 
-# if [ "${MACOS}" -eq 0 ]; then
-#     export EXTRA_CFLAGS+=" -fsignaling-nans"
-# fi
+if [ "${MACOS}" -eq 1 ]; then
+    export EXTRA_CFLAGS+=" -fno-reciprocal-math"
+else
+    export EXTRA_CFLAGS+=" -fsignaling-nans"
+fi
 
 download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
 

@@ -91,8 +91,26 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # liblo
 
+LIBLO_EXTRAFLAGS="--enable-threads --disable-examples --disable-tools"
+
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    LIBLO_EXTRAFLAGS+=" --disable-tests"
+fi
+
+# auto-detection fails
+if [ "${MACOS}" -eq 1 ]; then
+    LIBLO_EXTRAFLAGS+=" ac_cv_func_select=yes ac_cv_func_poll=yes ac_cv_func_setvbuf=yes"
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        LIBLO_EXTRAFLAGS+=" ac_cv_c_bigendian=universal"
+    fi
+fi
+
 download liblo "${LIBLO_VERSION}" "${LIBLO_URL}"
-build_autoconf liblo "${LIBLO_VERSION}" "--enable-threads --disable-examples --disable-tests --disable-tools"
+build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make liblo "${LIBLO_VERSION}" check
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pcre (needed for sord_validate, only relevant if we can run the resulting binaries)
