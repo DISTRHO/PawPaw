@@ -41,7 +41,7 @@ jobs:
         with:
           path: |
             ~/PawPawBuilds
-          key: common-${{ matrix.target }}
+          key: common-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -130,7 +130,7 @@ jobs:
         #with:
           #path: |
             #~/PawPawBuilds
-          #key: plugins-${{ matrix.target }}
+          #key: plugins-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -225,7 +225,7 @@ jobs:
         #with:
           #path: |
             #~/PawPawBuilds
-          #key: jack2-${{ matrix.target }}
+          #key: jack2-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -320,7 +320,7 @@ jobs:
         #with:
           #path: |
             #~/PawPawBuilds
-          #key: bootstrap-qt-${{ matrix.target }}
+          #key: qt-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -415,7 +415,7 @@ jobs:
         #with:
           #path: |
             #~/PawPawBuilds
-          #key: carla-${{ matrix.target }}
+          #key: carla-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
