@@ -21,6 +21,10 @@ jobs:
             installer: apt
             os: ubuntu-20.04
             target: linux
+          - name: macos
+            installer: homebrew
+            os: macos-10.15
+            target: macos
           - name: macos-universal
             installer: homebrew
             os: macos-10.15
@@ -109,6 +113,10 @@ jobs:
             installer: apt
             os: ubuntu-20.04
             target: linux
+          - name: macos
+            installer: homebrew
+            os: macos-10.15
+            target: macos
           - name: macos-universal
             installer: homebrew
             os: macos-10.15
@@ -125,12 +133,12 @@ jobs:
     needs: common
     steps:
       - uses: actions/checkout@v2
-      #- name: Set up cache
-        #uses: actions/cache@v2
-        #with:
-          #path: |
-            #~/PawPawBuilds
-          #key: plugins-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/PawPawBuilds
+          key: plugins-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -187,23 +195,27 @@ jobs:
         run: |
             cd ~/PawPawBuilds && \
             tar xf common-${{ matrix.target }}.tar.gz
-      #- name: Run bootstrap
-        #shell: bash
-        #run: |
-          #./bootstrap-plugins.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
-      #- name: Pack bootstrap build
-        #shell: bash
-        #run: |
-          #tar -C ~/PawPawBuilds -czf plugins-${{ matrix.target }}.tar.gz builds targets
-      #- uses: actions/upload-artifact@v2
-        #with:
-          #name: plugins-${{ matrix.target }}
-          #path: plugins-${{ matrix.target }}.tar.gz
+      - name: Run bootstrap
+        shell: bash
+        run: |
+          ./bootstrap-plugins.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+      - name: Pack bootstrap build
+        shell: bash
+        run: |
+          tar -C ~/PawPawBuilds -czf plugins-${{ matrix.target }}.tar.gz builds targets
+      - uses: actions/upload-artifact@v2
+        with:
+          name: plugins-${{ matrix.target }}
+          path: plugins-${{ matrix.target }}.tar.gz
 
   jack2:
     strategy:
       matrix:
         include:
+          - name: macos
+            installer: homebrew
+            os: macos-10.15
+            target: macos
           - name: macos-universal
             installer: homebrew
             os: macos-10.15
@@ -220,12 +232,12 @@ jobs:
     needs: common
     steps:
       - uses: actions/checkout@v2
-      #- name: Set up cache
-        #uses: actions/cache@v2
-        #with:
-          #path: |
-            #~/PawPawBuilds
-          #key: jack2-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/PawPawBuilds
+          key: jack2-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -282,18 +294,18 @@ jobs:
         run: |
             cd ~/PawPawBuilds && \
             tar xf common-${{ matrix.target }}.tar.gz
-      #- name: Run bootstrap
-        #shell: bash
-        #run: |
-          #./bootstrap-jack2.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
-      #- name: Pack bootstrap build
-        #shell: bash
-        #run: |
-          #tar -C ~/PawPawBuilds -czf jack2-${{ matrix.target }}.tar.gz builds targets
-      #- uses: actions/upload-artifact@v2
-        #with:
-          #name: jack2-${{ matrix.target }}
-          #path: jack2-${{ matrix.target }}.tar.gz
+      - name: Run bootstrap
+        shell: bash
+        run: |
+          ./bootstrap-jack2.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+      - name: Pack bootstrap build
+        shell: bash
+        run: |
+          tar -C ~/PawPawBuilds -czf jack2-${{ matrix.target }}.tar.gz builds targets
+      - uses: actions/upload-artifact@v2
+        with:
+          name: jack2-${{ matrix.target }}
+          path: jack2-${{ matrix.target }}.tar.gz
 
   qt:
     strategy:

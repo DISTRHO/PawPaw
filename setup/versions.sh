@@ -144,10 +144,19 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap jack
 
+AFTEN_URL=http://downloads.sourceforge.net/aften
 AFTEN_VERSION=0.0.8
+
+DB_URL=https://download.oracle.com/berkeley-db
 DB_VERSION=5.3.28
+
+PORTAUDIO_URL=http://deb.debian.org/debian/pool/main/p/portaudio19
 PORTAUDIO_VERSION=19.6.0
+
+RTAUDIO_URL=https://github.com/falkTX/rtaudio.git
 RTAUDIO_VERSION=e03448bd15c1c34e842459939d755f5f89e880ed
+
+TRE_URL=https://github.com/laurikari/tre.git
 TRE_VERSION=6092368aabdd0dbb0fbceb2766a37b98e0ff6911
 
 # ---------------------------------------------------------------------------------------------------------------------

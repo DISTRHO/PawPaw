@@ -37,22 +37,22 @@ source setup/versions.sh
 # aften (macos only)
 
 if [ "${MACOS}" -eq 1 ]; then
-    download aften "${AFTEN_VERSION}" "http://downloads.sourceforge.net/aften" "tar.bz2"
+    download aften "${AFTEN_VERSION}" "${AFTEN_URL}" "tar.bz2"
     if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed" ]; then
         rm -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs"
     fi
     build_cmake aften "${AFTEN_VERSION}" "-DHAVE_MMX=ON -DHAVE_SSE=ON -DHAVE_SSE2=ON"
     if [ ! -f "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs" ]; then
-    	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_pcm.a" "${PAWPAW_PREFIX}/lib/libaften_pcm.a"
-    	cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_static.a" "${PAWPAW_PREFIX}/lib/libaften.a"
-    	touch "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs"
+        cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_pcm.a" "${PAWPAW_PREFIX}/lib/libaften_pcm.a"
+        cp -v "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/build/libaften_static.a" "${PAWPAW_PREFIX}/lib/libaften.a"
+        touch "${PAWPAW_BUILDDIR}/aften-${AFTEN_VERSION}/.stamp_installed_libs"
     fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # db
 
-download db "${DB_VERSION}" "https://download.oracle.com/berkeley-db"
+download db "${DB_VERSION}" "${DB_URL}"
 
 # based on build_autoconf
 function build_custom_db() {
@@ -104,7 +104,7 @@ build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disab
 # rtaudio (download, win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
-    download rtaudio "${RTAUDIO_VERSION}" "https://github.com/falkTX/rtaudio.git" "" "git"
+    download rtaudio "${RTAUDIO_VERSION}" "${RTAUDIO_URL}" "" "git"
     # fixes for portaudio
     ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
     if [ -d "${ASIO_DIR}" ]; then
@@ -121,7 +121,7 @@ if [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS="-I${ASIO_DIR}"
     export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
     export EXTRA_MAKE_ARGS="-j 1"
-    download portaudio19 "${PORTAUDIO_VERSION}" "http://deb.debian.org/debian/pool/main/p/portaudio19" "orig.tar.gz"
+    download portaudio19 "${PORTAUDIO_VERSION}" "${PORTAUDIO_URL}" "orig.tar.gz"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/audioclient.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/devicetopology.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/endpointvolume.h"
@@ -143,7 +143,7 @@ fi
 # tre (win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
-    download tre "${TRE_VERSION}" "https://github.com/laurikari/tre.git" "" "git"
+    download tre "${TRE_VERSION}" "${TRE_URL}" "" "git"
     build_autoconfgen tre "${TRE_VERSION}" "--disable-nls"
 fi
 
