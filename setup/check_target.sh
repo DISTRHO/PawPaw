@@ -4,7 +4,6 @@ CROSS_COMPILING=0
 INVALID_TARGET=0
 LINUX=0
 MACOS=0
-MACOS_OLD=0
 MACOS_UNIVERSAL=0
 WIN32=0
 WIN64=0
@@ -13,11 +12,6 @@ function check_target() {
     case "${target}" in
         "macos"|"Darwin")
             MACOS=1
-            ;;
-        "macos-old")
-            MACOS=1
-            MACOS_OLD=1
-            CROSS_COMPILING=1
             ;;
         "macos-universal")
             MACOS=1

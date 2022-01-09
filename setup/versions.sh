@@ -90,7 +90,7 @@ CARLA_VERSION=ca44f4bc538690e76f4e02544f047ad9d559a1b8
 
 LV2LINT_SUPPORTED=1
 
-if [ "${MACOS_OLD}" -eq 1 ] || [ "${CROSS_COMPILING}" -eq 1 ]; then
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
     LV2LINT_SUPPORTED=0
 fi
 if [ "${MACOS}" -eq 1 ] && [ "$(uname -r)" = "12.6.0" ]; then

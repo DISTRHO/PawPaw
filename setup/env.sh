@@ -11,9 +11,7 @@ if [ "${LINUX}" -eq 1 ]; then
 elif [ "${MACOS}" -eq 1 ]; then
     APP_EXT=""
     CMAKE_SYSTEM_NAME="Darwin"
-    if [ "${MACOS_OLD}" -eq 1 ]; then
-        PAWPAW_TARGET="macos-old"
-    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         PAWPAW_TARGET="macos-universal"
     else
         PAWPAW_TARGET="macos"
@@ -69,9 +67,7 @@ elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ]; then
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    if [ "${MACOS_OLD}" -eq 1 ]; then
-        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_5 -mmacosx-version-min=10.5 -arch i686"
-    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
     else
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations -arch x86_64"
@@ -88,16 +84,13 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 
 ## link flags
 
-LINK_FLAGS="-L${PAWPAW_PREFIX}/lib ${EXTRA_FLAGS}"
-LINK_FLAGS+=" -fno-strict-aliasing -flto -Werror=odr -Werror=lto-type-mismatch"
-LINK_FLAGS+=" -fdata-sections -ffunction-sections -fstack-protector"
+LINK_FLAGS="-L${PAWPAW_PREFIX}/lib ${BUILD_FLAGS} ${EXTRA_FLAGS}"
+LINK_FLAGS+=" -Werror=odr -Werror=lto-type-mismatch"
 
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs -Wl,-x"
 
-    if [ "${MACOS_OLD}" -eq 1 ]; then
-        LINK_FLAGS+=" -mmacosx-version-min=10.5 -arch i686"
-    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         LINK_FLAGS+=" -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
     else
         LINK_FLAGS+=" -mmacosx-version-min=10.8 -stdlib=libc++ -arch x86_64"
@@ -121,10 +114,7 @@ TARGET_LDFLAGS="${LINK_FLAGS}"
 ## toolchain
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    if [ "${MACOS}" -eq 1 ]; then
-        TOOLCHAIN_PREFIX="i686-apple-darwin10"
-        TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
-    elif [ "${WIN64}" -eq 1 ]; then
+    if [ "${WIN64}" -eq 1 ]; then
         TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
         TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
     elif [ "${WIN32}" -eq 1 ]; then
@@ -177,9 +167,7 @@ fi
 
 if [ "${MACOS}" -eq 1 ]; then
     MAKE_ARGS+=" MACOS=true"
-    if [ "${MACOS_OLD}" -eq 1 ]; then
-        MAKE_ARGS+=" MACOS_OLD=true"
-    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         MAKE_ARGS+=" MACOS_UNIVERSAL=true"
     fi
 elif [ "${WIN32}" -eq 1 ]; then

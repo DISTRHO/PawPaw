@@ -127,16 +127,18 @@ download libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_URL}"
 build_autoconf libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# flac (forces intrinsic optimizations on macos-universal target)
+# flac
 
 FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
 
+# force intrinsic optimizations on macos-universal target
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes asm_opt=yes"
 fi
 
 download flac "${FLAC_VERSION}" "${FLAC_URL}" "tar.xz"
 
+# fixup for intrinsic optimizations on macos-universal target
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     patch_file flac "${FLAC_VERSION}" "configure" 's/amd64|x86_64/amd64|arm|x86_64/'
 fi
@@ -154,9 +156,6 @@ OPUS_EXTRAFLAGS="--enable-custom-modes --enable-float-approx"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-extra-programs"
-fi
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 fi
 
 # FIXME macos-universal proper optimizations
@@ -176,24 +175,17 @@ fi
 
 LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 
-# otherwise tests fail
-export EXTRA_CFLAGS="-frounding-math -fsignaling-nans"
-
-if [ "${MACOS_OLD}" -eq 0 ]; then
-    export EXTRA_CFLAGS+=" -fno-associative-math"
+if [ "${MACOS}" -eq 0 ]; then
+    # otherwise tests fail
+    export EXTRA_CFLAGS="-frounding-math -fsignaling-nans"
 fi
 
 download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
 
-if [ "${MACOS_OLD}" -eq 1 ]; then
-    patch_file libsndfile "${LIBSNDFILE_VERSION}" "src/sfconfig.h" 's/#define USE_SSE2/#undef USE_SSE2/'
-fi
-
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
 
-# FIXME tests fail on macos-universal
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
-    run_make libsndfile "${LIBSNDFILE_VERSION}" "check -j 8"
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make libsndfile "${LIBSNDFILE_VERSION}" "check ${MAKE_ARGS}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
