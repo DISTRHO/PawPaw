@@ -60,7 +60,7 @@ jobs:
           sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux' ]; then \
-            sudo apt-get install -y libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
+            sudo apt-get install -yqq libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
           fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then \
@@ -90,7 +90,7 @@ jobs:
       - name: Run bootstrap
         shell: bash
         run: |
-          ./common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+          ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
         run: |
