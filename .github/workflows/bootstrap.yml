@@ -16,19 +16,19 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: linux-common
+          - name: linux
             installer: apt
             os: ubuntu-20.04
             target: linux
-          - name: macos-universal-common
+          - name: macos-universal
             installer: homebrew
             os: macos-10.15
             target: macos-universal
-          - name: win32-common
+          - name: win32
             installer: apt
             os: ubuntu-20.04
             target: win32
-          - name: win64-common
+          - name: win64
             installer: apt
             os: ubuntu-20.04
             target: win64
@@ -60,7 +60,7 @@ jobs:
           sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux' ]; then \
-            sudo apt-get install -yqq libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
+            sudo apt-get install -y libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
           fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then \
@@ -70,6 +70,7 @@ jobs:
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then \
+            sudo apt-get update -qq; \
             sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable; \
           fi
       - name: (homebrew) Set up dependencies
