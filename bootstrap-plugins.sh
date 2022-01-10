@@ -62,30 +62,39 @@ if [ "${CROSS_COMPILING}" -eq 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# pcre
+
+if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+    download pcre "${PCRE_VERSION}" "${PCRE_URL}"
+    build_autoconf pcre "${PCRE_VERSION}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# libffi
+
+if [ "${WIN32}" -eq 1 ]; then
+    download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
+    build_autoconf libffi "${LIBFFI_VERSION}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # glib
 
 if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+    GLIB_EXTRAFLAGS="--disable-rebuilds"
+
     if [ "${WIN32}" -eq 1 ]; then
-        GLIB_EXTRAFLAGS="--with-threads=win32"
+        GLIB_EXTRAFLAGS+=" --with-threads=win32"
     else
-        GLIB_EXTRAFLAGS="--with-threads=posix"
+        GLIB_EXTRAFLAGS+=" --with-threads=posix"
     fi
 
-    download glib ${GLIB_VERSION} "${GLIB_URL}" "${GLIB_TAR_EXT}"
-
-    if [ "${MACOS}" -eq 1 ]; then
-        export EXTRA_LDFLAGS="-lresolv"
-        patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
-
-        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
-            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
-        fi
-#     elif [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ]; then
-#         patch_file glib ${GLIB_VERSION} "gobject/Makefile.in" "s|glib_genmarshal = ./glib-genmarshal|glib_genmarshal = ${EXE_WRAPPER} ./glib-genmarshal.exe|"
+    if [ "${WIN64}" -eq 1 ]; then
+        export EXTRA_CFLAGS="-Wno-format"
     fi
 
-    build_autoconfgen glib ${GLIB_VERSION} "--disable-rebuilds ${GLIB_EXTRAFLAGS}"
+    download glib ${GLIB_VERSION} "${GLIB_URL}" "tar.xz"
+    build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -111,15 +120,6 @@ build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# pcre (needed for sord_validate, only relevant if we can run the resulting binaries)
-
-# FIXME down at the moment
-# if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
-#     download pcre "${PCRE_VERSION}" "${PCRE_URL}"
-#     build_autoconf pcre "${PCRE_VERSION}"
-# fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2

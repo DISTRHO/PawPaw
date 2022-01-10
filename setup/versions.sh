@@ -42,12 +42,9 @@ ZLIB_URL=https://github.com/madler/zlib.git
 FFTW_VERSION=3.3.10
 FFTW_URL=http://www.fftw.org
 
-GLIB_MVERSION=2.71
-GLIB_VERSION=2.71.0
+GLIB_MVERSION=2.45
+GLIB_VERSION=2.45.8
 GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
-
-# FIXME
-GLIB_TAR_EXT=tar.xz
 
 LIBLO_VERSION=0.31
 LIBLO_URL=http://download.sourceforge.net/liblo

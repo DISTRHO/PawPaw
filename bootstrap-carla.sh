@@ -197,14 +197,6 @@ if [ "${WIN32}" -eq 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# libffi (for python, not needed in macOS)
-
-if [ "${MACOS}" -eq 0 ]; then
-    download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
-    build_autoconf libffi "${LIBFFI_VERSION}"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap for python (needed for cross-compilation)
 
 if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then

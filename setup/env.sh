@@ -77,7 +77,10 @@ if [ "${MACOS}" -eq 1 ]; then
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations -arch x86_64"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
-    BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL -DPTW32_STATIC_LIB -mstackrealign"
+    BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
+    BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL"
+    BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
+    BUILD_FLAGS+=" -mstackrealign"
 fi
 
 # anything that talks to db should have this

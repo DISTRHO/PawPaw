@@ -1,0 +1,36 @@
+From 4745c08220b90eac741ae3ca1913cbe90c9831ef Mon Sep 17 00:00:00 2001
+From: Benjamin Gilbert <bgilbert@backtick.net>
+Date: Sat, 26 Sep 2015 18:22:34 -0400
+Subject: [PATCH] win32: Fix link error with _wstat32i64() on 64-bit
+
+_wstat32i64() doesn't exist in msvcrt.dll.  This doesn't cause a problem
+on 32-bit Windows because mingw-w64 #defines _wstat32i64 to _wstati64,
+but on 64-bit Windows we get a link error.
+
+In addition, _wstat32i64() takes a struct _stat32i64 *, but
+GLocalFileStat is #defined to struct _stati64, which is not the same
+type on 64-bit Windows.
+
+Fix by using _wstati64().
+
+https://bugzilla.gnome.org/show_bug.cgi?id=749161
+---
+ gio/glocalfile.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/gio/glocalfile.c b/gio/glocalfile.c
+index 327fe6fda..60b95609e 100644
+--- a/gio/glocalfile.c
++++ b/gio/glocalfile.c
+@@ -2682,7 +2682,7 @@ g_local_file_measure_size_of_file (gint           parent_fd,
+         (!g_path_is_absolute (filename) || len > g_path_skip_root (filename) - filename))
+       wfilename[len] = '\0';
+ 
+-    retval = _wstat32i64 (wfilename, &buf);
++    retval = _wstati64 (wfilename, &buf);
+     save_errno = errno;
+ 
+     g_free (wfilename);
+-- 
+GitLab
+
