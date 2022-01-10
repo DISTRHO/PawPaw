@@ -47,7 +47,7 @@ function download_qt() {
     local dlfolder="${PAWPAW_BUILDDIR}/${name}${qtsuffix}-${QT5_VERSION}"
 
     if [ ! -f "${dlfile}" ]; then
-        dlurl="https://download.qt.io/archive/qt/${QT5_MVERSION}/${QT5_VERSION}/submodules/${name}${qtsuffix}-${QT5_VERSION}.tar.xz"
+        dlurl="${QT5_URL}/${name}${qtsuffix}-${QT5_VERSION}.tar.xz"
         curl -L "${dlurl}" -o "${dlfile}"
     fi
 
@@ -105,12 +105,7 @@ function build_qt_conf() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        # NOTE: Qt win32 builds are very verbose, too many warnings, which makes CI build fail
-        if [ "${WIN32}" -eq 1 ] && [ -n "${TRAVIS_BUILD_DIR}" ]; then
-            make ${MAKE_ARGS} 2>/dev/null
-        else
-            make ${MAKE_ARGS}
-        fi
+        make ${MAKE_ARGS}
         touch .stamp_built
         popd
     fi
@@ -277,6 +272,7 @@ elif [ "${MACOS}" -eq 1 ]; then
 fi
 if [ "${WIN32}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -shared/= -static -shared/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -fno-keep-inline-dllexport/= -Wdeprecated-copy -Wno-deprecated-declarations -fno-keep-inline-dllexport/'
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
 fi
 

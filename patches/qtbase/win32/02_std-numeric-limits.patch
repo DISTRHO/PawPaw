@@ -8,5 +8,5 @@ index 35c35ac6..38c08ccb 100644
  #  include <utility>
 +#  include <limits>
  #endif
- 
- #include <stddef.h>
+ #ifndef __ASSEMBLER__
+ #  include <assert.h>
