@@ -34,7 +34,7 @@ source setup/versions.sh
 # file/magic (posix only)
 
 if [ "${WIN32}" -eq 0 ]; then
-    download file "${FILE_VERSION}" "ftp://ftp.astron.com/pub/file"
+    download file "${FILE_VERSION}" "${FILE_URL}"
     build_autoconf file "${FILE_VERSION}"
 fi
 
