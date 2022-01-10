@@ -72,7 +72,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libffi
 
-if [ "${WIN32}" -eq 1 ]; then
+if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
     build_autoconf libffi "${LIBFFI_VERSION}"
 fi
