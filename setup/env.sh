@@ -57,7 +57,7 @@ BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
 
-if [ "${PAWPAW_SKIP_LTO}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
     BUILD_FLAGS+=" -fno-strict-aliasing -flto"
 fi
 

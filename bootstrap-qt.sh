@@ -272,7 +272,7 @@ elif [ "${MACOS}" -eq 1 ]; then
 fi
 if [ "${WIN32}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -shared/= -static -shared/'
-    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -fno-keep-inline-dllexport/= -Wdeprecated-copy -Wno-deprecated-declarations -fno-keep-inline-dllexport/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -fno-keep-inline-dllexport/= -Wno-deprecated-declarations -fno-keep-inline-dllexport/'
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
 fi
 
