@@ -72,6 +72,11 @@ function build_custom_db() {
         extraconfrules+=" --enable-mingw"
     fi
 
+    # TODO jack2 cannot be built with LTO right now
+    export EXTRA_CFLAGS="-fno-lto"
+    export EXTRA_CXXFLAGS="-fno-lto"
+    export EXTRA_LDFLAGS="-fno-lto"
+
     _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
@@ -143,6 +148,11 @@ fi
 # tre (win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
+    # TODO jack2 cannot be built with LTO right now
+    export EXTRA_CFLAGS="-fno-lto"
+    export EXTRA_CXXFLAGS="-fno-lto"
+    export EXTRA_LDFLAGS="-fno-lto"
+
     download tre "${TRE_VERSION}" "${TRE_URL}" "" "git"
     build_autoconfgen tre "${TRE_VERSION}" "--disable-nls"
 fi
@@ -158,6 +168,11 @@ if [ "${WIN64}" -eq 1 ]; then
     PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/win64"
     PAWPAW_PREFIX="${PAWPAW_DIR}/targets/win64"
     source setup/functions.sh
+
+    # TODO jack2 cannot be built with LTO right now
+    export EXTRA_CFLAGS="-fno-lto"
+    export EXTRA_CXXFLAGS="-fno-lto"
+    export EXTRA_LDFLAGS="-fno-lto"
 
     copy_download tre tre-x32 "${TRE_VERSION}"
     build_autoconfgen tre-x32 "${TRE_VERSION}" "--disable-nls --libdir=${PAWPAW_PREFIX}/lib32"
