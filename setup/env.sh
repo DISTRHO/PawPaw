@@ -53,9 +53,13 @@ PAWPAW_TMPDIR="/tmp"
 ## build flags
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
-BUILD_FLAGS+=" -ffast-math -fno-strict-aliasing -flto"
+BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
+
+if [ "${PAWPAW_SKIP_LTO}" -eq 1 ]; then
+    BUILD_FLAGS+=" -fno-strict-aliasing -flto"
+fi
 
 if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"

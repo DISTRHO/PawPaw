@@ -192,7 +192,7 @@ function build_pyqt() {
 # file/magic (posix only)
 
 if [ "${WIN32}" -eq 0 ]; then
-    download file "${FILE_VERSION}" "ftp://ftp.astron.com/pub/file"
+    download file "${FILE_VERSION}" "${FILE_URL}"
     build_autoconf file "${FILE_VERSION}"
 fi
 
@@ -200,7 +200,7 @@ fi
 # libffi (for python, not needed in macOS)
 
 if [ "${MACOS}" -eq 0 ]; then
-    download libffi "${LIBFFI_VERSION}" "https://sourceware.org/pub/libffi"
+    download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
     build_autoconf libffi "${LIBFFI_VERSION}"
 fi
 
