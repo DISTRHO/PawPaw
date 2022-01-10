@@ -351,7 +351,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # cxfreeze
 
-download cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze.git" "" "git"
+git_clone cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze.git"
 
 if [ "${CXFREEZE_VERSION}" = "e1c33afea842bc61dac82145a8a0be5fbd318a92" ]; then
     patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'

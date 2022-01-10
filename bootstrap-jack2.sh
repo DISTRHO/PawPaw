@@ -104,7 +104,7 @@ build_custom_db db "${DB_VERSION}" "--disable-java --disable-replication --disab
 # rtaudio (download, win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
-    download rtaudio "${RTAUDIO_VERSION}" "${RTAUDIO_URL}" "" "git"
+    git_clone rtaudio "${RTAUDIO_VERSION}" "${RTAUDIO_URL}"
     # fixes for portaudio
     ASIO_DIR="${PAWPAW_BUILDDIR}/rtaudio-${RTAUDIO_VERSION}/include"
     if [ -d "${ASIO_DIR}" ]; then
@@ -143,7 +143,7 @@ fi
 # tre (win32 only)
 
 if [ "${WIN32}" -eq 1 ]; then
-    download tre "${TRE_VERSION}" "${TRE_URL}" "" "git"
+    git_clone tre "${TRE_VERSION}" "${TRE_URL}"
     build_autoconfgen tre "${TRE_VERSION}" "--disable-nls"
 fi
 

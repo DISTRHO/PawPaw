@@ -72,9 +72,11 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libffi
 
-if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+if [ "${WIN32}" -eq 1 ]; then
+    LIBFFI_EXTRAFLAGS="--disable-multi-os-directory --disable-raw-api"
+
     download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
-    build_autoconf libffi "${LIBFFI_VERSION}"
+    build_autoconf libffi "${LIBFFI_VERSION}" "${LIBFFI_EXTRAFLAGS}"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -89,11 +91,20 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS+=" --with-threads=posix"
     fi
 
-    if [ "${WIN32}" -eq 1 ]; then
+    if [ "${MACOS}" -eq 1 ]; then
+        export EXTRA_LDFLAGS="-lresolv"
+        patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
+
+        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
+            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
+        fi
+
+    elif [ "${WIN32}" -eq 1 ]; then
         export EXTRA_CFLAGS="-Wno-format -Wno-format-overflow"
     fi
 
-    download glib ${GLIB_VERSION} "${GLIB_URL}" "tar.xz"
+    download glib ${GLIB_VERSION} "${GLIB_URL}" "${GLIB_TAR_EXT}"
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi
 
