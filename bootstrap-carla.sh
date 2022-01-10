@@ -280,6 +280,7 @@ PYQT5_EXTRAFLAGS="--qmake ${PAWPAW_PREFIX}/bin/qmake --sip ${PAWPAW_PREFIX}/bin/
 
 download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
 build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_EXTRAFLAGS} --concatenate --confirm-license"
+# --verbose
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     unset PKG_CONFIG_LIBDIR

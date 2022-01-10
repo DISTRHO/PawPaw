@@ -42,15 +42,18 @@ ZLIB_URL=https://github.com/madler/zlib.git
 FFTW_VERSION=3.3.10
 FFTW_URL=http://www.fftw.org
 
+LIBFFI_VERSION=3.3
+LIBFFI_URL=https://sourceware.org/pub/libffi
+
+PCRE_VERSION=8.45
+PCRE_URL=http://download.sourceforge.net/pcre
+
 GLIB_MVERSION=2.45
 GLIB_VERSION=2.45.8
 GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
 
 LIBLO_VERSION=0.31
 LIBLO_URL=http://download.sourceforge.net/liblo
-
-PCRE_VERSION=8.45
-PCRE_URL=http://download.sourceforge.net/pcre
 
 LV2_VERSION=6cefc7df1a6158c79d23029df183c09b10b88cad
 LV2_URL=https://gitlab.com/lv2/lv2.git
@@ -115,9 +118,6 @@ QT5_URL=https://download.qt.io/archive/qt/${QT5_MVERSION}/${QT5_VERSION}/submodu
 
 FILE_VERSION=5.34
 FILE_URL=ftp://ftp.astron.com/pub/file
-
-LIBFFI_VERSION=3.3
-LIBFFI_URL=https://sourceware.org/pub/libffi
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     CXFREEZE_VERSION=e1c33afea842bc61dac82145a8a0be5fbd318a92 # 6.4.2

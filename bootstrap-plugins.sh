@@ -89,8 +89,8 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS+=" --with-threads=posix"
     fi
 
-    if [ "${WIN64}" -eq 1 ]; then
-        export EXTRA_CFLAGS="-Wno-format"
+    if [ "${WIN32}" -eq 1 ]; then
+        export EXTRA_CFLAGS="-Wno-format -Wno-format-overflow"
     fi
 
     download glib ${GLIB_VERSION} "${GLIB_URL}" "tar.xz"
