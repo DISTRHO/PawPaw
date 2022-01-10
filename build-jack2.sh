@@ -124,8 +124,6 @@ fi
 # qjackctl (if qt is available)
 
 if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
-    download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
-
     # Join $2+ arguments into a string separated by $1
     function join() {
         local IFS=$1
@@ -141,7 +139,12 @@ if [ -f "${PAWPAW_PREFIX}/bin/moc" ]; then
         qjackctl_CMAKE_PREFIX_PATH="${PAWPAW_PREFIX}/lib/cmake"
     fi
 
-    build_cmake qjackctl "${QJACKCTL_VERSION}" "-DCMAKE_PREFIX_PATH=${qjackctl_CMAKE_PREFIX_PATH} -DJack_ROOT=${jack2_prefix}${jack2_extra_prefix} -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+    QJACKCTL_EXTRAFLAGS="-DCONFIG_ALSA_SEQ:BOOL=ON"
+    QJACKCTL_EXTRAFLAGS+=" -DCMAKE_PREFIX_PATH=${qjackctl_CMAKE_PREFIX_PATH}"
+    QJACKCTL_EXTRAFLAGS+=" -DCMAKE_VERBOSE_MAKEFILE:BOOL=ON"
+
+    download qjackctl "${QJACKCTL_VERSION}" https://download.sourceforge.net/qjackctl
+    build_cmake qjackctl "${QJACKCTL_VERSION}" "${QJACKCTL_EXTRAFLAGS}"
 
     if [ "${WIN32}" -eq 1 ]; then
         copy_file qjackctl "${QJACKCTL_VERSION}" "build/src/qjackctl.exe" "${jack2_prefix}/bin/qjackctl.exe"
