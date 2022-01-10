@@ -93,18 +93,21 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
 
     if [ "${MACOS}" -eq 1 ]; then
         export EXTRA_LDFLAGS="-lresolv"
+    elif [ "${WIN32}" -eq 1 ]; then
+        export EXTRA_CFLAGS="-Wno-format -Wno-format-overflow"
+    fi
+
+    download glib ${GLIB_VERSION} "${GLIB_URL}" "${GLIB_TAR_EXT}"
+
+    if [ "${MACOS}" -eq 1 ]; then
         patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
 
         if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
             patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
             patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
         fi
-
-    elif [ "${WIN32}" -eq 1 ]; then
-        export EXTRA_CFLAGS="-Wno-format -Wno-format-overflow"
     fi
 
-    download glib ${GLIB_VERSION} "${GLIB_URL}" "${GLIB_TAR_EXT}"
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi
 

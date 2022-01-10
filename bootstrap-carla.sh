@@ -142,7 +142,8 @@ function build_pyqt() {
             # use PREFIX var
             sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" installed.txt Makefile */Makefile
             if [ -f "QtCore/Makefile.Release" ]; then
-                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" */Makefile.Release
+                sed -i -e "s|/usr/include|${PAWPAW_PREFIX}/include|g" */Makefile.Release
+                sed -i -e "s|/usr/lib|${PAWPAW_PREFIX}/lib|g" */Makefile.Release
             fi
         fi
 
