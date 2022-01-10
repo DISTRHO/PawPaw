@@ -515,12 +515,12 @@ jobs:
     needs: [plugins, qt]
     steps:
       - uses: actions/checkout@v2
-      #- name: Set up cache
-        #uses: actions/cache@v2
-        #with:
-          #path: |
-            #~/PawPawBuilds
-          #key: carla-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
+      - name: Set up cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/PawPawBuilds
+          key: carla-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -589,7 +589,7 @@ jobs:
             tar xf common-${{ matrix.target }}.tar.gz && \
             tar xf plugins-${{ matrix.target }}.tar.gz && \
             tar xf qt-${{ matrix.target }}.tar.gz
-      #- name: Run bootstrap
-        #shell: bash
-        #run: |
-          #./bootstrap-carla.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+      - name: Run bootstrap
+        shell: bash
+        run: |
+          ./bootstrap-carla.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
