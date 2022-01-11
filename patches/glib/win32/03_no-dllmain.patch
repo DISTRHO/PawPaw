@@ -1,0 +1,25 @@
+diff --git a/glib/glib-init.c b/glib/glib-init.c
+index e7002e6..12f94f2 100644
+--- a/glib/glib-init.c
++++ b/glib/glib-init.c
+@@ -236,7 +236,7 @@ glib_init (void)
+   g_quark_init ();
+ }
+ 
+-#if defined (G_OS_WIN32)
++#if 0
+ 
+ BOOL WINAPI DllMain (HINSTANCE hinstDLL,
+                      DWORD     fdwReason,
+@@ -284,6 +284,11 @@ G_DEFINE_CONSTRUCTOR(glib_init_ctor)
+ static void
+ glib_init_ctor (void)
+ {
++  glib_dll = NULL;
++  g_clock_win32_init ();
++#ifdef THREADS_WIN32
++  g_thread_win32_init ();
++#endif
+   glib_init ();
+ }
+ 
