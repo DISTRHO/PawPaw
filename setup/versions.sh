@@ -42,22 +42,23 @@ ZLIB_URL=https://github.com/madler/zlib.git
 FFTW_VERSION=3.3.10
 FFTW_URL=http://www.fftw.org
 
-LIBFFI_VERSION=3.4.2
-LIBFFI_URL=https://github.com/libffi/libffi/releases/download/v${LIBFFI_VERSION}
-
 PCRE_VERSION=8.45
 PCRE_URL=http://download.sourceforge.net/pcre
 
 if [ "${MACOS}" -eq 1 ]; then
+    LIBFFI_VERSION=3.3
+    # LIBFFI_URL=https://sourceware.org/pub/libffi
     GLIB_MVERSION=2.22
     GLIB_VERSION=2.22.5
     GLIB_TAR_EXT=tar.gz
 else
+    LIBFFI_VERSION=3.4.2
     GLIB_MVERSION=2.45
     GLIB_VERSION=2.45.8
     GLIB_TAR_EXT=tar.xz
 fi
 
+LIBFFI_URL=https://github.com/libffi/libffi/releases/download/v${LIBFFI_VERSION}
 GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
 
 LIBLO_VERSION=0.31
