@@ -129,7 +129,7 @@ FILE_VERSION=5.34
 FILE_URL=ftp://ftp.astron.com/pub/file
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    CXFREEZE_VERSION=e1c33afea842bc61dac82145a8a0be5fbd318a92 # 6.4.2
+    CXFREEZE_VERSION=a59a0f6c476554c1a789de2a9f6f77329d6a6dd1 # 6.8.4
     PYTHON_VERSION=3.9.5
     PYLIBLO_VERSION=0.10.0
     PYQT5_VERSION=5.13.1
@@ -137,7 +137,7 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     # extra, needed for pyliblo
     CYTHON_VERSION=0.29.21
     # extra, needed for cxfreeze
-    IMPORTLIB_METADATA_VERSION=3.1.1
+    IMPORTLIB_METADATA_VERSION=4.10.1
     SETUPTOOLS_SCM_VERSION=5.0.0
     TOML_VERSION=0.10.2
     ZIPP_VERSION=3.4.0

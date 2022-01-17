@@ -345,7 +345,7 @@ fi
 # importlib_metadata (optional)
 
 if [ -n "${IMPORTLIB_METADATA_VERSION}" ]; then
-    download importlib_metadata "${IMPORTLIB_METADATA_VERSION}" "https://files.pythonhosted.org/packages/3f/a8/16dc098b0addd1c20719c18a86e985be851b3ec1e103e703297169bb22cc"
+    download importlib_metadata "${IMPORTLIB_METADATA_VERSION}" "https://files.pythonhosted.org/packages/f8/41/8ffb059708359ea14a3ec74a99a2bf0cd44a0c983a0c480d9eb7a69438bb"
     build_python importlib_metadata "${IMPORTLIB_METADATA_VERSION}"
 fi
 
@@ -354,12 +354,6 @@ fi
 
 git_clone cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze.git"
 
-if [ "${CXFREEZE_VERSION}" = "e1c33afea842bc61dac82145a8a0be5fbd318a92" ]; then
-    patch_file cx_Freeze "${CXFREEZE_VERSION}" "setup.py" 's/extra_postargs=extraArgs,/extra_postargs=extraArgs+os.getenv("LDFLAGS").split(),/'
-    patch_file cx_Freeze "${CXFREEZE_VERSION}" "cx_Freeze/macdist.py" 's/, use_builtin_types=False//'
-    # FIXME
-    exit 0
-fi
 if [ "${WIN32}" -eq 1 ]; then
     export PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
 fi

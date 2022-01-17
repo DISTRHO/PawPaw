@@ -119,7 +119,7 @@ download libogg "${LIBOGG_VERSION}" "${LIBOGG_URL}"
 build_autoconf libogg "${LIBOGG_VERSION}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make libogg "${LIBOGG_VERSION}" check
+    run_make libogg "${LIBOGG_VERSION}" "check -j 1"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -131,7 +131,7 @@ download libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_URL}"
 build_autoconf libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_EXTRAFLAGS}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make libvorbis "${LIBVORBIS_VERSION}" check
+    run_make libvorbis "${LIBVORBIS_VERSION}" "check -j 1"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
