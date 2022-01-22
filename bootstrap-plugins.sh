@@ -101,11 +101,8 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
 
     if [ "${MACOS}" -eq 1 ]; then
         patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
-
-        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
-            patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
-        fi
+        patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
+        patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
     fi
 
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
