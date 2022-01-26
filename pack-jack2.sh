@@ -82,6 +82,7 @@ if [ "${WIN32}" -eq 1 ]; then
     echo "#define VERSION \"${JACK2_VERSION}\"" > "version.iss"
     ln -sf "${PAWPAW_PREFIX}/bin/Qt5"{Core,Gui,Network,Widgets,Xml}".dll" .
     ln -sf "${PAWPAW_PREFIX}/lib/qt5/plugins/platforms/qwindows.dll" .
+    ln -sf "${PAWPAW_PREFIX}/lib/qt5/plugins/styles/qwindowsvistastyle.dll" .
     ln -sf "${jack2_prefix}" "${PAWPAW_TARGET}"
     env WINEPREFIX="${innodir}" wine "${iscc}" "${PAWPAW_TARGET}.iss"
     popd
