@@ -81,6 +81,8 @@ elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL"
     BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
     BUILD_FLAGS+=" -mstackrealign"
+else
+    BUILD_FLAGS+=" -fno-gnu-unique"
 fi
 
 # anything that talks to db should have this
