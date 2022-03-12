@@ -72,9 +72,16 @@ fi
 
 if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12"
+        BUILD_FLAGS+=" -mmacosx-version-min=10.12"
+        BUILD_FLAGS+=" -arch x86_64 -arch arm64"
     else
-        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -mmacosx-version-min=10.8 -stdlib=libc++ -Wno-deprecated-declarations -arch x86_64"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8"
+        BUILD_FLAGS+=" -mmacosx-version-min=10.8"
+        BUILD_FLAGS+=" -stdlib=libc++ -Wno-deprecated-declarations"
+        BUILD_FLAGS+=" -arch x86_64"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
