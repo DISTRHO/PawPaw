@@ -159,17 +159,27 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
 
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+
 git_clone lv2 "${LV2_VERSION}" "${LV2_URL}"
 build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
+
+fi # PAWPAW_SKIP_LV2
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
 
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+
 download serd "${SERD_VERSION}" "${SERD_URL}" "tar.bz2"
 build_waf serd "${SERD_VERSION}" "--static --no-shared --no-utils"
 
+fi # PAWPAW_SKIP_LV2
+
 # ---------------------------------------------------------------------------------------------------------------------
 # sord
+
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
 if [ "${CROSS_COMPILING}" -eq 1 ] && [ -z "${EXE_WRAPPER}" ]; then
     SORD_EXTRAFLAGS="--no-utils"
@@ -178,21 +188,33 @@ fi
 download sord "${SORD_VERSION}" "${SORD_URL}" "tar.bz2"
 build_waf sord "${SORD_VERSION}" "--static --no-shared ${SORD_EXTRAFLAGS}"
 
+fi # PAWPAW_SKIP_LV2
+
 # ---------------------------------------------------------------------------------------------------------------------
 # sratom
+
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
 download sratom "${SRATOM_VERSION}" "${SRATOM_URL}" "tar.bz2"
 build_waf sratom "${SRATOM_VERSION}" "--static --no-shared"
 
+fi # PAWPAW_SKIP_LV2
+
 # ---------------------------------------------------------------------------------------------------------------------
 # lilv
+
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
 download lilv "${LILV_VERSION}" "${LILV_URL}" "tar.bz2"
 build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --no-shared"
 # --static-progs
 
+fi # PAWPAW_SKIP_LV2
+
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
+
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
 if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
     download lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
@@ -200,17 +222,27 @@ if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
     # "-Donline-tests=true -Delf-tests=true"
 fi
 
+fi # PAWPAW_SKIP_LV2
+
 # ---------------------------------------------------------------------------------------------------------------------
 # kxstudio lv2 extensions
+
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
 git_clone kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}" "${KXSTUDIO_LV2_EXTENSIONS_URL}"
 build_make kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}"
 
+fi # PAWPAW_SKIP_LV2
+
 # ---------------------------------------------------------------------------------------------------------------------
 # MOD lv2 extensions
 
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+
 git_clone mod-sdk "${MOD_SDK_VERSION}" "${MOD_SDK_URL}"
 build_make mod-sdk "${MOD_SDK_VERSION}"
+
+fi # PAWPAW_SKIP_LV2
 
 # ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
