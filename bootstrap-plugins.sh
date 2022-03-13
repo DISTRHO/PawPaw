@@ -16,6 +16,13 @@ if [ -z "${target}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# skip fluidsynth if glib is not wanted (fluidsynth requires glib)
+
+if [ -n "${PAWPAW_SKIP_GLIB}" ]; then
+    PAWPAW_SKIP_FLUIDSYNTH=1
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
 ./bootstrap-common.sh "${target}"
@@ -30,6 +37,8 @@ source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
+
+if [ -z "${PAWPAW_SKIP_FFTW}" ]; then
 
 FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
 
@@ -49,8 +58,12 @@ if [ "${CROSS_COMPILING}" -eq 0 ]; then
     run_make fftw "${FFTW_VERSION}" check
 fi
 
+fi # PAWPAW_SKIP_FFTW
+
 # ---------------------------------------------------------------------------------------------------------------------
 # fftwf
+
+if [ -z "${PAWPAW_SKIP_FFTW}" ]; then
 
 FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
 
@@ -60,6 +73,8 @@ build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
     run_make fftwf "${FFTW_VERSION}" check
 fi
+
+fi # PAWPAW_SKIP_FFTW
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pcre
@@ -72,6 +87,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libffi
 
+if [ -z "${PAWPAW_SKIP_GLIB}" ]; then
+
 if [ "${WIN32}" -eq 1 ]; then
     LIBFFI_EXTRAFLAGS="--disable-multi-os-directory --disable-raw-api"
 
@@ -79,8 +96,12 @@ if [ "${WIN32}" -eq 1 ]; then
     build_autoconf libffi "${LIBFFI_VERSION}" "${LIBFFI_EXTRAFLAGS}"
 fi
 
+fi # PAWPAW_SKIP_GLIB
+
 # ---------------------------------------------------------------------------------------------------------------------
 # glib
+
+if [ -z "${PAWPAW_SKIP_GLIB}" ]; then
 
 if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     GLIB_EXTRAFLAGS="--disable-rebuilds"
@@ -107,6 +128,8 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
 
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
 fi
+
+fi # PAWPAW_SKIP_GLIB
 
 # ---------------------------------------------------------------------------------------------------------------------
 # liblo
@@ -192,6 +215,8 @@ build_make mod-sdk "${MOD_SDK_VERSION}"
 # ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
+if [ -z "${PAWPAW_SKIP_FLUIDSYNTH}" ]; then
+
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-alsa=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-aufile=OFF"
@@ -228,6 +253,8 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
     sed -i -e "s/-L\${libdir} -lfluidsynth/-L\${libdir}  -lfluidsynth ${FLUIDSYNTH_EXTRALIBS}/" "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
     touch "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e"
 fi
+
+fi # PAWPAW_SKIP_FLUIDSYNTH
 
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
