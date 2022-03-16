@@ -87,16 +87,12 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libffi
 
-if [ -z "${PAWPAW_SKIP_GLIB}" ]; then
-
 if [ "${WIN32}" -eq 1 ]; then
     LIBFFI_EXTRAFLAGS="--disable-multi-os-directory --disable-raw-api"
 
     download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
     build_autoconf libffi "${LIBFFI_VERSION}" "${LIBFFI_EXTRAFLAGS}"
 fi
-
-fi # PAWPAW_SKIP_GLIB
 
 # ---------------------------------------------------------------------------------------------------------------------
 # glib
