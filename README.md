@@ -27,7 +27,7 @@ PawPaw has the following goals:
  - Define each plugin project in its own file, to make it easy to support new plugins via pull-request
  - Package the entire collection as an installer
 
-Additonally, PawPaw is used to build library dependencies for
+Additionally, PawPaw is used to build library dependencies for
 [Carla](https://github.com/falkTX/Carla) and
 [JACK2](https://github.com/jackaudio/jack2).
 
