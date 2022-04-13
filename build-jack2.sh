@@ -22,6 +22,9 @@ fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
+# jack2 is not compatible with LTO right now
+export PAWPAW_SKIP_LTO=1
+
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
