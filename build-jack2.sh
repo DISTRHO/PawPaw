@@ -7,7 +7,7 @@ PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
 JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
-QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.5}
+QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.7}
 
 # ---------------------------------------------------------------------------------------------------------------------
 
