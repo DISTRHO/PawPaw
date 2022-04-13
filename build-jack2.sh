@@ -39,7 +39,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-jack2_args="--prefix=${jack2_prefix}"
+jack2_args="--example-tools --prefix=${jack2_prefix}"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
