@@ -97,7 +97,7 @@ elif [ "${MACOS}" -eq 1 ]; then
         patch_osx_binary_libs "${f}"
     done
 
-    jack2_lastversion=$(cat jack2/wscript | awk 'sub("VERSION=","")' | tr -d "'")
+    jack2_lastversion=$(cat jack2/wscript | awk 'sub("VERSION = ","")' | head -n 1 | tr -d "'")
     ./jack2/macosx/generate-pkg.sh "${jack2_prefix}${jack2_extra_prefix}/"
 
     qjackctl_app="${PAWPAW_PREFIX}/bin/QjackCtl.app"
