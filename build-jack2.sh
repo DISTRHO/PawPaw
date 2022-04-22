@@ -48,6 +48,7 @@ jack2_args="--example-tools"
 
 if [ -n "${jack2_extra_prefix}" ]; then
     jack2_args+=" --prefix=${jack2_extra_prefix}"
+    jack2_args+=" --destdir="${jack2_prefix}""
 else
     jack2_args+=" --prefix=${jack2_prefix}"
 fi
@@ -62,9 +63,7 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     fi
 fi
 
-if [ "${MACOS}" -eq 1 ]; then
-    jack2_args+=" --destdir="${jack2_prefix}""
-elif [ "${WIN32}" -eq 1 ]; then
+if [ "${WIN32}" -eq 1 ]; then
     jack2_args+=" --static"
 fi
 

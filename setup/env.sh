@@ -80,8 +80,9 @@ if [ "${MACOS}" -eq 1 ]; then
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8"
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8"
         BUILD_FLAGS+=" -mmacosx-version-min=10.8"
-        BUILD_FLAGS+=" -stdlib=libc++ -Wno-deprecated-declarations"
+        BUILD_FLAGS+=" -stdlib=libc++"
         BUILD_FLAGS+=" -arch x86_64"
+        BUILD_FLAGS+=" -Wno-deprecated-declarations"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
