@@ -85,6 +85,7 @@ if [ "${MACOS}" -eq 1 ]; then
         BUILD_FLAGS+=" -Wno-deprecated-declarations"
     fi
 elif [ "${WIN32}" -eq 1 ]; then
+    BUILD_FLAGS+=" -D__STDC_FORMAT_MACROS=1"
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
     BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL"
     BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
