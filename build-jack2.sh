@@ -30,16 +30,27 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 
 jack2_repo="https://github.com/jackaudio/jack2.git"
-jack2_prefix="${PAWPAW_PREFIX}-jack2"
 
-if [ "${MACOS}" -eq 1 ]; then
-    jack2_extra_prefix="/usr/local"
+if [ -n "${PAWPAW_JACK2_NO_CUSTOM_PREFIX}" ]; then
+    jack2_prefix="${PAWPAW_PREFIX}"
+else
+    jack2_prefix="${PAWPAW_PREFIX}-jack2"
+
+    if [ "${MACOS}" -eq 1 ]; then
+        jack2_extra_prefix="/usr/local"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-jack2_args="--example-tools --prefix=${jack2_prefix}"
+jack2_args="--example-tools"
+
+if [ -n "${jack2_extra_prefix}" ]; then
+    jack2_args+=" --prefix=${jack2_extra_prefix}"
+else
+    jack2_args+=" --prefix=${jack2_prefix}"
+fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
@@ -52,7 +63,6 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    jack2_args+=" --prefix=${jack2_extra_prefix}"
     jack2_args+=" --destdir="${jack2_prefix}""
 elif [ "${WIN32}" -eq 1 ]; then
     jack2_args+=" --static"
@@ -108,7 +118,6 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
         else
             s=""
         fi
-        # FIXME rule that works for server lib too, maybe ignoring suffix even
         sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
     fi
 fi
