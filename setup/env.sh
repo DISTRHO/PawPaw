@@ -84,6 +84,7 @@ if [ "${MACOS}" -eq 1 ]; then
         BUILD_FLAGS+=" -arch x86_64"
         BUILD_FLAGS+=" -Wno-deprecated-declarations"
     fi
+    BUILD_FLAGS+=" -Werror=objc-method-access"
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -D__STDC_FORMAT_MACROS=1"
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
