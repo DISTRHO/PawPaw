@@ -44,7 +44,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-jack2_args="--example-tools"
+jack2_args=""
 
 if [ -n "${jack2_extra_prefix}" ]; then
     jack2_args+=" --prefix=${jack2_extra_prefix}"
