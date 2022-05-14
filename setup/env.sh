@@ -76,6 +76,7 @@ if [ "${MACOS}" -eq 1 ]; then
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12"
         BUILD_FLAGS+=" -mmacosx-version-min=10.12"
         BUILD_FLAGS+=" -arch x86_64 -arch arm64"
+        export MACOSX_DEPLOYMENT_TARGET="10.12"
     else
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8"
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8"
@@ -83,6 +84,7 @@ if [ "${MACOS}" -eq 1 ]; then
         BUILD_FLAGS+=" -stdlib=libc++"
         BUILD_FLAGS+=" -arch x86_64"
         BUILD_FLAGS+=" -Wno-deprecated-declarations"
+        export MACOSX_DEPLOYMENT_TARGET="10.8"
     fi
     BUILD_FLAGS+=" -Werror=objc-method-access"
 elif [ "${WIN32}" -eq 1 ]; then
