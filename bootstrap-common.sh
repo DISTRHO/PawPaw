@@ -197,7 +197,7 @@ else
     export EXTRA_CFLAGS+=" -fsignaling-nans"
 fi
 
-download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.bz2"
+download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.xz"
 
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
 

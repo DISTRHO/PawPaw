@@ -27,7 +27,7 @@ FLAC_URL=${XIPH_URL}/flac
 OPUS_VERSION=1.3.1
 OPUS_URL=https://archive.mozilla.org/pub/opus
 
-LIBSNDFILE_VERSION=1.0.31
+LIBSNDFILE_VERSION=1.1.0
 LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}
 
 LIBSAMPLERATE_VERSION=0.1.9
