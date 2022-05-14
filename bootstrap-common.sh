@@ -183,6 +183,9 @@ fi
 
 LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 
+# force disable mp3 support for now, until we handle those libs
+LIBSNDFILE_EXTRAFLAGS+=" --disable-mpeg"
+
 # force intrinsic optimizations on macos-universal target
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     LIBSNDFILE_EXTRAFLAGS+=" ac_cv_header_immintrin_h=yes"
