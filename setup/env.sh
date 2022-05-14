@@ -90,7 +90,6 @@ if [ "${MACOS}" -eq 1 ]; then
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -D__STDC_FORMAT_MACROS=1"
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
-    BUILD_FLAGS+=" -DFLUIDSYNTH_NOT_A_DLL"
     BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
     BUILD_FLAGS+=" -mstackrealign"
 else
@@ -106,7 +105,10 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 ## link flags
 
 LINK_FLAGS="-L${PAWPAW_PREFIX}/lib ${BUILD_FLAGS} ${EXTRA_FLAGS}"
-LINK_FLAGS+=" -Werror=odr -Werror=lto-type-mismatch"
+
+if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
+    LINK_FLAGS+=" -Werror=odr -Werror=lto-type-mismatch"
+fi
 
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs -Wl,-x"
