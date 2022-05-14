@@ -286,7 +286,6 @@ FLUIDSYNTH_EXTRAFLAGS+=" -Denable-readline=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-trap-on-fpe=OFF"
 
 git_clone fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_URL}"
-patch_file fluidsynth "${FLUIDSYNTH_VERSION}" "CMakeLists.txt" 's/_init_lib_suffix "64"/_init_lib_suffix ""/'
 build_cmake fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_EXTRAFLAGS}"
 
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
