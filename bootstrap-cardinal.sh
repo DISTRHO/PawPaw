@@ -18,7 +18,6 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
-export PAWPAW_SKIP_FFTW=1
 export PAWPAW_SKIP_GLIB=1
 export PAWPAW_SKIP_LV2=1
 export PAWPAW_SKIP_SAMPLERATE=1
