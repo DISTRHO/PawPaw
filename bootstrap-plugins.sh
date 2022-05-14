@@ -40,16 +40,23 @@ source setup/versions.sh
 
 if [ -z "${PAWPAW_SKIP_FFTW}" ]; then
 
-FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
-
-# FIXME macos-universal proper optimizations
-if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
-    FFTW_EXTRAFLAGS+=" --enable-sse2"
+# fftw is not compatible with LTO
+if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
+    export EXTRA_CFLAGS="-fno-lto"
+    export EXTRA_LDFLAGS="-fno-lto"
 fi
 
-# if [ "${WIN32}" -eq 0 ]; then
-#     FFTW_EXTRAFLAGS+=" --enable-threads"
-# fi
+FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
+
+if [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ]; then
+    FFTW_EXTRAFLAGS+=" --with-slow-timer"
+    FFTW_EXTRAFLAGS+=" --enable-neon"
+elif [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
+    FFTW_EXTRAFLAGS+=" --with-slow-timer"
+# FIXME macos-universal proper optimizations
+elif [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    FFTW_EXTRAFLAGS+=" --enable-sse2"
+fi
 
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
@@ -65,7 +72,18 @@ fi # PAWPAW_SKIP_FFTW
 
 if [ -z "${PAWPAW_SKIP_FFTW}" ]; then
 
+# fftw is not compatible with LTO
+if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
+    export EXTRA_CFLAGS="-fno-lto"
+    export EXTRA_LDFLAGS="-fno-lto"
+fi
+
 FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
+
+if [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ] || [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
+    FFTWF_EXTRAFLAGS+=" --with-slow-timer"
+    FFTWF_EXTRAFLAGS+=" --enable-neon"
+fi
 
 copy_download fftw fftwf "${FFTW_VERSION}"
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
