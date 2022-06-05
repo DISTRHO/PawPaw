@@ -54,6 +54,7 @@ PAWPAW_TMPDIR="/tmp"
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
+BUILD_FLAGS+=" -fomit-frame-pointer -fprefetch-loop-arrays -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
 
@@ -88,10 +89,11 @@ if [ "${MACOS}" -eq 1 ]; then
     fi
     BUILD_FLAGS+=" -Werror=objc-method-access"
 elif [ "${WIN32}" -eq 1 ]; then
+    BUILD_FLAGS+=" -mstackrealign"
+    BUILD_FLAGS+=" -posix"
     BUILD_FLAGS+=" -D__STDC_FORMAT_MACROS=1"
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
     BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
-    BUILD_FLAGS+=" -mstackrealign"
 else
     BUILD_FLAGS+=" -fno-gnu-unique"
 fi
@@ -112,23 +114,16 @@ fi
 
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs -Wl,-x"
-
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        LINK_FLAGS+=" -mmacosx-version-min=10.12 -arch x86_64 -arch arm64"
-    else
-        LINK_FLAGS+=" -mmacosx-version-min=10.8 -stdlib=libc++ -arch x86_64"
-    fi
 else
     LINK_FLAGS+=" -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
+    LINK_FLAGS+=" -static-libgcc -static-libstdc++"
     if [ "${WIN32}" -eq 1 ]; then
-        LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
+        LINK_FLAGS+=" -static -Wl,-Bstatic"
         if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
             LINK_FLAGS+=" -lssp"
         else
             LINK_FLAGS+=" -lssp_nonshared"
         fi
-    else
-        LINK_FLAGS+=" -static-libgcc -static-libstdc++"
     fi
 fi
 
@@ -170,12 +165,12 @@ unset WINEARCH
 unset WINEDLLOVERRIDES
 unset WINEPREFIX
 
-if which nproc > /dev/null; then
-    MAKE_ARGS+="-j $(nproc)"
-    WAF_ARGS+="-j $(nproc)"
-elif [ "${MACOS}" -eq 1 ]; then
+if [ "${MACOS}" -eq 1 ]; then
     MAKE_ARGS+="-j $(sysctl -n hw.logicalcpu)"
     WAF_ARGS+="-j $(sysctl -n hw.logicalcpu)"
+elif which nproc > /dev/null; then
+    MAKE_ARGS+="-j $(nproc)"
+    WAF_ARGS+="-j $(nproc)"
 fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
