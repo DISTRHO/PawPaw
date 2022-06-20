@@ -54,9 +54,13 @@ PAWPAW_TMPDIR="/tmp"
 
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
-BUILD_FLAGS+=" -fomit-frame-pointer -fprefetch-loop-arrays -ftree-vectorize -funroll-loops"
+BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
+
+if [ "${MACOS}" -eq 0 ]; then
+    BUILD_FLAGS+=" -fprefetch-loop-arrays"
+fi
 
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
     BUILD_FLAGS+=" -fno-strict-aliasing -flto"
