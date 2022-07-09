@@ -64,7 +64,7 @@ GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
 LIBLO_VERSION=0.31
 LIBLO_URL=http://download.sourceforge.net/liblo
 
-LV2_VERSION=6cefc7df1a6158c79d23029df183c09b10b88cad
+LV2_VERSION=d97a1a4daff228bdd62c68859959d13077e47026
 LV2_URL=https://gitlab.com/lv2/lv2.git
 
 SERD_VERSION=0.30.8

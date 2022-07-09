@@ -5,6 +5,7 @@ INVALID_TARGET=0
 LINUX=0
 MACOS=0
 MACOS_UNIVERSAL=0
+WASM=0
 WIN32=0
 WIN64=0
 
@@ -17,9 +18,14 @@ function check_target() {
             MACOS=1
             MACOS_UNIVERSAL=1
             ;;
+        "wasm")
+            WASM=1
+            CROSS_COMPILING=1
+            PAWPAW_SKIP_FORTIFY=1
+            PAWPAW_SKIP_LTO=1
+            ;;
         "win32"|"MINGW32"*)
             WIN32=1
-            CROSS_COMPILING=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
             fi
@@ -70,6 +76,7 @@ function check_target() {
             echo "\tmacos"
             echo "\tmacos-old"
             echo "\tmacos-universal"
+            echo "\twasm"
             echo "\twin32"
             echo "\twin64"
             echo "\tnative"

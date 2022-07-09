@@ -53,6 +53,8 @@ if [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ]; then
     FFTW_EXTRAFLAGS+=" --enable-neon"
 elif [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     FFTW_EXTRAFLAGS+=" --with-slow-timer"
+elif [ "${WASM}" -eq 1 ]; then
+    FFTW_EXTRAFLAGS+=" --with-slow-timer"
 # FIXME macos-universal proper optimizations
 elif [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     FFTW_EXTRAFLAGS+=" --enable-sse2"
@@ -261,6 +263,11 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
+# FIXME glib does not build yet
+if [ "${WASM}" -eq 1 ]; then
+    PAWPAW_SKIP_FLUIDSYNTH=1
+fi
+
 if [ -z "${PAWPAW_SKIP_FLUIDSYNTH}" ]; then
 
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
@@ -328,6 +335,7 @@ CARLA_EXTRAFLAGS+=" HAVE_PYQT=false"
 CARLA_EXTRAFLAGS+=" HAVE_QT=false"
 CARLA_EXTRAFLAGS+=" HAVE_QT4=false"
 CARLA_EXTRAFLAGS+=" HAVE_QT5=false"
+CARLA_EXTRAFLAGS+=" HAVE_SDL=false"
 CARLA_EXTRAFLAGS+=" HAVE_SNDFILE=false"
 CARLA_EXTRAFLAGS+=" NOOPT=true"
 CARLA_EXTRAFLAGS+=" USING_JUCE=false"

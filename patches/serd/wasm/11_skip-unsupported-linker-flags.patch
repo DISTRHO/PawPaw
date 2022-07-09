@@ -1,0 +1,48 @@
+diff --git a/waflib/Tools/gcc.py b/waflib/Tools/gcc.py
+index acdd473..a8c1566 100644
+--- a/waflib/Tools/gcc.py
++++ b/waflib/Tools/gcc.py
+@@ -45,8 +45,8 @@ def gcc_common_flags(conf):
+ 	v.RPATH_ST            = '-Wl,-rpath,%s'
+ 
+ 	v.SONAME_ST           = '-Wl,-h,%s'
+-	v.SHLIB_MARKER        = '-Wl,-Bdynamic'
+-	v.STLIB_MARKER        = '-Wl,-Bstatic'
++	v.SHLIB_MARKER        = ''
++	v.STLIB_MARKER        = ''
+ 
+ 	v.cprogram_PATTERN    = '%s'
+ 
+@@ -54,7 +54,7 @@ def gcc_common_flags(conf):
+ 	v.LINKFLAGS_cshlib    = ['-shared']
+ 	v.cshlib_PATTERN      = 'lib%s.so'
+ 
+-	v.LINKFLAGS_cstlib    = ['-Wl,-Bstatic']
++	v.LINKFLAGS_cstlib    = []
+ 	v.cstlib_PATTERN      = 'lib%s.a'
+ 
+ 	v.LINKFLAGS_MACBUNDLE = ['-bundle', '-undefined', 'dynamic_lookup']
+diff --git a/waflib/Tools/gxx.py b/waflib/Tools/gxx.py
+index 22c5d26..a186b05 100644
+--- a/waflib/Tools/gxx.py
++++ b/waflib/Tools/gxx.py
+@@ -45,8 +45,8 @@ def gxx_common_flags(conf):
+ 	v.RPATH_ST            = '-Wl,-rpath,%s'
+ 
+ 	v.SONAME_ST           = '-Wl,-h,%s'
+-	v.SHLIB_MARKER        = '-Wl,-Bdynamic'
+-	v.STLIB_MARKER        = '-Wl,-Bstatic'
++	v.SHLIB_MARKER        = ''
++	v.STLIB_MARKER        = ''
+ 
+ 	v.cxxprogram_PATTERN  = '%s'
+ 
+@@ -54,7 +54,7 @@ def gxx_common_flags(conf):
+ 	v.LINKFLAGS_cxxshlib  = ['-shared']
+ 	v.cxxshlib_PATTERN    = 'lib%s.so'
+ 
+-	v.LINKFLAGS_cxxstlib  = ['-Wl,-Bstatic']
++	v.LINKFLAGS_cxxstlib  = []
+ 	v.cxxstlib_PATTERN    = 'lib%s.a'
+ 
+ 	v.LINKFLAGS_MACBUNDLE = ['-bundle', '-undefined', 'dynamic_lookup']

@@ -111,6 +111,8 @@ function _prebuild() {
     export CXX="${TARGET_CXX}"
     export DLLWRAP="${TARGET_DLLWRAP}"
     export LD="${TARGET_LD}"
+    export NM="${TARGET_NM}"
+    export RANLIB="${TARGET_RANLIB}"
     export STRIP="${TARGET_STRIP}"
     export WINDRES="${TARGET_WINDRES}"
 
@@ -163,6 +165,8 @@ function _postbuild() {
     unset CXX
     unset DLLWRAP
     unset LD
+    unset NM
+    unset RANLIB
     unset STRIP
     unset WINDRES
 
@@ -297,9 +301,14 @@ function build_cmake() {
     _prebuild "${name}" "${pkgdir}"
     mkdir -p "${pkgdir}/build"
 
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}"
+    if [ "${WASM}" -eq 1 ]; then
+        CMAKE_EXE_WRAPPER="emcmake"
     fi
+
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME} -DCMAKE_CROSSCOMPILING=ON"
+    fi
+
     if [ "${MACOS}" -eq 1 ]; then
         if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
             OSX_ARCHS="arm64;x86_64"
@@ -310,14 +319,13 @@ function build_cmake() {
         fi
         extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES=${OSX_ARCHS}"
         extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=${OSX_TARGET}"
-    fi
-    if [ "${WIN32}" -eq 1 ]; then
+    elif [ "${WIN32}" -eq 1 ]; then
         extraconfrules+=" -DCMAKE_RC_COMPILER=${WINDRES}"
     fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
-        cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
+        ${CMAKE_EXE_WRAPPER} cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
         touch ../.stamp_configured
         popd
     fi

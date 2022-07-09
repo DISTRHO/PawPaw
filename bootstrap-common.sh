@@ -167,8 +167,12 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
 fi
 
 # FIXME macos-universal proper optimizations
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
+fi
+
+if [ -n "${PAWPAW_SKIP_FORTIFY}" ] && [ "${PAWPAW_SKIP_FORTIFY}" -eq 1 ]; then
+    OPUS_EXTRAFLAGS+=" --disable-stack-protector"
 fi
 
 download opus "${OPUS_VERSION}" "${OPUS_URL}"
@@ -187,14 +191,20 @@ LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 LIBSNDFILE_EXTRAFLAGS+=" --disable-mpeg"
 
 # force intrinsic optimizations on macos-universal target
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     LIBSNDFILE_EXTRAFLAGS+=" ac_cv_header_immintrin_h=yes"
+fi
+
+# fix build, regex matching fails
+if [ "${WASM}" -eq 1 ]; then
+    LIBSNDFILE_EXTRAFLAGS+=" ax_cv_c_compiler_version=15.0.0"
+    LIBSNDFILE_EXTRAFLAGS+=" ax_cv_cxx_compiler_version=15.0.0"
 fi
 
 # otherwise tests fail
 export EXTRA_CFLAGS="-fno-associative-math -frounding-math"
 
-if [ "${MACOS}" -eq 1 ]; then
+if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     export EXTRA_CFLAGS+=" -fno-reciprocal-math"
 else
     export EXTRA_CFLAGS+=" -fsignaling-nans"

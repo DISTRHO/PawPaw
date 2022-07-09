@@ -17,6 +17,11 @@ elif [ "${MACOS}" -eq 1 ]; then
         PAWPAW_TARGET="macos"
     fi
 
+elif [ "${WASM}" -eq 1 ]; then
+    APP_EXT=".html"
+    CMAKE_SYSTEM_NAME="Emscripten"
+    PAWPAW_TARGET="wasm"
+
 elif [ "${WIN32}" -eq 1 ]; then
     APP_EXT=".exe"
     CMAKE_SYSTEM_NAME="Windows"
@@ -55,11 +60,15 @@ PAWPAW_TMPDIR="/tmp"
 BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
-BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG -D_FORTIFY_SOURCE=2"
-BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fstack-protector -fvisibility=hidden"
+BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG"
+BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
 
-if [ "${MACOS}" -eq 0 ]; then
+if [ "${MACOS}" -eq 0 ] && [ "${WASM}" -eq 0 ]; then
     BUILD_FLAGS+=" -fprefetch-loop-arrays"
+fi
+
+if [ -z "${PAWPAW_SKIP_FORTIFY}" ] || [ "${PAWPAW_SKIP_FORTIFY}" -eq 0 ]; then
+    BUILD_FLAGS+=" -D_FORTIFY_SOURCE=2 -fstack-protector"
 fi
 
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
@@ -70,7 +79,9 @@ if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
 elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ]; then
     BUILD_FLAGS+=" -mtune=generic -msse -msse2"
-    if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    if [ "${WASM}" -eq 1 ]; then
+        BUILD_FLAGS+=" -msse3 -msimd128"
+    elif [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
         BUILD_FLAGS+=" -mfpmath=sse"
     fi
 fi
@@ -92,6 +103,9 @@ if [ "${MACOS}" -eq 1 ]; then
         export MACOSX_DEPLOYMENT_TARGET="10.8"
     fi
     BUILD_FLAGS+=" -Werror=objc-method-access"
+elif [ "${WASM}" -eq 1 ]; then
+    # do we need anything here?
+    BUILD_FLAGS+=""
 elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -mstackrealign"
     BUILD_FLAGS+=" -posix"
@@ -118,6 +132,9 @@ fi
 
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
+elif [ "${WASM}" -eq 1 ]; then
+    LINK_FLAGS+=" -Wl,-O1,--gc-sections"
+    LINK_FLAGS+=" -sLLD_REPORT_UNDEFINED"
 else
     LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
@@ -154,11 +171,22 @@ TARGET_CC="${TOOLCHAIN_PREFIX_}gcc"
 TARGET_CXX="${TOOLCHAIN_PREFIX_}g++"
 TARGET_DLLWRAP="${TOOLCHAIN_PREFIX_}dllwrap"
 TARGET_LD="${TOOLCHAIN_PREFIX_}ld"
+TARGET_NM="${TOOLCHAIN_PREFIX_}nm"
+TARGET_RANLIB="${TOOLCHAIN_PREFIX_}ranlib"
 TARGET_STRIP="${TOOLCHAIN_PREFIX_}strip"
 TARGET_WINDRES="${TOOLCHAIN_PREFIX_}windres"
 TARGET_PATH="${PAWPAW_PREFIX}/bin:/usr/${TOOLCHAIN_PREFIX}/bin:${PATH}"
 TARGET_PKG_CONFIG="${PAWPAW_PREFIX}/bin/pkg-config --static"
 TARGET_PKG_CONFIG_PATH="${PAWPAW_PREFIX}/lib/pkgconfig"
+
+if [ "${WASM}" -eq 1 ]; then
+    TARGET_AR="emar"
+    TARGET_CC="emcc"
+    TARGET_CXX="em++"
+    TARGET_NM="emnm"
+    TARGET_RANLIB="emranlib"
+    TARGET_STRIP="emstrip"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # other
