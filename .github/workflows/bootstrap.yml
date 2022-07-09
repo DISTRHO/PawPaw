@@ -72,9 +72,9 @@ jobs:
             sudo apt-get install -yqq libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
           fi
           # extra, for wasm
-          if [ '${{ matrix.target }}' == 'wasm' ] && [ ! -e ~/PawPawBuilds/emsdk ]; then \
-            git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk; \
-            cd emsdk && ./emsdk install latest && ./emsdk activate latest; \
+          if [ '${{ matrix.target }}' == 'wasm' ]; then \
+            [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk; \
+            cd ~/PawPawBuilds/emsdk && ./emsdk install latest && ./emsdk activate latest; \
           fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then \
@@ -176,9 +176,9 @@ jobs:
             sudo apt-get install -yqq libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
           fi
           # extra, for wasm
-          if [ '${{ matrix.target }}' == 'wasm' ] && [ ! -e ~/PawPawBuilds/emsdk ]; then \
-            git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk; \
-            cd emsdk && ./emsdk install latest && ./emsdk activate latest; \
+          if [ '${{ matrix.target }}' == 'wasm' ]; then \
+            [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk; \
+            cd ~/PawPawBuilds/emsdk && ./emsdk install latest && ./emsdk activate latest; \
           fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then \
@@ -273,9 +273,9 @@ jobs:
             sudo apt-get install -yqq libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
           fi
           # extra, for wasm
-          if [ '${{ matrix.target }}' == 'wasm' ] && [ ! -e ~/PawPawBuilds/emsdk ]; then \
-            git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk; \
-            cd emsdk && ./emsdk install latest && ./emsdk activate latest; \
+          if [ '${{ matrix.target }}' == 'wasm' ]; then \
+            [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk; \
+            cd ~/PawPawBuilds/emsdk && ./emsdk install latest && ./emsdk activate latest; \
           fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then \
