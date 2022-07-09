@@ -193,7 +193,9 @@ function build_autoconf() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ "${WASM}" -eq 1 ]; then
+        extraconfrules="--host=x86_64-linux-gnu ${extraconfrules}"
+    elif [ "${CROSS_COMPILING}" -eq 1 ]; then
         extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
 

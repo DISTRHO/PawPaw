@@ -22,7 +22,6 @@ function check_target() {
             WASM=1
             CROSS_COMPILING=1
             PAWPAW_SKIP_FORTIFY=1
-            PAWPAW_SKIP_LTO=1
             ;;
         "win32"|"MINGW32"*)
             WIN32=1

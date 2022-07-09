@@ -29,6 +29,10 @@ jobs:
             installer: homebrew
             os: macos-10.15
             target: macos-universal
+          - name: wasm
+            installer: apt
+            os: ubuntu-20.04
+            target: wasm
           - name: win32
             installer: apt
             os: ubuntu-20.04
@@ -67,6 +71,11 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux' ]; then \
             sudo apt-get install -yqq libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev; \
           fi
+          # extra, for wasm
+          if [ '${{ matrix.target }}' == 'wasm' ]; then \
+            git clone https://github.com/emscripten-core/emsdk.git; \
+            cd emsdk && ./emsdk install latest && ./emsdk activate latest; \
+          fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then \
             sudo dpkg --add-architecture i386; \
@@ -95,6 +104,9 @@ jobs:
       - name: Run bootstrap
         shell: bash
         run: |
+          if [ '${{ matrix.target }}' == 'wasm' ]; then \
+            source ./emsdk/emsdk_env.sh; \
+          fi
           ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
