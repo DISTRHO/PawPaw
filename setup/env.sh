@@ -117,9 +117,9 @@ if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    LINK_FLAGS+=" -Wl,-dead_strip -Wl,-dead_strip_dylibs -Wl,-x"
+    LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
 else
-    LINK_FLAGS+=" -Wl,-O1 -Wl,--as-needed -Wl,--gc-sections -Wl,--no-undefined -Wl,--strip-all"
+    LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
         LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
         if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
