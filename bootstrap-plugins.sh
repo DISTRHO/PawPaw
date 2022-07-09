@@ -150,6 +150,9 @@ fi # PAWPAW_SKIP_GLIB
 # ---------------------------------------------------------------------------------------------------------------------
 # liblo
 
+# FIXME does not build yet
+if [ "${WASM}" -eq 0 ]; then
+
 LIBLO_EXTRAFLAGS="--enable-threads --disable-examples --disable-tools"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
@@ -171,6 +174,8 @@ build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
+
+fi # !WASM
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
