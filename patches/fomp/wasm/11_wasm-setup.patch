@@ -1,0 +1,53 @@
+diff --git a/waflib/Tools/__pycache__/gxx.cpython-310.pyc b/waflib/Tools/__pycache__/gxx.cpython-310.pyc
+index 76405de..c407511 100644
+Binary files a/waflib/Tools/__pycache__/gxx.cpython-310.pyc and b/waflib/Tools/__pycache__/gxx.cpython-310.pyc differ
+diff --git a/waflib/Tools/gcc.py b/waflib/Tools/gcc.py
+index acdd473..9cf5533 100644
+--- a/waflib/Tools/gcc.py
++++ b/waflib/Tools/gcc.py
+@@ -45,16 +45,16 @@ def gcc_common_flags(conf):
+ 	v.RPATH_ST            = '-Wl,-rpath,%s'
+ 
+ 	v.SONAME_ST           = '-Wl,-h,%s'
+-	v.SHLIB_MARKER        = '-Wl,-Bdynamic'
+-	v.STLIB_MARKER        = '-Wl,-Bstatic'
++	v.SHLIB_MARKER        = ''
++	v.STLIB_MARKER        = ''
+ 
+ 	v.cprogram_PATTERN    = '%s'
+ 
+ 	v.CFLAGS_cshlib       = ['-fPIC']
+-	v.LINKFLAGS_cshlib    = ['-shared']
++	v.LINKFLAGS_cshlib    = ['-sSIDE_MODULE=2']
+ 	v.cshlib_PATTERN      = 'lib%s.so'
+ 
+-	v.LINKFLAGS_cstlib    = ['-Wl,-Bstatic']
++	v.LINKFLAGS_cstlib    = []
+ 	v.cstlib_PATTERN      = 'lib%s.a'
+ 
+ 	v.LINKFLAGS_MACBUNDLE = ['-bundle', '-undefined', 'dynamic_lookup']
+diff --git a/waflib/Tools/gxx.py b/waflib/Tools/gxx.py
+index 22c5d26..d18829d 100644
+--- a/waflib/Tools/gxx.py
++++ b/waflib/Tools/gxx.py
+@@ -45,16 +45,16 @@ def gxx_common_flags(conf):
+ 	v.RPATH_ST            = '-Wl,-rpath,%s'
+ 
+ 	v.SONAME_ST           = '-Wl,-h,%s'
+-	v.SHLIB_MARKER        = '-Wl,-Bdynamic'
+-	v.STLIB_MARKER        = '-Wl,-Bstatic'
++	v.SHLIB_MARKER        = ''
++	v.STLIB_MARKER        = ''
+ 
+ 	v.cxxprogram_PATTERN  = '%s'
+ 
+ 	v.CXXFLAGS_cxxshlib   = ['-fPIC']
+-	v.LINKFLAGS_cxxshlib  = ['-shared']
++	v.LINKFLAGS_cxxshlib  = ['-sSIDE_MODULE=2']
+ 	v.cxxshlib_PATTERN    = 'lib%s.so'
+ 
+-	v.LINKFLAGS_cxxstlib  = ['-Wl,-Bstatic']
++	v.LINKFLAGS_cxxstlib  = []
+ 	v.cxxstlib_PATTERN    = 'lib%s.a'
+ 
+ 	v.LINKFLAGS_MACBUNDLE = ['-bundle', '-undefined', 'dynamic_lookup']
