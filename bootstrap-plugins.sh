@@ -82,8 +82,7 @@ fi
 
 FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
 
-if [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ] || [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
-    FFTWF_EXTRAFLAGS+=" --with-slow-timer"
+if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     FFTWF_EXTRAFLAGS+=" --enable-neon"
 fi
 

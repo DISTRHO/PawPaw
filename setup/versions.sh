@@ -21,7 +21,7 @@ LIBOGG_URL=${XIPH_URL}/ogg
 LIBVORBIS_VERSION=1.3.7
 LIBVORBIS_URL=${XIPH_URL}/vorbis
 
-FLAC_VERSION=1.3.3
+FLAC_VERSION=1.3.4
 FLAC_URL=${XIPH_URL}/flac
 
 OPUS_VERSION=1.3.1
@@ -64,7 +64,7 @@ GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
 LIBLO_VERSION=0.31
 LIBLO_URL=http://download.sourceforge.net/liblo
 
-LV2_VERSION=d97a1a4daff228bdd62c68859959d13077e47026
+LV2_VERSION=d97a1a4daff228bdd62c68859959d13077e47026 # 1.18.4
 LV2_URL=https://gitlab.com/lv2/lv2.git
 
 SERD_VERSION=0.30.8
@@ -76,17 +76,17 @@ SORD_URL=${DROBILLA_URL}
 SRATOM_VERSION=0.6.8
 SRATOM_URL=${DROBILLA_URL}
 
-LILV_VERSION=0.24.12
+LILV_VERSION=0.24.14
 LILV_URL=${DROBILLA_URL}
 
-LV2LINT_VERSION=0.14.0
+LV2LINT_VERSION=0.16.2
 LV2LINT_URL=https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/${LV2LINT_VERSION}
 
-KXSTUDIO_LV2_EXTENSIONS_VERSION=4f6802f9f0ac9f5e2a909e4ab2cfbf71648a1b1d
+KXSTUDIO_LV2_EXTENSIONS_VERSION=58010323797754dc6cd50084d456e5ac2e7c034c
 KXSTUDIO_LV2_EXTENSIONS_URL=https://github.com/KXStudio/LV2-Extensions.git
 
-MOD_SDK_VERSION=21a80729dde1439dcea03bfafbc42981fb503d8a
-MOD_SDK_URL=https://github.com/moddevices/mod-sdk.git
+MOD_SDK_VERSION=60abe7176b4e4f46f20a41cdf3d65d909c8d8a34
+MOD_SDK_URL=https://github.com/moddevices/mod-lv2-extensions.git
 
 FLUIDSYNTH_VERSION=f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
 FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
@@ -94,7 +94,7 @@ FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 MXML_VERSION=38b044ed8ca2a611ed9ed3e26c4b46416335194e # 3.2
 MXML_URL=https://github.com/michaelrsweet/mxml.git
 
-CARLA_VERSION=613e6950581ad0cb3c037fac7f0db89633e099e6
+CARLA_VERSION=08af009062d1e542162e7f071f7f667a721235a5 # 2.5.0pre
 CARLA_URL=https://github.com/falkTX/Carla.git
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -103,9 +103,6 @@ CARLA_URL=https://github.com/falkTX/Carla.git
 LV2LINT_SUPPORTED=1
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    LV2LINT_SUPPORTED=0
-fi
-if [ "${MACOS}" -eq 1 ] && [ "$(uname -r)" = "12.6.0" ]; then
     LV2LINT_SUPPORTED=0
 fi
 
@@ -123,7 +120,7 @@ fi
 QT5_URL=https://download.qt.io/archive/qt/${QT5_MVERSION}/${QT5_VERSION}/submodules
 
 # ---------------------------------------------------------------------------------------------------------------------
-# bootstrap carla
+# bootstrap carla stuff
 
 FILE_VERSION=5.34
 FILE_URL=ftp://ftp.astron.com/pub/file
@@ -156,7 +153,7 @@ else
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# bootstrap jack
+# bootstrap jack stuff
 
 AFTEN_VERSION=0.0.8
 AFTEN_URL=http://downloads.sourceforge.net/aften

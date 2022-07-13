@@ -63,8 +63,9 @@ BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
 
-if [ "${MACOS}" -eq 0 ] && [ "${WASM}" -eq 0 ]; then
+if [ "${GCC}" -eq 1 ]; then
     BUILD_FLAGS+=" -fprefetch-loop-arrays"
+    BUILD_FLAGS+=" -fno-gnu-unique"
 fi
 
 if [ -z "${PAWPAW_SKIP_FORTIFY}" ] || [ "${PAWPAW_SKIP_FORTIFY}" -eq 0 ]; then
@@ -112,8 +113,6 @@ elif [ "${WIN32}" -eq 1 ]; then
     BUILD_FLAGS+=" -D__STDC_FORMAT_MACROS=1"
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
     BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
-else
-    BUILD_FLAGS+=" -fno-gnu-unique"
 fi
 
 # anything that talks to db should have this
@@ -138,14 +137,15 @@ elif [ "${WASM}" -eq 1 ]; then
 else
     LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
-        LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
+        LINK_FLAGS+=" -static"
+    fi
+    LINK_FLAGS+=" -static-libgcc -static-libstdc++ -Wl,-Bstatic"
+    if [ "${WIN32}" -eq 1 ]; then
         if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
             LINK_FLAGS+=" -lssp"
         else
             LINK_FLAGS+=" -lssp_nonshared"
         fi
-    else
-        LINK_FLAGS+=" -static-libgcc -static-libstdc++"
     fi
 fi
 

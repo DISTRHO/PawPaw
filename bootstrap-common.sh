@@ -204,7 +204,7 @@ fi
 # otherwise tests fail
 export EXTRA_CFLAGS="-fno-associative-math -frounding-math"
 
-if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
+if [ "${CLANG}" -eq 1 ]; then
     export EXTRA_CFLAGS+=" -fno-reciprocal-math"
 else
     export EXTRA_CFLAGS+=" -fsignaling-nans"

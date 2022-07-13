@@ -1,5 +1,7 @@
---- flac-static-1.3.3.orig/include/FLAC++/export.h
-+++ flac-static-1.3.3/include/FLAC++/export.h
+diff --git a/include/FLAC++/export.h b/include/FLAC++/export.h
+index d8dccf5..9728e8a 100644
+--- a/include/FLAC++/export.h
++++ b/include/FLAC++/export.h
 @@ -56,24 +56,8 @@
   * \{
   */
@@ -7,7 +9,7 @@
 -#if defined(FLAC__NO_DLL)
  #define FLACPP_API
  
--#elif defined(_MSC_VER)
+-#elif defined(_WIN32)
 -#ifdef FLACPP_API_EXPORTS
 -#define	FLACPP_API __declspec(dllexport)
 -#else
@@ -22,11 +24,13 @@
 -
 -#endif
 -
- /* These #defines will mirror the libtool-based library version number, see
+ /* These \#defines will mirror the libtool-based library version number, see
   * http://www.gnu.org/software/libtool/manual/libtool.html#Libtool-versioning
   */
---- flac-static-1.3.3.orig/include/FLAC/export.h
-+++ flac-static-1.3.3/include/FLAC/export.h
+diff --git a/include/FLAC/export.h b/include/FLAC/export.h
+index 3e3e764..d148a4b 100644
+--- a/include/FLAC/export.h
++++ b/include/FLAC/export.h
 @@ -56,24 +56,8 @@
   * \{
   */
@@ -34,7 +38,7 @@
 -#if defined(FLAC__NO_DLL)
  #define FLAC_API
  
--#elif defined(_MSC_VER)
+-#elif defined(_WIN32)
 -#ifdef FLAC_API_EXPORTS
 -#define	FLAC_API __declspec(dllexport)
 -#else
@@ -49,6 +53,6 @@
 -
 -#endif
 -
- /** These #defines will mirror the libtool-based library version number, see
+ /** These \#defines will mirror the libtool-based library version number, see
   * http://www.gnu.org/software/libtool/manual/libtool.html#Libtool-versioning
   */
