@@ -137,15 +137,14 @@ elif [ "${WASM}" -eq 1 ]; then
 else
     LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all"
     if [ "${WIN32}" -eq 1 ]; then
-        LINK_FLAGS+=" -static"
-    fi
-    LINK_FLAGS+=" -static-libgcc -static-libstdc++ -Wl,-Bstatic"
-    if [ "${WIN32}" -eq 1 ]; then
+        LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
         if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
             LINK_FLAGS+=" -lssp"
         else
             LINK_FLAGS+=" -lssp_nonshared"
         fi
+    else
+        LINK_FLAGS+=" -static-libgcc -static-libstdc++"
     fi
 fi
 
