@@ -94,7 +94,7 @@ FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 MXML_VERSION=38b044ed8ca2a611ed9ed3e26c4b46416335194e # 3.2
 MXML_URL=https://github.com/michaelrsweet/mxml.git
 
-CARLA_VERSION=08af009062d1e542162e7f071f7f667a721235a5 # 2.5.0pre
+CARLA_VERSION=f78670e8483a529286a83e8bb989ed8bf7af8a9a # 2.5.0pre
 CARLA_URL=https://github.com/falkTX/Carla.git
 
 # ---------------------------------------------------------------------------------------------------------------------
