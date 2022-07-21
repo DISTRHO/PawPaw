@@ -61,7 +61,8 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -165,7 +166,8 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -262,7 +264,8 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -369,7 +372,8 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -468,7 +472,8 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -567,7 +572,8 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
+          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
