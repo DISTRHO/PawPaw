@@ -133,6 +133,8 @@ if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
 elif [ "${WASM}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-O1,--gc-sections"
+    LINK_FLAGS+=" -sAGGRESSIVE_VARIABLE_ELIMINATION=1"
+    LINK_FLAGS+=" -sENVIRONMENT=web"
     LINK_FLAGS+=" -sLLD_REPORT_UNDEFINED"
 else
     LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all"
