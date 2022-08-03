@@ -23,11 +23,11 @@ jobs:
             target: linux
           - name: macos
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos-universal
           - name: wasm
             installer: apt
@@ -92,11 +92,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: (homebrew) Fix up Xcode
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -128,11 +123,11 @@ jobs:
             target: linux
           - name: macos
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos-universal
           - name: wasm
             installer: apt
@@ -197,11 +192,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: (homebrew) Fix up Xcode
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -225,11 +215,11 @@ jobs:
             target: linux
           - name: macos
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos-universal
           - name: wasm
             installer: apt
@@ -295,11 +285,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: (homebrew) Fix up Xcode
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -337,11 +322,11 @@ jobs:
         include:
           - name: macos
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos-universal
           - name: win32
             installer: apt
@@ -398,11 +383,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: (homebrew) Fix up Xcode
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -437,11 +417,11 @@ jobs:
         include:
           - name: macos
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos-universal
           - name: win32
             installer: apt
@@ -498,11 +478,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: (homebrew) Fix up Xcode
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -537,11 +512,11 @@ jobs:
         include:
           - name: macos
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-10.15
+            os: macos-11
             target: macos-universal
           - name: win32
             installer: apt
@@ -598,11 +573,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake jq meson
-      - name: (homebrew) Fix up Xcode
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Cache debian packages
         if: ${{ matrix.installer == 'apt' }}
         run: |
