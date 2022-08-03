@@ -305,10 +305,17 @@ function build_cmake() {
 
     if [ "${WASM}" -eq 1 ]; then
         CMAKE_EXE_WRAPPER="emcmake"
-    fi
-
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME} -DCMAKE_CROSSCOMPILING=ON"
+    elif [ "${CROSS_COMPILING}" -eq 1 ]; then
+        local CMAKE_AR=$(which ${TARGET_AR})
+        local CMAKE_RANLIB=$(which ${TARGET_RANLIB})
+        extraconfrules+=" -DCMAKE_CROSSCOMPILING=ON"
+        extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}"
+        extraconfrules+=" -DCMAKE_AR=${CMAKE_AR}"
+        extraconfrules+=" -DCMAKE_C_COMPILER_AR=${CMAKE_AR}"
+        extraconfrules+=" -DCMAKE_CXX_COMPILER_AR=${CMAKE_AR}"
+        extraconfrules+=" -DCMAKE_RANLIB=${CMAKE_RANLIB}"
+        extraconfrules+=" -DCMAKE_C_COMPILER_RANLIB=${CMAKE_RANLIB}"
+        extraconfrules+=" -DCMAKE_CXX_COMPILER_RANLIB=${CMAKE_RANLIB}"
     fi
 
     if [ "${MACOS}" -eq 1 ]; then

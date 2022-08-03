@@ -8,7 +8,7 @@ on:
     branches:
       - '*'
 env:
-  CACHE_VERSION: 13
+  CACHE_VERSION: 14
   DEBIAN_FRONTEND: noninteractive
   HOMEBREW_NO_AUTO_UPDATE: 1
 
