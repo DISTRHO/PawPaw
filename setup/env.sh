@@ -57,7 +57,7 @@ PAWPAW_TMPDIR="/tmp"
 
 ## build flags
 
-BUILD_FLAGS="-O2 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
+BUILD_FLAGS="-O3 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG"
