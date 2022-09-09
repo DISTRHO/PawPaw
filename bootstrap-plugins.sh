@@ -48,7 +48,9 @@ fi
 
 FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
 
-if [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ]; then
+if [ "${TOOLCHAIN_PREFIX}" = "riscv64-linux-gnu" ]; then
+    FFTW_EXTRAFLAGS+=" --with-slow-timer"
+elif [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ]; then
     FFTW_EXTRAFLAGS+=" --with-slow-timer"
     FFTW_EXTRAFLAGS+=" --enable-neon"
 elif [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
@@ -315,8 +317,15 @@ fi # PAWPAW_SKIP_FLUIDSYNTH
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
 
+MXML_EXTRAFLAGS=""
+
+# force build
+if [ "${TOOLCHAIN_PREFIX}" = "riscv64-linux-gnu" ]; then
+    MXML_EXTRAFLAGS+=" ac_cv_host=riscv64-linux-gnu"
+fi
+
 git_clone mxml "${MXML_VERSION}" "${MXML_URL}"
-build_autoconf mxml "${MXML_VERSION}"
+build_autoconf mxml "${MXML_VERSION}" "${MXML_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)

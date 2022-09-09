@@ -229,6 +229,10 @@ LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
 if [ "${CROSS_COMPILING}" -eq 1 ] || [ "${MACOS}" -eq 1 ]; then
     LIBSAMPLERATE_EXTRAFLAGS+=" --disable-sndfile"
 fi
+# force build
+if [ "${TOOLCHAIN_PREFIX}" = "riscv64-linux-gnu" ]; then
+    LIBSAMPLERATE_EXTRAFLAGS+=" ac_cv_host=riscv64-linux-gnu"
+fi
 
 download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}"
 build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_EXTRAFLAGS}"

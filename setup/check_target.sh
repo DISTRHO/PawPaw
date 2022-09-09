@@ -80,6 +80,13 @@ function check_target() {
             # TOOLCHAIN_PREFIX="i686-linux-gnu"
             # TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             ;;
+        "linux-riscv64")
+            GCC=1
+            CROSS_COMPILING=1
+            LINUX=1
+            TOOLCHAIN_PREFIX="riscv64-linux-gnu"
+            TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            ;;
         "native")
             target=$(uname -s)
             check_target

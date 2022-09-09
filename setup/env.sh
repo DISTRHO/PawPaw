@@ -64,7 +64,9 @@ BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
 
 if [ "${GCC}" -eq 1 ]; then
-    BUILD_FLAGS+=" -fprefetch-loop-arrays"
+    if [ "${TOOLCHAIN_PREFIX}" != "riscv64-linux-gnu" ]; then
+        BUILD_FLAGS+=" -fprefetch-loop-arrays"
+    fi
     BUILD_FLAGS+=" -fno-gnu-unique"
 fi
 
@@ -78,7 +80,7 @@ fi
 
 if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
-elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ]; then
+elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ] && [ "${TOOLCHAIN_PREFIX}" != "riscv64-linux-gnu" ]; then
     BUILD_FLAGS+=" -mtune=generic -msse -msse2"
     if [ "${WASM}" -eq 1 ]; then
         BUILD_FLAGS+=" -msse3 -msimd128"
