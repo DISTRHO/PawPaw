@@ -100,7 +100,7 @@ fi # PAWPAW_SKIP_FFTW
 # ---------------------------------------------------------------------------------------------------------------------
 # pcre
 
-if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+if [ "${MACOS}" -eq 1 ] || [ -n "${TOOLCHAIN_PREFIX}" ]; then
     download pcre "${PCRE_VERSION}" "${PCRE_URL}"
     build_autoconf pcre "${PCRE_VERSION}"
 fi
@@ -179,22 +179,16 @@ fi
 fi # !WASM
 
 # ---------------------------------------------------------------------------------------------------------------------
-# lv2
-
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
-
-git_clone lv2 "${LV2_VERSION}" "${LV2_URL}"
-build_waf lv2 "${LV2_VERSION}" "--lv2dir=${PAWPAW_PREFIX}/lib/lv2 --no-coverage --no-plugins"
-
-fi # PAWPAW_SKIP_LV2
-
-# ---------------------------------------------------------------------------------------------------------------------
 # serd
 
 if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
-download serd "${SERD_VERSION}" "${SERD_URL}" "tar.bz2"
-build_waf serd "${SERD_VERSION}" "--static --no-shared --no-utils"
+if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
+    SERD_EXTRAFLAGS="-Dtools=disabled"
+fi
+
+download serd "${SERD_VERSION}" "${SERD_URL}" "tar.xz"
+build_meson serd "${SERD_VERSION}" "-Ddefault_library=static -Ddocs=disabled ${SERD_EXTRAFLAGS}"
 
 fi # PAWPAW_SKIP_LV2
 
@@ -203,12 +197,22 @@ fi # PAWPAW_SKIP_LV2
 
 if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
-if [ "${CROSS_COMPILING}" -eq 1 ] && [ -z "${EXE_WRAPPER}" ]; then
-    SORD_EXTRAFLAGS="--no-utils"
+if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
+    SORD_EXTRAFLAGS="-Dtools=disabled"
 fi
 
-download sord "${SORD_VERSION}" "${SORD_URL}" "tar.bz2"
-build_waf sord "${SORD_VERSION}" "--static --no-shared ${SORD_EXTRAFLAGS}"
+download sord "${SORD_VERSION}" "${SORD_URL}" "tar.xz"
+build_meson sord "${SORD_VERSION}" "-Ddefault_library=static -Ddocs=disabled ${SORD_EXTRAFLAGS}"
+
+fi # PAWPAW_SKIP_LV2
+
+# ---------------------------------------------------------------------------------------------------------------------
+# lv2
+
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+
+git_clone lv2 "${LV2_VERSION}" "${LV2_URL}"
+build_meson lv2 "${LV2_VERSION}" "-Dlv2dir=${PAWPAW_PREFIX}/lib/lv2 -Dplugins=disabled"
 
 fi # PAWPAW_SKIP_LV2
 
@@ -217,8 +221,8 @@ fi # PAWPAW_SKIP_LV2
 
 if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
-download sratom "${SRATOM_VERSION}" "${SRATOM_URL}" "tar.bz2"
-build_waf sratom "${SRATOM_VERSION}" "--static --no-shared"
+download sratom "${SRATOM_VERSION}" "${SRATOM_URL}" "tar.xz"
+build_meson sratom "${SRATOM_VERSION}" "-Ddefault_library=static -Ddocs=disabled"
 
 fi # PAWPAW_SKIP_LV2
 
@@ -227,9 +231,12 @@ fi # PAWPAW_SKIP_LV2
 
 if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
-download lilv "${LILV_VERSION}" "${LILV_URL}" "tar.bz2"
-build_waf lilv "${LILV_VERSION}" "--static --no-bash-completion --no-bindings --no-shared"
-# --static-progs
+if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
+    LILV_EXTRAFLAGS="-Dtools=disabled"
+fi
+
+download lilv "${LILV_VERSION}" "${LILV_URL}" "tar.xz"
+build_meson lilv "${LILV_VERSION}" "-Ddefault_library=static -Dbindings_py=disabled -Ddocs=disabled ${LILV_EXTRAFLAGS}"
 
 fi # PAWPAW_SKIP_LV2
 

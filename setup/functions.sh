@@ -391,7 +391,7 @@ function build_meson() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ]; then
         extraconfrules="--cross-file "${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini" ${extraconfrules}"
     fi
 
@@ -399,7 +399,7 @@ function build_meson() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        meson build --buildtype release --prefix "${PAWPAW_PREFIX}" ${extraconfrules}
+        meson build --buildtype release --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
         touch .stamp_configured
         popd
     fi

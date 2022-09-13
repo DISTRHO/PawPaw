@@ -21,11 +21,11 @@ LIBOGG_URL=${XIPH_URL}/ogg
 LIBVORBIS_VERSION=1.3.7
 LIBVORBIS_URL=${XIPH_URL}/vorbis
 
-FLAC_VERSION=1.3.4
+FLAC_VERSION=1.4.0
 FLAC_URL=${XIPH_URL}/flac
 
 OPUS_VERSION=1.3.1
-OPUS_URL=https://archive.mozilla.org/pub/opus
+OPUS_URL=${XIPH_URL}/opus
 
 LIBSNDFILE_VERSION=1.1.0
 LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}
@@ -64,19 +64,19 @@ GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
 LIBLO_VERSION=0.31
 LIBLO_URL=http://download.sourceforge.net/liblo
 
-LV2_VERSION=d97a1a4daff228bdd62c68859959d13077e47026 # 1.18.4
+LV2_VERSION=0bcde338db1c63bbc503b4d1f6d7b55ed43154af # 1.18.10
 LV2_URL=https://gitlab.com/lv2/lv2.git
 
-SERD_VERSION=0.30.8
+SERD_VERSION=0.30.16
 SERD_URL=${DROBILLA_URL}
 
-SORD_VERSION=0.16.8
+SORD_VERSION=0.16.14
 SORD_URL=${DROBILLA_URL}
 
-SRATOM_VERSION=0.6.8
+SRATOM_VERSION=0.6.14
 SRATOM_URL=${DROBILLA_URL}
 
-LILV_VERSION=0.24.14
+LILV_VERSION=0.24.20
 LILV_URL=${DROBILLA_URL}
 
 LV2LINT_VERSION=0.16.2
@@ -94,7 +94,7 @@ FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 MXML_VERSION=38b044ed8ca2a611ed9ed3e26c4b46416335194e # 3.2
 MXML_URL=https://github.com/michaelrsweet/mxml.git
 
-CARLA_VERSION=f78670e8483a529286a83e8bb989ed8bf7af8a9a # 2.5.0pre
+CARLA_VERSION=963f194b0ed93829188ffda23320b1dc848f07d8 # 2.5.0pre
 CARLA_URL=https://github.com/falkTX/Carla.git
 
 # ---------------------------------------------------------------------------------------------------------------------
