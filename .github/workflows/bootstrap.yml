@@ -35,11 +35,11 @@ jobs:
             target: wasm
           - name: win32
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win32
           - name: win64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
     steps:
@@ -135,11 +135,11 @@ jobs:
             target: wasm
           - name: win32
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win32
           - name: win64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
     steps:
@@ -227,11 +227,11 @@ jobs:
             target: wasm
           - name: win32
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win32
           - name: win64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
     needs: common
@@ -330,11 +330,11 @@ jobs:
             target: macos-universal
           - name: win32
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win32
           - name: win64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
     needs: common
@@ -425,11 +425,11 @@ jobs:
             target: macos-universal
           - name: win32
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win32
           - name: win64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
     needs: common
@@ -520,11 +520,11 @@ jobs:
             target: macos-universal
           - name: win32
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win32
           - name: win64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
     needs: [plugins, qt]
