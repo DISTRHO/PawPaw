@@ -56,13 +56,20 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
+          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -156,13 +163,20 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
+          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -249,13 +263,20 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
+          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -352,13 +373,20 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
+          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -447,13 +475,20 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
+          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -542,13 +577,20 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
           sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo apt-get update -qq
+          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
+          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
