@@ -69,8 +69,8 @@ function build_conf_python() {
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
 
@@ -125,14 +125,16 @@ function build_pyqt() {
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility=hidden//')"
-    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--gc-sections//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
 
     if [ "${WIN32}" -eq 1 ]; then
         export CXXFLAGS+=" -Wno-deprecated-copy"
@@ -141,6 +143,12 @@ function build_pyqt() {
     # non-standard vars used by sip/pyqt
     export LFLAGS="${LDFLAGS}"
     export LINK="${CXX}"
+
+    # custom library path so python runs
+    local penv=""
+    if [ "${LINUX}" -eq 1 ]; then
+        penv="env LD_LIBRARY_PATH=${PAWPAW_PREFIX}/lib"
+    fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -153,9 +161,9 @@ function build_pyqt() {
             ln -sf "${PAWPAW_PREFIX}/bin"/Qt* release/
         fi
 
-        ${python} configure.py ${extraconfrules}
+        ${penv} ${python} configure.py ${extraconfrules}
 
-        if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        if [ -n "${TOOLCHAIN_PREFIX}" ]; then
             # use abstract python3 path
             sed -i -e 's|/usr/bin/python3|python3|g' Makefile
 
@@ -181,14 +189,14 @@ function build_pyqt() {
             popd
         fi
 
-        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS}
+        make CC="${TARGET_CC}" CXX="${TARGET_CXX}" LINK="${TARGET_CXX}" PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
+        ${penv} make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
         if [ -f "QtCore/Makefile.Release" ]; then
             if [ "${CROSS_COMPILING}" -eq 1 ]; then
                 sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/bin"/py*5

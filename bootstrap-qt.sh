@@ -169,6 +169,7 @@ qtbase_conf_args+=" -no-sse3 -no-ssse3 -no-sse4.1 -no-sse4.2 -no-avx -no-avx2 -n
 # enable some basic stuff
 qtbase_conf_args+=" -opengl desktop"
 qtbase_conf_args+=" -qt-doubleconversion"
+qtbase_conf_args+=" -qt-freetype"
 qtbase_conf_args+=" -qt-pcre"
 qtbase_conf_args+=" -qt-sqlite"
 
@@ -188,7 +189,6 @@ qtbase_conf_args+=" -no-journald"
 qtbase_conf_args+=" -no-glib"
 qtbase_conf_args+=" -no-gtk"
 qtbase_conf_args+=" -no-icu"
-qtbase_conf_args+=" -no-inotify"
 qtbase_conf_args+=" -no-libinput"
 qtbase_conf_args+=" -no-libproxy"
 qtbase_conf_args+=" -no-mtdev"
@@ -198,16 +198,24 @@ qtbase_conf_args+=" -no-sctp"
 qtbase_conf_args+=" -no-securetransport"
 qtbase_conf_args+=" -no-syslog"
 qtbase_conf_args+=" -no-tslib"
+
+if [ "${LINUX}" -eq 0 ]; then
+    qtbase_conf_args+=" -no-fontconfig"
+    qtbase_conf_args+=" -no-inotify"
+    qtbase_conf_args+=" -no-linuxfb"
+fi
+
 if [ "${QT5_MVERSION}" = "5.9" ]; then
     qtbase_conf_args+=" -no-xinput2"
     qtbase_conf_args+=" -no-xkbcommon-evdev"
     qtbase_conf_args+=" -no-xkbcommon-x11"
 fi
 
-# font stuff
-qtbase_conf_args+=" -qt-freetype"
-qtbase_conf_args+=" -no-fontconfig"
-qtbase_conf_args+=" -no-harfbuzz"
+if [ "${QT5_MVERSION}" = "5.12" ]; then
+    qtbase_conf_args+=" -qt-harfbuzz"
+else
+    qtbase_conf_args+=" -no-harfbuzz"
+fi
 
 # supported image formats
 qtbase_conf_args+=" -qt-libjpeg"
@@ -222,7 +230,21 @@ qtbase_conf_args+=" -force-pkg-config"
 # platform specific
 if [ -n "${TOOLCHAIN_PREFIX}" ]; then
     if [ "${LINUX}" -eq 1 ]; then
-        qtbase_conf_args+=" -xplatform linux-g++"
+        if [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+            qtbase_conf_args+=" -xplatform linux-aarch64-gnu-g++"
+        elif [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+            qtbase_conf_args+=" -xplatform linux-arm-gnueabi-g++"
+        elif [ "${LINUX_TARGET}" = "linux-i686" ]; then
+            qtbase_conf_args+=" -xplatform linux-g++-32"
+        elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+            echo "error unsupported qt config"
+            exit 3
+            # qtbase_conf_args+=" -xplatform linux-g++"
+        elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
+            qtbase_conf_args+=" -xplatform linux-g++-64"
+        else
+            qtbase_conf_args+=" -xplatform linux-g++"
+        fi
     elif [ "${MACOS}" -eq 1 ]; then
         qtbase_conf_args+=" -xplatform macx-clang"
     elif [ "${WIN32}" -eq 1 ]; then
@@ -243,7 +265,8 @@ fi
 if [ "${LINUX}" -eq 1 ]; then
     qtbase_conf_args+=" -qpa xcb"
     qtbase_conf_args+=" -qt-xcb"
-    qtbase_conf_args+=" -xcb-xlib"
+    #qtbase_conf_args+=" -xcb-xlib"
+    #qtbase_conf_args+=" -xcb-xinput"
 elif [ "${MACOS}" -eq 1 ]; then
     qtbase_conf_args+=" -qpa cocoa"
 elif [ "${WIN32}" -eq 1 ]; then
