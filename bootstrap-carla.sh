@@ -215,8 +215,8 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS+=" ac_cv_header_libintl_h=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_setlocale=no"
 elif [ "${WIN32}" -eq 1 ]; then
-    export EXTRA_CFLAGS=" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601"
-    export EXTRA_CXXFLAGS=" -fwrapv -D__USE_MINGW_ANSI_STDIO=1 -D_WIN32_WINNT=0x0601"
+    export EXTRA_CFLAGS=" -fwrapv -D_WIN32_WINNT=0x0601"
+    export EXTRA_CXXFLAGS=" -fwrapv -D_WIN32_WINNT=0x0601"
     PYTHON_EXTRAFLAGS="--with-nt-threads"
     PYTHON_EXTRAFLAGS+=" --without-ensurepip"
     PYTHON_EXTRAFLAGS+=" --without-c-locale-coercion"

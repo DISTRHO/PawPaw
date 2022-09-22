@@ -33,6 +33,7 @@ function check_target() {
         "wasm")
             CLANG=1
             CROSS_COMPILING=1
+            EXE_WRAPPER="emrun --no_server"
             WASM=1
             PAWPAW_SKIP_FORTIFY=1
             PAWPAW_SKIP_LTO=1

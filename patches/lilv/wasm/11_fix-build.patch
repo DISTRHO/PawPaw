@@ -1,0 +1,22 @@
+diff --git a/src/lilv_config.h b/src/lilv_config.h
+index d348a03..0dbc4d7 100644
+--- a/src/lilv_config.h
++++ b/src/lilv_config.h
+@@ -20,6 +20,8 @@
+ 
+ #if !defined(LILV_NO_DEFAULT_CONFIG)
+ 
++#define _GNU_SOURCE
++
+ // We need unistd.h to check _POSIX_VERSION
+ #  ifndef LILV_NO_POSIX
+ #    ifdef __has_include
+@@ -33,7 +35,7 @@
+ 
+ // POSIX.1-2001: fileno()
+ #  ifndef HAVE_FILENO
+-#    if defined(_POSIX_VERSION) && _POSIX_VERSION >= 200112L
++#    if defined(_POSIX_VERSION) && _POSIX_VERSION >= 200112L && !defined(__EMSCRIPTEN__)
+ #      define HAVE_FILENO
+ #    endif
+ #  endif
