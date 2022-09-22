@@ -23,6 +23,7 @@ fi
 # - make
 # - jq
 # - patch
+# - pkg-config (linux only)
 # - python (waf, meson)
 # - sed
 # - tar
@@ -48,6 +49,25 @@ mkdir -p "${PAWPAW_TMPDIR}"
 
 if [ "${LINUX}" -eq 1 ]; then
     mkdir -p ${TARGET_PKG_CONFIG_PATH}
+    if [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-i686" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/riscv64-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+    fi
+    if ! pkg-config --exists alsa dbus-1 gl glib-2.0 libpcre pthread-stubs x11 xcb xcursor xext xfixes xproto xrandr xrender; then
+        echo "some system libs are not available, cannot continue"
+        exit 2
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/alsa.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir alsa)/alsa.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/alsa.pc
+    fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/dbus-1.pc" ]; then
         cp $(pkg-config --variable=pcfiledir dbus-1)/dbus-1.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/dbus-1.pc
@@ -139,6 +159,10 @@ fi
 
 FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
 
+if [ -n "${PAWPAW_SKIP_FORTIFY}" ] && [ "${PAWPAW_SKIP_FORTIFY}" -eq 1 ]; then
+    FLAC_EXTRAFLAGS+=" --disable-stack-smash-protection"
+fi
+
 # force intrinsic optimizations on macos-universal target
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes asm_opt=yes"
@@ -167,6 +191,7 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
 fi
 
 # FIXME macos-universal proper optimizations
+# https://github.com/DISTRHO/PawPaw/issues/4
 if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 fi
@@ -228,10 +253,6 @@ LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
 # NOTE: sndfile tests use Carbon, which is not always available on macOS
 if [ "${CROSS_COMPILING}" -eq 1 ] || [ "${MACOS}" -eq 1 ]; then
     LIBSAMPLERATE_EXTRAFLAGS+=" --disable-sndfile"
-fi
-# force build
-if [ "${TOOLCHAIN_PREFIX}" = "riscv64-linux-gnu" ]; then
-    LIBSAMPLERATE_EXTRAFLAGS+=" ac_cv_host=riscv64-linux-gnu"
 fi
 
 download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}"

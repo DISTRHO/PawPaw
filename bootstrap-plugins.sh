@@ -324,15 +324,8 @@ fi # PAWPAW_SKIP_FLUIDSYNTH
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
 
-MXML_EXTRAFLAGS=""
-
-# force build
-if [ "${TOOLCHAIN_PREFIX}" = "riscv64-linux-gnu" ]; then
-    MXML_EXTRAFLAGS+=" ac_cv_host=riscv64-linux-gnu"
-fi
-
 git_clone mxml "${MXML_VERSION}" "${MXML_URL}"
-build_autoconf mxml "${MXML_VERSION}" "${MXML_EXTRAFLAGS}"
+build_autoconf mxml "${MXML_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)

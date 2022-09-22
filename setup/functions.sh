@@ -195,8 +195,8 @@ function build_autoconf() {
 
     if [ "${WASM}" -eq 1 ]; then
         extraconfrules="--host=x86_64-linux-gnu ${extraconfrules}"
-    elif [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules="--host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
+    elif [ -n "${TOOLCHAIN_PREFIX}" ]; then
+        extraconfrules="--host=${TOOLCHAIN_PREFIX} ac_cv_host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
 
     _prebuild "${name}" "${pkgdir}"

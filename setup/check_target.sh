@@ -13,6 +13,10 @@ WASM=0
 WIN32=0
 WIN64=0
 
+unset EXE_WRAPPER
+unset TOOLCHAIN_PREFIX
+unset TOOLCHAIN_PREFIX_
+
 function check_target() {
     case "${target}" in
         "macos"|"Darwin")
@@ -38,6 +42,9 @@ function check_target() {
             WIN32=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
+                EXE_WRAPPER="wine"
+                TOOLCHAIN_PREFIX="i686-w64-mingw32"
+                TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             fi
             ;;
         "win64"|"MINGW64"*)
@@ -46,6 +53,9 @@ function check_target() {
             WIN64=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
+                EXE_WRAPPER="wine"
+                TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
+                TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             fi
             ;;
         "CYGWIN"*|"MSYS"*)
@@ -61,31 +71,55 @@ function check_target() {
             ;;
         "linux-aarch64")
             GCC=1
-            CROSS_COMPILING=1
             LINUX=1
+            LINUX_TARGET="linux-aarch64"
             TOOLCHAIN_PREFIX="aarch64-linux-gnu"
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            if [ "$(uname -m)" != "aarch64" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "linux-armhf")
             GCC=1
-            CROSS_COMPILING=1
             LINUX=1
+            LINUX_TARGET="linux-armhf"
             TOOLCHAIN_PREFIX="arm-linux-gnueabihf"
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            if [ "$(uname -m)" != "arm" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "linux-i686")
             GCC=1
             LINUX=1
+            LINUX_TARGET="linux-i686"
             EXTRA_FLAGS="-m32"
-            # TOOLCHAIN_PREFIX="i686-linux-gnu"
-            # TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            TOOLCHAIN_PREFIX="i686-linux-gnu"
+            TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            if [ "$(uname -m)" != "i386" ] && [ "$(uname -m)" != "i686" ] && [ "$(uname -m)" != "x86_64" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "linux-riscv64")
             GCC=1
-            CROSS_COMPILING=1
             LINUX=1
+            LINUX_TARGET="linux-riscv64"
             TOOLCHAIN_PREFIX="riscv64-linux-gnu"
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            if [ "$(uname -m)" != "riscv64" ]; then
+                CROSS_COMPILING=1
+            fi
+            ;;
+        "linux-x86_64")
+            GCC=1
+            LINUX=1
+            LINUX_TARGET="linux-x86_64"
+            EXTRA_FLAGS="-m64"
+            TOOLCHAIN_PREFIX="x86_64-linux-gnu"
+            TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+            if [ "$(uname -m)" != "x86_64" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "native")
             target=$(uname -s)

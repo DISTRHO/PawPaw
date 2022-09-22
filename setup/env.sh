@@ -6,7 +6,11 @@
 if [ "${LINUX}" -eq 1 ]; then
     APP_EXT=""
     CMAKE_SYSTEM_NAME="Linux"
-    PAWPAW_TARGET="linux"
+    if [ -n "${LINUX_TARGET}" ]; then
+        PAWPAW_TARGET="${LINUX_TARGET}"
+    else
+        PAWPAW_TARGET="linux"
+    fi
 
 elif [ "${MACOS}" -eq 1 ]; then
     APP_EXT=""
@@ -64,6 +68,7 @@ BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
 
 if [ "${GCC}" -eq 1 ]; then
+    # not supported in riscv64 yet
     if [ "${TOOLCHAIN_PREFIX}" != "riscv64-linux-gnu" ]; then
         BUILD_FLAGS+=" -fprefetch-loop-arrays"
     fi
@@ -78,13 +83,13 @@ if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
     BUILD_FLAGS+=" -fno-strict-aliasing -flto"
 fi
 
-if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
+if [ "${WASM}" -eq 1 ]; then
+    BUILD_FLAGS+=" -msse -msse2 -msse3 -msimd128"
+elif [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
 elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ] && [ "${TOOLCHAIN_PREFIX}" != "riscv64-linux-gnu" ]; then
     BUILD_FLAGS+=" -mtune=generic -msse -msse2"
-    if [ "${WASM}" -eq 1 ]; then
-        BUILD_FLAGS+=" -msse3 -msimd128"
-    elif [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
         BUILD_FLAGS+=" -mfpmath=sse"
     fi
 fi
@@ -134,7 +139,7 @@ fi
 if [ "${MACOS}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
 elif [ "${WASM}" -eq 1 ]; then
-    LINK_FLAGS+=" -Wl,-O1,--gc-sections"
+    LINK_FLAGS+=" -Wl,--gc-sections"
     LINK_FLAGS+=" -sAGGRESSIVE_VARIABLE_ELIMINATION=1"
     LINK_FLAGS+=" -sENVIRONMENT=web"
     LINK_FLAGS+=" -sLLD_REPORT_UNDEFINED"
@@ -155,19 +160,6 @@ fi
 TARGET_LDFLAGS="${LINK_FLAGS}"
 
 ## toolchain
-
-if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    if [ "${WIN64}" -eq 1 ]; then
-        TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
-        TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
-    elif [ "${WIN32}" -eq 1 ]; then
-        TOOLCHAIN_PREFIX="i686-w64-mingw32"
-        TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
-    fi
-else
-    unset TOOLCHAIN_PREFIX
-    unset TOOLCHAIN_PREFIX_
-fi
 
 TARGET_AR="${TOOLCHAIN_PREFIX_}ar"
 TARGET_CC="${TOOLCHAIN_PREFIX_}gcc"
@@ -196,7 +188,7 @@ fi
 
 MAKE_ARGS=""
 WAF_ARGS=""
-unset EXE_WRAPPER
+
 unset WINEARCH
 unset WINEDLLOVERRIDES
 unset WINEPREFIX
@@ -211,8 +203,7 @@ fi
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     MAKE_ARGS+=" CROSS_COMPILING=true"
-    if [ "${WIN32}" -eq 1 ]; then
-        export EXE_WRAPPER="wine"
+    if [ "${EXE_WRAPPER}" = "wine" ]; then
         export WINEARCH="${PAWPAW_TARGET}"
         export WINEDLLOVERRIDES="mscoree,mshtml="
         export WINEPREFIX="${PAWPAW_PREFIX}/wine"
