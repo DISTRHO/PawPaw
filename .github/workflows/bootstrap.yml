@@ -25,10 +25,10 @@ jobs:
             installer: apt
             os: ubuntu-20.04
             target: linux-i686
-          #- name: linux-riscv64
-            #installer: apt
-            #os: ubuntu-20.04
-            #target: linux-riscv64
+          - name: linux-riscv64
+            installer: apt
+            os: ubuntu-20.04
+            target: linux-riscv64
           - name: linux-x86_64
             installer: apt
             os: ubuntu-20.04
@@ -75,7 +75,7 @@ jobs:
           sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |

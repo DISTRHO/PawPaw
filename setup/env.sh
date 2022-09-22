@@ -64,7 +64,7 @@ PAWPAW_TMPDIR="/tmp"
 BUILD_FLAGS="-O3 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
-BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG"
+BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG=1"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
 
 if [ "${GCC}" -eq 1 ]; then

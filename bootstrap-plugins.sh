@@ -35,6 +35,12 @@ source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
 
+# FIXME glib does not build yet
+if [ "${WASM}" -eq 1 ]; then
+    PAWPAW_SKIP_GLIB=1
+    PAWPAW_SKIP_FLUIDSYNTH=1
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
@@ -48,16 +54,18 @@ fi
 
 FFTW_EXTRAFLAGS="--disable-alloca --disable-fortran --with-our-malloc"
 
-if [ "${TOOLCHAIN_PREFIX}" = "riscv64-linux-gnu" ]; then
-    FFTW_EXTRAFLAGS+=" --with-slow-timer"
-elif [ "${TOOLCHAIN_PREFIX}" = "aarch64-linux-gnu" ]; then
-    FFTW_EXTRAFLAGS+=" --with-slow-timer"
-    FFTW_EXTRAFLAGS+=" --enable-neon"
-elif [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
-    FFTW_EXTRAFLAGS+=" --with-slow-timer"
+if [ "${LINUX}" -eq 1 ]; then
+    if [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+        FFTW_EXTRAFLAGS+=" --with-slow-timer --enable-neon"
+    elif [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+        FFTW_EXTRAFLAGS+=" --with-slow-timer"
+    elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+        FFTW_EXTRAFLAGS+=" --with-slow-timer"
+    fi
 elif [ "${WASM}" -eq 1 ]; then
     FFTW_EXTRAFLAGS+=" --with-slow-timer"
 # FIXME macos-universal proper optimizations
+# https://github.com/DISTRHO/PawPaw/issues/3
 elif [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     FFTW_EXTRAFLAGS+=" --enable-sse2"
 fi
@@ -84,7 +92,7 @@ fi
 
 FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
 
-if [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
+if [ "${LINUX}" -eq 1 ] && [ "${LINUX_TARGET}" = "linux-armhf" ]; then
     FFTWF_EXTRAFLAGS+=" --enable-neon"
 fi
 
@@ -276,11 +284,6 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
-# FIXME glib does not build yet
-if [ "${WASM}" -eq 1 ]; then
-    PAWPAW_SKIP_FLUIDSYNTH=1
-fi
-
 if [ -z "${PAWPAW_SKIP_FLUIDSYNTH}" ]; then
 
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
@@ -339,8 +342,6 @@ CARLA_EXTRAFLAGS+=" HAVE_JACK=false"
 CARLA_EXTRAFLAGS+=" HAVE_PULSEAUDIO=false"
 CARLA_EXTRAFLAGS+=" HAVE_DGL=false"
 CARLA_EXTRAFLAGS+=" HAVE_HYLIA=false"
-CARLA_EXTRAFLAGS+=" HAVE_GTK2=false"
-CARLA_EXTRAFLAGS+=" HAVE_GTK3=false"
 CARLA_EXTRAFLAGS+=" HAVE_X11=false"
 CARLA_EXTRAFLAGS+=" HAVE_FFMPEG=false"
 CARLA_EXTRAFLAGS+=" HAVE_FLUIDSYNTH=false"
@@ -366,7 +367,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap (needed for cross-compilation)
 
-if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
+if [ "${EXE_WRAPPER}" = "wine" ]; then
     wineboot -u
 fi
 

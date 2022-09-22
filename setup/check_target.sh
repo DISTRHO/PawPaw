@@ -68,6 +68,17 @@ function check_target() {
         "linux"|"Linux")
             GCC=1
             LINUX=1
+            if [ "$(uname -m)" = "aarch64" ]; then
+                LINUX_TARGET="linux-aarch64"
+            elif [ "$(uname -m)" = "arm" ]; then
+                LINUX_TARGET="linux-armhf"
+            elif [ "$(uname -m)" = "i386" ] || [ "$(uname -m)" = "i686" ]; then
+                LINUX_TARGET="linux-i686"
+            elif [ "$(uname -m)" = "riscv64" ]; then
+                LINUX_TARGET="linux-riscv64"
+            elif [ "$(uname -m)" = "x86_64" ]; then
+                LINUX_TARGET="linux-x86_64"
+            fi
             ;;
         "linux-aarch64")
             GCC=1
