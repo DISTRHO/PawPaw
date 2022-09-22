@@ -132,7 +132,7 @@ function build_qt_conf() {
 # base
 qtbase_conf_args="-opensource -confirm-license"
 qtbase_conf_args+=" -c++std"
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${LINUX}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     qtbase_conf_args+=" c++14"
 else
     qtbase_conf_args+=" c++11"
@@ -220,7 +220,7 @@ qtbase_conf_args+=" -pkg-config"
 qtbase_conf_args+=" -force-pkg-config"
 
 # platform specific
-if [ "${CROSS_COMPILING}" -eq 1 ]; then
+if [ -n "${TOOLCHAIN_PREFIX}" ]; then
     if [ "${LINUX}" -eq 1 ]; then
         qtbase_conf_args+=" -xplatform linux-g++"
     elif [ "${MACOS}" -eq 1 ]; then

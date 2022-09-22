@@ -109,7 +109,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap qt stuff
 
-if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+if [ "${LINUX}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     QT5_VERSION=5.12.12
     QT5_MVERSION=5.12
 else
@@ -125,7 +125,7 @@ QT5_URL=https://download.qt.io/archive/qt/${QT5_MVERSION}/${QT5_VERSION}/submodu
 FILE_VERSION=5.34
 FILE_URL=ftp://ftp.astron.com/pub/file
 
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${LINUX}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     CXFREEZE_VERSION=a59a0f6c476554c1a789de2a9f6f77329d6a6dd1 # 6.8.4
     PYTHON_VERSION=3.9.5
     PYLIBLO_VERSION=0.10.0

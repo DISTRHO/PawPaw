@@ -20,7 +20,10 @@ fi
 
 ./bootstrap-common.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
-./bootstrap-qt.sh "${target}"
+
+if [ -z "${PAWPAW_SKIP_QT}" ]; then
+    ./bootstrap-qt.sh "${target}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # source setup code
@@ -29,6 +32,21 @@ source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
+
+# ---------------------------------------------------------------------------------------------------------------------
+# file/magic (posix only)
+
+if [ "${WASM}" -eq 0 ] && [ "${WIN32}" -eq 0 ]; then
+    download file "${FILE_VERSION}" "${FILE_URL}"
+    build_autoconf file "${FILE_VERSION}"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# everything after this point requires Qt or PyQt
+
+if [ -n "${PAWPAW_SKIP_QT}" ]; then
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # custom function as needed for pyqt packages
@@ -190,14 +208,6 @@ function build_pyqt() {
     unset LFLAGS
     unset LINK
 }
-
-# ---------------------------------------------------------------------------------------------------------------------
-# file/magic (posix only)
-
-if [ "${WIN32}" -eq 0 ]; then
-    download file "${FILE_VERSION}" "${FILE_URL}"
-    build_autoconf file "${FILE_VERSION}"
-fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap for python (needed for cross-compilation)
