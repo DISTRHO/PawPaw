@@ -33,19 +33,19 @@ function check_target() {
         "wasm")
             CLANG=1
             CROSS_COMPILING=1
-            EXE_WRAPPER="emrun --no_server"
             WASM=1
             PAWPAW_SKIP_FORTIFY=1
             PAWPAW_SKIP_LTO=1
+            export EXE_WRAPPER="emrun --no_server"
             ;;
         "win32"|"MINGW32"*)
             GCC=1
             WIN32=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
-                EXE_WRAPPER="wine"
                 TOOLCHAIN_PREFIX="i686-w64-mingw32"
                 TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+                export EXE_WRAPPER="wine"
             fi
             ;;
         "win64"|"MINGW64"*)
@@ -54,9 +54,9 @@ function check_target() {
             WIN64=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
-                EXE_WRAPPER="wine"
                 TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
                 TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
+                export EXE_WRAPPER="wine"
             fi
             ;;
         "CYGWIN"*|"MSYS"*)

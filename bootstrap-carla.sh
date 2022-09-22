@@ -155,6 +155,10 @@ function build_pyqt() {
 
         local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
+        if [ -n "${PYTHON_FOR_BUILD}" ]; then
+            python="${PYTHON_FOR_BUILD}"
+        fi
+
         # Place link to Qt DLLs for PyQt tests
         if [ "${WIN32}" -eq 1 ] && [ -d "pyuic" ] && [ ! -d "release" ]; then
             mkdir release
@@ -206,7 +210,8 @@ function build_pyqt() {
             fi
         else
             if [ "${CROSS_COMPILING}" -eq 1 ]; then
-                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/lib/python3/dist-packages/sipconfig.py"
+                ln -sf "${PAWPAW_PREFIX}-host/bin/sip" "${PAWPAW_PREFIX}/bin/sip"
+                #sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/lib/python3/dist-packages/sipconfig.py"
             fi
         fi
         touch .stamp_installed
@@ -220,12 +225,22 @@ function build_pyqt() {
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap for python (needed for cross-compilation)
 
-if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
-    wineboot -u
-fi
+# if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
+#     wineboot -u
+# fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # python
+
+# build for host first
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    download host-Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz" "" Python
+    build_host_autoconf host-Python "${PYTHON_VERSION}" "--build=$(gcc -dumpmachine) --prefix=${PAWPAW_PREFIX}-host"
+    export PYTHON_FOR_BUILD="${PAWPAW_PREFIX}-host/bin/python3"
+    # FIXME
+    mkdir -p "${PAWPAW_PREFIX}-host/lib/python3.8/config-3.8-x86_64-linux-gnu/Tools"
+    ln -sf "${PAWPAW_PREFIX}-host/bin" "${PAWPAW_PREFIX}-host/lib/python3.8/config-3.8-x86_64-linux-gnu/Tools/scripts"
+fi
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS="--enable-optimizations"
