@@ -1,0 +1,13 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c259c16..aa5d393 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -124,8 +124,6 @@ check_include_file ( signal.h HAVE_SIGNAL_H )
+ check_include_file ( getopt.h HAVE_GETOPT_H )
+ include ( TestInline )
+ include ( TestVLA )
+-include ( TestBigEndian )
+-test_big_endian ( WORDS_BIGENDIAN )
+ 
+ unset ( LIBFLUID_CPPFLAGS CACHE )
+ unset ( LIBFLUID_LIBS CACHE )

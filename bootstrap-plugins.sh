@@ -35,12 +35,6 @@ source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
 
-# FIXME glib does not build yet
-if [ "${WASM}" -eq 1 ]; then
-    PAWPAW_SKIP_GLIB=1
-    PAWPAW_SKIP_FLUIDSYNTH=1
-fi
-
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
@@ -128,13 +122,17 @@ fi
 
 if [ -z "${PAWPAW_SKIP_GLIB}" ]; then
 
-if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     GLIB_EXTRAFLAGS="--disable-rebuilds"
 
     if [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS+=" --with-threads=win32"
     else
         GLIB_EXTRAFLAGS+=" --with-threads=posix"
+    fi
+
+    if [ "${WASM}" -eq 1 ]; then
+        GLIB_EXTRAFLAGS+=" ac_cv_lib_socket_socket=no ac_cv_func_posix_getgrgid_r=no ac_cv_func_posix_getpwuid_r=no glib_cv_stack_grows=no glib_cv_uscore=no"
     fi
 
     if [ "${MACOS}" -eq 1 ]; then
@@ -149,6 +147,8 @@ if [ "${MACOS}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         patch_file glib ${GLIB_VERSION} "glib/gconvert.c" '/#error/g'
         patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
         patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
+    elif [ "${WASM}" -eq 1 ]; then
+        patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/_G_ATOMIC_NOT_X86_64/'
     fi
 
     build_autoconfgen glib ${GLIB_VERSION} "${GLIB_EXTRAFLAGS}"
@@ -158,9 +158,6 @@ fi # PAWPAW_SKIP_GLIB
 
 # ---------------------------------------------------------------------------------------------------------------------
 # liblo
-
-# FIXME does not build yet
-if [ "${WASM}" -eq 0 ]; then
 
 LIBLO_EXTRAFLAGS="--enable-threads --disable-examples --disable-tools"
 
@@ -183,8 +180,6 @@ build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
-
-fi # !WASM
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
@@ -239,8 +234,8 @@ fi # PAWPAW_SKIP_LV2
 
 if [ -z "${PAWPAW_SKIP_LV2}" ]; then
 
-if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
-    LILV_EXTRAFLAGS="-Dtools=disabled"
+if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ]; then
+    LILV_EXTRAFLAGS="-Dtests=disabled -Dtools=disabled"
 fi
 
 download lilv "${LILV_VERSION}" "${LILV_URL}" "tar.xz"
@@ -333,7 +328,7 @@ build_autoconf mxml "${MXML_VERSION}"
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)
 
-if [ "${CROSS_COMPILING}" -eq 0 ] || [ -n "${EXE_WRAPPER}" ]; then
+if [ "${CROSS_COMPILING}" -eq 0 ] || [ "${LINUX}" -eq 1 ]; then
 
 CARLA_EXTRAFLAGS="CAN_GENERATE_LV2_TTL=false"
 CARLA_EXTRAFLAGS+=" EXTERNAL_PLUGINS=false"

@@ -1,0 +1,352 @@
+diff --git a/gio/gthreadedresolver.c b/gio/gthreadedresolver.c
+index bd7a829..c24ce6c 100644
+--- a/gio/gthreadedresolver.c
++++ b/gio/gthreadedresolver.c
+@@ -24,6 +24,7 @@
+ #include <glib.h>
+ #include "glibintl.h"
+ 
++#include <errno.h>
+ #include <stdio.h>
+ #include <string.h>
+ 
+@@ -527,9 +528,8 @@ do_lookup_service (GThreadedResolverRequest *req,
+ #endif
+ 
+ #if defined(G_OS_UNIX)
+-  len = res_query (req->u.service.rrname, C_IN, T_SRV, answer, sizeof (answer));
+-  herr = h_errno;
+-  req->u.service.targets = _g_resolver_targets_from_res_query (req->u.service.rrname, answer, len, herr, error);
++  herr = -ENOSYS;
++  req->u.service.targets = NULL;
+ #elif defined(G_OS_WIN32)
+   status = DnsQuery_A (req->u.service.rrname, DNS_TYPE_SRV,
+                        DNS_QUERY_STANDARD, NULL, &results, NULL);
+diff --git a/gio/libasyncns/asyncns.c b/gio/libasyncns/asyncns.c
+index 3c4db73..5b548f8 100644
+--- a/gio/libasyncns/asyncns.c
++++ b/gio/libasyncns/asyncns.c
+@@ -179,27 +179,6 @@ typedef struct res_query_response {
+     int _h_errno;
+ } res_response_t;
+ 
+-#ifndef HAVE_STRNDUP
+-
+-static char *strndup(const char *s, size_t l) {
+-    size_t a;
+-    char *n;
+-
+-    a = strlen(s);
+-    if (a > l)
+-        a = l;
+-
+-    if (!(n = malloc(a+1)))
+-        return NULL;
+-
+-    memcpy(n, s, a);
+-    n[a] = 0;
+-
+-    return n;
+-}
+-
+-#endif
+-
+ #ifndef HAVE_PTHREAD
+ 
+ static int close_allv(const int except_fds[]) {
+@@ -595,277 +574,11 @@ static int handle_request(int out_fd, const rheader_t *req, size_t length) {
+     return 0;
+ }
+ 
+-#ifndef HAVE_PTHREAD
+-
+-static int process_worker(int in_fd, int out_fd) {
+-    int have_death_sig = 0;
+-    int good_fds[3];
+-    int ret = 1;
+-
+-    const int ignore_sigs[] = {
+-        SIGINT,
+-        SIGHUP,
+-        SIGPIPE,
+-        SIGUSR1,
+-        SIGUSR2,
+-        -1
+-    };
+-
+-    assert(in_fd > 2);
+-    assert(out_fd > 2);
+-
+-    close(0);
+-    close(1);
+-    close(2);
+-
+-    if (open("/dev/null", O_RDONLY) != 0)
+-        goto fail;
+-
+-    if (open("/dev/null", O_WRONLY) != 1)
+-        goto fail;
+-
+-    if (open("/dev/null", O_WRONLY) != 2)
+-        goto fail;
+-
+-    if (chdir("/") < 0)
+-        goto fail;
+-
+-    if (geteuid() == 0) {
+-        struct passwd *pw;
+-        int r;
+-
+-        if ((pw = getpwnam("nobody"))) {
+-#ifdef HAVE_SETRESUID
+-            r = setresuid(pw->pw_uid, pw->pw_uid, pw->pw_uid);
+-#elif HAVE_SETREUID
+-            r = setreuid(pw->pw_uid, pw->pw_uid);
+-#else
+-            if ((r = setuid(pw->pw_uid)) >= 0)
+-                r = seteuid(pw->pw_uid);
+-#endif
+-            if (r < 0)
+-                goto fail;
+-        }
+-    }
+-
+-    if (reset_sigsv(ignore_sigs) < 0)
+-        goto fail;
+-
+-    if (ignore_sigsv(ignore_sigs) < 0)
+-        goto fail;
+-
+-    good_fds[0] = in_fd; good_fds[1] = out_fd; good_fds[2] = -1;
+-    if (close_allv(good_fds) < 0)
+-        goto fail;
+-
+-#ifdef PR_SET_PDEATHSIG
+-    if (prctl(PR_SET_PDEATHSIG, SIGTERM) >= 0)
+-        have_death_sig = 1;
+-#endif
+-
+-    if (!have_death_sig)
+-        fd_nonblock(in_fd);
+-
+-    while (getppid() > 1) { /* if the parent PID is 1 our parent process died. */
+-        rheader_t buf[BUFSIZE/sizeof(rheader_t) + 1];
+-        ssize_t length;
+-
+-        if (!have_death_sig) {
+-            fd_set fds;
+-            struct timeval tv = { 0, 500000 };
+-
+-            FD_ZERO(&fds);
+-            FD_SET(in_fd, &fds);
+-
+-            if (select(in_fd+1, &fds, NULL, NULL, &tv) < 0)
+-                break;
+-
+-            if (getppid() == 1)
+-                break;
+-        }
+-
+-        if ((length = recv(in_fd, buf, sizeof(buf), 0)) <= 0) {
+-
+-            if (length < 0 &&
+-                (errno == EAGAIN || errno == EINTR))
+-                continue;
+-
+-            break;
+-        }
+-
+-        if (handle_request(out_fd, buf, (size_t) length) < 0)
+-            break;
+-    }
+-
+-    ret = 0;
+-
+-fail:
+-    send_died(out_fd);
+-
+-    return ret;
+-}
+-
+-#else
+-
+-static void* thread_worker(void *p) {
+-    _g_asyncns_t *asyncns = p;
+-    sigset_t fullset;
+-
+-    /* No signals in this thread please */
+-    sigfillset(&fullset);
+-    pthread_sigmask(SIG_BLOCK, &fullset, NULL);
+-
+-    while (!asyncns->dead) {
+-        rheader_t buf[BUFSIZE/sizeof(rheader_t) + 1];
+-        ssize_t length;
+-
+-        if ((length = recv(asyncns->fds[REQUEST_RECV_FD], buf, sizeof(buf), 0)) <= 0) {
+-
+-            if (length < 0 &&
+-                (errno == EAGAIN || errno == EINTR))
+-                continue;
+-
+-            break;
+-        }
+-
+-        if (asyncns->dead)
+-            break;
+-
+-        if (handle_request(asyncns->fds[RESPONSE_SEND_FD], buf, (size_t) length) < 0)
+-            break;
+-    }
+-
+-    send_died(asyncns->fds[RESPONSE_SEND_FD]);
+-
+-    return NULL;
+-}
+-
+-#endif
+-
+ _g_asyncns_t* _g_asyncns_new(unsigned n_proc) {
+-    _g_asyncns_t *asyncns = NULL;
+-    int i;
+-    assert(n_proc >= 1);
+-
+-    if (n_proc > MAX_WORKERS)
+-        n_proc = MAX_WORKERS;
+-
+-    if (!(asyncns = malloc(sizeof(_g_asyncns_t)))) {
+-        errno = ENOMEM;
+-        goto fail;
+-    }
+-
+-    asyncns->dead = 0;
+-    asyncns->valid_workers = 0;
+-
+-    for (i = 0; i < MESSAGE_FD_MAX; i++)
+-        asyncns->fds[i] = -1;
+-
+-    memset(asyncns->queries, 0, sizeof(asyncns->queries));
+-
+-    if (socketpair(PF_UNIX, SOCK_DGRAM, 0, asyncns->fds) < 0 ||
+-        socketpair(PF_UNIX, SOCK_DGRAM, 0, asyncns->fds+2) < 0)
+-        goto fail;
+-
+-    for (i = 0; i < MESSAGE_FD_MAX; i++)
+-        fd_cloexec(asyncns->fds[i]);
+-
+-    for (asyncns->valid_workers = 0; asyncns->valid_workers < n_proc; asyncns->valid_workers++) {
+-
+-#ifndef HAVE_PTHREAD
+-        if ((asyncns->workers[asyncns->valid_workers] = fork()) < 0)
+-            goto fail;
+-        else if (asyncns->workers[asyncns->valid_workers] == 0) {
+-            int ret;
+-
+-            close(asyncns->fds[REQUEST_SEND_FD]);
+-            close(asyncns->fds[RESPONSE_RECV_FD]);
+-            ret = process_worker(asyncns->fds[REQUEST_RECV_FD], asyncns->fds[RESPONSE_SEND_FD]);
+-            close(asyncns->fds[REQUEST_RECV_FD]);
+-            close(asyncns->fds[RESPONSE_SEND_FD]);
+-            _exit(ret);
+-        }
+-#else
+-        int r;
+-
+-        if ((r = pthread_create(&asyncns->workers[asyncns->valid_workers], NULL, thread_worker, asyncns)) != 0) {
+-            errno = r;
+-            goto fail;
+-        }
+-#endif
+-    }
+-
+-#ifndef HAVE_PTHREAD
+-    close(asyncns->fds[REQUEST_RECV_FD]);
+-    close(asyncns->fds[RESPONSE_SEND_FD]);
+-    asyncns->fds[REQUEST_RECV_FD] = asyncns->fds[RESPONSE_SEND_FD] = -1;
+-#endif
+-
+-    asyncns->current_index = asyncns->current_id = 0;
+-    asyncns->done_head = asyncns->done_tail = NULL;
+-    asyncns->n_queries = 0;
+-
+-    fd_nonblock(asyncns->fds[RESPONSE_RECV_FD]);
+-
+-    return asyncns;
+-
+-fail:
+-    if (asyncns)
+-        _g_asyncns_free(asyncns);
+-
+     return NULL;
+ }
+ 
+ void _g_asyncns_free(_g_asyncns_t *asyncns) {
+-    int i;
+-    int saved_errno = errno;
+-    unsigned p;
+-
+-    assert(asyncns);
+-
+-    asyncns->dead = 1;
+-
+-    if (asyncns->fds[REQUEST_SEND_FD] >= 0) {
+-        rheader_t req;
+-
+-        memset(&req, 0, sizeof(req));
+-        req.type = REQUEST_TERMINATE;
+-        req.length = sizeof(req);
+-        req.id = 0;
+-
+-        /* Send one termination packet for each worker */
+-        for (p = 0; p < asyncns->valid_workers; p++)
+-            send(asyncns->fds[REQUEST_SEND_FD], &req, req.length, MSG_NOSIGNAL);
+-    }
+-
+-    /* Now terminate them and wait until they are gone. */
+-    for (p = 0; p < asyncns->valid_workers; p++) {
+-#ifndef HAVE_PTHREAD
+-        kill(asyncns->workers[p], SIGTERM);
+-        for (;;) {
+-            if (waitpid(asyncns->workers[p], NULL, 0) >= 0 || errno != EINTR)
+-                break;
+-        }
+-#else
+-        for (;;) {
+-            if (pthread_join(asyncns->workers[p], NULL) != EINTR)
+-                break;
+-        }
+-#endif
+-    }
+-
+-    /* Close all communication channels */
+-    for (i = 0; i < MESSAGE_FD_MAX; i++)
+-        if (asyncns->fds[i] >= 0)
+-            close(asyncns->fds[i]);
+-
+-    for (p = 0; p < MAX_QUERIES; p++)
+-        if (asyncns->queries[p])
+-            _g_asyncns_cancel(asyncns, asyncns->queries[p]);
+-
+-    free(asyncns);
+-
+-    errno = saved_errno;
+ }
+ 
+ int _g_asyncns_fd(_g_asyncns_t *asyncns) {
+diff --git a/gio/gdesktopappinfo.c b/gio/gdesktopappinfo.c
+index e9e82dd..ed85260 100644
+--- a/gio/gdesktopappinfo.c
++++ b/gio/gdesktopappinfo.c
+@@ -2356,13 +2356,6 @@ mime_info_cache_dir_add_desktop_entries (MimeInfoCacheDir  *dir,
+   desktop_file_ids = g_hash_table_lookup (dir->mime_info_cache_map,
+ 					  mime_type);
+   
+-  for (i = 0; new_desktop_file_ids[i] != NULL; i++)
+-    {
+-      if (!g_list_find_custom (desktop_file_ids, new_desktop_file_ids[i], strcmp))
+-	desktop_file_ids = g_list_append (desktop_file_ids,
+-					  g_strdup (new_desktop_file_ids[i]));
+-    }
+-  
+   g_hash_table_insert (dir->mime_info_cache_map, g_strdup (mime_type), desktop_file_ids);
+ }
+ 

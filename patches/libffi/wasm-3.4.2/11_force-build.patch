@@ -1,0 +1,25 @@
+diff --git a/src/tramp.c b/src/tramp.c
+index 265aeaa..dd3ef23 100644
+--- a/src/tramp.c
++++ b/src/tramp.c
+@@ -34,6 +34,8 @@
+  * Add support for other OSes later. For now, it is just Linux.
+  */
+ 
++#define __linux__
++
+ #if defined __linux__
+ #ifdef __linux__
+ #define _GNU_SOURCE 1
+@@ -46,10 +48,7 @@
+ #include <pthread.h>
+ #include <sys/mman.h>
+ #include <tramp.h>
+-#ifdef __linux__
+-#include <linux/limits.h>
+-#include <linux/types.h>
+-#endif
++#include <limits.h>
+ #endif /* __linux__ */
+ 
+ /*

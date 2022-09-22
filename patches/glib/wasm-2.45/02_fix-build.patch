@@ -1,0 +1,83 @@
+diff --git a/glib/gatomic.h b/glib/gatomic.h
+index 9d04b1d..c80c927 100644
+--- a/glib/gatomic.h
++++ b/glib/gatomic.h
+@@ -82,7 +82,7 @@ gint                    g_atomic_int_exchange_and_add         (volatile gint  *a
+ 
+ G_END_DECLS
+ 
+-#if defined(G_ATOMIC_LOCK_FREE) && defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
++#if defined(G_ATOMIC_LOCK_FREE) && defined(__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4) && !defined(__EMSCRIPTEN__)
+ 
+ /* We prefer the new C11-style atomic extension of GCC if available */
+ #if defined(__ATOMIC_SEQ_CST) && !defined(__clang__)
+diff --git a/configure.ac b/configure.ac
+index df1b223..9d76b91 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1049,47 +1049,6 @@ AS_IF([test $glib_native_win32 = yes], [
+ 
+   # We can't just use AC_CHECK_FUNC/AC_CHECK_LIB here. Bug 586150
+   NETWORK_LIBS=""
+-  AC_MSG_CHECKING([for res_query])
+-  AC_TRY_LINK([#include <sys/types.h>
+-	       #include <netinet/in.h>
+-	       #include <arpa/nameser.h>
+-	       #include <resolv.h>
+-              ],[
+-	       res_query("test", 0, 0, (void *)0, 0);
+-              ],[AC_MSG_RESULT([yes])],
+-              [save_libs="$LIBS"
+-               LIBS="-lresolv $LIBS"
+-               AC_TRY_LINK([#include <sys/types.h>
+-			    #include <netinet/in.h>
+-			    #include <arpa/nameser.h>
+-			    #include <resolv.h>
+-			   ],[
+-			    res_query("test", 0, 0, (void *)0, 0);
+-			   ],[AC_MSG_RESULT([in -lresolv])
+-                              NETWORK_LIBS="-lresolv $NETWORK_LIBS"],
+-                           [LIBS="-lbind $save_libs"
+-                            AC_TRY_LINK([#include <resolv.h>],
+-                                        [res_query("test", 0, 0, (void *)0, 0);],
+-                                        [AC_MSG_RESULT([in -lbind])
+-                                         NETWORK_LIBS="-lbind $NETWORK_LIBS"],
+-                                        [AC_MSG_ERROR(not found)])])
+-               LIBS="$save_libs"])
+-  AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket,
+-				        [NETWORK_LIBS="-lsocket $NETWORK_LIBS"],
+-				        [AC_MSG_ERROR(Could not find socket())]))
+-  save_libs="$LIBS"
+-  LIBS="$LIBS $NETWORK_LIBS"
+-  AC_MSG_CHECKING([for res_init])
+-  AC_TRY_LINK([#include <sys/types.h>
+-	       #include <netinet/in.h>
+-	       #include <arpa/nameser.h>
+-	       #include <resolv.h>
+-              ],[
+-	       res_init();
+-              ],[AC_MSG_RESULT([yes])
+-	         AC_DEFINE(HAVE_RES_INIT, 1, [Define to 1 if you have the 'res_init' function.])
+-	      ],[AC_MSG_RESULT([no])])
+-  LIBS="$save_libs"
+ ])
+ AC_SUBST(NETWORK_LIBS)
+ 
+@@ -1949,7 +1908,7 @@ AS_IF([ test x"$have_threads" = xposix], [
+       G_THREAD_LIBS="-lpthread -lthread"
+       ;;
+     *)
+-      for flag in pthread pthreads mt; do
++      for flag in pthread mt; do
+         glib_save_CFLAGS="$CFLAGS"
+         CFLAGS="$CFLAGS -$flag"
+         AC_TRY_RUN(glib_thread_test(0),
+@@ -2046,7 +2005,7 @@ AS_IF([test x$have_threads = xposix], [
+               *)
+                 G_THREAD_LIBS=error
+ 	        glib_save_LIBS="$LIBS"
+-	        for thread_lib in "" pthread pthread32 pthreads thread; do
++	        for thread_lib in "" pthread pthread32 thread; do
+ 			if test x"$thread_lib" = x; then
+ 				add_thread_lib=""
+ 				IN=""

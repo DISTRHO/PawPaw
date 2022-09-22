@@ -1,0 +1,18 @@
+diff --git a/gthread/gthread-posix.c b/gthread/gthread-posix.c
+index 9188f84..d96c000 100644
+--- a/gthread/gthread-posix.c
++++ b/gthread/gthread-posix.c
+@@ -327,13 +327,6 @@ g_thread_create_posix_impl (GThreadFunc thread_func,
+     }
+ #endif /* HAVE_PTHREAD_ATTR_SETSTACKSIZE */
+ 
+-#ifdef PTHREAD_SCOPE_SYSTEM
+-  if (bound)
+-    /* No error check here, because some systems can't do it and we
+-     * simply don't want threads to fail because of that. */
+-    pthread_attr_setscope (&attr, PTHREAD_SCOPE_SYSTEM);
+-#endif /* PTHREAD_SCOPE_SYSTEM */
+-
+ #ifdef G_THREADS_IMPL_POSIX
+   posix_check_cmd (pthread_attr_setdetachstate (&attr,
+           joinable ? PTHREAD_CREATE_JOINABLE : PTHREAD_CREATE_DETACHED));
