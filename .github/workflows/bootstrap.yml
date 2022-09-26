@@ -752,14 +752,14 @@ jobs:
             installer: homebrew
             os: macos-11
             target: macos-universal
-          #- name: win32
-            #installer: apt
-            #os: ubuntu-22.04
-            #target: win32
-          #- name: win64
-            #installer: apt
-            #os: ubuntu-22.04
-            #target: win64
+          - name: win32
+            installer: apt
+            os: ubuntu-22.04
+            target: win32
+          - name: win64
+            installer: apt
+            os: ubuntu-22.04
+            target: win64
     runs-on: ${{ matrix.os }}
     needs: [plugins, qt]
     steps:

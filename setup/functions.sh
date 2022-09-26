@@ -429,10 +429,6 @@ function build_python() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
     local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
-    if [ -n "${TOOLCHAIN_PREFIX}" ]; then
-        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=$(gcc -dumpmachine)"
-    fi
-
     _prebuild "${name}" "${pkgdir}"
 
     # remove flags not compatible with python
