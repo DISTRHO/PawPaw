@@ -23,10 +23,9 @@ export PAWPAW_SKIP_LV2=1
 export PAWPAW_SKIP_SAMPLERATE=1
 
 # we just build the whole thing on Windows
-# if [ "${target}" != "win32" ] && [ "${target}" != "win64" ]; then
-# FIXME finish the qt part
-export PAWPAW_SKIP_QT=1
-# fi
+if [ "${target}" != "win32" ] && [ "${target}" != "win64" ]; then
+    export PAWPAW_SKIP_QT=1
+fi
 
 ./bootstrap-common.sh "${target}"
 ./bootstrap-plugins.sh "${target}"

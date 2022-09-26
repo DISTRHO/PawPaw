@@ -748,10 +748,10 @@ jobs:
             #installer: homebrew
             #os: macos-11
             #target: macos
-          - name: macos-universal
-            installer: homebrew
-            os: macos-11
-            target: macos-universal
+          #- name: macos-universal
+            #installer: homebrew
+            #os: macos-11
+            #target: macos-universal
           - name: win32
             installer: apt
             os: ubuntu-22.04
