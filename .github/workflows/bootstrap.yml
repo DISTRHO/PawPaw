@@ -744,10 +744,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: macos
-            installer: homebrew
-            os: macos-11
-            target: macos
+          #- name: macos
+            #installer: homebrew
+            #os: macos-11
+            #target: macos
           - name: macos-universal
             installer: homebrew
             os: macos-11
