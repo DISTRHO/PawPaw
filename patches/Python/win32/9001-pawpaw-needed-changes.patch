@@ -1,16 +1,3 @@
-diff --git a/configure.ac b/configure.ac
-index 6210e41..51432a8 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -1297,7 +1297,7 @@ if test $enable_shared = "yes"; then
-     *-*-mingw*)
-         LDLIBRARY='libpython$(LDVERSION).dll.a'
-         DLLLIBRARY='libpython$(LDVERSION).dll'
--        BLDLIBRARY='-L. -lpython$(LDVERSION)'
-+        BLDLIBRARY='-L. -Wl,-Bdynamic -lpython$(LDVERSION) -Wl,-Bstatic'
-         ;;
-   esac
- else # shared is disabled
 diff --git a/Lib/distutils/ccompiler.py b/Lib/distutils/ccompiler.py
 index 0ea9cfe..1a24d5b 100644
 --- a/Lib/distutils/ccompiler.py
@@ -32,19 +19,21 @@ index 0ea9cfe..1a24d5b 100644
 +    lib_opts.append("-Wl,-Bstatic")
      return lib_opts
 diff --git a/Lib/distutils/cygwinccompiler.py b/Lib/distutils/cygwinccompiler.py
-index dddf412..b0a18a7 100644
+index dddf412..3edccb6 100644
 --- a/Lib/distutils/cygwinccompiler.py
 +++ b/Lib/distutils/cygwinccompiler.py
-@@ -413,6 +415,7 @@ def _find_exe_version(cmd):
+@@ -413,6 +413,9 @@ def _find_exe_version(cmd):
          out_string = out.read()
      finally:
          out.close()
 +    out_string = out_string.split(b'\n',1)[0].replace(b'-win32',b'')
++    if out_string.isdigit():
++        return out_string.decode()
      result = RE_VERSION.search(out_string)
      if result is None:
          return None
 diff --git a/Misc/python.pc.in b/Misc/python.pc.in
-index 3900190..8bdd635 100644
+index 3900190..a14e42b 100644
 --- a/Misc/python.pc.in
 +++ b/Misc/python.pc.in
 @@ -9,5 +9,5 @@ Description: Build a C extension for Python
@@ -54,3 +43,29 @@ index 3900190..8bdd635 100644
 -Libs: -L${libdir} -lpython@VERSION@@ABIFLAGS@
 +Libs: -L${libdir} -L${prefix}/bin -Wl,-Bdynamic -lpython@VERSION@@ABIFLAGS@ -Wl,-Bstatic
  Cflags: -I${includedir}/python@VERSION@@ABIFLAGS@
+diff --git a/configure.ac b/configure.ac
+index 6210e41..51432a8 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1297,7 +1297,7 @@ if test $enable_shared = "yes"; then
+     *-*-mingw*)
+         LDLIBRARY='libpython$(LDVERSION).dll.a'
+         DLLLIBRARY='libpython$(LDVERSION).dll'
+-        BLDLIBRARY='-L. -lpython$(LDVERSION)'
++        BLDLIBRARY='-L. -Wl,-Bdynamic -lpython$(LDVERSION) -Wl,-Bstatic'
+         ;;
+   esac
+ else # shared is disabled
+diff --git a/setup.py b/setup.py
+index 3a7a2e7..88e116a 100644
+--- a/setup.py
++++ b/setup.py
+@@ -2289,7 +2289,7 @@ class PyBuildExt(build_ext):
+             # poor man's shlex, the re module is not available yet.
+             value = config_vars.get(name)
+             if not value:
+-                return ()
++                return []
+             # This trick works because ax_check_openssl uses --libs-only-L,
+             # --libs-only-l, and --cflags-only-I.
+             value = ' ' + value

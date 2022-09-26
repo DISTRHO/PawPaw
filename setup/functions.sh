@@ -429,20 +429,31 @@ function build_python() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
     local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
+    if [ -n "${TOOLCHAIN_PREFIX}" ]; then
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=$(gcc -dumpmachine)"
+    fi
+
     _prebuild "${name}" "${pkgdir}"
 
-    # fix build of python packages
+    # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility=hidden//')"
-    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip -Wl,-dead_strip_dylibs//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--strip-all//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--gc-sections//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
+
+    # add host/native binaries to path
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        export PATH="${PAWPAW_PREFIX}-host/bin:${PATH}"
+    fi
 
     touch "${pkgdir}/.stamp_configured"
 
@@ -472,6 +483,11 @@ function build_qmake() {
 
     _prebuild "${name}" "${pkgdir}"
 
+    # if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    #     export PKG_CONFIG_LIBDIR="${TARGET_PKG_CONFIG_PATH}"
+    #     export PKG_CONFIG_SYSROOT_DIR="/"
+    # fi
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
         qmake ${extraconfrules}
@@ -492,6 +508,9 @@ function build_qmake() {
         touch .stamp_installed
         popd
     fi
+
+    # unset PKG_CONFIG_LIBDIR
+    # unset PKG_CONFIG_SYSROOT_DIR
 
     _postbuild
 }

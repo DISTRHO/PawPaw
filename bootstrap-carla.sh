@@ -49,7 +49,7 @@ if [ -n "${PAWPAW_SKIP_QT}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# custom function as needed for pyqt packages
+# custom function for python
 
 function build_conf_python() {
     local name="${1}"
@@ -58,7 +58,7 @@ function build_conf_python() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ -n "${TOOLCHAIN_PREFIX}" ]; then
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX} --build=$(gcc -dumpmachine)"
     fi
 
@@ -74,7 +74,12 @@ function build_conf_python() {
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
 
-    if [ ! -f "${pkgdir}/.stamp_preconfigured" ] && [ "${WIN32}" -eq 1 ]; then
+    # add host/native binaries to path
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        export PATH="${PAWPAW_PREFIX}-host/bin:${PATH}"
+    fi
+
+    if [ "${WIN32}" -eq 1 ] && [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
         pushd "${pkgdir}"
         autoreconf -vfi
         touch .stamp_preconfigured
@@ -90,13 +95,13 @@ function build_conf_python() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        if [ "${WIN32}" -eq 1 ]; then
-            # inject exe-wrapper
-            if [ -n "${EXE_WRAPPER}" ]; then
-                sed -i -e "s|\t./Programs/_freeze_importlib|\t${EXE_WRAPPER} ./Programs/_freeze_importlib|" Makefile
-            fi
-            make regen-importlib
-        fi
+#         if [ "${WIN32}" -eq 1 ]; then
+#             # inject exe-wrapper
+#             if [ -n "${EXE_WRAPPER}" ]; then
+#                 sed -i -e "s|\t./Programs/_freeze_importlib|\t${EXE_WRAPPER} ./Programs/_freeze_importlib|" Makefile
+#             fi
+#             make regen-importlib
+#         fi
         make ${MAKE_ARGS}
         touch .stamp_built
         popd
@@ -112,12 +117,16 @@ function build_conf_python() {
     _postbuild
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# custom function for sip and pyqt packages
+
 function build_pyqt() {
     local name="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
     _prebuild "${name}" "${pkgdir}"
 
@@ -136,28 +145,17 @@ function build_pyqt() {
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
 
-    if [ "${WIN32}" -eq 1 ]; then
-        export CXXFLAGS+=" -Wno-deprecated-copy"
-    fi
-
     # non-standard vars used by sip/pyqt
     export LFLAGS="${LDFLAGS}"
     export LINK="${CXX}"
 
-    # custom library path so python runs
-    local penv=""
-    if [ "${LINUX}" -eq 1 ]; then
-        penv="env LD_LIBRARY_PATH=${PAWPAW_PREFIX}/lib"
+    # add host/native binaries to path
+    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+        export PATH="${PAWPAW_PREFIX}-host/bin:${PATH}"
     fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-
-        local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
-
-        if [ -n "${PYTHON_FOR_BUILD}" ]; then
-            python="${PYTHON_FOR_BUILD}"
-        fi
 
         # Place link to Qt DLLs for PyQt tests
         if [ "${WIN32}" -eq 1 ] && [ -d "pyuic" ] && [ ! -d "release" ]; then
@@ -165,17 +163,14 @@ function build_pyqt() {
             ln -sf "${PAWPAW_PREFIX}/bin"/Qt* release/
         fi
 
-        ${penv} ${python} configure.py ${extraconfrules}
+        ${python} configure.py ${extraconfrules}
 
-        if [ -n "${TOOLCHAIN_PREFIX}" ]; then
-            # use abstract python3 path
-            sed -i -e 's|/usr/bin/python3|python3|g' Makefile
-
-            # use PREFIX var
-            sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" installed.txt Makefile */Makefile
-            if [ -f "QtCore/Makefile.Release" ]; then
-                sed -i -e "s|/usr/include|${PAWPAW_PREFIX}/include|g" */Makefile.Release
-                sed -i -e "s|/usr/lib|${PAWPAW_PREFIX}/lib|g" */Makefile.Release
+        if [ -f "QtCore/Makefile.Release" ]; then
+            if [ "${CROSS_COMPILING}" -eq 1 ]; then
+                sed -i -e "s|${PAWPAW_PREFIX}-host|${PAWPAW_PREFIX}|" pylupdate5 pyrcc5 pyuic5
+            fi
+            if [ -n "${EXE_WRAPPER}" ]; then
+                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" pylupdate5 pyrcc5 pyuic5
             fi
         fi
 
@@ -189,31 +184,20 @@ function build_pyqt() {
         # build sip as host tool first
         if [ "${CROSS_COMPILING}" -eq 1 ] && [ -d "sipgen" ] && [ ! -f "sipgen/sip" ]; then
             pushd "sipgen"
-            PATH="${OLD_PATH}" make sip CC="gcc" LINK="gcc" LFLAGS="-Wl,-s" ${MAKE_ARGS}
+            PATH="${OLD_PATH}" make sip CC="gcc" CFLAGS= LINK="gcc" LFLAGS="-Wl,-s" ${MAKE_ARGS}
             popd
         fi
 
-        make CC="${TARGET_CC}" CXX="${TARGET_CXX}" LINK="${TARGET_CXX}" PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS}
+#         CC="${TARGET_CC}" CXX="${TARGET_CXX}" LFLAGS="${LDFLAGS}" LINK="${TARGET_CXX}" PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}"
+        make ${MAKE_ARGS}
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ${penv} make PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}" ${MAKE_ARGS} -j 1 install
-        if [ -f "QtCore/Makefile.Release" ]; then
-            if [ "${CROSS_COMPILING}" -eq 1 ]; then
-                sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/bin"/py*5
-            fi
-            if [ -n "${EXE_WRAPPER}" ]; then
-                sed -i -e "s|exec /|exec ${EXE_WRAPPER} /|" "${PAWPAW_PREFIX}/bin"/py*5
-            fi
-        else
-            if [ "${CROSS_COMPILING}" -eq 1 ]; then
-                ln -sf "${PAWPAW_PREFIX}-host/bin/sip" "${PAWPAW_PREFIX}/bin/sip"
-                #sed -i -e "s|/usr|${PAWPAW_PREFIX}|g" "${PAWPAW_PREFIX}/lib/python3/dist-packages/sipconfig.py"
-            fi
-        fi
+#         PREFIX="${PAWPAW_PREFIX}" PKG_CONFIG="${TARGET_PKG_CONFIG}"
+        make ${MAKE_ARGS} -j 1 install
         touch .stamp_installed
         popd
     fi
@@ -225,9 +209,9 @@ function build_pyqt() {
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap for python (needed for cross-compilation)
 
-# if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
-#     wineboot -u
-# fi
+if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
+    wineboot -u
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # python
@@ -236,10 +220,20 @@ function build_pyqt() {
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     download host-Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz" "" Python
     build_host_autoconf host-Python "${PYTHON_VERSION}" "--build=$(gcc -dumpmachine) --prefix=${PAWPAW_PREFIX}-host"
-    export PYTHON_FOR_BUILD="${PAWPAW_PREFIX}-host/bin/python3"
-    # FIXME
-    mkdir -p "${PAWPAW_PREFIX}-host/lib/python3.8/config-3.8-x86_64-linux-gnu/Tools"
-    ln -sf "${PAWPAW_PREFIX}-host/bin" "${PAWPAW_PREFIX}-host/lib/python3.8/config-3.8-x86_64-linux-gnu/Tools/scripts"
+
+    # sed -i -e "s|${PAWPAW_PREFIX}-host|${PAWPAW_PREFIX}|" "${PAWPAW_PREFIX}-host/bin/python3.8-config"
+
+#     # FIXME
+#     mkdir -p "${PAWPAW_PREFIX}-host/lib/python3.8/config-3.8-x86_64-linux-gnu/Tools"
+#     ln -sf "${PAWPAW_PREFIX}-host/bin" "${PAWPAW_PREFIX}-host/lib/python3.8/config-3.8-x86_64-linux-gnu/Tools/scripts"
+
+#     # may be available in host, but not in build target
+#     if [ "${WIN32}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}-host/include/python3.8/pyconfig.h-e" ]; then
+#         sed -i -e '/HAVE_CRYPT_H/d' "${PAWPAW_PREFIX}-host/include/python3.8/pyconfig.h"
+#         sed -i -e '/HAVE_CRYPT_R/d' "${PAWPAW_PREFIX}-host/include/python3.8/pyconfig.h"
+#         sed -i -e '/HAVE_SYS_SELECT_H/d' "${PAWPAW_PREFIX}-host/include/python3.8/pyconfig.h"
+#         touch "${PAWPAW_PREFIX}-host/include/python3.8/pyconfig.h-e"
+#     fi
 fi
 
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
@@ -288,9 +282,11 @@ fi
 if [ "${WIN32}" -eq 1 ]; then
     SIP_EXTRAFLAGS+=" --platform win32-g++"
     SIP_EXTRAFLAGS+=" EXTENSION_PLUGIN=pyd"
-    SIP_EXTRAFLAGS+=" INCDIR=${PAWPAW_PREFIX}/include/python3.8"
-    SIP_EXTRAFLAGS+=" LIBDIR=${PAWPAW_PREFIX}/lib/python3.8/config-3.8"
 fi
+
+SIP_EXTRAFLAGS+=" --sysroot=${PAWPAW_PREFIX}"
+SIP_EXTRAFLAGS+=" INCDIR=${PAWPAW_PREFIX}/include/python3.8"
+SIP_EXTRAFLAGS+=" LIBDIR=${PAWPAW_PREFIX}/lib/python3.8/config-3.8"
 
 download sip "${SIP_VERSION}" "${SIP_DOWNLOAD_URL}"
 build_pyqt sip "${SIP_VERSION}" "${SIP_EXTRAFLAGS}"
@@ -312,7 +308,7 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     export PKG_CONFIG_SYSROOT_DIR="/"
 fi
 
-PYQT5_EXTRAFLAGS="--qmake ${PAWPAW_PREFIX}/bin/qmake --sip ${PAWPAW_PREFIX}/bin/sip"
+PYQT5_EXTRAFLAGS="--qmake ${PAWPAW_PREFIX}/bin/qmake --sip ${PAWPAW_PREFIX}/bin/sip --sysroot ${PAWPAW_PREFIX}"
 
 download PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_DOWNLOAD_URL}"
 build_pyqt PyQt5${PYQT5_SUFFIX} "${PYQT5_VERSION}" "${PYQT5_EXTRAFLAGS} --concatenate --confirm-license"
@@ -338,17 +334,20 @@ if [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 liblo)"
     export EXTRA_LDFLAGS="-shared $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 liblo)"
     export LDSHARED="${TARGET_CXX}"
-    export PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
 fi
 
 download pyliblo "${PYLIBLO_VERSION}" "http://das.nasophon.de/download"
 build_python pyliblo "${PYLIBLO_VERSION}"
 
 if [ "${WIN32}" -eq 1 ]; then
+    unset LDSHARED
+fi
+
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
     if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PYTHONPATH}/liblo.pyd" ]; then
         ln -sv "${PYTHONPATH}"/pyliblo-*.egg/*.so "${PYTHONPATH}/liblo.pyd"
     fi
-    unset LDSHARED
     unset PYTHONPATH
 fi
 
@@ -388,21 +387,15 @@ fi
 # cxfreeze
 
 git_clone cx_Freeze "${CXFREEZE_VERSION}" "https://github.com/anthony-tuininga/cx_Freeze.git"
-
-if [ "${WIN32}" -eq 1 ]; then
-    export PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
-fi
-
 build_python cx_Freeze "${CXFREEZE_VERSION}"
 
-if [ "${WIN32}" -eq 1 ]; then
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        if [ ! -e "${PYTHONPATH}/cx_Freeze" ]; then
-            ln -sv "${PYTHONPATH}"/cx_Freeze-*.egg/cx_Freeze "${PYTHONPATH}/cx_Freeze"
-        fi
-        if [ ! -e "${PYTHONPATH}/cx_Freeze/util.pyd" ]; then
-            ln -sv "$(realpath "${PYTHONPATH}/cx_Freeze"/util.*)" "${PYTHONPATH}/cx_Freeze/util.pyd"
-        fi
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+    if [ ! -e "${PYTHONPATH}/cx_Freeze" ]; then
+        ln -sv "${PYTHONPATH}"/cx_Freeze-*.egg/cx_Freeze "${PYTHONPATH}/cx_Freeze"
+    fi
+    if [ ! -e "${PYTHONPATH}/cx_Freeze/util.pyd" ]; then
+        ln -sv "$(realpath "${PYTHONPATH}/cx_Freeze"/util.*)" "${PYTHONPATH}/cx_Freeze/util.pyd"
     fi
     unset PYTHONPATH
 fi
