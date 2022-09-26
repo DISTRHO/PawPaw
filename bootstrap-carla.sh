@@ -248,6 +248,7 @@ if [ "${MACOS}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS+=" ac_cv_func_futimens=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_preadv=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_pwritev=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_func_sendfile=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_utimensat=no"
 elif [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS=" -fwrapv -D_WIN32_WINNT=0x0601"
