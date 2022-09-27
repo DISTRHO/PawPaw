@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 16
+  CACHE_VERSION: 17
   DEBIAN_FRONTEND: noninteractive
   HOMEBREW_NO_AUTO_UPDATE: 1
 
@@ -748,10 +748,10 @@ jobs:
             #installer: homebrew
             #os: macos-11
             #target: macos
-          #- name: macos-universal
-            #installer: homebrew
-            #os: macos-11
-            #target: macos-universal
+          - name: macos-universal
+            installer: homebrew
+            os: macos-11
+            target: macos-universal
           - name: win32
             installer: apt
             os: ubuntu-22.04
