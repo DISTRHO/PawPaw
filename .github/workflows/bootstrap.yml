@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 17
+  CACHE_VERSION: 18
   DEBIAN_FRONTEND: noninteractive
   HOMEBREW_NO_AUTO_UPDATE: 1
 
@@ -35,11 +35,11 @@ jobs:
             target: linux-x86_64
           - name: macos
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos-universal
           - name: wasm
             installer: apt
@@ -83,6 +83,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/jammy
           sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
+      - name: Fix up Xcode
+        if: ${{ matrix.os == 'macos-10.15' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -187,11 +192,11 @@ jobs:
             target: linux-x86_64
           - name: macos
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos-universal
           - name: wasm
             installer: apt
@@ -235,6 +240,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/jammy
           sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
+      - name: Fix up Xcode
+        if: ${{ matrix.os == 'macos-10.15' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -331,11 +341,11 @@ jobs:
             target: linux-x86_64
           - name: macos
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos-universal
           - name: wasm
             installer: apt
@@ -380,6 +390,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/jammy
           sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
+      - name: Fix up Xcode
+        if: ${{ matrix.os == 'macos-10.15' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -474,11 +489,11 @@ jobs:
         include:
           - name: macos
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos-universal
           - name: win32
             installer: apt
@@ -519,6 +534,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/jammy
           sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
+      - name: Fix up Xcode
+        if: ${{ matrix.os == 'macos-10.15' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -610,11 +630,11 @@ jobs:
         include:
           - name: macos
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos-universal
           - name: win32
             installer: apt
@@ -655,6 +675,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/jammy
           sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
+      - name: Fix up Xcode
+        if: ${{ matrix.os == 'macos-10.15' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -746,11 +771,11 @@ jobs:
         include:
           #- name: macos
             #installer: homebrew
-            #os: macos-11
+            #os: macos-10.15
             #target: macos
           - name: macos-universal
             installer: homebrew
-            os: macos-11
+            os: macos-10.15
             target: macos-universal
           - name: win32
             installer: apt
@@ -791,6 +816,11 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -yqq --allow-downgrades libgd3/jammy
           sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
+      - name: Fix up Xcode
+        if: ${{ matrix.os == 'macos-10.15' }}
+        run: |
+          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+          sudo xcode-select -s "/Applications/Xcode_12.3.app"
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
