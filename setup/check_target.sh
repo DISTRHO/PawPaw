@@ -81,7 +81,7 @@ function check_target() {
                 LINUX_TARGET="linux-x86_64"
             fi
             ;;
-        "linux-aarch64")
+        "linux-aarch64"|"linux-arm64")
             GCC=1
             LINUX=1
             LINUX_TARGET="linux-aarch64"
@@ -101,7 +101,7 @@ function check_target() {
                 CROSS_COMPILING=1
             fi
             ;;
-        "linux-i686")
+        "linux-i686"|"linux-i386")
             GCC=1
             LINUX=1
             LINUX_TARGET="linux-i686"
