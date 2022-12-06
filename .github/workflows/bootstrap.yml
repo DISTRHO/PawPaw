@@ -55,9 +55,9 @@ jobs:
             target: win64
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/PawPawBuilds
@@ -161,7 +161,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf common-${{ matrix.target }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: common-${{ matrix.target }}
           path: common-${{ matrix.target }}.tar.gz
@@ -212,9 +212,9 @@ jobs:
             target: win64
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/PawPawBuilds
@@ -362,9 +362,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: common
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/PawPawBuilds
@@ -458,7 +458,7 @@ jobs:
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Download common-${{ matrix.target }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: common-${{ matrix.target }}
           path: ~/PawPawBuilds
@@ -478,7 +478,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf plugins-${{ matrix.target }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: plugins-${{ matrix.target }}
           path: plugins-${{ matrix.target }}.tar.gz
@@ -506,9 +506,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: common
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/PawPawBuilds
@@ -602,7 +602,7 @@ jobs:
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Download common-${{ matrix.target }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: common-${{ matrix.target }}
           path: ~/PawPawBuilds
@@ -619,7 +619,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf jack2-${{ matrix.target }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: jack2-${{ matrix.target }}
           path: jack2-${{ matrix.target }}.tar.gz
@@ -647,9 +647,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: common
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/PawPawBuilds
@@ -743,7 +743,7 @@ jobs:
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Download common-${{ matrix.target }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: common-${{ matrix.target }}
           path: ~/PawPawBuilds
@@ -760,7 +760,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf qt-${{ matrix.target }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: qt-${{ matrix.target }}
           path: qt-${{ matrix.target }}.tar.gz
@@ -788,9 +788,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [plugins, qt]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/PawPawBuilds
@@ -884,17 +884,17 @@ jobs:
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Download common-${{ matrix.target }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: common-${{ matrix.target }}
           path: ~/PawPawBuilds
       - name: Download qt-${{ matrix.target }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: qt-${{ matrix.target }}
           path: ~/PawPawBuilds
       - name: Download plugins-${{ matrix.target }}
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: plugins-${{ matrix.target }}
           path: ~/PawPawBuilds
