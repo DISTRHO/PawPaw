@@ -36,6 +36,135 @@ source setup/functions.sh
 source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
+# libpng
+
+download libpng "${LIBPNG_VERSION}" "${LIBPNG_URL}" "tar.xz"
+build_autoconf libpng "${LIBPNG_VERSION}" "${LIBPNG_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make libpng "${LIBPNG_VERSION}" check
+fi
+
+if [ "${MACOS}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/libpng16.pc-e" ]; then
+    sed -i -e '/Requires.private: zlib/d' "${PAWPAW_PREFIX}/lib/pkgconfig/libpng16.pc"
+    touch "${PAWPAW_PREFIX}/lib/pkgconfig/libpng16.pc-e"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# pixman
+
+download pixman "${PIXMAN_VERSION}" "${PIXMAN_URL}"
+build_autoconf pixman "${PIXMAN_VERSION}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make pixman "${PIXMAN_VERSION}" check
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# freetype
+
+download freetype "${FREETYPE_VERSION}" "${FREETYPE_URL}" "tar.xz"
+build_autoconf freetype "${FREETYPE_VERSION}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make freetype "${FREETYPE_VERSION}" check
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# fontconfig
+
+download fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_URL}"
+build_autoconf fontconfig "${FONTCONFIG_VERSION}"
+
+# tests fail on stable release, see https://gitlab.freedesktop.org/fontconfig/fontconfig/-/issues/177
+# if [ "${CROSS_COMPILING}" -eq 0 ]; then
+#     run_make fontconfig "${FONTCONFIG_VERSION}" check
+# fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# cairo
+
+CAIRO_EXTRAFLAGS="--disable-gtk-doc"
+CAIRO_EXTRAFLAGS+=" --disable-qt"
+CAIRO_EXTRAFLAGS+=" --disable-os2"
+CAIRO_EXTRAFLAGS+=" --disable-beos"
+CAIRO_EXTRAFLAGS+=" --disable-drm"
+CAIRO_EXTRAFLAGS+=" --disable-gallium"
+CAIRO_EXTRAFLAGS+=" --disable-gl"
+CAIRO_EXTRAFLAGS+=" --disable-glesv2"
+CAIRO_EXTRAFLAGS+=" --disable-glesv3"
+CAIRO_EXTRAFLAGS+=" --disable-cogl"
+CAIRO_EXTRAFLAGS+=" --disable-directfb"
+CAIRO_EXTRAFLAGS+=" --disable-vg"
+CAIRO_EXTRAFLAGS+=" --disable-egl"
+CAIRO_EXTRAFLAGS+=" --disable-glx"
+CAIRO_EXTRAFLAGS+=" --disable-wgl"
+CAIRO_EXTRAFLAGS+=" --disable-script"
+CAIRO_EXTRAFLAGS+=" --disable-ps"
+CAIRO_EXTRAFLAGS+=" --disable-svg"
+CAIRO_EXTRAFLAGS+=" --disable-test-surfaces"
+CAIRO_EXTRAFLAGS+=" --disable-svg"
+CAIRO_EXTRAFLAGS+=" --disable-tee"
+CAIRO_EXTRAFLAGS+=" --disable-xml"
+CAIRO_EXTRAFLAGS+=" --disable-gobject"
+CAIRO_EXTRAFLAGS+=" --disable-full-testing"
+CAIRO_EXTRAFLAGS+=" --disable-interpreter"
+
+CAIRO_EXTRAFLAGS+=" --enable-png"
+CAIRO_EXTRAFLAGS+=" --enable-ft"
+CAIRO_EXTRAFLAGS+=" --enable-fc"
+CAIRO_EXTRAFLAGS+=" --enable-pthread"
+CAIRO_EXTRAFLAGS+=" --enable-trace"
+
+# TESTING
+CAIRO_EXTRAFLAGS+=" --disable-symbol-lookup"
+
+if [ "${LINUX}" -eq 1 ]; then
+    CAIRO_EXTRAFLAGS+=" --enable-xlib"
+    CAIRO_EXTRAFLAGS+=" --enable-xlib-xrender"
+    CAIRO_EXTRAFLAGS+=" --enable-xcb"
+    CAIRO_EXTRAFLAGS+=" --enable-xlib-xcb"
+    CAIRO_EXTRAFLAGS+=" --enable-xcb-shm"
+else
+    CAIRO_EXTRAFLAGS+=" --disable-xlib"
+    CAIRO_EXTRAFLAGS+=" --disable-xlib-xrender"
+    CAIRO_EXTRAFLAGS+=" --disable-xcb"
+    CAIRO_EXTRAFLAGS+=" --disable-xlib-xcb"
+    CAIRO_EXTRAFLAGS+=" --disable-xcb-shm"
+fi
+
+if [ "${MACOS}" -eq 1 ]; then
+    CAIRO_EXTRAFLAGS+=" --enable-quartz"
+    CAIRO_EXTRAFLAGS+=" --enable-quartz-font"
+    CAIRO_EXTRAFLAGS+=" --enable-quartz-image"
+else
+    CAIRO_EXTRAFLAGS+=" --disable-quartz"
+    CAIRO_EXTRAFLAGS+=" --disable-quartz-font"
+    CAIRO_EXTRAFLAGS+=" --disable-quartz-image"
+fi
+
+if [ "${WIN32}" -eq 1 ]; then
+    CAIRO_EXTRAFLAGS+=" --enable-win32"
+    CAIRO_EXTRAFLAGS+=" --enable-win32-font"
+else
+    CAIRO_EXTRAFLAGS+=" --disable-win32"
+    CAIRO_EXTRAFLAGS+=" --disable-win32-font"
+fi
+
+if [ "${MACOS}" -eq 1 ]; then
+    # fix link of test suite
+    export EXTRA_LDFLAGS="-framework CoreFoundation -framework CoreGraphics"
+fi
+
+download cairo "${CAIRO_VERSION}" "${CAIRO_URL}" "tar.xz"
+build_autoconf cairo "${CAIRO_VERSION}" "${CAIRO_EXTRAFLAGS}"
+
+# FIXME tests are failing :(
+# if [ "${CROSS_COMPILING}" -eq 0 ]; then
+#     run_make cairo "${CAIRO_VERSION}" "check -j 1"
+# fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
 if [ -z "${PAWPAW_SKIP_FFTW}" ]; then

@@ -39,6 +39,21 @@ ZLIB_URL=https://github.com/madler/zlib.git
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap plugins
 
+LIBPNG_VERSION=1.6.39
+LIBPNG_URL=http://download.sourceforge.net/libpng
+
+PIXMAN_VERSION=0.42.2
+PIXMAN_URL=https://cairographics.org/releases
+
+FREETYPE_VERSION=2.12.1
+FREETYPE_URL=http://download.sourceforge.net/freetype
+
+FONTCONFIG_VERSION=2.13.1
+FONTCONFIG_URL=https://www.freedesktop.org/software/fontconfig/release
+
+CAIRO_VERSION=1.16.0
+CAIRO_URL=https://cairographics.org/releases
+
 FFTW_VERSION=3.3.10
 FFTW_URL=http://www.fftw.org
 
