@@ -38,17 +38,49 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 # libpng
 
+if [ "${MACOS}" -eq 0 ]; then
+    # fix build
+    export EXTRA_CPPFLAGS="-I${PAWPAW_PREFIX}/include"
+fi
+
 download libpng "${LIBPNG_VERSION}" "${LIBPNG_URL}" "tar.xz"
 build_autoconf libpng "${LIBPNG_VERSION}" "${LIBPNG_EXTRAFLAGS}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make libpng "${LIBPNG_VERSION}" check
+    run_make libpng "${LIBPNG_VERSION}" "check -j 1"
 fi
 
 if [ "${MACOS}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/libpng16.pc-e" ]; then
     sed -i -e '/Requires.private: zlib/d' "${PAWPAW_PREFIX}/lib/pkgconfig/libpng16.pc"
     touch "${PAWPAW_PREFIX}/lib/pkgconfig/libpng16.pc-e"
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# libxml2
+
+if [ "${MACOS}" -eq 0 ]; then
+
+# ensure no system paths are used
+LIBXML2_EXTRAFLAGS="-DZLIB_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
+
+# disable stuff typically not needed for plugins
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_HTML=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_HTTP=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_ICONV=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_LZMA=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_MODULES=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_PROGRAMS=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_PYTHON=OFF"
+LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_THREADS=OFF"
+
+download libxml2 "${LIBXML2_VERSION}" "${LIBXML2_URL}" "tar.xz"
+build_cmake libxml2 "${LIBXML2_VERSION}" "${LIBXML2_EXTRAFLAGS}"
+
+if [ "${CROSS_COMPILING}" -eq 0 ]; then
+    run_make libxml2 "${LIBXML2_VERSION}"
+fi
+
+fi # MACOS
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pixman
@@ -63,8 +95,25 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # freetype
 
+# TODO options
+# external zlib
+# bzip2
+# libpng
+# harfbuzz
+# brotli
+# pthread
+
+# ensure no system paths are used
+FREETYPE_EXTRAFLAGS+=" -DBROTLIDEC_INCLUDE_DIRS:PATH=${PAWPAW_PREFIX}/include"
+FREETYPE_EXTRAFLAGS+=" -DHarfBuzz_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include/harfbuzz"
+FREETYPE_EXTRAFLAGS+=" -DPNG_PNG_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
+
+if [ "${MACOS}" -eq 0 ]; then
+    FREETYPE_EXTRAFLAGS+=" -DZLIB_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
+fi
+
 download freetype "${FREETYPE_VERSION}" "${FREETYPE_URL}" "tar.xz"
-build_autoconf freetype "${FREETYPE_VERSION}"
+build_cmake freetype "${FREETYPE_VERSION}" "${FREETYPE_EXTRAFLAGS}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
     run_make freetype "${FREETYPE_VERSION}" check
@@ -73,8 +122,14 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # fontconfig
 
+FONTCONFIG_EXTRAFLAGS="--disable-iconv"
+
+if [ "${MACOS}" -eq 0 ]; then
+    FONTCONFIG_EXTRAFLAGS+=" --enable-libxml2"
+fi
+
 download fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_URL}"
-build_autoconf fontconfig "${FONTCONFIG_VERSION}"
+build_autoconf fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_EXTRAFLAGS}"
 
 # tests fail on stable release, see https://gitlab.freedesktop.org/fontconfig/fontconfig/-/issues/177
 # if [ "${CROSS_COMPILING}" -eq 0 ]; then
@@ -112,20 +167,21 @@ CAIRO_EXTRAFLAGS+=" --disable-interpreter"
 
 CAIRO_EXTRAFLAGS+=" --enable-png"
 CAIRO_EXTRAFLAGS+=" --enable-ft"
-CAIRO_EXTRAFLAGS+=" --enable-fc"
 CAIRO_EXTRAFLAGS+=" --enable-pthread"
-CAIRO_EXTRAFLAGS+=" --enable-trace"
 
 # TESTING
 CAIRO_EXTRAFLAGS+=" --disable-symbol-lookup"
+CAIRO_EXTRAFLAGS+=" --disable-trace"
 
 if [ "${LINUX}" -eq 1 ]; then
+    CAIRO_EXTRAFLAGS+=" --enable-fc"
     CAIRO_EXTRAFLAGS+=" --enable-xlib"
     CAIRO_EXTRAFLAGS+=" --enable-xlib-xrender"
     CAIRO_EXTRAFLAGS+=" --enable-xcb"
     CAIRO_EXTRAFLAGS+=" --enable-xlib-xcb"
     CAIRO_EXTRAFLAGS+=" --enable-xcb-shm"
 else
+    CAIRO_EXTRAFLAGS+=" --disable-fc"
     CAIRO_EXTRAFLAGS+=" --disable-xlib"
     CAIRO_EXTRAFLAGS+=" --disable-xlib-xrender"
     CAIRO_EXTRAFLAGS+=" --disable-xcb"
@@ -146,6 +202,7 @@ fi
 if [ "${WIN32}" -eq 1 ]; then
     CAIRO_EXTRAFLAGS+=" --enable-win32"
     CAIRO_EXTRAFLAGS+=" --enable-win32-font"
+    CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=no"
 else
     CAIRO_EXTRAFLAGS+=" --disable-win32"
     CAIRO_EXTRAFLAGS+=" --disable-win32-font"

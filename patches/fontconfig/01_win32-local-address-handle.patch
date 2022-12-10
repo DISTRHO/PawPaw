@@ -1,0 +1,32 @@
+diff --git a/src/fccfg.c b/src/fccfg.c
+index d7c48e8..e9861aa 100644
+--- a/src/fccfg.c
++++ b/src/fccfg.c
+@@ -1885,12 +1885,12 @@ FcConfigSubstitute (FcConfig	*config,
+     return FcConfigSubstituteWithPat (config, p, 0, kind);
+ }
+ 
+-#if defined (_WIN32)
++#if defined(_WIN32)
+ 
+ static FcChar8 fontconfig_path[1000] = ""; /* MT-dontcare */
+ FcChar8 fontconfig_instprefix[1000] = ""; /* MT-dontcare */
+ 
+-#  if (defined (PIC) || defined (DLL_EXPORT))
++#  if 0
+ 
+ BOOL WINAPI
+ DllMain (HINSTANCE hinstDLL,
+@@ -2039,8 +2039,11 @@ FcConfigGetPath (void)
+ #ifdef _WIN32
+ 	if (fontconfig_path[0] == '\0')
+ 	{
++		HMODULE module = NULL;
++		GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
++		                  (LPCSTR) &FcConfigGetPath, &module);
+ 		char *p;
+-		if(!GetModuleFileName(NULL, (LPCH) fontconfig_path, sizeof(fontconfig_path)))
++		if(!GetModuleFileName(module, (LPCH) fontconfig_path, sizeof(fontconfig_path)))
+ 			goto bail1;
+ 		p = strrchr ((const char *) fontconfig_path, '\\');
+ 		if (p) *p = '\0';

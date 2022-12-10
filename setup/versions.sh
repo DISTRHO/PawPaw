@@ -42,6 +42,9 @@ ZLIB_URL=https://github.com/madler/zlib.git
 LIBPNG_VERSION=1.6.39
 LIBPNG_URL=http://download.sourceforge.net/libpng
 
+LIBXML2_VERSION=2.10.3
+LIBXML2_URL=https://download.gnome.org/sources/libxml2/2.10
+
 PIXMAN_VERSION=0.42.2
 PIXMAN_URL=https://cairographics.org/releases
 

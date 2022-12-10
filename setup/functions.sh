@@ -121,7 +121,12 @@ function _prebuild() {
     export LDFLAGS="${TARGET_LDFLAGS} ${EXTRA_LDFLAGS}"
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
 
-    unset CPPFLAGS
+    if [ -n "${EXTRA_CPPFLAGS}" ]; then
+        export CPPFLAGS="${EXTRA_CPPFLAGS}"
+    else
+        unset CPPFLAGS
+    fi
+
     export OLD_PATH="${PATH}"
     export PATH="${TARGET_PATH}"
 
@@ -177,6 +182,7 @@ function _postbuild() {
     unset PKG_CONFIG_PATH
 
     unset EXTRA_CFLAGS
+    unset EXTRA_CPPFLAGS
     unset EXTRA_CXXFLAGS
     unset EXTRA_LDFLAGS
     unset EXTRA_MAKE_ARGS
