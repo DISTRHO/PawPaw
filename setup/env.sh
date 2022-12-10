@@ -137,14 +137,21 @@ if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
+    if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
+        LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
+    fi
 elif [ "${WASM}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,--gc-sections"
-    LINK_FLAGS+=" -sAGGRESSIVE_VARIABLE_ELIMINATION=1"
     LINK_FLAGS+=" -sENVIRONMENT=web"
     LINK_FLAGS+=" -sLLD_REPORT_UNDEFINED"
+    if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
+        LINK_FLAGS+=" -sAGGRESSIVE_VARIABLE_ELIMINATION=1"
+    fi
 else
-    LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all"
+    LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined"
+    if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
+        LINK_FLAGS+=" -Wl,--strip-all"
+    fi
     if [ "${WIN32}" -eq 1 ]; then
         LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
         if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
@@ -181,6 +188,10 @@ if [ "${WASM}" -eq 1 ]; then
     TARGET_NM="emnm"
     TARGET_RANLIB="emranlib"
     TARGET_STRIP="emstrip"
+fi
+
+if [ -n "${PAWPAW_SKIP_STRIPPING}" ] && [ "${PAWPAW_SKIP_STRIPPING}" -eq 1 ]; then
+    TARGET_STRIP="true"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
