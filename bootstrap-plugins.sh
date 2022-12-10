@@ -60,8 +60,11 @@ fi
 
 if [ "${MACOS}" -eq 0 ]; then
 
+LIBXML2_EXTRAFLAGS=""
+
 # ensure no system paths are used
-LIBXML2_EXTRAFLAGS="-DZLIB_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
+LIBXML2_EXTRAFLAGS+=" -DZLIB_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
+LIBXML2_EXTRAFLAGS+=" -DZLIB_LIBRARY=${PAWPAW_PREFIX}/lib/libz.a"
 
 # disable stuff typically not needed for plugins
 LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_HTML=OFF"
@@ -80,7 +83,7 @@ if [ "${CROSS_COMPILING}" -eq 0 ]; then
     run_make libxml2 "${LIBXML2_VERSION}"
 fi
 
-fi # MACOS
+fi # !MACOS
 
 # ---------------------------------------------------------------------------------------------------------------------
 # pixman
