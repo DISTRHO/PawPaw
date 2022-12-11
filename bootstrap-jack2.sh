@@ -157,6 +157,10 @@ if [ "${WIN64}" -eq 1 ]; then
     source setup/env.sh
     PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/win64"
     PAWPAW_PREFIX="${PAWPAW_DIR}/targets/win64"
+    if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
+        PAWPAW_BUILDDIR+="-lto"
+        PAWPAW_PREFIX+="-lto"
+    fi
     source setup/functions.sh
 
     copy_download tre tre-x32 "${TRE_VERSION}"
