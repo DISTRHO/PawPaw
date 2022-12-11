@@ -41,6 +41,9 @@ source setup/versions.sh
 if [ "${MACOS}" -eq 0 ]; then
     # fix build
     export EXTRA_CPPFLAGS="-I${PAWPAW_PREFIX}/include"
+    if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
+        export EXTRA_CPPFLAGS+=" -fno-lto"
+    fi
 fi
 
 download libpng "${LIBPNG_VERSION}" "${LIBPNG_URL}" "tar.xz"
