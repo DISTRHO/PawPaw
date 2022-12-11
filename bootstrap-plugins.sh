@@ -92,8 +92,10 @@ fi # !MACOS
 # ---------------------------------------------------------------------------------------------------------------------
 # pixman
 
+PIXMAN_EXTRAFLAGS="--disable-gtk  --enable-libpng"
+
 download pixman "${PIXMAN_VERSION}" "${PIXMAN_URL}"
-build_autoconf pixman "${PIXMAN_VERSION}"
+build_autoconf pixman "${PIXMAN_VERSION}" "${PIXMAN_EXTRAFLAGS}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
     run_make pixman "${PIXMAN_VERSION}" check
@@ -114,7 +116,7 @@ FREETYPE_EXTRAFLAGS+=" -DFT_DISABLE_HARFBUZZ=TRUE"
 # FREETYPE_EXTRAFLAGS+=" -DBROTLIDEC_INCLUDE_DIRS:PATH=${PAWPAW_PREFIX}/include"
 # FREETYPE_EXTRAFLAGS+=" -DFREETYPE_INCLUDE_DIRS:PATH=${PAWPAW_PREFIX}/include"
 # FREETYPE_EXTRAFLAGS+=" -DHarfBuzz_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include/harfbuzz"
-FREETYPE_EXTRAFLAGS+=" -DPNG_PNG_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
+FREETYPE_EXTRAFLAGS+=" -DPNG_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
 
 if [ "${MACOS}" -eq 0 ]; then
     FREETYPE_EXTRAFLAGS+=" -DZLIB_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"

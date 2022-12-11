@@ -1,0 +1,13 @@
+diff --git a/test/utils-prng.c b/test/utils-prng.c
+index 0cf53dd..ecadbdc 100644
+--- a/test/utils-prng.c
++++ b/test/utils-prng.c
+@@ -83,7 +83,7 @@ store_rand_128_data (void *addr, prng_rand_128_data_t *d, int aligned)
+     }
+     else
+     {
+-#ifdef __SSE2__
++#if defined(__SSE2__) && !defined(__EMSCRIPTEN__)
+         /* workaround for http://gcc.gnu.org/PR55614 */
+         _mm_storeu_si128 (addr, _mm_loadu_si128 ((__m128i *)d));
+         return;
