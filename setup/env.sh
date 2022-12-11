@@ -69,7 +69,7 @@ BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidd
 
 if [ "${GCC}" -eq 1 ]; then
     # not supported in riscv64 yet
-    if [ "${TOOLCHAIN_PREFIX}" != "riscv64-linux-gnu" ]; then
+    if [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" != "linux-riscv64" ]; then
         BUILD_FLAGS+=" -fprefetch-loop-arrays"
     fi
     BUILD_FLAGS+=" -fno-gnu-unique"
@@ -85,9 +85,9 @@ fi
 
 if [ "${WASM}" -eq 1 ]; then
     BUILD_FLAGS+=" -msse -msse2 -msse3 -msimd128"
-elif [ "${TOOLCHAIN_PREFIX}" = "arm-linux-gnueabihf" ]; then
+elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" = "linux-armhf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
-elif [ "${TOOLCHAIN_PREFIX}" != "aarch64-linux-gnu" ] && [ "${TOOLCHAIN_PREFIX}" != "riscv64-linux-gnu" ]; then
+elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" != "linux-aarch64" ] && [ "${LINUX_TARGET}" != "linux-riscv64" ]; then
     BUILD_FLAGS+=" -mtune=generic -msse -msse2"
     if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
         BUILD_FLAGS+=" -mfpmath=sse"

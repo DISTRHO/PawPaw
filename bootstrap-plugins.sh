@@ -79,10 +79,6 @@ LIBXML2_EXTRAFLAGS+=" -DLIBXML2_WITH_THREADS=OFF"
 download libxml2 "${LIBXML2_VERSION}" "${LIBXML2_URL}" "tar.xz"
 build_cmake libxml2 "${LIBXML2_VERSION}" "${LIBXML2_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make libxml2 "${LIBXML2_VERSION}"
-fi
-
 fi # !MACOS
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -98,17 +94,18 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # freetype
 
-# TODO options
-# external zlib
-# bzip2
-# libpng
-# harfbuzz
-# brotli
-# pthread
+FREETYPE_EXTRAFLAGS=""
+FREETYPE_EXTRAFLAGS+=" -DFT_REQUIRE_PNG=TRUE"
+FREETYPE_EXTRAFLAGS+=" -DFT_REQUIRE_ZLIB=TRUE"
+
+FREETYPE_EXTRAFLAGS+=" -DFT_DISABLE_BROTLI=TRUE"
+FREETYPE_EXTRAFLAGS+=" -DFT_DISABLE_BZIP2=TRUE"
+FREETYPE_EXTRAFLAGS+=" -DFT_DISABLE_HARFBUZZ=TRUE"
 
 # ensure no system paths are used
-FREETYPE_EXTRAFLAGS+=" -DBROTLIDEC_INCLUDE_DIRS:PATH=${PAWPAW_PREFIX}/include"
-FREETYPE_EXTRAFLAGS+=" -DHarfBuzz_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include/harfbuzz"
+# FREETYPE_EXTRAFLAGS+=" -DBROTLIDEC_INCLUDE_DIRS:PATH=${PAWPAW_PREFIX}/include"
+# FREETYPE_EXTRAFLAGS+=" -DFREETYPE_INCLUDE_DIRS:PATH=${PAWPAW_PREFIX}/include"
+# FREETYPE_EXTRAFLAGS+=" -DHarfBuzz_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include/harfbuzz"
 FREETYPE_EXTRAFLAGS+=" -DPNG_PNG_INCLUDE_DIR:PATH=${PAWPAW_PREFIX}/include"
 
 if [ "${MACOS}" -eq 0 ]; then
@@ -118,8 +115,9 @@ fi
 download freetype "${FREETYPE_VERSION}" "${FREETYPE_URL}" "tar.xz"
 build_cmake freetype "${FREETYPE_VERSION}" "${FREETYPE_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make freetype "${FREETYPE_VERSION}" check
+if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc-e" ]; then
+    sed -i -e 's/, libbrotlidec//' "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc"
+    touch "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc-e"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -180,9 +178,18 @@ if [ "${LINUX}" -eq 1 ]; then
     CAIRO_EXTRAFLAGS+=" --enable-fc"
     CAIRO_EXTRAFLAGS+=" --enable-xlib"
     CAIRO_EXTRAFLAGS+=" --enable-xlib-xrender"
-    CAIRO_EXTRAFLAGS+=" --enable-xcb"
-    CAIRO_EXTRAFLAGS+=" --enable-xlib-xcb"
-    CAIRO_EXTRAFLAGS+=" --enable-xcb-shm"
+    # TODO
+    # CAIRO_EXTRAFLAGS+=" --enable-xcb"
+    # CAIRO_EXTRAFLAGS+=" --enable-xlib-xcb"
+    # CAIRO_EXTRAFLAGS+=" --enable-xcb-shm"
+    CAIRO_EXTRAFLAGS+=" --disable-xcb"
+    CAIRO_EXTRAFLAGS+=" --disable-xlib-xcb"
+    CAIRO_EXTRAFLAGS+=" --disable-xcb-shm"
+    if [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+        CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=yes"
+    else
+        CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=no"
+    fi
 else
     CAIRO_EXTRAFLAGS+=" --disable-fc"
     CAIRO_EXTRAFLAGS+=" --disable-xlib"

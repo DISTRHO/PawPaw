@@ -120,6 +120,10 @@ if [ "${LINUX}" -eq 1 ]; then
         cp $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrender.pc
     fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/uuid.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir uuid)/uuid.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/uuid.pc
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
