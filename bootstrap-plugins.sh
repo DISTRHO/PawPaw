@@ -120,6 +120,9 @@ build_cmake freetype "${FREETYPE_VERSION}" "${FREETYPE_EXTRAFLAGS}"
 
 if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc-e" ]; then
     sed -i -e 's/, libbrotlidec//' "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc"
+    if [ "${MACOS}" -eq 1 ]; then
+        sed -i -e 's/Requires:  zlib,/Requires:/' "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc"
+    fi
     touch "${PAWPAW_PREFIX}/lib/pkgconfig/freetype2.pc-e"
 fi
 

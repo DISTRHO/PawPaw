@@ -56,6 +56,11 @@ PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/${PAWPAW_TARGET}"
 PAWPAW_PREFIX="${PAWPAW_DIR}/targets/${PAWPAW_TARGET}"
 PAWPAW_TMPDIR="/tmp"
 
+if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
+    PAWPAW_BUILDDIR+="-lto"
+    PAWPAW_PREFIX+="-lto"
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 # build environment
 
@@ -133,7 +138,10 @@ TARGET_CXXFLAGS="${BUILD_FLAGS} -fvisibility-inlines-hidden"
 LINK_FLAGS="-L${PAWPAW_PREFIX}/lib ${BUILD_FLAGS} ${EXTRA_FLAGS}"
 
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
-    LINK_FLAGS+=" -Werror=odr -Werror=lto-type-mismatch"
+    LINK_FLAGS+=" -Werror=odr"
+    if [ "${GCC}" -eq 1 ]; then
+        LINK_FLAGS+=" -Werror=lto-type-mismatch"
+    fi
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
