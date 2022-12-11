@@ -45,7 +45,7 @@ function download() {
                 dlurl2="${KXSTUDIO_FILES_URL}/${dlname}_${version}.${dlext}"
             else
                 dlurl1="${dlbaseurl}/${dlname}-${version}.${dlext}"
-                dlurl=2"${KXSTUDIO_FILES_URL}/${dlname}-${version}.${dlext}"
+                dlurl2="${KXSTUDIO_FILES_URL}/${dlname}-${version}.${dlext}"
             fi
             curl -L "${dlurl1}" -o "${dlfile}" --fail || curl -L "${dlurl2}" -o "${dlfile}" --fail
         fi
