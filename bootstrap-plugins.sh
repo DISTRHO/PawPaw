@@ -144,6 +144,11 @@ if [ "${MACOS}" -eq 0 ]; then
     FONTCONFIG_EXTRAFLAGS+=" --enable-libxml2"
 fi
 
+# workaround missing implementation, see https://github.com/emscripten-core/emscripten/issues/12093
+if [ "${WASM}" -eq 1 ]; then
+    export EXTRA_CFLAGS="-Duuid_generate_random=uuid_generate"
+fi
+
 download fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_URL}"
 build_autoconf fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_EXTRAFLAGS}"
 
@@ -235,9 +240,15 @@ else
     CAIRO_EXTRAFLAGS+=" --disable-win32-font"
 fi
 
+if [ "${WASM}" -eq 1 ]; then
+    CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=no"
+fi
+
+# fix link of test suite
 if [ "${MACOS}" -eq 1 ]; then
-    # fix link of test suite
     export EXTRA_LDFLAGS="-framework CoreFoundation -framework CoreGraphics"
+elif [ "${WIN32}" -eq 1 ]; then
+    export EXTRA_CFLAGS="-Dstrndup=_strndup"
 fi
 
 download cairo "${CAIRO_VERSION}" "${CAIRO_URL}" "tar.xz"

@@ -1,0 +1,36 @@
+diff --git a/util/cairo-script/cairo-script-file.c b/util/cairo-script/cairo-script-file.c
+index e7c5376..9ef7ded 100644
+--- a/util/cairo-script/cairo-script-file.c
++++ b/util/cairo-script/cairo-script-file.c
+@@ -40,6 +40,7 @@
+ #include <limits.h> /* INT_MAX */
+ #include <string.h>
+ #include <zlib.h>
++#undef deflate
+ 
+ #if HAVE_LZO
+ #include <lzo/lzo2a.h>
+diff --git a/util/cairo-script/cairo-script-operators.c b/util/cairo-script/cairo-script-operators.c
+index e493311..3d30e7b 100644
+--- a/util/cairo-script/cairo-script-operators.c
++++ b/util/cairo-script/cairo-script-operators.c
+@@ -57,6 +57,7 @@
+ 
+ #if HAVE_ZLIB
+ #include <zlib.h>
++#undef deflate
+ #endif
+ 
+ #if HAVE_LZO
+diff --git a/util/cairo-script/cairo-script-scanner.c b/util/cairo-script/cairo-script-scanner.c
+index 3dfb3a9..fb5e063 100644
+--- a/util/cairo-script/cairo-script-scanner.c
++++ b/util/cairo-script/cairo-script-scanner.c
+@@ -44,6 +44,7 @@
+ #include <string.h> /* memset */
+ #include <assert.h>
+ #include <zlib.h>
++#undef deflate
+ 
+ #if HAVE_LZO
+ #include <lzo/lzo2a.h>
