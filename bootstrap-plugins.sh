@@ -38,12 +38,17 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 # libpng
 
+LIBPNG_EXTRAFLAGS=""
+
+# bypass broken zlib configure tests
 if [ "${MACOS}" -eq 0 ]; then
-    # fix build
+    LIBPNG_EXTRAFLAGS+=" ac_cv_lib_z_zlibVersion=yes"
     export EXTRA_CPPFLAGS="-I${PAWPAW_PREFIX}/include"
-    if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
-        export EXTRA_CPPFLAGS+=" -fno-lto"
-    fi
+fi
+
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    # FIXME
+    LIBPNG_EXTRAFLAGS+=" --disable-hardware-optimizations"
 fi
 
 download libpng "${LIBPNG_VERSION}" "${LIBPNG_URL}" "tar.xz"
