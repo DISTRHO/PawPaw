@@ -30,6 +30,13 @@ function check_target() {
             MACOS_UNIVERSAL=1
             PAWPAW_SKIP_FORTIFY=1
             ;;
+        "macos-10.15"|"macos-universal-10.15")
+            CLANG=1
+            MACOS=1
+            MACOS_UNIVERSAL=1
+            MACOS_UNIVERSAL_10_15=1
+            PAWPAW_SKIP_FORTIFY=1
+            ;;
         "wasm")
             CLANG=1
             CROSS_COMPILING=1

@@ -100,7 +100,13 @@ elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" != "linux-aarch64" ] && [ "
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    if [ "${MACOS_UNIVERSAL_10_15}" -eq 1 ]; then
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_15"
+        BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_15"
+        BUILD_FLAGS+=" -mmacosx-version-min=10.15"
+        BUILD_FLAGS+=" -arch x86_64 -arch arm64"
+        export MACOSX_DEPLOYMENT_TARGET="10.15"
+    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12"
         BUILD_FLAGS+=" -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12"
         BUILD_FLAGS+=" -mmacosx-version-min=10.12"
