@@ -124,6 +124,8 @@ jobs:
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
             sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -281,6 +283,8 @@ jobs:
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
             sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -431,6 +435,8 @@ jobs:
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
             sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -575,6 +581,8 @@ jobs:
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
             sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -716,6 +724,8 @@ jobs:
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
             sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -857,6 +867,8 @@ jobs:
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
             sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
