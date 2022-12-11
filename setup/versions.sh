@@ -6,6 +6,8 @@
 DROBILLA_URL=https://download.drobilla.net/
 XIPH_URL=https://downloads.xiph.org/releases
 
+KXSTUDIO_FILES_URL=https://kx.studio/files
+
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap base
 

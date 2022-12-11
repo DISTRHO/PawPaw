@@ -30,19 +30,24 @@ function download() {
             tar --exclude=".git" -czf "${dlfile}" -C "${PAWPAW_TMPDIR}" "${dlname}-${version}"
             rm -rf "${tmprepodir}"
         else
-            local dlurl
+            local dlurl1
+            local dlurl2
             if echo ${dlbaseurl} | grep -q github.com | grep -q -v releases; then
                 if [ x"${dlmethod}" = x"nv" ]; then
-                    dlurl="${dlbaseurl}/${version}.${dlext}"
+                    dlurl1="${dlbaseurl}/${version}.${dlext}"
+                    dlurl2="${KXSTUDIO_FILES_URL}/${version}.${dlext}"
                 else
-                    dlurl="${dlbaseurl}/v${version}.${dlext}"
+                    dlurl1="${dlbaseurl}/v${version}.${dlext}"
+                    dlurl2="${KXSTUDIO_FILES_URL}/v${version}.${dlext}"
                 fi
             elif [ "${dlext}" = "orig.tar.gz" ]; then
-                dlurl="${dlbaseurl}/${dlname}_${version}.${dlext}"
+                dlurl1="${dlbaseurl}/${dlname}_${version}.${dlext}"
+                dlurl2="${KXSTUDIO_FILES_URL}/${dlname}_${version}.${dlext}"
             else
-                dlurl="${dlbaseurl}/${dlname}-${version}.${dlext}"
+                dlurl1="${dlbaseurl}/${dlname}-${version}.${dlext}"
+                dlurl=2"${KXSTUDIO_FILES_URL}/${dlname}-${version}.${dlext}"
             fi
-            curl -L "${dlurl}" -o "${dlfile}" --fail
+            curl -L "${dlurl1}" -o "${dlfile}" --fail || curl -L "${dlurl2}" -o "${dlfile}" --fail
         fi
     fi
 
