@@ -60,7 +60,7 @@ if [ "${LINUX}" -eq 1 ]; then
     elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
-    if ! pkg-config --exists alsa dbus-1 gl glib-2.0 libpcre pthread-stubs x11 xcb xcursor xext xfixes xproto xrandr xrender; then
+    if ! pkg-config --exists alsa dbus-1 gl glib-2.0 libpcre pthread-stubs uuid x11 xcb xcursor xext xfixes xproto xrandr xrender; then
         echo "some system libs are not available, cannot continue"
         exit 2
     fi
@@ -87,6 +87,10 @@ if [ "${LINUX}" -eq 1 ]; then
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc" ]; then
         cp $(pkg-config --variable=pcfiledir pthread-stubs)/pthread-stubs.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/uuid.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir uuid)/uuid.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/uuid.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/x11.pc" ]; then
         cp $(pkg-config --variable=pcfiledir x11)/x11.pc ${TARGET_PKG_CONFIG_PATH}/
@@ -120,10 +124,6 @@ if [ "${LINUX}" -eq 1 ]; then
         cp $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrender.pc
     fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/uuid.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir uuid)/uuid.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/uuid.pc
-    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ fi
 download pkg-config "${PKG_CONFIG_VERSION}" "${PKG_CONFIG_URL}"
 build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps --with-internal-glib --with-pc-path=${TARGET_PKG_CONFIG_PATH}"
 
-if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PAWPAW_PREFIX}/bin/${TOOLCHAIN_PREFIX_}pkg-config" ]; then
+if [ -n "${TOOLCHAIN_PREFIX_}" ] && [ ! -e "${PAWPAW_PREFIX}/bin/${TOOLCHAIN_PREFIX_}pkg-config" ]; then
     ln -s pkg-config "${PAWPAW_PREFIX}/bin/${TOOLCHAIN_PREFIX_}pkg-config"
 fi
 
