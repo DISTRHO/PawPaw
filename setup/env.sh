@@ -92,7 +92,13 @@ if [ "${WASM}" -eq 1 ]; then
     BUILD_FLAGS+=" -msse -msse2 -msse3 -msimd128"
 elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" = "linux-armhf" ]; then
     BUILD_FLAGS+=" -mfpu=neon-vfpv4 -mfloat-abi=hard"
-elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" != "linux-aarch64" ] && [ "${LINUX_TARGET}" != "linux-riscv64" ]; then
+elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+    # nothing?
+    BUILD_FLAGS+=""
+elif [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+    # nothing here yet, SIMD is not a thing on RISC-V
+    BUILD_FLAGS+=""
+else
     BUILD_FLAGS+=" -mtune=generic -msse -msse2"
     if [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
         BUILD_FLAGS+=" -mfpmath=sse"
