@@ -6,7 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
-JACK_EXAMPLE_TOOLS_VERSION=${JACK_EXAMPLE_TOOLS_VERSION:=4}
+JACK_EXAMPLE_TOOLS_VERSION=${JACK_EXAMPLE_TOOLS_VERSION:=git}
 JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
 QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.7}
 
@@ -125,8 +125,30 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # jack-example-tools
 
-download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "https://github.com/jackaudio/jack-example-tools.git" "" "git"
-build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}"
+jack_example_tools_repo="https://github.com/jackaudio/jack-example-tools.git"
+
+jack_example_tools_args=""
+
+if [ -n "${jack2_extra_prefix}" ]; then
+    jack_example_tools_args+=" --prefix=${jack2_extra_prefix}"
+    jack_example_tools_args+=" --destdir="${jack2_prefix}""
+else
+    jack_example_tools_args+=" --prefix=${jack2_prefix}"
+fi
+
+if [ "${JACK_EXAMPLE_TOOLS_VERSION}" = "git" ]; then
+    if [ ! -d jack-example-tools ]; then
+        git clone --recursive "${jack_example_tools_repo}"
+    fi
+    if [ ! -e "${PAWPAW_BUILDDIR}/jack-example-tools-git" ]; then
+        ln -sf "$(pwd)/jack-example-tools" "${PAWPAW_BUILDDIR}/jack-example-tools-git"
+    fi
+    rm -f "${PAWPAW_BUILDDIR}/jack-example-tools-git/.stamp_built"
+else
+    download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${jack_example_tools_repo}" "" "git"
+fi
+
+build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${jack_example_tools_args}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # jack-router (download, win32 only)
