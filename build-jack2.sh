@@ -131,7 +131,7 @@ jack_example_tools_args=""
 
 if [ -n "${jack2_extra_prefix}" ]; then
     jack_example_tools_args+=" --prefix=${jack2_extra_prefix}"
-    jack_example_tools_args+=" --destdir="${jack2_prefix}""
+    export DESTDIR="${jack2_prefix}"
 else
     jack_example_tools_args+=" --prefix=${jack2_prefix}"
 fi
@@ -149,6 +149,10 @@ else
 fi
 
 build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${jack_example_tools_args}"
+
+if [ -n "${jack2_extra_prefix}" ]; then
+    unset DESTDIR
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # jack-router (download, win32 only)
