@@ -6,6 +6,7 @@ cd $(dirname ${0})
 PAWPAW_ROOT="${PWD}"
 
 JACK2_VERSION=${JACK2_VERSION:=git}
+JACK_EXAMPLE_TOOLS_VERSION=${JACK_EXAMPLE_TOOLS_VERSION:=4}
 JACK_ROUTER_VERSION=${JACK_ROUTER_VERSION:=6c2e532bb05d2ba59ef210bef2fe270d588c2fdf}
 QJACKCTL_VERSION=${QJACKCTL_VERSION:=0.9.7}
 
@@ -120,6 +121,12 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc" ]; then
         sed -i -e "s/lib -ljack${s}/lib -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
     fi
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# jack-example-tools
+
+download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "https://github.com/jackaudio/jack-example-tools.git" "" "git"
+build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # jack-router (download, win32 only)
