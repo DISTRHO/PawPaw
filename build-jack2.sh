@@ -126,15 +126,9 @@ fi
 # jack-example-tools
 
 jack_example_tools_repo="https://github.com/jackaudio/jack-example-tools.git"
+jack_example_tools_args=" --prefix=${jack2_prefix}${jack2_extra_prefix}"
 
-jack_example_tools_args=""
-
-if [ -n "${jack2_extra_prefix}" ]; then
-    jack_example_tools_args+=" --prefix=${jack2_extra_prefix}"
-    export DESTDIR="${jack2_prefix}"
-else
-    jack_example_tools_args+=" --prefix=${jack2_prefix}"
-fi
+echo ${jack2_prefix}${jack2_extra_prefix}
 
 if [ "${JACK_EXAMPLE_TOOLS_VERSION}" = "git" ]; then
     if [ ! -d jack-example-tools ]; then
@@ -149,10 +143,6 @@ else
 fi
 
 build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${jack_example_tools_args}"
-
-if [ -n "${jack2_extra_prefix}" ]; then
-    unset DESTDIR
-fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # jack-router (download, win32 only)
