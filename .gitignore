@@ -4,3 +4,4 @@
 *.tar.gz
 *-e
 /jack2/
+/jack-example-tools/
