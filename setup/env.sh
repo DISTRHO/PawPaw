@@ -73,7 +73,7 @@ BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG=1"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
-BUILD_FLAGS+=" -fno-stack-protector -D_FORTIFY_SOURCE=0"
+BUILD_FLAGS+=" -fno-stack-protector -U_FORTIFY_SOURCE -Wp,-U_FORTIFY_SOURCE"
 
 if [ "${GCC}" -eq 1 ]; then
     # not supported in riscv64 yet
