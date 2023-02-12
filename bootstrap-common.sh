@@ -162,10 +162,7 @@ fi
 # flac
 
 FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
-
-if [ -n "${PAWPAW_SKIP_FORTIFY}" ] && [ "${PAWPAW_SKIP_FORTIFY}" -eq 1 ]; then
-    FLAC_EXTRAFLAGS+=" --disable-stack-smash-protection"
-fi
+FLAC_EXTRAFLAGS+=" --disable-stack-smash-protection"
 
 # force intrinsic optimizations on macos-universal target
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
@@ -189,6 +186,7 @@ fi
 # opus
 
 OPUS_EXTRAFLAGS="--enable-custom-modes --enable-float-approx"
+OPUS_EXTRAFLAGS+=" --disable-stack-protector"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-extra-programs"
@@ -198,10 +196,6 @@ fi
 # https://github.com/DISTRHO/PawPaw/issues/4
 if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
-fi
-
-if [ -n "${PAWPAW_SKIP_FORTIFY}" ] && [ "${PAWPAW_SKIP_FORTIFY}" -eq 1 ]; then
-    OPUS_EXTRAFLAGS+=" --disable-stack-protector"
 fi
 
 download opus "${OPUS_VERSION}" "${OPUS_URL}"

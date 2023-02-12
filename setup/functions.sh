@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOTE `setup/check_target.sh` and `setup/env.sh` must be imported before this one, in that order
+
 # ---------------------------------------------------------------------------------------------------------------------
 
 function download() {

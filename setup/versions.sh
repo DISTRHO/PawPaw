@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOTE `setup/check_target.sh` must be imported before this one
+
 # ---------------------------------------------------------------------------------------------------------------------
 # common URLs
 

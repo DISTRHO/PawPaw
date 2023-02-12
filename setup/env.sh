@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# NOTE `setup/check_target.sh` must be imported before this one
+
 # ---------------------------------------------------------------------------------------------------------------------
 # OS setup
 
@@ -71,6 +73,7 @@ BUILD_FLAGS+=" -ffast-math"
 BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG=1"
 BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
+BUILD_FLAGS+=" -fno-stack-protector -D_FORTIFY_SOURCE=0"
 
 if [ "${GCC}" -eq 1 ]; then
     # not supported in riscv64 yet
@@ -78,10 +81,6 @@ if [ "${GCC}" -eq 1 ]; then
         BUILD_FLAGS+=" -fprefetch-loop-arrays"
     fi
     BUILD_FLAGS+=" -fno-gnu-unique"
-fi
-
-if [ -z "${PAWPAW_SKIP_FORTIFY}" ] || [ "${PAWPAW_SKIP_FORTIFY}" -eq 0 ]; then
-    BUILD_FLAGS+=" -D_FORTIFY_SOURCE=2 -fstack-protector"
 fi
 
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
@@ -128,15 +127,12 @@ if [ "${MACOS}" -eq 1 ]; then
         export MACOSX_DEPLOYMENT_TARGET="10.8"
     fi
     BUILD_FLAGS+=" -Werror=objc-method-access"
-elif [ "${WASM}" -eq 1 ]; then
-    # do we need anything here?
-    BUILD_FLAGS+=""
 elif [ "${WIN32}" -eq 1 ]; then
-    BUILD_FLAGS+=" -mstackrealign"
-    BUILD_FLAGS+=" -posix"
+    BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
     BUILD_FLAGS+=" -D__STDC_FORMAT_MACROS=1"
     BUILD_FLAGS+=" -D__USE_MINGW_ANSI_STDIO=1"
-    BUILD_FLAGS+=" -DPTW32_STATIC_LIB"
+    BUILD_FLAGS+=" -mstackrealign"
+    BUILD_FLAGS+=" -posix"
 fi
 
 # anything that talks to db should have this
@@ -174,11 +170,6 @@ else
     fi
     if [ "${WIN32}" -eq 1 ]; then
         LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
-        if [ "${CROSS_COMPILING}" -eq 0 ] && [ -e "/usr/lib/libssp.a" ]; then
-            LINK_FLAGS+=" -lssp"
-        else
-            LINK_FLAGS+=" -lssp_nonshared"
-        fi
     else
         LINK_FLAGS+=" -static-libgcc -static-libstdc++"
     fi

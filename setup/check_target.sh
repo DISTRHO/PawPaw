@@ -23,26 +23,22 @@ function check_target() {
         "macos"|"Darwin")
             CLANG=1
             MACOS=1
-            PAWPAW_SKIP_FORTIFY=1
             ;;
         "macos-universal")
             CLANG=1
             MACOS=1
             MACOS_UNIVERSAL=1
-            PAWPAW_SKIP_FORTIFY=1
             ;;
         "macos-10.15"|"macos-universal-10.15")
             CLANG=1
             MACOS=1
             MACOS_UNIVERSAL=1
             MACOS_UNIVERSAL_10_15=1
-            PAWPAW_SKIP_FORTIFY=1
             ;;
         "wasm")
             CLANG=1
             CROSS_COMPILING=1
             WASM=1
-            PAWPAW_SKIP_FORTIFY=1
             PAWPAW_SKIP_LTO=1
             export EXE_WRAPPER="emrun --no_server"
             ;;
