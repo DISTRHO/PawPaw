@@ -40,14 +40,18 @@ source setup/versions.sh
 
 LIBPNG_EXTRAFLAGS=""
 
+if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
+    LIBPNG_EXTRAFLAGS+=" --disable-hardware-optimizations"
+fi
+
 # bypass broken zlib configure tests
 if [ "${MACOS}" -eq 0 ]; then
     LIBPNG_EXTRAFLAGS+=" ac_cv_lib_z_zlibVersion=yes"
     export EXTRA_CPPFLAGS="-I${PAWPAW_PREFIX}/include"
 fi
 
+# FIXME
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    # FIXME
     LIBPNG_EXTRAFLAGS+=" --disable-hardware-optimizations"
 fi
 
@@ -311,8 +315,10 @@ fi
 
 FFTWF_EXTRAFLAGS="${FFTW_EXTRAFLAGS} --enable-single"
 
-if [ "${LINUX}" -eq 1 ] && [ "${LINUX_TARGET}" = "linux-armhf" ]; then
-    FFTWF_EXTRAFLAGS+=" --enable-neon"
+if [ -z "${PAWPAW_NOSIMD}" ] || [ "${PAWPAW_NOSIMD}" -eq 0 ]; then
+    if [ "${LINUX}" -eq 1 ] && [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+        FFTWF_EXTRAFLAGS+=" --enable-neon"
+    fi
 fi
 
 copy_download fftw fftwf "${FFTW_VERSION}"

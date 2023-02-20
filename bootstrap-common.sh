@@ -164,13 +164,22 @@ fi
 FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
 FLAC_EXTRAFLAGS+=" --disable-stack-smash-protection"
 
-# force intrinsic optimizations on macos-universal target
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes asm_opt=yes"
+if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
+    FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
+fi
+
+# force intrinsic optimizations on some targets
+if [ -z "${PAWPAW_NOSIMD}" ] || [ "${PAWPAW_NOSIMD}" -eq 0 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes ac_cv_header_arm_neon_h=yes asm_opt=yes"
+    elif [ "${WASM}" -eq 1 ]; then
+        FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes asm_opt=yes"
+    fi
 fi
 
 download flac "${FLAC_VERSION}" "${FLAC_URL}" "tar.xz"
 
+# FIXME still needed?
 # fixup for intrinsic optimizations on macos-universal target
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     patch_file flac "${FLAC_VERSION}" "configure" 's/amd64|x86_64/amd64|arm|x86_64/'
@@ -190,6 +199,10 @@ OPUS_EXTRAFLAGS+=" --disable-stack-protector"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-extra-programs"
+fi
+
+if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
+    OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 fi
 
 # FIXME macos-universal proper optimizations
@@ -213,9 +226,11 @@ LIBSNDFILE_EXTRAFLAGS="--disable-alsa --disable-full-suite --disable-sqlite"
 # force disable mp3 support for now, until we handle those libs
 LIBSNDFILE_EXTRAFLAGS+=" --disable-mpeg"
 
-# force intrinsic optimizations on macos-universal target
-if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
-    LIBSNDFILE_EXTRAFLAGS+=" ac_cv_header_immintrin_h=yes"
+# force intrinsic optimizations on some targets
+if [ -z "${PAWPAW_NOSIMD}" ] || [ "${PAWPAW_NOSIMD}" -eq 0 ]; then
+    if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
+        LIBSNDFILE_EXTRAFLAGS+=" ac_cv_header_immintrin_h=yes"
+    fi
 fi
 
 # fix build, regex matching fails
