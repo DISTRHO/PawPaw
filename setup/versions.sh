@@ -37,6 +37,9 @@ LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/${LIBS
 LIBSAMPLERATE_VERSION=0.1.9
 LIBSAMPLERATE_URL=http://www.mega-nerd.com/SRC
 
+MINGW_STD_THREADS_VERSION=6c2061b7da41d6aa1b2162ff4383ec3ece864bc6
+MINGW_STD_THREADS_URL=https://github.com/meganz/mingw-std-threads.git
+
 ZLIB_VERSION=cacf7f1d4e3d44d871b605da3b647f07d718623f # 1.2.11
 ZLIB_URL=https://github.com/madler/zlib.git
 

@@ -290,3 +290,15 @@ if [ "${MACOS}" -eq 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# mingw-std-threads (download, win32 only)
+
+if [ "${WIN32}" -eq 1 ]; then
+    git_clone mingw-std-threads "${MINGW_STD_THREADS_VERSION}" "${MINGW_STD_THREADS_URL}"
+    if [ ! -e "${PAWPAW_BUILDDIR}/mingw-std-threads-${MINGW_STD_THREADS_VERSION}/.stamp-installed" ]; then
+        install -m 644 "${PAWPAW_BUILDDIR}/mingw-std-threads-${MINGW_STD_THREADS_VERSION}"/mingw.*.h "${PAWPAW_PREFIX}/include/"
+        install -m 644 "${PAWPAW_ROOT}/mingw-compat"/* "${PAWPAW_PREFIX}/include/"
+        touch "${PAWPAW_BUILDDIR}/mingw-std-threads-${MINGW_STD_THREADS_VERSION}/.stamp-installed"
+    fi
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
