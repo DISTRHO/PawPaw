@@ -170,6 +170,9 @@ FLAC_EXTRAFLAGS+=" --disable-xmms-plugin"
 
 if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
+elif [ "${WASM}" -eq 1 ]; then
+    # FIXME
+    FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
 else
     # force intrinsic optimizations on targets where auto-detection fails
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
