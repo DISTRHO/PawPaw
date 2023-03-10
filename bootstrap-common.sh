@@ -161,15 +161,17 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # flac
 
-FLAC_EXTRAFLAGS="--disable-doxygen-docs --disable-examples --disable-thorough-tests --disable-xmms-plugin"
+FLAC_EXTRAFLAGS=""
+FLAC_EXTRAFLAGS+=" --disable-doxygen-docs"
+FLAC_EXTRAFLAGS+=" --disable-examples"
 FLAC_EXTRAFLAGS+=" --disable-stack-smash-protection"
+FLAC_EXTRAFLAGS+=" --disable-thorough-tests"
+FLAC_EXTRAFLAGS+=" --disable-xmms-plugin"
 
 if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
-fi
-
-# force intrinsic optimizations on some targets
-if [ -z "${PAWPAW_NOSIMD}" ] || [ "${PAWPAW_NOSIMD}" -eq 0 ]; then
+else
+    # force intrinsic optimizations on targets where auto-detection fails
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=yes ac_cv_header_arm_neon_h=yes asm_opt=yes"
     elif [ "${WASM}" -eq 1 ]; then
@@ -178,17 +180,10 @@ if [ -z "${PAWPAW_NOSIMD}" ] || [ "${PAWPAW_NOSIMD}" -eq 0 ]; then
 fi
 
 download flac "${FLAC_VERSION}" "${FLAC_URL}" "tar.xz"
-
-# FIXME still needed?
-# fixup for intrinsic optimizations on macos-universal target
-if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-    patch_file flac "${FLAC_VERSION}" "configure" 's/amd64|x86_64/amd64|arm|x86_64/'
-fi
-
 build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
 
 if [ "${CROSS_COMPILING}" -eq 0 ]; then
-    run_make flac "${FLAC_VERSION}" check
+    run_make flac "${FLAC_VERSION}" "check -j 1"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -203,11 +198,8 @@ fi
 
 if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
-fi
-
-# FIXME macos-universal proper optimizations
-# https://github.com/DISTRHO/PawPaw/issues/4
-if [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
+# FIXME macos-universal proper optimizations https://github.com/DISTRHO/PawPaw/issues/4
+elif [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 fi
 

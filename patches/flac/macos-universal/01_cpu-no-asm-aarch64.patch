@@ -6,8 +6,8 @@ index 64da9cb..6b1ca7c 100644
  #include <sys/auxv.h>
  #endif
  
--#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && (defined FLAC__HAS_NASM || FLAC__HAS_X86INTRIN) && !defined FLAC__NO_ASM
-+#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && (defined FLAC__HAS_NASM || FLAC__HAS_X86INTRIN) && !defined FLAC__NO_ASM && !defined(__aarch64__)
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined FLAC__NO_ASM
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined FLAC__NO_ASM && !defined(__aarch64__)
  
  /* these are flags in EDX of CPUID AX=00000001 */
  static const uint32_t FLAC__CPUINFO_X86_CPUID_CMOV    = 0x00008000;
@@ -15,8 +15,129 @@ index 64da9cb..6b1ca7c 100644
  static void
  x86_cpu_info (FLAC__CPUInfo *info)
  {
--#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && (defined FLAC__HAS_NASM || FLAC__HAS_X86INTRIN) && !defined FLAC__NO_ASM
-+#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && (defined FLAC__HAS_NASM || FLAC__HAS_X86INTRIN) && !defined FLAC__NO_ASM && !defined(__aarch64__)
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined FLAC__NO_ASM
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined FLAC__NO_ASM && !defined(__aarch64__)
  	FLAC__bool x86_osxsave = false;
  	FLAC__bool os_avx = false;
  	FLAC__uint32 flags_eax, flags_ebx, flags_ecx, flags_edx;
+diff --git a/src/libFLAC/fixed_intrin_sse2.c b/src/libFLAC/fixed_intrin_sse2.c
+index 3b50895..86e8664 100644
+--- a/src/libFLAC/fixed_intrin_sse2.c
++++ b/src/libFLAC/fixed_intrin_sse2.c
+@@ -38,7 +38,7 @@
+ 
+ #ifndef FLAC__INTEGER_ONLY_LIBRARY
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && defined FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && defined FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/fixed.h"
+ #ifdef FLAC__SSE2_SUPPORTED
+ 
+diff --git a/src/libFLAC/lpc_intrin_avx2.c b/src/libFLAC/lpc_intrin_avx2.c
+index 48bd7a8..bb1501c 100644
+--- a/src/libFLAC/lpc_intrin_avx2.c
++++ b/src/libFLAC/lpc_intrin_avx2.c
+@@ -38,7 +38,7 @@
+ 
+ #ifndef FLAC__INTEGER_ONLY_LIBRARY
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/lpc.h"
+ #ifdef FLAC__AVX2_SUPPORTED
+ 
+diff --git a/src/libFLAC/lpc_intrin_sse2.c b/src/libFLAC/lpc_intrin_sse2.c
+index d166d9b..64b0e5b 100644
+--- a/src/libFLAC/lpc_intrin_sse2.c
++++ b/src/libFLAC/lpc_intrin_sse2.c
+@@ -38,7 +38,7 @@
+ 
+ #ifndef FLAC__INTEGER_ONLY_LIBRARY
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/lpc.h"
+ #ifdef FLAC__SSE2_SUPPORTED
+ 
+diff --git a/src/libFLAC/lpc_intrin_sse41.c b/src/libFLAC/lpc_intrin_sse41.c
+index 136f71c..ab1f08d 100644
+--- a/src/libFLAC/lpc_intrin_sse41.c
++++ b/src/libFLAC/lpc_intrin_sse41.c
+@@ -38,7 +38,7 @@
+ 
+ #ifndef FLAC__INTEGER_ONLY_LIBRARY
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/lpc.h"
+ #ifdef FLAC__SSE4_1_SUPPORTED
+ 
+diff --git a/src/libFLAC/stream_encoder.c b/src/libFLAC/stream_encoder.c
+index 4d5beaf..0a8affb 100644
+--- a/src/libFLAC/stream_encoder.c
++++ b/src/libFLAC/stream_encoder.c
+@@ -67,6 +67,12 @@
+ #include "share/alloc.h"
+ #include "share/private.h"
+ 
++#ifdef __aarch64__
++#undef FLAC__AVX2_SUPPORTED
++#undef FLAC__SSE2_SUPPORTED
++#undef FLAC__SSE4_1_SUPPORTED
++#undef FLAC__SSSE3_SUPPORTED
++#endif
+ 
+ /* Exact Rice codeword length calculation is off by default.  The simple
+  * (and fast) estimation (of how many bits a residual value will be
+diff --git a/src/libFLAC/stream_encoder_intrin_sse2.c b/src/libFLAC/stream_encoder_intrin_sse2.c
+index fdab55b..1eb6653 100644
+--- a/src/libFLAC/stream_encoder_intrin_sse2.c
++++ b/src/libFLAC/stream_encoder_intrin_sse2.c
+@@ -37,7 +37,7 @@
+ #include "private/cpu.h"
+ 
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/stream_encoder.h"
+ #include "private/bitmath.h"
+ #ifdef FLAC__SSE2_SUPPORTED
+diff --git a/src/libFLAC/stream_encoder_intrin_ssse3.c b/src/libFLAC/stream_encoder_intrin_ssse3.c
+index 6f21752..0a23c77 100644
+--- a/src/libFLAC/stream_encoder_intrin_ssse3.c
++++ b/src/libFLAC/stream_encoder_intrin_ssse3.c
+@@ -37,7 +37,7 @@
+ #include "private/cpu.h"
+ 
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/stream_encoder.h"
+ #include "private/bitmath.h"
+ #ifdef FLAC__SSSE3_SUPPORTED
+diff --git a/src/libFLAC/fixed_intrin_ssse3.c b/src/libFLAC/fixed_intrin_ssse3.c
+index bbad224..eb4bfc4 100644
+--- a/src/libFLAC/fixed_intrin_ssse3.c
++++ b/src/libFLAC/fixed_intrin_ssse3.c
+@@ -38,7 +38,7 @@
+ 
+ #ifndef FLAC__INTEGER_ONLY_LIBRARY
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/fixed.h"
+ #ifdef FLAC__SSSE3_SUPPORTED
+ 
+diff --git a/src/libFLAC/stream_encoder_intrin_avx2.c b/src/libFLAC/stream_encoder_intrin_avx2.c
+index 665f803..bad2f4e 100644
+--- a/src/libFLAC/stream_encoder_intrin_avx2.c
++++ b/src/libFLAC/stream_encoder_intrin_avx2.c
+@@ -37,7 +37,7 @@
+ #include "private/cpu.h"
+ 
+ #ifndef FLAC__NO_ASM
+-#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN
++#if (defined FLAC__CPU_IA32 || defined FLAC__CPU_X86_64) && FLAC__HAS_X86INTRIN && !defined(__aarch64__)
+ #include "private/stream_encoder.h"
+ #include "private/bitmath.h"
+ #ifdef FLAC__AVX2_SUPPORTED
