@@ -1,0 +1,20 @@
+diff --git a/setup.py b/setup.py
+index 3149360..11a897e 100755
+--- a/setup.py
++++ b/setup.py
+@@ -38,12 +38,15 @@ class build_ext(setuptools.command.build_ext.build_ext):
+             include_dirs=ext.include_dirs,
+             debug=self.debug,
+             depends=ext.depends,
++            extra_preargs=subprocess.getoutput("pkg-config --cflags python3").split() + os.getenv("CFLAGS", "").split(),
+         )
+         filename = os.path.splitext(self.get_ext_filename(ext.name))[0]
+         fullname = os.path.join(self.build_lib, filename)
+         library_dirs = ext.library_dirs or []
+         libraries = self.get_libraries(ext)
+         extra_args = ext.extra_link_args or []
++        extra_args += subprocess.getoutput("pkg-config --libs python3").split()
++        extra_args += os.getenv("LDFLAGS", "").split()
+         if WIN32:
+             compiler_type = self.compiler.compiler_type
+             # support for delay load [windows]
