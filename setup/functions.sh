@@ -455,7 +455,8 @@ function build_python() {
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--as-needed,--gc-sections,--no-undefined,--strip-all//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--gc-sections,--no-undefined//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--as-needed,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
 

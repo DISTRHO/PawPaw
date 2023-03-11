@@ -171,9 +171,9 @@ elif [ "${WASM}" -eq 1 ]; then
         LINK_FLAGS+=" -sAGGRESSIVE_VARIABLE_ELIMINATION=1"
     fi
 else
-    LINK_FLAGS+=" -Wl,-O1,--as-needed,--gc-sections,--no-undefined"
+    LINK_FLAGS+=" -Wl,-O1,--gc-sections,--no-undefined"
     if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
-        LINK_FLAGS+=" -Wl,--strip-all"
+        LINK_FLAGS+=" -Wl,--as-needed,--strip-all"
     fi
     if [ "${WIN32}" -eq 1 ]; then
         LINK_FLAGS+=" -static -static-libgcc -static-libstdc++ -Wl,-Bstatic"
