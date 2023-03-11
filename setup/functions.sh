@@ -476,6 +476,8 @@ function build_python() {
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
+        # always try twice, python checks for installed deps and fails the first time
+        ${python} setup.py install --prefix="${PAWPAW_PREFIX}" ${extraconfrules} --verbose || \
         ${python} setup.py install --prefix="${PAWPAW_PREFIX}" ${extraconfrules} --verbose
         touch .stamp_installed
         popd
