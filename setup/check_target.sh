@@ -47,6 +47,7 @@ function check_target() {
             WIN32=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="i686"
                 TOOLCHAIN_PREFIX="i686-w64-mingw32"
                 TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
                 export EXE_WRAPPER="wine"
@@ -58,6 +59,7 @@ function check_target() {
             WIN64=1
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="x86_64"
                 TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
                 TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
                 export EXE_WRAPPER="wine"
@@ -93,6 +95,7 @@ function check_target() {
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             if [ "$(uname -m)" != "aarch64" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="aarch64"
             fi
             ;;
         "linux-armhf")
@@ -103,6 +106,7 @@ function check_target() {
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             if [ "$(uname -m)" != "arm" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="armv7"
             fi
             ;;
         "linux-i686"|"linux-i386")
@@ -114,6 +118,7 @@ function check_target() {
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             if [ "$(uname -m)" != "i386" ] && [ "$(uname -m)" != "i686" ] && [ "$(uname -m)" != "x86_64" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="i386"
             fi
             ;;
         "linux-riscv64")
@@ -124,6 +129,7 @@ function check_target() {
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             if [ "$(uname -m)" != "riscv64" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="riscv64"
             fi
             ;;
         "linux-x86_64")
@@ -135,6 +141,7 @@ function check_target() {
             TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
             if [ "$(uname -m)" != "x86_64" ]; then
                 CROSS_COMPILING=1
+                CMAKE_SYSTEM_PROCESSOR="x86_64"
             fi
             ;;
         "native")

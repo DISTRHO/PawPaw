@@ -323,6 +323,7 @@ function build_cmake() {
         local CMAKE_RANLIB=$(which ${TARGET_RANLIB})
         extraconfrules+=" -DCMAKE_CROSSCOMPILING=ON"
         extraconfrules+=" -DCMAKE_SYSTEM_NAME=${CMAKE_SYSTEM_NAME}"
+        extraconfrules+=" -DCMAKE_SYSTEM_PROCESSOR=${CMAKE_SYSTEM_PROCESSOR}"
         extraconfrules+=" -DCMAKE_AR=${CMAKE_AR}"
         extraconfrules+=" -DCMAKE_C_COMPILER_AR=${CMAKE_AR}"
         extraconfrules+=" -DCMAKE_CXX_COMPILER_AR=${CMAKE_AR}"
