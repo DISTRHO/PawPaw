@@ -330,10 +330,16 @@ function build_cmake() {
         extraconfrules+=" -DCMAKE_RANLIB=${CMAKE_RANLIB}"
         extraconfrules+=" -DCMAKE_C_COMPILER_RANLIB=${CMAKE_RANLIB}"
         extraconfrules+=" -DCMAKE_CXX_COMPILER_RANLIB=${CMAKE_RANLIB}"
+        if [ -n "${EXE_WRAPPER}" ]; then
+            extraconfrules+=" -DCMAKE_CROSSCOMPILING_EMULATOR=${EXE_WRAPPER}"
+        fi
     fi
 
     if [ "${MACOS}" -eq 1 ]; then
-        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+        if [ "${MACOS_UNIVERSAL_10_15}" -eq 1 ]; then
+            OSX_ARCHS="arm64;x86_64"
+            OSX_TARGET="10.15"
+        elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
             OSX_ARCHS="arm64;x86_64"
             OSX_TARGET="10.12"
         else
