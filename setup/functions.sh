@@ -348,6 +348,7 @@ function build_cmake() {
         fi
         extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES=${OSX_ARCHS}"
         extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=${OSX_TARGET}"
+        extraconfrules+=" -DCMAKE_OSX_SYSROOT=macosx"
     elif [ "${WIN32}" -eq 1 ]; then
         extraconfrules+=" -DCMAKE_RC_COMPILER=${WINDRES}"
     fi
