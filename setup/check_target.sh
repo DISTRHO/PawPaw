@@ -20,7 +20,7 @@ unset TOOLCHAIN_PREFIX_
 
 function check_target() {
     case "${target}" in
-        "macos"|"Darwin")
+        "macos"|"macos-intel"|"Darwin")
             CLANG=1
             MACOS=1
             ;;
@@ -154,7 +154,6 @@ function check_target() {
         default|*)
             echo "Invalid target '${target}', possible values are:"
             echo "\tmacos"
-            echo "\tmacos-old"
             echo "\tmacos-universal"
             echo "\twasm"
             echo "\twin32"
