@@ -1,6 +1,3 @@
-diff --git a/waflib/Tools/__pycache__/gxx.cpython-310.pyc b/waflib/Tools/__pycache__/gxx.cpython-310.pyc
-index 76405de..c407511 100644
-Binary files a/waflib/Tools/__pycache__/gxx.cpython-310.pyc and b/waflib/Tools/__pycache__/gxx.cpython-310.pyc differ
 diff --git a/waflib/Tools/gcc.py b/waflib/Tools/gcc.py
 index acdd473..9cf5533 100644
 --- a/waflib/Tools/gcc.py
