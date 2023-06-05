@@ -81,8 +81,6 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
-          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -131,12 +129,13 @@ jobs:
           if [ '${{ matrix.target }}' == 'win32' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
@@ -235,8 +234,6 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
-          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -285,12 +282,13 @@ jobs:
           if [ '${{ matrix.target }}' == 'win32' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
@@ -382,8 +380,6 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
-          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -432,12 +428,13 @@ jobs:
           if [ '${{ matrix.target }}' == 'win32' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
@@ -523,8 +520,6 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
-          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -573,12 +568,13 @@ jobs:
           if [ '${{ matrix.target }}' == 'win32' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
@@ -661,8 +657,6 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
-          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -711,12 +705,13 @@ jobs:
           if [ '${{ matrix.target }}' == 'win32' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
@@ -799,8 +794,6 @@ jobs:
         run: |
           sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/jammy
-          sudo apt-get purge -yqq libmono* moby* mono* msbuild* php* libgdiplus libpcre2-posix3 nuget
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -849,12 +842,13 @@ jobs:
           if [ '${{ matrix.target }}' == 'win32' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
           fi
           # extra, for win64
           if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
