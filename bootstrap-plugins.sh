@@ -36,6 +36,24 @@ source setup/functions.sh
 source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
+# check for depedencies
+
+if [ -z "${autoconf}" ]; then
+    echo "missing 'autoconf' program, cannot continue!"
+    exit 2
+fi
+
+if [ -z "${meson}" ]; then
+    echo "missing 'meson' program, cannot continue!"
+    exit 2
+fi
+
+if [ -z "${ninja}" ]; then
+    echo "missing 'ninja' program, cannot continue!"
+    exit 2
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # libpng
 
 LIBPNG_EXTRAFLAGS=""

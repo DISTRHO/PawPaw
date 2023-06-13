@@ -213,6 +213,43 @@ if [ -n "${PAWPAW_SKIP_STRIPPING}" ] && [ "${PAWPAW_SKIP_STRIPPING}" -eq 1 ]; th
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# find needed programs
+
+if [ -z "${SOURCING_FILES}" ]; then
+    set +e
+fi
+
+autoconf=$(command -v autoconf)
+cmake=$(command -v cmake)
+jq=$(command -v jq)
+meson=$(command -v meson)
+ninja=$(command -v meson)
+
+if [ -z "${SOURCING_FILES}" ]; then
+    set -e
+fi
+
+if [ -z "${autoconf}" ] && [ -e "/opt/homebrew/bin/autoconf" ]; then
+    autoconf="/opt/homebrew/bin/autoconf"
+fi
+
+if [ -z "${cmake}" ] && [ -e "/opt/homebrew/bin/cmake" ]; then
+    cmake="/opt/homebrew/bin/cmake"
+fi
+
+if [ -z "${jq}" ] && [ -e "/opt/homebrew/bin/jq" ]; then
+    jq="/opt/homebrew/bin/jq"
+fi
+
+if [ -z "${meson}" ] && [ -e "/opt/homebrew/bin/meson" ]; then
+    meson="/opt/homebrew/bin/meson"
+fi
+
+if [ -z "${ninja}" ] && [ -e "/opt/homebrew/bin/ninja" ]; then
+    ninja="/opt/homebrew/bin/ninja"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # other
 
 MAKE_ARGS=""

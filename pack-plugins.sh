@@ -19,9 +19,18 @@ shift
 VERSION=$(cat VERSION)
 
 # ---------------------------------------------------------------------------------------------------------------------
+# source setup code
 
 source setup/check_target.sh
 source setup/env.sh
+
+# ---------------------------------------------------------------------------------------------------------------------
+# check for depedencies
+
+if [ -z "${jq}" ]; then
+    echo "missing 'jq' program, cannot continue!"
+    exit 2
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -78,10 +87,10 @@ for plugin in ${@}; do
         exit 2
     fi
 
-    name=$(jq -crM .name ${pfile})
+    name=$(${jq} -crM .name ${pfile})
     sname=$(echo ${name} | tr -ds '-' '_')
-    description=$(jq -crM .description ${pfile})
-    lv2bundles=($(jq -crM .lv2bundles[] ${pfile}))
+    description=$(${jq} -crM .description ${pfile})
+    lv2bundles=($(${jq} -crM .lv2bundles[] ${pfile}))
 
     if [ "${WIN32}" -eq 1 ]; then
         echo "Name: ${sname}; Description: \"${name}\"; Types: full;" >> /tmp/pawpaw/components.iss

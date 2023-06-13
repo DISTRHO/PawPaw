@@ -19,11 +19,20 @@ shift
 # TODO check that bootstrap.sh has been run
 
 # ---------------------------------------------------------------------------------------------------------------------
+# source setup code
 
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
+
+# ---------------------------------------------------------------------------------------------------------------------
+# check for depedencies
+
+if [ -z "${jq}" ]; then
+    echo "missing 'jq' program, cannot continue!"
+    exit 2
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -100,18 +109,18 @@ for plugin in ${@}; do
         exit 2
     fi
 
-    name=$(jq -crM .name ${pfile})
-    version=$(jq -crM .version ${pfile})
-    buildtype=$(jq -crM .buildtype ${pfile})
-    dlbaseurl=$(jq -crM .dlbaseurl ${pfile})
-    lv2bundles=($(jq -crM .lv2bundles[] ${pfile}))
+    name=$(${jq} -crM .name ${pfile})
+    version=$(${jq} -crM .version ${pfile})
+    buildtype=$(${jq} -crM .buildtype ${pfile})
+    dlbaseurl=$(${jq} -crM .dlbaseurl ${pfile})
+    lv2bundles=($(${jq} -crM .lv2bundles[] ${pfile}))
 
     # optional args
-    buildargs=$(echo -e $(jq -ecrM .buildargs ${pfile} || echo '\n\n') | tail -n 1)
-    dlext=$(echo -e $(jq -ecrM .dlext ${pfile} || echo '\n\n') | tail -n 1)
-    dlmethod=$(echo -e $(jq -ecrM .dlmethod ${pfile} || echo '\n\n') | tail -n 1)
-    dlname=$(echo -e $(jq -ecrM .dlname ${pfile} || echo '\n\n') | tail -n 1)
-    combinedbundles=$(echo -e $(jq -ecrM .combinedbundles ${pfile} || echo '\n\n') | tail -n 1)
+    buildargs=$(echo -e $(${jq} -ecrM .buildargs ${pfile} || echo '\n\n') | tail -n 1)
+    dlext=$(echo -e $(${jq} -ecrM .dlext ${pfile} || echo '\n\n') | tail -n 1)
+    dlmethod=$(echo -e $(${jq} -ecrM .dlmethod ${pfile} || echo '\n\n') | tail -n 1)
+    dlname=$(echo -e $(${jq} -ecrM .dlname ${pfile} || echo '\n\n') | tail -n 1)
+    combinedbundles=$(echo -e $(${jq} -ecrM .combinedbundles ${pfile} || echo '\n\n') | tail -n 1)
 
     download "${name}" "${version}" "${dlbaseurl}" "${dlext}" "${dlmethod}" "${dlname}"
 

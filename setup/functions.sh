@@ -28,7 +28,7 @@ function download() {
             rm -rf "${tmprepodir}"
             git clone --recursive "${dlbaseurl}" "${tmprepodir}"
             git -C "${tmprepodir}" checkout "${version}"
-            git -C "${tmprepodir}" submodule update
+            git -C "${tmprepodir}" submodule update --recursive --init
             tar --exclude=".git" -czf "${dlfile}" -C "${PAWPAW_TMPDIR}" "${dlname}-${version}"
             rm -rf "${tmprepodir}"
         else
@@ -96,7 +96,7 @@ function git_clone() {
         rm -rf "${tmprepodir}"
         git clone --recursive "${repourl}" "${tmprepodir}"
         git -C "${tmprepodir}" checkout "${hash}"
-        git -C "${tmprepodir}" submodule update
+        git -C "${tmprepodir}" submodule update --recursive --init
         tar --exclude=".git" -czf "${dlfile}" -C "${PAWPAW_TMPDIR}" "${dlname}-${hash}"
         rm -rf "${tmprepodir}"
     fi
@@ -257,7 +257,7 @@ function build_autoconfgen() {
         if [ -f utils/autogen.sh ]; then
             ./utils/autogen.sh
         else
-            autoconf
+            ${autoconf}
         fi
         touch .stamp_preconfigured
         popd
@@ -355,7 +355,7 @@ function build_cmake() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
-        ${CMAKE_EXE_WRAPPER} cmake -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
+        ${CMAKE_EXE_WRAPPER} ${cmake} -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
         touch ../.stamp_configured
         popd
     fi
@@ -420,21 +420,21 @@ function build_meson() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        meson build --buildtype release --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
+        env NINJA="${ninja}" ${meson} build --buildtype release --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
         touch .stamp_configured
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        ninja -v -C build
+        ${ninja} -v -C build
         touch .stamp_built
         popd
     fi
 
     if [ ! -f "${pkgdir}/.stamp_installed" ]; then
         pushd "${pkgdir}"
-        ninja -C build install
+        ${ninja} -C build install
         touch .stamp_installed
         popd
     fi

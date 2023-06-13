@@ -16,25 +16,55 @@ if [ -z "${target}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-
-# TODO check for depedencies:
-# - curl
-# - cmake
-# - make
-# - jq
-# - patch
-# - pkg-config (linux only)
-# - python (waf, meson)
-# - sed
-# - tar
-
-# ---------------------------------------------------------------------------------------------------------------------
 # source setup code
 
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
+
+# ---------------------------------------------------------------------------------------------------------------------
+# check for depedencies
+
+if ! command -v curl >/dev/null; then
+    echo "missing 'curl' program, cannot continue!"
+    exit 2
+fi
+
+if ! command -v make >/dev/null; then
+    echo "missing 'make' program, cannot continue!"
+    exit 2
+fi
+
+if ! command -v patch >/dev/null; then
+    echo "missing 'patch' program, cannot continue!"
+    exit 2
+fi
+
+if ! command -v python3 >/dev/null; then
+    echo "missing 'python3' program, cannot continue!"
+    exit 2
+fi
+
+if ! command -v sed >/dev/null; then
+    echo "missing 'sed' program, cannot continue!"
+    exit 2
+fi
+
+if ! command -v tar >/dev/null; then
+    echo "missing 'tar' program, cannot continue!"
+    exit 2
+fi
+
+if [ "${LINUX}" -eq 1 ] && ! command -v pkg-config >/dev/null; then
+    echo "missing 'pkg-config' program, cannot continue!"
+    exit 2
+fi
+
+if [ -z "${cmake}" ]; then
+    echo "missing 'cmake' program, cannot continue!"
+    exit 2
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # create common directories
@@ -170,7 +200,7 @@ FLAC_EXTRAFLAGS+=" --disable-xmms-plugin"
 
 if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
-elif [ "${WASM}" -eq 1 ]; then
+elif [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     # FIXME
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
 else
