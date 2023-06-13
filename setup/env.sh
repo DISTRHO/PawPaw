@@ -17,7 +17,9 @@ if [ "${LINUX}" -eq 1 ]; then
 elif [ "${MACOS}" -eq 1 ]; then
     APP_EXT=""
     CMAKE_SYSTEM_NAME="Darwin"
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    if [ "${MACOS_UNIVERSAL_10_15}" -eq 1 ]; then
+        PAWPAW_TARGET="macos-universal-10.15"
+    elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         PAWPAW_TARGET="macos-universal"
     else
         PAWPAW_TARGET="macos"
