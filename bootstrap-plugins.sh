@@ -43,14 +43,16 @@ if [ -z "${autoconf}" ]; then
     exit 2
 fi
 
-if [ -z "${meson}" ]; then
-    echo "missing 'meson' program, cannot continue!"
-    exit 2
-fi
+if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+    if [ -z "${meson}" ]; then
+        echo "missing 'meson' program, cannot continue!"
+        exit 2
+    fi
 
-if [ -z "${ninja}" ]; then
-    echo "missing 'ninja' program, cannot continue!"
-    exit 2
+    if [ -z "${ninja}" ]; then
+        echo "missing 'ninja' program, cannot continue!"
+        exit 2
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
