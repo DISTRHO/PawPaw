@@ -225,7 +225,7 @@ autoconf=$(command -v autoconf)
 cmake=$(command -v cmake)
 jq=$(command -v jq)
 meson=$(command -v meson)
-ninja=$(command -v meson)
+ninja=$(command -v ninja)
 
 if [ -z "${SOURCING_FILES}" ]; then
     set -e

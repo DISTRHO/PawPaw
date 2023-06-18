@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 1
+  CACHE_VERSION: 2
   DEBIAN_FRONTEND: noninteractive
   HOMEBREW_NO_AUTO_UPDATE: 1
 
