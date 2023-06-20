@@ -75,18 +75,13 @@ fi
 
 ## build flags
 
-BUILD_FLAGS="-O3 -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
+BUILD_FLAGS="-Os -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
-BUILD_FLAGS+=" -fomit-frame-pointer -ftree-vectorize -funroll-loops"
 BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG=1"
-BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
+BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fomit-frame-pointer -fvisibility=hidden"
 BUILD_FLAGS+=" -fno-stack-protector -U_FORTIFY_SOURCE -Wp,-U_FORTIFY_SOURCE"
 
 if [ "${GCC}" -eq 1 ]; then
-    # not supported in riscv64 yet
-    if [ -n "${LINUX_TARGET}" ] && [ "${LINUX_TARGET}" != "linux-riscv64" ]; then
-        BUILD_FLAGS+=" -fprefetch-loop-arrays"
-    fi
     BUILD_FLAGS+=" -fno-gnu-unique"
 fi
 
