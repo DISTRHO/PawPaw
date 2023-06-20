@@ -142,7 +142,7 @@ else
     QT5_MVERSION=5.9
 fi
 
-QT5_URL=https://download.qt.io/archive/qt/${QT5_MVERSION}/${QT5_VERSION}/submodules
+QT5_URL=https://download.qt.io/new_archive/qt/${QT5_MVERSION}/${QT5_VERSION}/submodules
 
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap carla stuff
