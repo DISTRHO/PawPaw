@@ -5,8 +5,7 @@ on:
 
 env:
   CACHE_VERSION: 2
-  DEBIAN_FRONTEND: noninteractive
-  HOMEBREW_NO_AUTO_UPDATE: 1
+  EMSCRIPTEN_VERSION: 3.1.27
 
 jobs:
   common:
@@ -123,7 +122,7 @@ jobs:
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
             [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk
-            cd ~/PawPawBuilds/emsdk && ./emsdk install latest && ./emsdk activate latest
+            cd ~/PawPawBuilds/emsdk && ./emsdk install ${{ env.EMSCRIPTEN_VERSION }} && ./emsdk activate ${{ env.EMSCRIPTEN_VERSION }}
           fi
           # extra, for win32
           if [ '${{ matrix.target }}' == 'win32' ]; then
