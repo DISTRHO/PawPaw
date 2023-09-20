@@ -70,16 +70,17 @@ jobs:
       - name: (apt) Fix GitHub's mess in ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -223,16 +224,17 @@ jobs:
       - name: (apt) Fix GitHub's mess in ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -369,16 +371,17 @@ jobs:
       - name: (apt) Fix GitHub's mess in ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -509,16 +512,17 @@ jobs:
       - name: (apt) Fix GitHub's mess in ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -646,16 +650,17 @@ jobs:
       - name: (apt) Fix GitHub's mess in ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -783,16 +788,17 @@ jobs:
       - name: (apt) Fix GitHub's mess in ubuntu-20.04
         if: ${{ matrix.os == 'ubuntu-20.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -yn ppa:kxstudio-debian/toolchain
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades libgd3/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal
-          sudo apt-get purge -yqq libclang* libgbm* libllvm* libmono* moby* mono* php* libgdiplus libpcre2-posix3 libzip4
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
       - name: (apt) Fix GitHub's mess in ubuntu-22.04
         if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+          sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
