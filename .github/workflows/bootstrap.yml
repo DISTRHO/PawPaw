@@ -90,6 +90,7 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
@@ -98,6 +99,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
@@ -110,6 +112,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
@@ -244,6 +247,7 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
@@ -252,6 +256,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
@@ -264,6 +269,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
@@ -391,6 +397,7 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
@@ -399,6 +406,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
@@ -411,6 +419,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
@@ -532,6 +541,7 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
@@ -540,6 +550,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
@@ -552,6 +563,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
@@ -670,6 +682,7 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
@@ -678,6 +691,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
@@ -690,6 +704,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
@@ -808,6 +823,7 @@ jobs:
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
@@ -816,6 +832,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
@@ -828,6 +845,7 @@ jobs:
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
