@@ -85,7 +85,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
+          sudo apt-get install -yqq --allow-downgrades autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -95,7 +95,7 @@ jobs:
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -104,11 +104,11 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -117,11 +117,11 @@ jobs:
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
           elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq gperf
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -242,7 +242,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
+          sudo apt-get install -yqq --allow-downgrades autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -252,7 +252,7 @@ jobs:
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -261,11 +261,11 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -274,11 +274,11 @@ jobs:
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
           elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq gperf
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -392,7 +392,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
+          sudo apt-get install -yqq --allow-downgrades autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -402,7 +402,7 @@ jobs:
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -411,11 +411,11 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -424,11 +424,11 @@ jobs:
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
           elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq gperf
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -536,7 +536,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
+          sudo apt-get install -yqq --allow-downgrades autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -546,7 +546,7 @@ jobs:
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -555,11 +555,11 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -568,11 +568,11 @@ jobs:
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
           elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq gperf
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -677,7 +677,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
+          sudo apt-get install -yqq --allow-downgrades autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -687,7 +687,7 @@ jobs:
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -696,11 +696,11 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -709,11 +709,11 @@ jobs:
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
           elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq gperf
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
@@ -818,7 +818,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq autopoint build-essential curl cmake jq meson
+          sudo apt-get install -yqq --allow-downgrades autopoint build-essential curl cmake jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -828,7 +828,7 @@ jobs:
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -837,11 +837,11 @@ jobs:
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
             sudo dpkg --add-architecture i386
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
           elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
@@ -850,11 +850,11 @@ jobs:
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 autoconf automake git gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
           elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq gperf
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
           fi
           # extra, for wasm
           if [ '${{ matrix.target }}' == 'wasm' ]; then
