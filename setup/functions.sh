@@ -207,9 +207,9 @@ function build_autoconf() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ "${WASM}" -eq 1 ]; then
-        extraconfrules="--host=x86_64-linux-gnu ${extraconfrules}"
+        extraconfrules="--host=$(uname -m)-linux-gnu ${extraconfrules}"
     elif [ -n "${TOOLCHAIN_PREFIX}" ]; then
-        extraconfrules="--host=${TOOLCHAIN_PREFIX} ac_cv_host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
+        extraconfrules="--host=${TOOLCHAIN_PREFIX} ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
 
     _prebuild "${name}" "${pkgdir}"

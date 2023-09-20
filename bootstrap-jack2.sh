@@ -69,7 +69,7 @@ function build_custom_db() {
         extraconfrules+=" --with-mutex=x86_64/gcc-assembly db_cv_atomic=x86/gcc-assembly"
     fi
     if [ "${WIN32}" -eq 1 ]; then
-        extraconfrules+=" --enable-mingw"
+        extraconfrules+=" --enable-mingw ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX}"
     fi
 
     _prebuild "${name}" "${pkgdir}"
