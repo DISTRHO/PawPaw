@@ -94,23 +94,22 @@ endef
 define cmake-package
 
 define $(PKG)_CONFIGURE_CMDS
-	(cd $$($$(PKG)_BUILDDIR) && \
-	rm -f CMakeCache.txt && \
-	$$(CMAKE) $$($$(PKG)_BUILDDIR) \
+	rm -f $$($$(PKG)_BUILDDIR)/CMakeCache.txt && \
+	$$(CMAKE) -S $$($$(PKG)_BUILDDIR) -B $$($$(PKG)_BUILDDIR)/build \
 		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_LIBDIR=lib \
 		-DCMAKE_INSTALL_PREFIX='/usr' \
 		--no-warn-unused-cli \
-		$$($$(PKG)_CONF_OPTS) \
-	)
+		$$($$(PKG)_CONF_OPTS)
 endef
 
 define $(PKG)_BUILD_CMDS
-	$(MAKE) -C $$($$(PKG)_BUILDDIR)
+	$(MAKE) -C $$($$(PKG)_BUILDDIR)/build
 endef
 
 ifndef $(PKG)_INSTALL_TARGET_CMDS
 define $(PKG)_INSTALL_TARGET_CMDS
-	$(MAKE) -C $$($$(PKG)_BUILDDIR) install DESTDIR=$(PAWPAW_PREFIX)
+	$(MAKE) -C $$($$(PKG)_BUILDDIR)/build install DESTDIR=$(PAWPAW_PREFIX)
 endef
 endif
 
@@ -139,13 +138,30 @@ STAMP_INSTALLED  = $($(PKG)_BUILDDIR)/.stamp_installed
 PAWPAW_TMPDIR = /tmp/PawPaw
 PAWPAW_TMPNAME = git-dl
 
+ifeq ($(MACOS),true)
+STRIP = true
+endif
+
 all: $(STAMP_INSTALLED)
 
 $(STAMP_INSTALLED): $(STAMP_BUILT)
 	$($(PKG)_INSTALL_TARGET_CMDS)
+	$(call $($(PKG)_POST_INSTALL_TARGET_HOOKS))
 	touch $@
 
 $(STAMP_BUILT): $(STAMP_CONFIGURED)
+ifeq ($(MACOS),true)
+	$(foreach p,$(wildcard $($(PKG)_BUILDDIR)/Makefile $($(PKG)_BUILDDIR)/*/makefile),\
+		sed -i -e 's/-Wl,--gc-sections//g' $(p);)
+	$(foreach p,$(wildcard $($(PKG)_BUILDDIR)/*/makefile),\
+		sed -i -e 's/-Wl,--no-undefined//g' $(p);)
+	$(foreach p,$(wildcard $($(PKG)_BUILDDIR)/*/makefile),\
+		sed -i -e 's/-Wl,--exclude-libs,ALL//g' $(p);)
+	$(foreach p,$(wildcard $($(PKG)_BUILDDIR)/*/makefile),\
+		sed -i -e 's/-Wl,-z,relro,-z,now//g' $(p);)
+	$(foreach p,$(wildcard $($(PKG)_BUILDDIR)/*/makefile),\
+		sed -i -e 's/-Wl,-z,noexecstack//g' $(p);)
+endif
 	$($(PKG)_BUILD_CMDS)
 	touch $@
 
