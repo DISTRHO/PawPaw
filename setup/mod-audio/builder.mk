@@ -154,15 +154,23 @@ STAMP_PATCHED    = $($(PKG)_BUILDDIR)/.stamp_patched
 STAMP_CONFIGURED = $($(PKG)_BUILDDIR)/.stamp_configured
 STAMP_BUILT      = $($(PKG)_BUILDDIR)/.stamp_built
 STAMP_INSTALLED  = $($(PKG)_BUILDDIR)/.stamp_installed
+STAMP_PINSTALLED = $($(PKG)_BUILDDIR)/.stamp_post_installed
 
 PAWPAW_TMPDIR = /tmp/PawPaw
 PAWPAW_TMPNAME = git-dl
 
-all: $(STAMP_INSTALLED)
+all: $(STAMP_PINSTALLED)
+
+$(STAMP_PINSTALLED): $(STAMP_INSTALLED)
+	$(call $($(PKG)_POST_INSTALL_TARGET_HOOKS))
+ifneq (,$(wildcard $(PAWPAW_PREFIX)/usr/lib/lv2/$(firstword $($(PKG)_BUNDLES))/*.dll))
+	$(foreach b,$($(PKG)_BUNDLES),sed -i -e 's|lv2:binary <\([_a-zA-Z0-9-]*\)\.so>|lv2:binary <\1\.dll>|g' $(PAWPAW_PREFIX)/usr/lib/lv2/$(b)/manifest.ttl;)
+	$(foreach b,$($(PKG)_BUNDLES),rm -f $(PAWPAW_PREFIX)/usr/lib/lv2/$(b)/*.dll.a;)
+endif
+	touch $@
 
 $(STAMP_INSTALLED): $(STAMP_BUILT)
 	$($(PKG)_INSTALL_TARGET_CMDS)
-	$(call $($(PKG)_POST_INSTALL_TARGET_HOOKS))
 	touch $@
 
 $(STAMP_BUILT): $(STAMP_CONFIGURED)

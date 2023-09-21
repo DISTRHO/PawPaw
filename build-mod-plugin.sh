@@ -46,9 +46,6 @@ fi
 if [ ! -e "${PAWPAW_PREFIX}/usr/share" ]; then
     ln -s ../share "${PAWPAW_PREFIX}/usr/share"
 fi
-if [ ! -e "${PAWPAW_PREFIX}/usr/var" ]; then
-    ln -s ../var "${PAWPAW_PREFIX}/usr/var"
-fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 
@@ -63,6 +60,6 @@ if [ ! -e mod-plugin-builder ]; then
     exit 1
 fi
 
-make -f setup/mod-audio/builder.mk pkgname="${plugin}" ${MAKE_ARGS} WITH_LTO=false VERBOSE=1
+make -f setup/mod-audio/builder.mk pkgname="${plugin}" ${MAKE_ARGS} PREFIX=/usr WITH_LTO=false VERBOSE=1 -j
 
 # ---------------------------------------------------------------------------------------------------------------------
