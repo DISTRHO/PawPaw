@@ -56,6 +56,16 @@ JACK2_URL="https://github.com/jackaudio/jack2.git"
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
 build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
+# patch pkg-config file for static win32 builds in regular prefix
+if [ "${WIN32}" -eq 1 ]; then
+    if [ "${WIN64}" -eq 1 ]; then
+        s="64"
+    else
+        s=""
+    fi
+    sed -i -e "s/-L\${libdir} -ljack${s}/-L\${libdir} -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+fi
+
 # ---------------------------------------------------------------------------------------------------------------------
 # aggdraw
 
@@ -87,5 +97,13 @@ TORNADO_VERSION="4.3"
 
 download tornado "${TORNADO_VERSION}" "https://files.pythonhosted.org/packages/21/29/e64c97013e97d42d93b3d5997234a6f17455f3744847a7c16289289f8fa6"
 build_python tornado "${TORNADO_VERSION}"
+
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+    if [ ! -e "${PYTHONPATH}/tornado" ]; then
+        ln -sv "${PYTHONPATH}"/tornado-*.egg/tornado "${PYTHONPATH}/tornado"
+    fi
+    unset PYTHONPATH
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
