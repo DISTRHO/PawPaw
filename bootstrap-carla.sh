@@ -207,7 +207,7 @@ fi
 
 if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
     PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
-    if [ "${CROSS_COMPILING}" -eq 1 ] && [ ! -e "${PYTHONPATH}/liblo.pyd" ]; then
+    if [ ! -e "${PYTHONPATH}/liblo.pyd" ]; then
         ln -sv "${PYTHONPATH}"/pyliblo-*.egg/*.so "${PYTHONPATH}/liblo.pyd"
     fi
     unset PYTHONPATH

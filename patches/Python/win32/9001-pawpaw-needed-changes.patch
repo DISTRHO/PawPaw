@@ -32,6 +32,20 @@ index dddf412..3edccb6 100644
      result = RE_VERSION.search(out_string)
      if result is None:
          return None
+diff --git a/Lib/distutils/unixccompiler.py b/Lib/distutils/unixccompiler.py
+index f159586..004e89f 100644
+--- a/Lib/distutils/unixccompiler.py
++++ b/Lib/distutils/unixccompiler.py
+@@ -200,6 +200,9 @@ class UnixCCompiler(CCompiler):
+ 
+                 if sys.platform == 'darwin':
+                     linker = _osx_support.compiler_fixup(linker, ld_args)
++                else:
++                    ld_args += linker[i+offset+1:]
++                    linker = [linker[i+offset]]
+ 
+                 self.spawn(linker + ld_args)
+             except DistutilsExecError as msg:
 diff --git a/Misc/python.pc.in b/Misc/python.pc.in
 index 3900190..a14e42b 100644
 --- a/Misc/python.pc.in

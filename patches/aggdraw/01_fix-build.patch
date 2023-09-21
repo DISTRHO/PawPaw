@@ -1,0 +1,26 @@
+diff --git a/agg2/include/agg_array.h b/agg2/include/agg_array.h
+index 37684d1..3a0f5c0 100644
+--- a/agg2/include/agg_array.h
++++ b/agg2/include/agg_array.h
+@@ -520,7 +520,7 @@ namespace agg
+                 int8u* ptr = m_buf_ptr;
+                 if(alignment > 1)
+                 {
+-                    unsigned align = (alignment - (unsigned long)(ptr) % alignment) % alignment;
++                    unsigned align = (alignment - (uintptr_t)(ptr) % alignment) % alignment;
+                     size += align;
+                     ptr += align;
+                     if(size <= m_rest)
+diff --git a/aggdraw.cxx b/aggdraw.cxx
+index 0ad56c7..b6f1912 100644
+--- a/aggdraw.cxx
++++ b/aggdraw.cxx
+@@ -49,7 +49,7 @@
+ #define Q(x) #x
+ #define QUOTE(x) Q(x)
+ 
+-#if defined(_MSC_VER)
++#if defined(_WIN32)
+ #define WINDOWS_LEAN_AND_MEAN
+ #include <windows.h>
+ #endif

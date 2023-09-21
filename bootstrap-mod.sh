@@ -61,8 +61,24 @@ build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
 AGGDRAW_VERSION="1.3.11"
 
+if [ "${WIN32}" -eq 1 ]; then
+    export AGGDRAW_FREETYPE_ROOT="${PAWPAW_PREFIX}"
+    export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 freetype2 libpng)"
+    export EXTRA_LDFLAGS="-shared $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 freetype2 libpng) -lgdi32 -lkernel32 -luser32"
+fi
+
 download aggdraw "${AGGDRAW_VERSION}" "https://files.pythonhosted.org/packages/ef/29/fddf555c68920bb0aff977425af786226db2a78379e706951ff32b4492ef"
 build_python aggdraw "${AGGDRAW_VERSION}"
+
+unset AGGDRAW_FREETYPE_ROOT
+
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+    if [ ! -e "${PYTHONPATH}/aggdraw.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/aggdraw-*.egg/*.so "${PYTHONPATH}/aggdraw.pyd"
+    fi
+    unset PYTHONPATH
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # tornado
