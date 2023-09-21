@@ -31,6 +31,9 @@ endef
 $(eval $(call caseconvert-helper,UPPERCASE,$(join $(addsuffix :,$([FROM])),$([TO]))))
 $(eval $(call caseconvert-helper,LOWERCASE,$(join $(addsuffix :,$([TO])),$([FROM]))))
 
+space =
+space +=
+
 # Sanitize macro cleans up generic strings so it can be used as a filename
 # and in rules. Particularly useful for VCS version strings, that can contain
 # slashes, colons (OK in filenames but not in rules), and spaces.
@@ -62,26 +65,52 @@ define generic-package
 
 endef
 
-define cmake-package
+define autotools-package
 
-define $(PKG)CONFIGURE_CMDS
-	(cd $$($$(PKG)_DIR) && \
-	rm -f CMakeCache.txt && \
-	$$(CMAKE) $$($$(PKG)_DIR) \
-		-DCMAKE_BUILD_TYPE=Release \
-		-DCMAKE_INSTALL_PREFIX='/usr' \
-		--no-warn-unused-cli \
-		$$($$(PKG)CONF_OPTS) \
+define $$(PKG)_CONFIGURE_CMDS
+	(cd $$($$(PKG)_BUILDDIR) && \
+	./configure \
+		--disable-debug \
+		--disable-doc \
+		--disable-docs \
+		--disable-maintainer-mode \
+		--prefix='/usr' \
+		$$($$(PKG)_CONF_OPTS) \
 	)
 endef
 
-define $(PKG)BUILD_CMDS
-	$(MAKE) -C $$($$(PKG)_DIR)
+define $$(PKG)_BUILD_CMDS
+	$(MAKE) -C $$($$(PKG)_BUILDDIR)
 endef
 
-ifndef $(PKG)INSTALL_TARGET_CMDS
-define $(PKG)INSTALL_TARGET_CMDS
-	$(MAKE) -C $$($$(PKG)_DIR) DESTDIR=$(PAWPAW_PREFIX)
+ifndef $$(PKG)_INSTALL_TARGET_CMDS
+define $$(PKG)_INSTALL_TARGET_CMDS
+	$(MAKE) -C $$($$(PKG)_BUILDDIR) install DESTDIR=$(PAWPAW_PREFIX)
+endef
+endif
+
+endef
+
+define cmake-package
+
+define $(PKG)_CONFIGURE_CMDS
+	(cd $$($$(PKG)_BUILDDIR) && \
+	rm -f CMakeCache.txt && \
+	$$(CMAKE) $$($$(PKG)_BUILDDIR) \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DCMAKE_INSTALL_PREFIX='/usr' \
+		--no-warn-unused-cli \
+		$$($$(PKG)_CONF_OPTS) \
+	)
+endef
+
+define $(PKG)_BUILD_CMDS
+	$(MAKE) -C $$($$(PKG)_BUILDDIR)
+endef
+
+ifndef $(PKG)_INSTALL_TARGET_CMDS
+define $(PKG)_INSTALL_TARGET_CMDS
+	$(MAKE) -C $$($$(PKG)_BUILDDIR) install DESTDIR=$(PAWPAW_PREFIX)
 endef
 endif
 
@@ -89,48 +118,69 @@ endef
 
 include $(CURDIR)/mod-plugin-builder/plugins/package/$(pkgname)/$(pkgname).mk
 
-$(PKG)_VERSION = $(call sanitize,$(strip $($(PKG)VERSION)))
-$(PKG)_DIR = $(PAWPAW_BUILDDIR)/$(pkgname)-$($(PKG)_VERSION)
+$(PKG)_DLVERSION = $(call sanitize,$(strip $($(PKG)_VERSION)))
+$(PKG)_BUILDDIR = $(PAWPAW_BUILDDIR)/$(pkgname)-$($(PKG)_DLVERSION)
 
-# TODO change according to SITE_METHOD?
-$(PKG)_DLFILE = $(PAWPAW_DOWNLOADDIR)/$(pkgname)-$($(PKG)_VERSION).tar.gz
+ifdef $(PKG)_SOURCE
+$(PKG)_DLSITE = $($(PKG)_SITE)/$($(PKG)_SOURCE)
+else
+$(PKG)_SOURCE = $(pkgname)-$($(PKG)_DLVERSION).tar.gz
+$(PKG)_DLSITE = $($(PKG)_SITE).tar.gz
+endif
 
-STAMP_EXTRACTED  = $($(PKG)_DIR)/.stamp_extracted
-STAMP_CONFIGURED = $($(PKG)_DIR)/.stamp_configured
-STAMP_BUILT      = $($(PKG)_DIR)/.stamp_built
-STAMP_INSTALLED  = $($(PKG)_DIR)/.stamp_installed
+$(PKG)_DLFILE = $(PAWPAW_DOWNLOADDIR)/$($(PKG)_SOURCE)
 
-TMPDIR = /tmp/PawPaw
-TMPNAME = git-dl
+STAMP_EXTRACTED  = $($(PKG)_BUILDDIR)/.stamp_extracted
+STAMP_PATCHED    = $($(PKG)_BUILDDIR)/.stamp_patched
+STAMP_CONFIGURED = $($(PKG)_BUILDDIR)/.stamp_configured
+STAMP_BUILT      = $($(PKG)_BUILDDIR)/.stamp_built
+STAMP_INSTALLED  = $($(PKG)_BUILDDIR)/.stamp_installed
+
+PAWPAW_TMPDIR = /tmp/PawPaw
+PAWPAW_TMPNAME = git-dl
 
 all: $(STAMP_INSTALLED)
 
 $(STAMP_INSTALLED): $(STAMP_BUILT)
-	$($(PKG)INSTALL_TARGET_CMDS)
+	$($(PKG)_INSTALL_TARGET_CMDS)
 	touch $@
 
 $(STAMP_BUILT): $(STAMP_CONFIGURED)
-	$($(PKG)BUILD_CMDS)
+	$($(PKG)_BUILD_CMDS)
 	touch $@
 
-$(STAMP_CONFIGURED): $(STAMP_EXTRACTED)
-	$($(PKG)CONFIGURE_CMDS)
+$(STAMP_CONFIGURED): $(STAMP_PATCHED)
+ifeq ($($(PKG)_AUTORECONF),YES)
+	(cd $($(PKG)_BUILDDIR) && \
+		aclocal --force && \
+		glibtoolize --force --automake --copy && \
+		autoheader --force && \
+		autoconf --force && \
+		automake -a --copy \
+	)
+endif
+	$($(PKG)_CONFIGURE_CMDS)
 	touch $@
 
-# TODO change according to SITE_METHOD?
+$(STAMP_PATCHED): $(STAMP_EXTRACTED)
+	$(foreach p,$(wildcard $($(PKG)_PKGDIR)/*.patch),patch -p1 -d '$($(PKG)_BUILDDIR)' -i $(p);)
+	touch $@
+
 $(STAMP_EXTRACTED): $($(PKG)_DLFILE)
-	mkdir -p '$($(PKG)_DIR)'
-	tar -xf '$($(PKG)_DLFILE)' -C '$($(PKG)_DIR)' --strip-components=1
+	mkdir -p '$($(PKG)_BUILDDIR)'
+	tar -xf '$($(PKG)_DLFILE)' -C '$($(PKG)_BUILDDIR)' --strip-components=1
 	touch $@
 
 $($(PKG)_DLFILE):
-ifeq ($($(PKG)SITE_METHOD),git)
-	rm -rf '$(TMPDIR)'
-	git clone --recursive '$($(PKG)SITE)' '$(TMPDIR)/$(TMPNAME)' && \
-	git -C '$(TMPDIR)/$(TMPNAME)' checkout '$($(PKG)VERSION)' && \
-	git -C '$(TMPDIR)/$(TMPNAME)' submodule update --recursive --init && \
-	tar --exclude='.git' -czf '$($(PKG)_DLFILE)' -C '$(TMPDIR)' '$(TMPNAME)'
-	rm -rf '$(TMPDIR)'
+ifeq ($($(PKG)_SITE_METHOD),git)
+	rm -rf '$(PAWPAW_TMPDIR)'
+	git clone '$($(PKG)_SITE)' '$(PAWPAW_TMPDIR)/$(PAWPAW_TMPNAME)' && \
+	git -C '$(PAWPAW_TMPDIR)/$(PAWPAW_TMPNAME)' checkout '$($(PKG)_VERSION)' && \
+	touch '$(PAWPAW_TMPDIR)/$(PAWPAW_TMPNAME)/.gitmodules' && \
+	sed -i -e 's|git://github.com/|https://github.com/|g' '$(PAWPAW_TMPDIR)/$(PAWPAW_TMPNAME)/.gitmodules' && \
+	git -C '$(PAWPAW_TMPDIR)/$(PAWPAW_TMPNAME)' submodule update --recursive --init && \
+	tar --exclude='.git' -czf '$($(PKG)_DLFILE)' -C '$(PAWPAW_TMPDIR)' '$(PAWPAW_TMPNAME)'
+	rm -rf '$(PAWPAW_TMPDIR)'
 else
-	wget -O '$($(PKG)_DLFILE)' '$($(PKG)SITE).tar.gz'
+	wget -O '$($(PKG)_DLFILE)' '$($(PKG)_DLSITE)'
 endif

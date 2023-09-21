@@ -244,6 +244,7 @@ else
     CAIRO_EXTRAFLAGS+=" --disable-xcb"
     CAIRO_EXTRAFLAGS+=" --disable-xlib-xcb"
     CAIRO_EXTRAFLAGS+=" --disable-xcb-shm"
+    CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=no"
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
@@ -259,7 +260,6 @@ fi
 if [ "${WIN32}" -eq 1 ]; then
     CAIRO_EXTRAFLAGS+=" --enable-win32"
     CAIRO_EXTRAFLAGS+=" --enable-win32-font"
-    CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=no"
 else
     CAIRO_EXTRAFLAGS+=" --disable-win32"
     CAIRO_EXTRAFLAGS+=" --disable-win32-font"
