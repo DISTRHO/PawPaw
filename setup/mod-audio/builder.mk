@@ -31,8 +31,10 @@ endef
 $(eval $(call caseconvert-helper,UPPERCASE,$(join $(addsuffix :,$([FROM])),$([TO]))))
 $(eval $(call caseconvert-helper,LOWERCASE,$(join $(addsuffix :,$([TO])),$([FROM]))))
 
-space =
-space +=
+# utilities
+blank =
+comma = ,
+space = $(blank) $(blank)
 
 # Sanitize macro cleans up generic strings so it can be used as a filename
 # and in rules. Particularly useful for VCS version strings, that can contain
@@ -61,11 +63,28 @@ TARGET_LDFLAGS = $(LDFLAGS)
 
 TARGET_DIR = $(PAWPAW_PREFIX)
 
+ifeq ($(MACOS),true)
+libtoolize = glibtoolize
+else
+libtoolize = libtoolize
+endif
+
+ifeq ($(MACOS),true)
+STRIP = true
+else ifeq ($(WINDOWS),true)
+BR2_SKIP_LTO = y
+endif
+
+ifneq ($(TOOLCHAIN_PREFIX),)
+BR2_EXTRA_CONFIGURE_OPTS = --host=$(TOOLCHAIN_PREFIX) ac_cv_build=$(shell uname -m)-linux-gnu ac_cv_host=$(TOOLCHAIN_PREFIX)
+endif
+
 define generic-package
 
 endef
 
 define autotools-package
+
 
 define $$(PKG)_CONFIGURE_CMDS
 	(cd $$($$(PKG)_BUILDDIR) && \
@@ -75,6 +94,7 @@ define $$(PKG)_CONFIGURE_CMDS
 		--disable-docs \
 		--disable-maintainer-mode \
 		--prefix='/usr' \
+		$(BR2_EXTRA_CONFIGURE_OPTS) \
 		$$($$(PKG)_CONF_OPTS) \
 	)
 endef
@@ -138,10 +158,6 @@ STAMP_INSTALLED  = $($(PKG)_BUILDDIR)/.stamp_installed
 PAWPAW_TMPDIR = /tmp/PawPaw
 PAWPAW_TMPNAME = git-dl
 
-ifeq ($(MACOS),true)
-STRIP = true
-endif
-
 all: $(STAMP_INSTALLED)
 
 $(STAMP_INSTALLED): $(STAMP_BUILT)
@@ -169,7 +185,7 @@ $(STAMP_CONFIGURED): $(STAMP_PATCHED)
 ifeq ($($(PKG)_AUTORECONF),YES)
 	(cd $($(PKG)_BUILDDIR) && \
 		aclocal --force && \
-		glibtoolize --force --automake --copy && \
+		$(libtoolize) --force --automake --copy && \
 		autoheader --force && \
 		autoconf --force && \
 		automake -a --copy \

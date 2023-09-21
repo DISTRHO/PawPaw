@@ -56,6 +56,7 @@ export CMAKE
 export PAWPAW_BUILDDIR
 export PAWPAW_DOWNLOADDIR
 export PAWPAW_PREFIX
+export TOOLCHAIN_PREFIX
 
 if [ ! -e mod-plugin-builder ]; then
     echo "missing mod-plugin-builder"
