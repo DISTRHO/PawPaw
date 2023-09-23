@@ -265,10 +265,6 @@ else
     CAIRO_EXTRAFLAGS+=" --disable-win32-font"
 fi
 
-if [ "${WASM}" -eq 1 ]; then
-    CAIRO_EXTRAFLAGS+=" ax_cv_c_float_words_bigendian=no"
-fi
-
 # fix link of test suite
 if [ "${MACOS}" -eq 1 ]; then
     export EXTRA_LDFLAGS="-framework CoreFoundation -framework CoreGraphics"
