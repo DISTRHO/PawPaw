@@ -471,6 +471,8 @@ function build_python() {
     # add host/native binaries to path
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         export PATH="${PAWPAW_PREFIX}-host/bin:${PATH}"
+    elif [ "${LINUX}" -eq 1 ]; then
+        export LD_LIBRARY_PATH="${PAWPAW_PREFIX}/lib"
     fi
 
     touch "${pkgdir}/.stamp_configured"
@@ -489,6 +491,10 @@ function build_python() {
         ${python} setup.py install --prefix="${PAWPAW_PREFIX}" ${extraconfrules} --verbose
         touch .stamp_installed
         popd
+    fi
+
+    if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${LINUX}" -eq 1 ]; then
+        unset LD_LIBRARY_PATH
     fi
 
     _postbuild
@@ -547,6 +553,10 @@ function build_waf() {
         python=python
     fi
 
+    if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${LINUX}" -eq 1 ]; then
+        export LD_LIBRARY_PATH="${PAWPAW_PREFIX}/lib"
+    fi
+
     _prebuild "${name}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
@@ -569,6 +579,10 @@ function build_waf() {
         rm -f ${PAWPAW_PREFIX}/lib/lv2/*/*.a
         touch .stamp_installed
         popd
+    fi
+
+    if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${LINUX}" -eq 1 ]; then
+        unset LD_LIBRARY_PATH
     fi
 
     _postbuild

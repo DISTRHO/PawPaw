@@ -24,3 +24,15 @@ index 0ad56c7..b6f1912 100644
  #define WINDOWS_LEAN_AND_MEAN
  #include <windows.h>
  #endif
+diff --git a/agg2/include/agg_array.h b/agg2/include/agg_array.h
+index 3a0f5c0..d00efb8 100644
+--- a/agg2/include/agg_array.h
++++ b/agg2/include/agg_array.h
+@@ -15,6 +15,7 @@
+ #ifndef AGG_ARRAY_INCLUDED
+ #define AGG_ARRAY_INCLUDED
+ 
++#include <stdint.h>
+ #include <string.h>
+ #include "agg_basics.h"
+ 
