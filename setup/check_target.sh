@@ -48,6 +48,7 @@ function check_target() {
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="i686"
+                PAWPAW_SKIP_LTO=1
                 TOOLCHAIN_PREFIX="i686-w64-mingw32"
                 TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
                 export EXE_WRAPPER="wine"
@@ -60,6 +61,7 @@ function check_target() {
             if [ "$(uname -o)" != "Msys" ] && [ "$(uname -o)" != "Cygwin" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="x86_64"
+                PAWPAW_SKIP_LTO=1
                 TOOLCHAIN_PREFIX="x86_64-w64-mingw32"
                 TOOLCHAIN_PREFIX_="${TOOLCHAIN_PREFIX}-"
                 export EXE_WRAPPER="wine"
