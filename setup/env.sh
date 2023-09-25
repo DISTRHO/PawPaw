@@ -212,19 +212,11 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # find needed programs
 
-if [ -z "${SOURCING_FILES}" ]; then
-    set +e
-fi
-
-autoconf=$(command -v autoconf)
-cmake=$(command -v cmake)
-jq=$(command -v jq)
-meson=$(command -v meson)
-ninja=$(command -v ninja)
-
-if [ -z "${SOURCING_FILES}" ]; then
-    set -e
-fi
+autoconf=$(command -v autoconf || true)
+cmake=$(command -v cmake || true)
+jq=$(command -v jq || true)
+meson=$(command -v meson || true)
+ninja=$(command -v ninja || true)
 
 if [ -z "${autoconf}" ] && [ -e "/opt/homebrew/bin/autoconf" ]; then
     autoconf="/opt/homebrew/bin/autoconf"
