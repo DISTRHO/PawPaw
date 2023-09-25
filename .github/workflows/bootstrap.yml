@@ -14,23 +14,23 @@ jobs:
         include:
           - name: linux-aarch64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-aarch64
           - name: linux-armhf
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-armhf
           - name: linux-i686
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-i686
           - name: linux-riscv64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-riscv64
           - name: linux-x86_64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-x86_64
           - name: macos
             installer: homebrew
@@ -320,23 +320,23 @@ jobs:
         include:
           - name: linux-aarch64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-aarch64
           - name: linux-armhf
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-armhf
           - name: linux-i686
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-i686
           - name: linux-riscv64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-riscv64
           - name: linux-x86_64
             installer: apt
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             target: linux-x86_64
           - name: macos
             installer: homebrew
