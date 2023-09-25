@@ -18,6 +18,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # source setup code
 
+export PAWPAW_SKIP_LTO=1
 source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
@@ -63,8 +64,17 @@ if [ "${WIN32}" -eq 1 ]; then
     else
         s=""
     fi
-    sed -i -e "s/-L\${libdir} -ljack${s}/-L\${libdir} -Wl,-Bdynamic -ljack${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
+    sed -i -e "s/-L\${libdir} -ljack${s}/-L\${libdir} -Wl,-Bdynamic -ljackserver${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# hylia
+
+HYLIA_VERSION="6421909123974ffd431ace47589975f5929bc746"
+HYLIA_URL="https://github.com/falkTX/hylia.git"
+
+download hylia "${HYLIA_VERSION}" "${HYLIA_URL}" "" "git"
+build_make hylia "${HYLIA_VERSION}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # aggdraw

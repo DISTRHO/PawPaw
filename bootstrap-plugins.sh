@@ -558,7 +558,7 @@ if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
     if [ "${MACOS}" -eq 1 ]; then
         FLUIDSYNTH_EXTRALIBS+=" -liconv"
     elif [ "${WIN32}" -eq 1 ]; then
-        FLUIDSYNTH_EXTRALIBS+=" -lole32 -lws2_32"
+        FLUIDSYNTH_EXTRALIBS+=" -lole32 -lws2_32 -lwinmm"
     fi
     sed -i -e "s/-L\${libdir} -lfluidsynth/-L\${libdir}  -lfluidsynth ${FLUIDSYNTH_EXTRALIBS}/" "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
     touch "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e"
