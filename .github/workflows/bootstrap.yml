@@ -24,10 +24,10 @@ jobs:
             installer: apt
             os: ubuntu-22.04
             target: linux-i686
-          - name: linux-riscv64
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-riscv64
+          #- name: linux-riscv64
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-riscv64
           - name: linux-x86_64
             installer: apt
             os: ubuntu-22.04
@@ -330,10 +330,10 @@ jobs:
             installer: apt
             os: ubuntu-22.04
             target: linux-i686
-          - name: linux-riscv64
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-riscv64
+          #- name: linux-riscv64
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-riscv64
           - name: linux-x86_64
             installer: apt
             os: ubuntu-22.04
