@@ -12,18 +12,18 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: linux-aarch64
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-aarch64
-          - name: linux-armhf
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-armhf
-          - name: linux-i686
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-i686
+          #- name: linux-aarch64
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-aarch64
+          #- name: linux-armhf
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-armhf
+          #- name: linux-i686
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-i686
           #- name: linux-riscv64
             #installer: apt
             #os: ubuntu-22.04
@@ -318,18 +318,18 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: linux-aarch64
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-aarch64
-          - name: linux-armhf
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-armhf
-          - name: linux-i686
-            installer: apt
-            os: ubuntu-22.04
-            target: linux-i686
+          #- name: linux-aarch64
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-aarch64
+          #- name: linux-armhf
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-armhf
+          #- name: linux-i686
+            #installer: apt
+            #os: ubuntu-22.04
+            #target: linux-i686
           #- name: linux-riscv64
             #installer: apt
             #os: ubuntu-22.04
