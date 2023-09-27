@@ -36,7 +36,7 @@ diff --git a/Lib/distutils/unixccompiler.py b/Lib/distutils/unixccompiler.py
 index f159586..004e89f 100644
 --- a/Lib/distutils/unixccompiler.py
 +++ b/Lib/distutils/unixccompiler.py
-@@ -200,6 +200,13 @@ class UnixCCompiler(CCompiler):
+@@ -200,6 +200,12 @@ class UnixCCompiler(CCompiler):
  
                  if sys.platform == 'darwin':
                      linker = _osx_support.compiler_fixup(linker, ld_args)
@@ -46,7 +46,7 @@ index f159586..004e89f 100644
 +                else:
 +                    ld_args += linker[1:]
 +                    linker = [linker[0]]
-+
+ 
                  self.spawn(linker + ld_args)
              except DistutilsExecError as msg:
 diff --git a/Misc/python.pc.in b/Misc/python.pc.in

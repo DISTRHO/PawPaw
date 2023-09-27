@@ -628,6 +628,24 @@ function build_host_autoconf() {
     unset CXXFLAGS
     unset LDFLAGS
 
+    if [ -d "${PAWPAW_ROOT}/patches/${name}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch$" | sort); do
+            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
+                touch "${pkgdir}/.stamp_applied_${p}"
+            fi
+        done
+    fi
+
+    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
+        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch$" | sort); do
+            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
+                touch "${pkgdir}/.stamp_applied_${p}"
+            fi
+        done
+    fi
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
         ./configure --enable-static --disable-shared --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
