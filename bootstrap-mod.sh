@@ -31,6 +31,7 @@ source setup/versions.sh
 ./bootstrap-jack2.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
 ./bootstrap-python.sh "${target}"
+./bootstrap-qt.sh "${target}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # merged usr mode
