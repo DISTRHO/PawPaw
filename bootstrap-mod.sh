@@ -91,7 +91,7 @@ JACK2_URL="https://github.com/jackaudio/jack2.git"
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
 build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
-# patch pkg-config file for static win32 builds in regular prefix
+# patch pkg-config file for static win32 builds
 if [ "${WIN32}" -eq 1 ]; then
     if [ "${WIN64}" -eq 1 ]; then
         s="64"
