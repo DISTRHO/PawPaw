@@ -1,0 +1,25 @@
+diff --git a/setup.py b/setup.py
+index 52babbc..60426d4 100755
+--- a/setup.py
++++ b/setup.py
+@@ -1017,7 +1017,6 @@ try:
+         packages=["PIL"],
+         package_dir={"": "src"},
+         keywords=["Imaging"],
+-        zip_safe=not (debug_build() or PLATFORM_MINGW),
+     )
+ except RequiredDependencyException as err:
+     msg = f"""
+diff --git a/src/libImaging/ImPlatform.h b/src/libImaging/ImPlatform.h
+index 9a2060e..c956fc0 100644
+--- a/src/libImaging/ImPlatform.h
++++ b/src/libImaging/ImPlatform.h
+@@ -34,7 +34,7 @@
+ #ifdef _WIN32
+ 
+ #define WIN32_LEAN_AND_MEAN
+-#include <Windows.h>
++#include <windows.h>
+ 
+ #else
+ /* For System that are not Windows, we'll need to define these. */
