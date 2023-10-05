@@ -141,6 +141,28 @@ if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# setuptools
+
+SETUPTOOLS_VERSION="68.2.2"
+
+download setuptools "${SETUPTOOLS_VERSION}" "https://files.pythonhosted.org/packages/ef/cc/93f7213b2ab5ed383f98ce8020e632ef256b406b8569606c3f160ed8e1c9"
+build_python setuptools "${SETUPTOOLS_VERSION}"
+
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+    if [ ! -e "${PYTHONPATH}/_distutils_hack" ]; then
+        ln -sv "${PYTHONPATH}"/setuptools-*.egg/_distutils_hack "${PYTHONPATH}/_distutils_hack"
+    fi
+    if [ ! -e "${PYTHONPATH}/pkg_resources" ]; then
+        ln -sv "${PYTHONPATH}"/setuptools-*.egg/pkg_resources "${PYTHONPATH}/pkg_resources"
+    fi
+    if [ ! -e "${PYTHONPATH}/setuptools" ]; then
+        ln -sv "${PYTHONPATH}"/setuptools-*.egg/setuptools "${PYTHONPATH}/setuptools"
+    fi
+    unset PYTHONPATH
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # Pillow
 
 PILLOW_VERSION="8.2.0"
@@ -174,25 +196,6 @@ if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
     PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
     if [ ! -e "${PYTHONPATH}/PIL" ]; then
         ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL "${PYTHONPATH}/PIL"
-    fi
-    unset PYTHONPATH
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# setuptools
-
-SETUPTOOLS_VERSION="68.2.2"
-
-download setuptools "${SETUPTOOLS_VERSION}" "https://files.pythonhosted.org/packages/ef/cc/93f7213b2ab5ed383f98ce8020e632ef256b406b8569606c3f160ed8e1c9"
-build_python setuptools "${SETUPTOOLS_VERSION}"
-
-if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
-    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
-    if [ ! -e "${PYTHONPATH}/pkg_resources" ]; then
-        ln -sv "${PYTHONPATH}"/setuptools-*.egg/pkg_resources "${PYTHONPATH}/pkg_resources"
-    fi
-    if [ ! -e "${PYTHONPATH}/setuptools" ]; then
-        ln -sv "${PYTHONPATH}"/setuptools-*.egg/setuptools "${PYTHONPATH}/setuptools"
     fi
     unset PYTHONPATH
 fi

@@ -23,3 +23,16 @@ index 9a2060e..c956fc0 100644
  
  #else
  /* For System that are not Windows, we'll need to define these. */
+diff --git a/setup.py b/setup.py
+index 60426d4..2a922ea 100755
+--- a/setup.py
++++ b/setup.py
+@@ -291,7 +291,7 @@ class pil_build_ext(build_ext):
+             "xcb",
+         ]
+ 
+-        required = {"jpeg", "zlib"}
++        required = {"zlib"}
+         vendor = set()
+ 
+         def __init__(self):

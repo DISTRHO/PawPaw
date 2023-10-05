@@ -7,8 +7,8 @@ index f159586..004e89f 100644
                  if sys.platform == 'darwin':
                      linker = _osx_support.compiler_fixup(linker, ld_args)
 +                elif target_lang == "c++" and self.compiler_cxx:
-+                    ld_args += linker[i+offset+1:]
-+                    linker = [linker[i+offset]]
++                    ld_args += linker[1:]
++                    linker = [linker[0]]
 +                else:
 +                    ld_args += linker[1:]
 +                    linker = [linker[0]]

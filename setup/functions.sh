@@ -479,7 +479,7 @@ function build_python() {
 
     if [ ! -f "${pkgdir}/.stamp_built" ]; then
         pushd "${pkgdir}"
-        ${python} setup.py build_ext ${extraconfrules} --verbose -j1
+        ${python} setup.py build_ext ${extraconfrules} --verbose
         touch .stamp_built
         popd
     fi
