@@ -99,7 +99,7 @@ if [ "${WIN32}" -eq 1 ]; then
     JACK2_EXTRAFLAGS+=" --static"
 fi
 
-JACK2_VERSION="250420381b1a6974798939ad7104ab1a4b9a9994"
+JACK2_VERSION="88102ec4a73ecb18b58198193905aefe6b378ce5"
 JACK2_URL="https://github.com/jackaudio/jack2.git"
 
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
