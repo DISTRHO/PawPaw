@@ -67,6 +67,20 @@ if [ ! -e "${PAWPAW_PREFIX}-host/usr/bin" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# lvtk1
+
+# LVTK1_VERSION="c105fd5077b4f7d963ad543b9979b94b9b052551"
+# LVTK1_URL="https://github.com/lvtk/lvtk.git"
+# 
+# LVTK1_EXTRAFLAGS=""
+# LVTK1_EXTRAFLAGS+=" --disable-examples"
+# LVTK1_EXTRAFLAGS+=" --disable-tools"
+# LVTK1_EXTRAFLAGS+=" --disable-ui"
+# 
+# download lvtk1 "${LVTK1_VERSION}" "${LVTK1_URL}" "" "git"
+# build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
 JACK2_EXTRAFLAGS=""
