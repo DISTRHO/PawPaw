@@ -89,7 +89,6 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -144,6 +143,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -168,155 +168,6 @@ jobs:
         with:
           name: common-${{ matrix.target }}
           path: common-${{ matrix.target }}.tar.gz
-
-  cardinal:
-    strategy:
-      matrix:
-        include:
-          - name: linux-aarch64
-            installer: apt
-            os: ubuntu-20.04
-            target: linux-aarch64
-          - name: linux-armhf
-            installer: apt
-            os: ubuntu-20.04
-            target: linux-armhf
-          - name: linux-i686
-            installer: apt
-            os: ubuntu-20.04
-            target: linux-i686
-          - name: linux-riscv64
-            installer: apt
-            os: ubuntu-20.04
-            target: linux-riscv64
-          - name: linux-x86_64
-            installer: apt
-            os: ubuntu-20.04
-            target: linux-x86_64
-          - name: macos
-            installer: homebrew
-            os: macos-11
-            target: macos
-          - name: macos-universal-10.15
-            installer: homebrew
-            os: macos-11
-            target: macos-universal-10.15
-          - name: wasm
-            installer: apt
-            os: ubuntu-22.04
-            target: wasm
-          - name: win32
-            installer: apt
-            os: ubuntu-22.04
-            target: win32
-          - name: win64
-            installer: apt
-            os: ubuntu-22.04
-            target: win64
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Set up cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/PawPawBuilds
-          key: cardinal-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
-      - name: (apt) Restore debian package cache
-        if: ${{ matrix.installer == 'apt' }}
-        run: |
-          if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
-            sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
-          fi
-      - name: (apt) Fix GitHub's mess in ubuntu-20.04
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
-      - name: (apt) Fix GitHub's mess in ubuntu-22.04
-        if: ${{ matrix.os == 'ubuntu-22.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades git/jammy
-      - name: (apt) Set up dependencies (apt)
-        if: ${{ matrix.installer == 'apt' }}
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
-          # extra, for using system libraries
-          if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
-            sudo dpkg --add-architecture arm64
-            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
-            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
-          elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
-            sudo dpkg --add-architecture armhf
-            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
-            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
-          elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
-          elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
-            sudo dpkg --add-architecture riscv64
-            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
-            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
-          elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
-          elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
-          fi
-          # extra, for wasm
-          if [ '${{ matrix.target }}' == 'wasm' ]; then
-            [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk
-            cd ~/PawPawBuilds/emsdk && ./emsdk install latest && ./emsdk activate latest
-          fi
-          # extra, for win32
-          if [ '${{ matrix.target }}' == 'win32' ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
-          fi
-          # extra, for win64
-          if [ '${{ matrix.target }}' == 'win64' ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
-          fi
-      - name: (homebrew) Set up dependencies
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          brew install cmake git jq meson
-      - name: (apt) Cache debian packages
-        if: ${{ matrix.installer == 'apt' }}
-        run: |
-            mkdir -p ~/PawPawBuilds/debs
-            sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
-      - name: Run bootstrap
-        shell: bash
-        run: |
-          if [ '${{ matrix.target }}' == 'wasm' ]; then \
-            source ~/PawPawBuilds/emsdk/emsdk_env.sh; \
-          fi
-          ./bootstrap-cardinal.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
 
   plugins:
     strategy:
@@ -400,7 +251,6 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -455,6 +305,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -548,7 +399,6 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -603,6 +453,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -693,7 +544,6 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -748,6 +598,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -834,7 +685,6 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -889,6 +739,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -925,20 +776,52 @@ jobs:
         run: |
           ./bootstrap-carla.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
 
-  modaudio:
+  cardinal:
+    env:
+      PAWPAW_SKIP_LTO: 1
+      PAWPAW_SKIP_GLIB: 1
+      PAWPAW_SKIP_LV2: 1
+      PAWPAW_SKIP_SAMPLERATE: 1
     strategy:
       matrix:
         include:
+          - name: linux-aarch64
+            installer: apt
+            os: ubuntu-20.04
+            target: linux-aarch64
+          - name: linux-armhf
+            installer: apt
+            os: ubuntu-20.04
+            target: linux-armhf
+          - name: linux-i686
+            installer: apt
+            os: ubuntu-20.04
+            target: linux-i686
+          - name: linux-riscv64
+            installer: apt
+            os: ubuntu-20.04
+            target: linux-riscv64
+          - name: linux-x86_64
+            installer: apt
+            os: ubuntu-20.04
+            target: linux-x86_64
           - name: macos-universal-10.15
             installer: homebrew
             os: macos-11
             target: macos-universal-10.15
+          - name: wasm
+            installer: apt
+            os: ubuntu-22.04
+            target: wasm
+          - name: win32
+            installer: apt
+            os: ubuntu-22.04
+            target: win32
           - name: win64
             installer: apt
             os: ubuntu-22.04
             target: win64
     runs-on: ${{ matrix.os }}
-    needs: [plugins, qt]
     steps:
       - uses: actions/checkout@v3
       - name: Set up cache
@@ -946,7 +829,7 @@ jobs:
         with:
           path: |
             ~/PawPawBuilds
-          key: carla-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
+          key: cardinal-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: (apt) Restore debian package cache
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -971,7 +854,6 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
           # extra, for using system libraries
           if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
             sudo dpkg --add-architecture arm64
@@ -1026,6 +908,7 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
           fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -1035,28 +918,123 @@ jobs:
         run: |
             mkdir -p ~/PawPawBuilds/debs
             sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
-      - name: Download common-${{ matrix.target }}
-        uses: actions/download-artifact@v3
-        with:
-          name: common-${{ matrix.target }}
-          path: ~/PawPawBuilds
-      - name: Download qt-${{ matrix.target }}
-        uses: actions/download-artifact@v3
-        with:
-          name: qt-${{ matrix.target }}
-          path: ~/PawPawBuilds
-      - name: Download plugins-${{ matrix.target }}
-        uses: actions/download-artifact@v3
-        with:
-          name: plugins-${{ matrix.target }}
-          path: ~/PawPawBuilds
-      - name: Extract {common,plugins,qt}-${{ matrix.target }}
+      - name: Run bootstrap
         shell: bash
         run: |
-            cd ~/PawPawBuilds && \
-            tar xf common-${{ matrix.target }}.tar.gz && \
-            tar xf plugins-${{ matrix.target }}.tar.gz && \
-            tar xf qt-${{ matrix.target }}.tar.gz
+          if [ '${{ matrix.target }}' == 'wasm' ]; then \
+            source ~/PawPawBuilds/emsdk/emsdk_env.sh; \
+          fi
+          ./bootstrap-cardinal.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
+
+  modaudio:
+    strategy:
+      matrix:
+        include:
+          - name: macos-universal-10.15
+            installer: homebrew
+            os: macos-11
+            target: macos-universal-10.15
+          - name: win64
+            installer: apt
+            os: ubuntu-22.04
+            target: win64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/PawPawBuilds
+          key: carla-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
+      - name: (apt) Restore debian package cache
+        if: ${{ matrix.installer == 'apt' }}
+        run: |
+          if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
+            sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
+          fi
+      - name: (apt) Fix GitHub's mess in ubuntu-20.04
+        if: ${{ matrix.os == 'ubuntu-20.04' }}
+        run: |
+          sudo rm /etc/apt/sources.list.d/*.list
+          sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
+        run: |
+          sudo rm /etc/apt/sources.list.d/*.list
+          sudo apt-get update -qq
+          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
+          sudo apt-get install -yqq --allow-downgrades git/jammy
+      - name: (apt) Set up dependencies (apt)
+        if: ${{ matrix.installer == 'apt' }}
+        run: |
+          sudo apt-get update -qq
+          # extra, for using system libraries
+          if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
+            sudo dpkg --add-architecture arm64
+            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
+            sudo apt-get update -qq
+            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
+          elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
+            sudo dpkg --add-architecture armhf
+            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
+            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
+            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
+            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
+            sudo apt-get update -qq
+            sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
+          elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
+            sudo dpkg --add-architecture i386
+            sudo apt-get update -qq
+            sudo apt-get install -yqq --allow-downgrades g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
+          elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
+            sudo dpkg --add-architecture riscv64
+            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
+            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
+            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
+            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
+            sudo apt-get update -qq
+            sudo apt-get install -yqq --allow-downgrades g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
+          elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
+            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
+          elif [ '${{ matrix.target }}' == 'wasm' ]; then
+            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
+          fi
+          # extra, for wasm
+          if [ '${{ matrix.target }}' == 'wasm' ]; then
+            [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk
+            cd ~/PawPawBuilds/emsdk && ./emsdk install latest && ./emsdk activate latest
+          fi
+          # extra, for win32
+          if [ '${{ matrix.target }}' == 'win32' ]; then
+            sudo dpkg --add-architecture i386
+            sudo apt-get update -qq
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
+          fi
+          # extra, for win64
+          if [ '${{ matrix.target }}' == 'win64' ]; then
+            sudo dpkg --add-architecture i386
+            sudo apt-get update -qq
+            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
+          fi
+          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
+      - name: (homebrew) Set up dependencies
+        if: ${{ matrix.installer == 'homebrew' }}
+        run: |
+          brew install cmake git jq meson
+      - name: (apt) Cache debian packages
+        if: ${{ matrix.installer == 'apt' }}
+        run: |
+            mkdir -p ~/PawPawBuilds/debs
+            sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Run bootstrap
         shell: bash
         run: |
