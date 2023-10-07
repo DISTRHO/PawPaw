@@ -36,6 +36,12 @@ source setup/versions.sh
 # ---------------------------------------------------------------------------------------------------------------------
 # merged usr mode
 
+mkdir -p "${PAWPAW_PREFIX}/bin"
+mkdir -p "${PAWPAW_PREFIX}/docs"
+mkdir -p "${PAWPAW_PREFIX}/etc"
+mkdir -p "${PAWPAW_PREFIX}/include"
+mkdir -p "${PAWPAW_PREFIX}/lib"
+mkdir -p "${PAWPAW_PREFIX}/share"
 mkdir -p "${PAWPAW_PREFIX}/usr"
 
 if [ ! -e "${PAWPAW_PREFIX}/usr/bin" ]; then
@@ -60,6 +66,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # merged usr mode (host)
 
+mkdir -p "${PAWPAW_PREFIX}-host/bin"
 mkdir -p "${PAWPAW_PREFIX}-host/usr"
 
 if [ ! -e "${PAWPAW_PREFIX}-host/usr/bin" ]; then
