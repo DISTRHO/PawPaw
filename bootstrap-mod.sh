@@ -204,7 +204,10 @@ PILLOW_EXTRAFLAGS+=" --disable-tiff"
 PILLOW_EXTRAFLAGS+=" --disable-webp"
 PILLOW_EXTRAFLAGS+=" --disable-webpmux"
 PILLOW_EXTRAFLAGS+=" --disable-xcb"
-PILLOW_EXTRAFLAGS+=" --disable-platform-guessing"
+
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PILLOW_EXTRAFLAGS+=" --disable-platform-guessing"
+fi
 
 download Pillow "${PILLOW_VERSION}" "https://files.pythonhosted.org/packages/21/23/af6bac2a601be6670064a817273d4190b79df6f74d8012926a39bc7aa77f"
 build_python Pillow "${PILLOW_VERSION}" "${PILLOW_EXTRAFLAGS}"

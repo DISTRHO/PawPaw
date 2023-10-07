@@ -488,7 +488,7 @@ function build_python() {
         pushd "${pkgdir}"
         # always try twice, python checks for installed deps and fails the first time
         ${python} setup.py install --prefix="${PAWPAW_PREFIX}" --verbose || \
-        ${python} setup.py install --prefix="${PAWPAW_PREFIX}" --verbose
+        ${python} setup.py install --prefix="${PAWPAW_PREFIX}" --verbose || true
         touch .stamp_installed
         popd
     fi
