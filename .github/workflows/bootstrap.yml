@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 2
+  CACHE_VERSION: 3
   EMSCRIPTEN_VERSION: 3.1.27
 
 jobs:
