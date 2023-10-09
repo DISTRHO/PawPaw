@@ -117,10 +117,23 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # portaudio (win32 only)
 
-if [ "${WIN32}" -eq 1 ]; then
-    export EXTRA_CFLAGS="-I${ASIO_DIR}"
-    export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
-    export EXTRA_MAKE_ARGS="-j 1"
+if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+    PORTAUDIO_EXTRAFLAGS=""
+    PORTAUDIO_EXTRAFLAGS+=" --enable-cxx"
+    PORTAUDIO_EXTRAFLAGS+=" --without-asihpi"
+    PORTAUDIO_EXTRAFLAGS+=" --without-jack"
+    PORTAUDIO_EXTRAFLAGS+=" --without-oss"
+
+    if [ "${LINUX}" -eq 1 ]; then
+        PORTAUDIO_EXTRAFLAGS+=" --with-alsa"
+    elif [ "${WIN32}" -eq 1 ]; then
+        export EXTRA_CFLAGS="-I${ASIO_DIR}"
+        export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
+        export EXTRA_MAKE_ARGS="-j 1"
+        PORTAUDIO_EXTRAFLAGS+=" --with-asiodir=${ASIO_DIR}"
+        PORTAUDIO_EXTRAFLAGS+=" --with-winapi=asio,directx,wasapi,wdmks,wmme"
+    fi
+
     download portaudio19 "${PORTAUDIO_VERSION}" "${PORTAUDIO_URL}" "orig.tar.gz"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/audioclient.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/devicetopology.h"
@@ -135,8 +148,11 @@ if [ "${WIN32}" -eq 1 ]; then
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/rpcsal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/sal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/structuredquery.h"
-    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "--enable-cxx --with-asiodir=${ASIO_DIR} --with-winapi=asio,directx,wasapi,wdmks,wmme"
-    install_file portaudio19 "${PORTAUDIO_VERSION}" "include/pa_asio.h" "include"
+    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "${PORTAUDIO_EXTRAFLAGS}"
+
+    if [ "${WIN32}" -eq 1 ]; then
+        install_file portaudio19 "${PORTAUDIO_VERSION}" "include/pa_asio.h" "include"
+    fi
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------

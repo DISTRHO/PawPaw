@@ -31,7 +31,43 @@ source setup/versions.sh
 ./bootstrap-jack2.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
 ./bootstrap-python.sh "${target}"
-./bootstrap-qt.sh "${target}"
+
+# Use local Qt on Linux builds
+if [ "${LINUX}" -eq 1 ]; then
+    if [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-i686" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/riscv64-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+    fi
+    if ! pkg-config --exists Qt5Core Qt5Gui Qt5Svg Qt5Widgets; then
+        echo "Qt system libs are not available, cannot continue"
+        exit 2
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Core.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Core)/Qt5Core.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Core.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Gui.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Gui)/Qt5Gui.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Gui.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Svg.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Svg)/Qt5Svg.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Svg.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Widgets.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Widgets)/Qt5Widgets.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Widgets.pc
+    fi
+else
+    ./bootstrap-qt.sh "${target}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # merged usr mode
@@ -91,10 +127,24 @@ fi
 # jack2
 
 JACK2_EXTRAFLAGS=""
+JACK2_EXTRAFLAGS+=" --autostart=none"
+JACK2_EXTRAFLAGS+=" --classic"
+JACK2_EXTRAFLAGS+=" --db=yes"
+JACK2_EXTRAFLAGS+=" --doxygen=no"
+JACK2_EXTRAFLAGS+=" --firewire=no"
+JACK2_EXTRAFLAGS+=" --iio=no"
+JACK2_EXTRAFLAGS+=" --celt=no"
+JACK2_EXTRAFLAGS+=" --example-tools=no"
+JACK2_EXTRAFLAGS+=" --opus=no"
+JACK2_EXTRAFLAGS+=" --samplerate=no"
+JACK2_EXTRAFLAGS+=" --sndfile=no"
+JACK2_EXTRAFLAGS+=" --readline=no"
+JACK2_EXTRAFLAGS+=" --systemd=no"
+JACK2_EXTRAFLAGS+=" --zalsa=no"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
-        JACK2_EXTRAFLAGS+=" --platform=linux"
+        JACK2_EXTRAFLAGS+=" --platform=linux --portaudio=yes --alsa=yes"
     elif [ "${MACOS}" -eq 1 ]; then
         JACK2_EXTRAFLAGS+=" --platform=darwin"
     elif [ "${WIN32}" -eq 1 ]; then

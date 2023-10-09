@@ -29,6 +29,14 @@ source setup/functions.sh
 source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
+# check for depedencies
+
+if [ "${LINUX}" -eq 1 ] && ! command -v patchelf >/dev/null; then
+    echo "missing 'patchelf' program, cannot continue!"
+    exit 2
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap for python (needed for cross-compilation)
 
 if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; then
