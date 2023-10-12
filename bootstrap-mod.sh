@@ -110,6 +110,45 @@ if [ ! -e "${PAWPAW_PREFIX}-host/usr/bin" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# GNU tools by default
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/awk" ]; then
+    ln -s $(command -v gawk) "${PAWPAW_PREFIX}-host/bin/awk"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/install" ]; then
+    ln -s $(command -v ginstall) "${PAWPAW_PREFIX}-host/bin/install"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/libtool" ]; then
+    ln -s $(command -v glibtool) "${PAWPAW_PREFIX}-host/bin/libtool"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/libtoolize" ]; then
+    ln -s $(command -v glibtoolize) "${PAWPAW_PREFIX}-host/bin/libtoolize"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/m4" ]; then
+    ln -s $(command -v gm4) "${PAWPAW_PREFIX}-host/bin/m4"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/make" ]; then
+    ln -s $(command -v gmake) "${PAWPAW_PREFIX}-host/bin/make"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/readlink" ]; then
+    ln -s $(command -v greadlink) "${PAWPAW_PREFIX}-host/bin/readlink"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/realpath" ]; then
+    ln -s $(command -v grealpath) "${PAWPAW_PREFIX}-host/bin/realpath"
+fi
+
+if [ ! -e "${PAWPAW_PREFIX}-host/bin/sed" ]; then
+    ln -s $(command -v gsed) "${PAWPAW_PREFIX}-host/bin/sed"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # lvtk1
 
 # LVTK1_VERSION="c105fd5077b4f7d963ad543b9979b94b9b052551"
@@ -134,13 +173,9 @@ JACK2_EXTRAFLAGS+=" --doxygen=no"
 JACK2_EXTRAFLAGS+=" --firewire=no"
 JACK2_EXTRAFLAGS+=" --iio=no"
 JACK2_EXTRAFLAGS+=" --celt=no"
-JACK2_EXTRAFLAGS+=" --example-tools=no"
 JACK2_EXTRAFLAGS+=" --opus=no"
 JACK2_EXTRAFLAGS+=" --samplerate=no"
-JACK2_EXTRAFLAGS+=" --sndfile=no"
-JACK2_EXTRAFLAGS+=" --readline=no"
 JACK2_EXTRAFLAGS+=" --systemd=no"
-JACK2_EXTRAFLAGS+=" --zalsa=no"
 
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     if [ "${LINUX}" -eq 1 ]; then
@@ -156,7 +191,17 @@ if [ "${WIN32}" -eq 1 ]; then
     JACK2_EXTRAFLAGS+=" --static"
 fi
 
-JACK2_VERSION="88102ec4a73ecb18b58198193905aefe6b378ce5"
+if [ "${WIN32}" -eq 1 ]; then
+    # FIXME something is wrong with winmme driver
+    JACK2_VERSION="88102ec4a73ecb18b58198193905aefe6b378ce5"
+    JACK2_EXTRAFLAGS+=" --example-tools=no"
+    JACK2_EXTRAFLAGS+=" --readline=no"
+    JACK2_EXTRAFLAGS+=" --sndfile=no"
+    JACK2_EXTRAFLAGS+=" --zalsa=no"
+else
+    JACK2_VERSION="250420381b1a6974798939ad7104ab1a4b9a9994"
+fi
+
 JACK2_URL="https://github.com/jackaudio/jack2.git"
 
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
