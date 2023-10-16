@@ -121,6 +121,10 @@ if [ "${MACOS}" -eq 1 ]; then
         ln -s $(command -v gawk) "${PAWPAW_PREFIX}-host/bin/awk"
     fi
 
+    if [ ! -e "${PAWPAW_PREFIX}-host/bin/cp" ]; then
+        ln -s $(command -v gcp) "${PAWPAW_PREFIX}-host/bin/cp"
+    fi
+
     if [ ! -e "${PAWPAW_PREFIX}-host/bin/install" ]; then
         ln -s $(command -v ginstall) "${PAWPAW_PREFIX}-host/bin/install"
     fi
