@@ -117,44 +117,44 @@ fi
 # GNU tools by default on macOS
 
 if [ "${MACOS}" -eq 1 ]; then
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/awk" ]; then
-        ln -s $(command -v gawk) "${PAWPAW_PREFIX}-host/bin/awk"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/awk" ]; then
+        ln -s $(command -v gawk) "${PAWPAW_PREFIX}/bin/awk"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/cp" ]; then
-        ln -s $(command -v gcp) "${PAWPAW_PREFIX}-host/bin/cp"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/cp" ]; then
+        ln -s $(command -v gcp) "${PAWPAW_PREFIX}/bin/cp"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/install" ]; then
-        ln -s $(command -v ginstall) "${PAWPAW_PREFIX}-host/bin/install"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/install" ]; then
+        ln -s $(command -v ginstall) "${PAWPAW_PREFIX}/bin/install"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/libtool" ]; then
-        ln -s $(command -v glibtool) "${PAWPAW_PREFIX}-host/bin/libtool"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/libtool" ]; then
+        ln -s $(command -v glibtool) "${PAWPAW_PREFIX}/bin/libtool"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/libtoolize" ]; then
-        ln -s $(command -v glibtoolize) "${PAWPAW_PREFIX}-host/bin/libtoolize"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/libtoolize" ]; then
+        ln -s $(command -v glibtoolize) "${PAWPAW_PREFIX}/bin/libtoolize"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/m4" ]; then
-        ln -s $(command -v gm4) "${PAWPAW_PREFIX}-host/bin/m4"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/m4" ]; then
+        ln -s $(command -v gm4) "${PAWPAW_PREFIX}/bin/m4"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/make" ]; then
-        ln -s $(command -v gmake) "${PAWPAW_PREFIX}-host/bin/make"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/make" ]; then
+        ln -s $(command -v gmake) "${PAWPAW_PREFIX}/bin/make"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/readlink" ]; then
-        ln -s $(command -v greadlink) "${PAWPAW_PREFIX}-host/bin/readlink"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/readlink" ]; then
+        ln -s $(command -v greadlink) "${PAWPAW_PREFIX}/bin/readlink"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/realpath" ]; then
-        ln -s $(command -v grealpath) "${PAWPAW_PREFIX}-host/bin/realpath"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/realpath" ]; then
+        ln -s $(command -v grealpath) "${PAWPAW_PREFIX}/bin/realpath"
     fi
 
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/sed" ]; then
-        ln -s $(command -v gsed) "${PAWPAW_PREFIX}-host/bin/sed"
+    if [ ! -e "${PAWPAW_PREFIX}/bin/sed" ]; then
+        ln -s $(command -v gsed) "${PAWPAW_PREFIX}/bin/sed"
     fi
 fi
 
