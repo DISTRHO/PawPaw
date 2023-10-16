@@ -16,13 +16,9 @@ if [ -z "${target}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# source setup code
+# LTO is unwanted for MOD builds, make sure it is off
 
 export PAWPAW_SKIP_LTO=1
-source setup/check_target.sh
-source setup/env.sh
-source setup/functions.sh
-source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
@@ -31,6 +27,14 @@ source setup/versions.sh
 ./bootstrap-jack2.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
 ./bootstrap-python.sh "${target}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# source setup code
+
+source setup/check_target.sh
+source setup/env.sh
+source setup/functions.sh
+source setup/versions.sh
 
 # Use local Qt on Linux builds
 if [ "${LINUX}" -eq 1 ]; then
