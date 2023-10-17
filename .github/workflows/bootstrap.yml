@@ -227,13 +227,6 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess in ubuntu-20.04
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/jammy automake/jammy build-essential/jammy git/jammy libgd3/jammy libglib2.0-0/jammy libglib2.0-dev/jammy libpcre2-8-0/jammy libpcre2-16-0/jammy libpcre2-32-0/jammy libpcre2-posix2/jammy pkg-config/jammy
       - name: (apt) Fix GitHub's mess
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -375,13 +368,6 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess in ubuntu-20.04
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/jammy automake/jammy build-essential/jammy git/jammy libgd3/jammy libglib2.0-0/jammy libglib2.0-dev/jammy libpcre2-8-0/jammy libpcre2-16-0/jammy libpcre2-32-0/jammy libpcre2-posix2/jammy pkg-config/jammy
       - name: (apt) Fix GitHub's mess
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -520,13 +506,6 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess in ubuntu-20.04
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/jammy automake/jammy build-essential/jammy git/jammy libgd3/jammy libglib2.0-0/jammy libglib2.0-dev/jammy libpcre2-8-0/jammy libpcre2-16-0/jammy libpcre2-32-0/jammy libpcre2-posix2/jammy pkg-config/jammy
       - name: (apt) Fix GitHub's mess
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -629,10 +608,6 @@ jobs:
     strategy:
       matrix:
         include:
-          #- name: macos
-            #installer: homebrew
-            #os: macos-11
-            #target: macos
           - name: macos-universal
             installer: homebrew
             os: macos-11
@@ -661,13 +636,6 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess in ubuntu-20.04
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/jammy automake/jammy build-essential/jammy git/jammy libgd3/jammy libglib2.0-0/jammy libglib2.0-dev/jammy libpcre2-8-0/jammy libpcre2-16-0/jammy libpcre2-32-0/jammy libpcre2-posix2/jammy pkg-config/jammy
       - name: (apt) Fix GitHub's mess
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -836,14 +804,14 @@ jobs:
           sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
           sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/jammy automake/jammy build-essential/jammy git/jammy libgd3/jammy libglib2.0-0/jammy libglib2.0-dev/jammy libpcre2-8-0/jammy libpcre2-16-0/jammy libpcre2-32-0/jammy libpcre2-posix2/jammy pkg-config/jammy
-      - name: (apt) Fix GitHub's mess
-        if: ${{ matrix.installer == 'apt' }}
+          sudo apt-get install -yqq --allow-downgrades autoconf/focal automake/focal build-essential/focal git/focal libgd3/focal libglib2.0-0/focal libglib2.0-dev/focal libpcre2-8-0/focal libpcre2-16-0/focal libpcre2-32-0/focal libpcre2-posix2/focal pkg-config/focal
+      - name: (apt) Fix GitHub's mess in ubuntu-22.04
+        if: ${{ matrix.os == 'ubuntu-22.04' }}
         run: |
           sudo rm /etc/apt/sources.list.d/*.list
           sudo apt-get update -qq
           sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* msbuild* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades git/jammy
+          sudo apt-get install -yqq --allow-downgrades git/focal
       - name: (apt) Set up dependencies (apt)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -853,18 +821,18 @@ jobs:
             sudo dpkg --add-architecture arm64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
             sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
+            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libatomic1:arm64 libc6:arm64 libdbus-1-dev:arm64 libgcc-s1:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 liblo-dev:arm64 libstdc++6:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
             sudo dpkg --add-architecture armhf
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
             sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
+            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
+            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
+            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
             sudo apt-get update -qq
             sudo apt-get install -yqq --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libatomic1:armhf libc6:armhf libdbus-1-dev:armhf libgcc-s1:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf liblo-dev:armhf libstdc++6:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
@@ -875,9 +843,9 @@ jobs:
             sudo dpkg --add-architecture riscv64
             sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
             sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
+            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
+            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
+            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports focal-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
             sudo apt-get update -qq
             sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libsdl2-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
           elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
@@ -924,6 +892,10 @@ jobs:
     strategy:
       matrix:
         include:
+          - name: linux-x86_64
+            installer: apt
+            os: ubuntu-22.04
+            target: win64
           - name: macos-universal-10.15
             installer: homebrew
             os: macos-11
@@ -947,13 +919,6 @@ jobs:
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then \
             sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/; \
           fi
-      - name: (apt) Fix GitHub's mess in ubuntu-20.04
-        if: ${{ matrix.os == 'ubuntu-20.04' }}
-        run: |
-          sudo rm /etc/apt/sources.list.d/*.list
-          sudo apt-get update -qq
-          sudo apt-get purge -yqq git-man libclang* libgbm* libllvm* libmono* libnginx* moby* mono* nginx* perl php* libgdiplus libpcre2-posix3 libselinux1-dev libzip4
-          sudo apt-get install -yqq --allow-downgrades autoconf/jammy automake/jammy build-essential/jammy git/jammy libgd3/jammy libglib2.0-0/jammy libglib2.0-dev/jammy libpcre2-8-0/jammy libpcre2-16-0/jammy libpcre2-32-0/jammy libpcre2-posix2/jammy pkg-config/jammy
       - name: (apt) Fix GitHub's mess
         if: ${{ matrix.installer == 'apt' }}
         run: |
