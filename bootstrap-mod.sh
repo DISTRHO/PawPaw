@@ -175,6 +175,9 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
+JACK2_VERSION="250420381b1a6974798939ad7104ab1a4b9a9994"
+JACK2_URL="https://github.com/jackaudio/jack2.git"
+
 JACK2_EXTRAFLAGS=""
 JACK2_EXTRAFLAGS+=" --autostart=none"
 JACK2_EXTRAFLAGS+=" --classic"
@@ -201,9 +204,6 @@ if [ "${WIN32}" -eq 1 ]; then
     JACK2_EXTRAFLAGS+=" --static"
 fi
 
-JACK2_VERSION="250420381b1a6974798939ad7104ab1a4b9a9994"
-JACK2_URL="https://github.com/jackaudio/jack2.git"
-
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
 build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
@@ -216,6 +216,30 @@ if [ "${WIN32}" -eq 1 ]; then
     fi
     sed -i -e "s/-L\${libdir} -ljack${s}/-L\${libdir} -Wl,-Bdynamic -ljackserver${s} -Wl,-Bstatic/" "${PAWPAW_PREFIX}/lib/pkgconfig/jack.pc"
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# jack-example-tools
+
+JACK_EXAMPLE_TOOLS_VERSION="7cf014d3b3b75ad88a0785957b0f2cffad243b6b"
+JACK_EXAMPLE_TOOLS_URL="https://github.com/jackaudio/jack-example-tools.git"
+
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS=""
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dalsa_in_out=disabled"
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Djack_net=disabled"
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Djack_netsource=disabled"
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Djack_rec=disabled"
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dopus_support=disabled"
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dreadline_support=disabled"
+JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dzalsa=disabled"
+
+if [ "${LINUX}" -eq 1 ]; then
+    JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dalsa_midi=enabled"
+else
+    JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dalsa_midi=disabled"
+fi
+
+download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOLS_URL}" "" "git"
+build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOLS_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # hylia
