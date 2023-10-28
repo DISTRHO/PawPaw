@@ -1,0 +1,13 @@
+diff --git a/src/hostapi/asio/pa_asio.cpp b/src/hostapi/asio/pa_asio.cpp
+index f230d87..5f03ab2 100644
+--- a/src/hostapi/asio/pa_asio.cpp
++++ b/src/hostapi/asio/pa_asio.cpp
+@@ -1296,6 +1296,8 @@ PaError PaAsio_Initialize( PaUtilHostApiRepresentation **hostApi, PaHostApiIndex
+ 
+             if (   strcmp (names[i],"ASIO DirectX Full Duplex Driver") == 0
+                 || strcmp (names[i],"ASIO Multimedia Driver")          == 0
++                || strcmp (names[i],"JackRouter")                      == 0
++                || strcmp (names[i],"MOD App")                         == 0
+                 || strncmp(names[i],"Premiere",8)                      == 0   //"Premiere Elements Windows Sound 1.0"
+                 || strncmp(names[i],"Adobe",5)                         == 0   //"Adobe Default Windows Sound 1.5"
+                )
