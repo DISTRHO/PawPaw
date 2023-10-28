@@ -175,7 +175,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-JACK2_VERSION="73a759b0822163341718c5ac30f7927a824778d5"
+JACK2_VERSION="0d730dd3567f250edaa899af906b8a8593e3492f"
 JACK2_URL="https://github.com/jackaudio/jack2.git"
 
 JACK2_EXTRAFLAGS=""
