@@ -126,13 +126,20 @@ if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
 
     if [ "${LINUX}" -eq 1 ]; then
         PORTAUDIO_EXTRAFLAGS+=" --with-alsa"
-    elif [ "${WIN32}" -eq 1 ]; then
+        PORTAUDIO_EXTRAFLAGS+=" --with-jack"
+    else
+        PORTAUDIO_EXTRAFLAGS+=" --without-alsa"
+        PORTAUDIO_EXTRAFLAGS+=" --without-jack"
+    fi
+
+    if [ "${WIN32}" -eq 1 ]; then
         export EXTRA_CFLAGS="-I${ASIO_DIR}"
         export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
-        export EXTRA_MAKE_ARGS="-j 1"
         PORTAUDIO_EXTRAFLAGS+=" --with-asiodir=${ASIO_DIR}"
         PORTAUDIO_EXTRAFLAGS+=" --with-winapi=asio,directx,wasapi,wdmks,wmme"
     fi
+
+    export EXTRA_MAKE_ARGS="-j 1"
 
     download portaudio19 "${PORTAUDIO_VERSION}" "${PORTAUDIO_URL}" "orig.tar.gz"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/audioclient.h"

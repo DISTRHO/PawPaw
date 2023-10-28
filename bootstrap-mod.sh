@@ -181,7 +181,7 @@ JACK2_URL="https://github.com/jackaudio/jack2.git"
 JACK2_EXTRAFLAGS=""
 JACK2_EXTRAFLAGS+=" --autostart=none"
 JACK2_EXTRAFLAGS+=" --classic"
-JACK2_EXTRAFLAGS+=" --db=yes"
+JACK2_EXTRAFLAGS+=" --db=no"
 JACK2_EXTRAFLAGS+=" --doxygen=no"
 JACK2_EXTRAFLAGS+=" --firewire=no"
 JACK2_EXTRAFLAGS+=" --iio=no"
@@ -190,14 +190,12 @@ JACK2_EXTRAFLAGS+=" --opus=no"
 JACK2_EXTRAFLAGS+=" --samplerate=no"
 JACK2_EXTRAFLAGS+=" --systemd=no"
 
-if [ "${CROSS_COMPILING}" -eq 1 ]; then
-    if [ "${LINUX}" -eq 1 ]; then
-        JACK2_EXTRAFLAGS+=" --platform=linux --portaudio=yes --alsa=yes"
-    elif [ "${MACOS}" -eq 1 ]; then
-        JACK2_EXTRAFLAGS+=" --platform=darwin"
-    elif [ "${WIN32}" -eq 1 ]; then
-        JACK2_EXTRAFLAGS+=" --platform=win32"
-    fi
+if [ "${LINUX}" -eq 1 ]; then
+    JACK2_EXTRAFLAGS+=" --platform=linux --portaudio=yes --alsa=yes"
+elif [ "${MACOS}" -eq 1 ]; then
+    JACK2_EXTRAFLAGS+=" --platform=darwin"
+elif [ "${WIN32}" -eq 1 ]; then
+    JACK2_EXTRAFLAGS+=" --platform=win32"
 fi
 
 if [ "${WIN32}" -eq 1 ]; then
