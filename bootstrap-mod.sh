@@ -159,18 +159,24 @@ if [ "${MACOS}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# lvtk1
+# armadillo
 
-# LVTK1_VERSION="c105fd5077b4f7d963ad543b9979b94b9b052551"
-# LVTK1_URL="https://github.com/lvtk/lvtk.git"
-# 
-# LVTK1_EXTRAFLAGS=""
-# LVTK1_EXTRAFLAGS+=" --disable-examples"
-# LVTK1_EXTRAFLAGS+=" --disable-tools"
-# LVTK1_EXTRAFLAGS+=" --disable-ui"
-# 
-# download lvtk1 "${LVTK1_VERSION}" "${LVTK1_URL}" "" "git"
-# build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
+ARMADILLO_VERSION="12.6.5"
+ARMADILLO_URL="http://download.sourceforge.net/arma"
+
+download armadillo "${ARMADILLO_VERSION}" "${ARMADILLO_URL}" "tar.xz"
+build_cmake armadillo "${ARMADILLO_VERSION}" "${ARMADILLO_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# hylia
+
+HYLIA_VERSION="6421909123974ffd431ace47589975f5929bc746"
+HYLIA_URL="https://github.com/falkTX/hylia.git"
+
+HYLIA_EXTRAFLAGS="NOOPT=true"
+
+download hylia "${HYLIA_VERSION}" "${HYLIA_URL}" "" "git"
+build_make hylia "${HYLIA_VERSION}" "${HYLIA_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
@@ -240,15 +246,25 @@ download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOL
 build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOLS_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# hylia
+# lvtk1
 
-HYLIA_VERSION="6421909123974ffd431ace47589975f5929bc746"
-HYLIA_URL="https://github.com/falkTX/hylia.git"
+LVTK1_VERSION="c105fd5077b4f7d963ad543b9979b94b9b052551"
+LVTK1_URL="https://github.com/lvtk/lvtk.git"
 
-HYLIA_EXTRAFLAGS="NOOPT=true"
+LVTK1_EXTRAFLAGS=""
+LVTK1_EXTRAFLAGS+=" --disable-examples"
+LVTK1_EXTRAFLAGS+=" --disable-tools"
+LVTK1_EXTRAFLAGS+=" --disable-ui"
 
-download hylia "${HYLIA_VERSION}" "${HYLIA_URL}" "" "git"
-build_make hylia "${HYLIA_VERSION}" "${HYLIA_EXTRAFLAGS}"
+download lvtk1 "${LVTK1_VERSION}" "${LVTK1_URL}" "" "git"
+
+# force waf update for py3 compat
+if [ ! -e "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/.stamp-configured" ]; then
+    cp -v "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/waf" "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/"
+    cp -rv "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/waflib" "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/"
+fi
+
+build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # aggdraw
