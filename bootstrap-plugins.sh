@@ -575,8 +575,6 @@ build_autoconf mxml "${MXML_VERSION}"
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)
 
-if [ "${CROSS_COMPILING}" -eq 0 ] || [ "${LINUX}" -eq 1 ]; then
-
 CARLA_EXTRAFLAGS="CAN_GENERATE_LV2_TTL=false"
 CARLA_EXTRAFLAGS+=" EXTERNAL_PLUGINS=false"
 CARLA_EXTRAFLAGS+=" HAVE_ALSA=false"
@@ -603,8 +601,6 @@ CARLA_EXTRAFLAGS+=" USING_RTAUDIO=false"
 
 git_clone carla "${CARLA_VERSION}" "${CARLA_URL}"
 build_make carla "${CARLA_VERSION}" "${CARLA_EXTRAFLAGS}"
-
-fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap (needed for cross-compilation)
