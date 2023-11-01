@@ -208,6 +208,10 @@ if [ "${WIN32}" -eq 1 ]; then
     JACK2_EXTRAFLAGS+=" --static"
 fi
 
+if [ "${LINUX}" -eq 1 ]; then
+    export EXTRA_LDFLAGS='-Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/..'
+fi
+
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
 build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
