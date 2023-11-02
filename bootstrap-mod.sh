@@ -263,7 +263,7 @@ LVTK1_EXTRAFLAGS+=" --disable-ui"
 download lvtk1 "${LVTK1_VERSION}" "${LVTK1_URL}" "" "git"
 
 # force waf update for py3 compat
-if [ ! -e "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/.stamp-configured" ]; then
+if [ ! -e "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/.stamp_configured" ]; then
     cp -v "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/waf" "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/"
     cp -rv "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/waflib" "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/"
 fi
