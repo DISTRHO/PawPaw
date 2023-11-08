@@ -275,20 +275,22 @@ build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
 
 AGGDRAW_VERSION="1.3.11"
 
-if [ "${WIN32}" -eq 1 ]; then
-    export AGGDRAW_FREETYPE_ROOT="${PAWPAW_PREFIX}"
-    export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 freetype2 libpng)"
-    export EXTRA_LDFLAGS="-shared $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 freetype2 libpng) -lgdi32 -lkernel32 -luser32"
-    export LDSHARED="${TARGET_CXX}"
+export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 freetype2 libpng)"
+export EXTRA_LDFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 freetype2 libpng) -shared"
+if [ "${MACOS}" -eq 1 ]; then
+    export EXTRA_LDFLAGS+=" -Wl,-undefined,dynamic_lookup"
+elif [ "${WIN32}" -eq 1 ]; then
+    export EXTRA_LDFLAGS+=" -lgdi32 -lkernel32 -luser32"
 fi
+
+export AGGDRAW_FREETYPE_ROOT="${PAWPAW_PREFIX}"
+export LDSHARED="${TARGET_CXX}"
 
 download aggdraw "${AGGDRAW_VERSION}" "https://files.pythonhosted.org/packages/ef/29/fddf555c68920bb0aff977425af786226db2a78379e706951ff32b4492ef"
 build_python aggdraw "${AGGDRAW_VERSION}"
 
-if [ "${WIN32}" -eq 1 ]; then
-    unset AGGDRAW_FREETYPE_ROOT
-    unset LDSHARED
-fi
+unset AGGDRAW_FREETYPE_ROOT
+unset LDSHARED
 
 if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
     PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
@@ -325,11 +327,15 @@ fi
 
 PILLOW_VERSION="8.2.0"
 
-if [ "${WIN32}" -eq 1 ]; then
-    export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 freetype2 libpng)"
-    export EXTRA_LDFLAGS="-shared $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 freetype2 libpng) -lgdi32 -lkernel32 -lpsapi -luser32"
-    export LDSHARED="${TARGET_CXX}"
+export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 freetype2 libpng)"
+export EXTRA_LDFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 freetype2 libpng) -shared"
+if [ "${MACOS}" -eq 1 ]; then
+    export EXTRA_LDFLAGS+=" -Wl,-undefined,dynamic_lookup"
+elif [ "${WIN32}" -eq 1 ]; then
+    export EXTRA_LDFLAGS+=" -lgdi32 -lkernel32 -lpsapi -luser32"
 fi
+
+export LDSHARED="${TARGET_CXX}"
 
 PILLOW_EXTRAFLAGS=""
 PILLOW_EXTRAFLAGS+=" --enable-freetype"
@@ -349,9 +355,7 @@ fi
 download Pillow "${PILLOW_VERSION}" "https://files.pythonhosted.org/packages/21/23/af6bac2a601be6670064a817273d4190b79df6f74d8012926a39bc7aa77f"
 build_python Pillow "${PILLOW_VERSION}" "${PILLOW_EXTRAFLAGS}"
 
-if [ "${WIN32}" -eq 1 ]; then
-    unset LDSHARED
-fi
+unset LDSHARED
 
 if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
     PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"

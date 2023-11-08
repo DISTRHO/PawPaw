@@ -1,0 +1,28 @@
+diff --git a/Lib/distutils/unixccompiler.py b/Lib/distutils/unixccompiler.py
+index f159586..004e89f 100644
+--- a/Lib/distutils/unixccompiler.py
++++ b/Lib/distutils/unixccompiler.py
+@@ -200,6 +200,10 @@ class UnixCCompiler(CCompiler):
+ 
+                 if sys.platform == 'darwin':
+                     linker = _osx_support.compiler_fixup(linker, ld_args)
++                    if target_lang == "c++" and self.compiler_cxx:
++                        ld_args += linker[i+offset+1:]
++                    else:
++                        ld_args += linker[1:]
+ 
+                 self.spawn(linker + ld_args)
+             except DistutilsExecError as msg:
+diff --git a/setup.py b/setup.py
+index 3a7a2e7..88e116a 100644
+--- a/setup.py
++++ b/setup.py
+@@ -2289,7 +2289,7 @@ class PyBuildExt(build_ext):
+             # poor man's shlex, the re module is not available yet.
+             value = config_vars.get(name)
+             if not value:
+-                return ()
++                return []
+             # This trick works because ax_check_openssl uses --libs-only-L,
+             # --libs-only-l, and --cflags-only-I.
+             value = ' ' + value
