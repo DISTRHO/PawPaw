@@ -294,6 +294,9 @@ unset LDSHARED
 
 if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
     PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+    if [ ! -e "${PYTHONPATH}/aggdraw.py" ]; then
+        ln -sv "${PYTHONPATH}"/aggdraw-*.egg/aggdraw.py "${PYTHONPATH}/aggdraw.py"
+    fi
     if [ ! -e "${PYTHONPATH}/aggdraw.pyd" ]; then
         ln -sv "${PYTHONPATH}"/aggdraw-*.egg/*.so "${PYTHONPATH}/aggdraw.pyd"
     fi
@@ -361,6 +364,21 @@ if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
     PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
     if [ ! -e "${PYTHONPATH}/PIL" ]; then
         ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL "${PYTHONPATH}/PIL"
+    fi
+    if [ ! -e "${PYTHONPATH}/PIL/_imaging.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL/_imaging.*.so "${PYTHONPATH}/PIL/_imaging.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/PIL/_imagingft.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL/_imagingft.*.so "${PYTHONPATH}/PIL/_imagingft.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/PIL/_imagingmath.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL/_imagingmath.*.so "${PYTHONPATH}/PIL/_imagingmath.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/PIL/_imagingmorph.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL/_imagingmorph.*.so "${PYTHONPATH}/PIL/_imagingmorph.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/PIL/_imagingtk.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/Pillow-*.egg/PIL/_imagingtk.*.so "${PYTHONPATH}/PIL/_imagingtk.pyd"
     fi
     unset PYTHONPATH
 fi
