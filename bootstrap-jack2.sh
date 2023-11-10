@@ -121,7 +121,6 @@ if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     PORTAUDIO_EXTRAFLAGS=""
     PORTAUDIO_EXTRAFLAGS+=" --enable-cxx"
     PORTAUDIO_EXTRAFLAGS+=" --without-asihpi"
-    PORTAUDIO_EXTRAFLAGS+=" --without-jack"
     PORTAUDIO_EXTRAFLAGS+=" --without-oss"
 
     if [ "${LINUX}" -eq 1 ]; then
