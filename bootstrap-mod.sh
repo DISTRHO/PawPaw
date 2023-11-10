@@ -209,7 +209,7 @@ if [ "${WIN32}" -eq 1 ]; then
 fi
 
 if [ "${LINUX}" -eq 1 ]; then
-    export EXTRA_LDFLAGS='-Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/..'
+    export EXTRA_LDFLAGS='-Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/.. -Wl,-rpath,$ORIGIN/../lib'
 fi
 
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
