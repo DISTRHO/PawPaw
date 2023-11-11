@@ -154,7 +154,7 @@ if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/rpcsal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/sal.h"
     remove_file portaudio19 "${PORTAUDIO_VERSION}" "src/hostapi/wasapi/mingw-include/structuredquery.h"
-    build_autoconf portaudio19 "${PORTAUDIO_VERSION}" "${PORTAUDIO_EXTRAFLAGS}"
+    build_autoconfgen portaudio19 "${PORTAUDIO_VERSION}" "${PORTAUDIO_EXTRAFLAGS}"
 
     if [ "${WIN32}" -eq 1 ]; then
         install_file portaudio19 "${PORTAUDIO_VERSION}" "include/pa_asio.h" "include"

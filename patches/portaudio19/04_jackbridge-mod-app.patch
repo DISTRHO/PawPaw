@@ -2711,3 +2711,16 @@ index 0000000..eff8cb0
 +void jackbridge_set_error_function(void* cb) {}
 +
 +#endif // JACKBRIDGE_HPP_INCLUDED
+diff --git a/configure.in b/configure.in
+index f325bb1..178588f 100644
+--- a/configure.in
++++ b/configure.in
+@@ -134,7 +134,7 @@ if test "x$with_oss" != "xno"; then
+ fi
+ have_jack=no
+ if test "x$with_jack" != "xno"; then
+-    PKG_CHECK_MODULES(JACK, jack, have_jack=yes, have_jack=no)
++    have_jack=yes
+ fi
+ 
+ 
