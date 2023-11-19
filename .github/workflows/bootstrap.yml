@@ -33,18 +33,18 @@ jobs:
             installer: apt
             os: ubuntu-22.04
             target: linux-x86_64
-          - name: macos
-            installer: homebrew
-            os: macos-11
-            target: macos
-          - name: macos-universal
-            installer: homebrew
-            os: macos-11
-            target: macos-universal
-          - name: macos-universal-10.15
-            installer: homebrew
-            os: macos-11
-            target: macos-universal-10.15
+          #- name: macos
+            #installer: homebrew
+            #os: macos-11
+            #target: macos
+          #- name: macos-universal
+            #installer: homebrew
+            #os: macos-11
+            #target: macos-universal
+          #- name: macos-universal-10.15
+            #installer: homebrew
+            #os: macos-11
+            #target: macos-universal-10.15
           - name: wasm
             installer: apt
             os: ubuntu-22.04
