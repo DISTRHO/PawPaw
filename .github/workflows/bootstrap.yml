@@ -39,10 +39,10 @@ jobs:
             os: ubuntu-latest
             container: ubuntu:22.04
             target: linux-x86_64
-          #- name: macos
-            #installer: homebrew
-            #os: macos-11
-            #target: macos
+          - name: macos
+            installer: homebrew
+            os: macos-11
+            target: macos
           #- name: macos-universal
             #installer: homebrew
             #os: macos-11
@@ -77,12 +77,16 @@ jobs:
           path: |
             ~/PawPawBuilds
           key: common-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
-      - name: (apt) Set up dependencies (common)
+      - name: Set up dependencies (apt-get)
         if: ${{ matrix.installer == 'apt' }}
         run: |
           apt-get update -qq
           apt-get install -yqq autoconf automake autopoint build-essential curl cmake git jq meson gperf qemu-user-static
-      - name: (apt) Set up dependencies (linux-aarch64)
+      - name: Set up dependencies (homebrew)
+        if: ${{ matrix.installer == 'homebrew' }}
+        run: |
+          brew install cmake git jq meson
+      - name: Set up dependencies (linux-aarch64)
         if: ${{ matrix.target == 'linux-aarch64' }}
         run: |
           dpkg --add-architecture arm64
@@ -93,7 +97,7 @@ jobs:
           echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-arm64.list
           apt-get update -qq
           apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgcc-s1:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 liblo-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64
-      - name: (apt) Set up dependencies (linux-armhf)
+      - name: Set up dependencies (linux-armhf)
         if: ${{ matrix.target == 'linux-armhf' }}
         run: |
           dpkg --add-architecture armhf
@@ -104,13 +108,13 @@ jobs:
           echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-armhf.list
           apt-get update -qq
           apt-get install -y g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf liblo-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf
-      - name: (apt) Set up dependencies (linux-i686)
+      - name: Set up dependencies (linux-i686)
         if: ${{ matrix.target == 'linux-i686' }}
         run: |
           dpkg --add-architecture i386
           apt-get update -qq
           apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libsdl2-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386
-      - name: (apt) Set up dependencies (linux-riscv64)
+      - name: Set up dependencies (linux-riscv64)
         if: ${{ matrix.target == 'linux-riscv64' }}
         run: |
           dpkg --add-architecture riscv64
@@ -121,38 +125,32 @@ jobs:
           echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-riscv64.list
           apt-get update -qq
           apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglib2.0-dev:riscv64 libsdl2-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64
-      - name: (apt) Set up dependencies (linux-x86_64)
+      - name: Set up dependencies (linux-x86_64)
         if: ${{ matrix.target == 'linux-x86_64' }}
         run: |
           apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev
-      - name: (apt) Set up dependencies (wasm)
+      - name: Set up dependencies (wasm)
         if: ${{ matrix.target == 'wasm' }}
         run: |
           apt-get install -yqq autoconf automake git
           [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk
           cd ~/PawPawBuilds/emsdk && ./emsdk install ${{ env.EMSCRIPTEN_VERSION }} && ./emsdk activate ${{ env.EMSCRIPTEN_VERSION }}
-      - name: (apt) Set up dependencies (linux-aarch64)
+      - name: Set up dependencies (linux-aarch64)
         if: ${{ matrix.target == 'win32' }}
         run: |
           dpkg --add-architecture i386
           apt-get update -qq
           apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 wine-stable
-      - name: (apt) Set up dependencies (win64)
+      - name: Set up dependencies (win64)
         if: ${{ matrix.target == 'win64' }}
         run: |
           dpkg --add-architecture i386
           apt-get update -qq
           apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable
-      - name: (homebrew) Set up dependencies
-        if: ${{ matrix.installer == 'homebrew' }}
-        run: |
-          brew install cmake git jq meson
       - name: Run bootstrap
         shell: bash
         run: |
-          if [ '${{ matrix.target }}' == 'wasm' ]; then
-            source ~/PawPawBuilds/emsdk/emsdk_env.sh
-          fi
+          source ~/PawPawBuilds/emsdk/emsdk_env.sh
           ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
