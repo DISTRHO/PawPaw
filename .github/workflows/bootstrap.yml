@@ -81,7 +81,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           apt-get update -qq
-          apt-get install -yqq autoconf automake autopoint build-essential curl cmake git jq meson gperf qemu-user-static
+          apt-get install -yqq autoconf automake autopoint binfmt-support build-essential curl cmake git jq meson gperf qemu-user-static
       - name: Set up dependencies (homebrew)
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -235,7 +235,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           apt-get update -qq
-          apt-get install -yqq autoconf automake autopoint build-essential curl cmake git jq meson gperf qemu-user-static
+          apt-get install -yqq autoconf automake autopoint binfmt-support build-essential curl cmake git jq meson gperf qemu-user-static
       - name: Set up dependencies (homebrew)
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
