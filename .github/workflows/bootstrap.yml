@@ -80,67 +80,74 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
           if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then
-            sudo cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
+            cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
           fi
-      - name: (apt) Set up dependencies (apt)
+      - name: (apt) Set up dependencies (common)
         if: ${{ matrix.installer == 'apt' }}
         run: |
-          sudo apt-get update -qq
-          # extra, for using system libraries
-          if [ '${{ matrix.target }}' == 'linux-aarch64' ]; then
-            sudo dpkg --add-architecture arm64
-            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
-            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-arm64.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
-            echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-arm64.list
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades g++-aarch64-linux-gnu libasound2-dev:arm64 libatomic1:arm64 libc6:arm64 libdbus-1-dev:arm64 libgcc-s1:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 liblo-dev:arm64 libstdc++6:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64 gperf qemu-user-static
-          elif [ '${{ matrix.target }}' == 'linux-armhf' ]; then
-            sudo dpkg --add-architecture armhf
-            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
-            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-armhf.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
-            echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-armhf.list
-            sudo apt-get update -qq
-            sudo apt-get install -y --allow-downgrades g++-arm-linux-gnueabihf libasound2-dev:armhf libatomic1:armhf libc6:armhf libdbus-1-dev:armhf libgcc-s1:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf liblo-dev:armhf libstdc++6:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf gperf qemu-user-static
-          elif [ '${{ matrix.target }}' == 'linux-i686' ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt-get update -qq
-          sudo apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libsdl2-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386 gperf
-          elif [ '${{ matrix.target }}' == 'linux-riscv64' ]; then
-            sudo dpkg --add-architecture riscv64
-            sudo sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
-            sudo sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | sudo tee /etc/apt/sources.list.d/ports-riscv64.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
-            echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | sudo tee -a /etc/apt/sources.list.d/ports-riscv64.list
-            sudo apt-get update -qq
-            sudo apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglapi-mesa:riscv64 libglvnd0:riscv64 libglib2.0-dev:riscv64 libsdl2-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64 gperf qemu-user-static
-          elif [ '${{ matrix.target }}' == 'linux-x86_64' ]; then
-            sudo apt-get install -yqq --allow-downgrades libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev gperf
-          elif [ '${{ matrix.target }}' == 'wasm' ]; then
-            sudo apt-get install -yqq --allow-downgrades autoconf automake git gperf
-          fi
-          # extra, for wasm
-          if [ '${{ matrix.target }}' == 'wasm' ]; then
-            [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk
-            cd ~/PawPawBuilds/emsdk && ./emsdk install ${{ env.EMSCRIPTEN_VERSION }} && ./emsdk activate ${{ env.EMSCRIPTEN_VERSION }}
-          fi
-          # extra, for win32
-          if [ '${{ matrix.target }}' == 'win32' ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 gperf wine-stable
-          fi
-          # extra, for win64
-          if [ '${{ matrix.target }}' == 'win64' ]; then
-            sudo dpkg --add-architecture i386
-            sudo apt-get update -qq
-            sudo apt-get install -yqq --allow-downgrades libc6:i386 libgcc-s1:i386 libstdc++6:i386 binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 gperf wine-stable
-          fi
-          sudo apt-get install -yqq --allow-downgrades autoconf automake autopoint build-essential curl cmake git jq meson
+          apt-get update -qq
+          apt-get install -yqq autoconf automake autopoint build-essential curl cmake git jq meson gperf qemu-user-static
+      - name: (apt) Set up dependencies (linux-aarch64)
+        if: ${{ matrix.target == 'linux-aarch64' }}
+        run: |
+          dpkg --add-architecture arm64
+          sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+          sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | tee /etc/apt/sources.list.d/ports-arm64.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-arm64.list
+          echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-arm64.list
+          apt-get update -qq
+          apt-get install -yqq g++-aarch64-linux-gnu libasound2-dev:arm64 libdbus-1-dev:arm64 libgcc-s1:arm64 libgl1-mesa-dev:arm64 libglib2.0-dev:arm64 liblo-dev:arm64 libx11-dev:arm64 libxcursor-dev:arm64 libxext-dev:arm64 libxrandr-dev:arm64
+      - name: (apt) Set up dependencies (linux-armhf)
+        if: ${{ matrix.target == 'linux-armhf' }}
+        run: |
+          dpkg --add-architecture armhf
+          sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+          sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
+          echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | tee /etc/apt/sources.list.d/ports-armhf.list
+          echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-armhf.list
+          echo "deb [arch=armhf] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-armhf.list
+          apt-get update -qq
+          apt-get install -y g++-arm-linux-gnueabihf libasound2-dev:armhf libdbus-1-dev:armhf libgl1-mesa-dev:armhf libglib2.0-dev:armhf liblo-dev:armhf libx11-dev:armhf libxcursor-dev:armhf libxext-dev:armhf libxrandr-dev:armhf
+      - name: (apt) Set up dependencies (linux-i686)
+        if: ${{ matrix.target == 'linux-i686' }}
+        run: |
+          dpkg --add-architecture i386
+          apt-get update -qq
+          apt-get install -yqq g++-i686-linux-gnu libasound2-dev:i386 libdbus-1-dev:i386 libgl1-mesa-dev:i386 libglib2.0-dev:i386 libsdl2-dev:i386 libx11-dev:i386 libxcursor-dev:i386 libxext-dev:i386 libxrandr-dev:i386
+      - name: (apt) Set up dependencies (linux-riscv64)
+        if: ${{ matrix.target == 'linux-riscv64' }}
+        run: |
+          dpkg --add-architecture riscv64
+          sed -i "s/deb http/deb [arch=amd64] http/" /etc/apt/sources.list
+          sed -i "s/deb mirror/deb [arch=amd64] mirror/" /etc/apt/sources.list
+          echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted universe multiverse" | tee /etc/apt/sources.list.d/ports-riscv64.list
+          echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-riscv64.list
+          echo "deb [arch=riscv64] http://ports.ubuntu.com/ubuntu-ports jammy-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list.d/ports-riscv64.list
+          apt-get update -qq
+          apt-get install -yqq g++-riscv64-linux-gnu libasound2-dev:riscv64 libdbus-1-dev:riscv64 libgl1-mesa-dev:riscv64 libglib2.0-dev:riscv64 libsdl2-dev:riscv64 libx11-dev:riscv64 libxcursor-dev:riscv64 libxext-dev:riscv64 libxrandr-dev:riscv64
+      - name: (apt) Set up dependencies (linux-x86_64)
+        if: ${{ matrix.target == 'linux-x86_64' }}
+        run: |
+          apt-get install -yqq libasound2-dev libdbus-1-dev libgl1-mesa-dev libglib2.0-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev
+      - name: (apt) Set up dependencies (wasm)
+        if: ${{ matrix.target == 'wasm' }}
+        run: |
+          apt-get install -yqq autoconf automake git
+          [ -e ~/PawPawBuilds/emsdk ] || git clone https://github.com/emscripten-core/emsdk.git ~/PawPawBuilds/emsdk
+          cd ~/PawPawBuilds/emsdk && ./emsdk install ${{ env.EMSCRIPTEN_VERSION }} && ./emsdk activate ${{ env.EMSCRIPTEN_VERSION }}
+      - name: (apt) Set up dependencies (linux-aarch64)
+        if: ${{ matrix.target == 'win32' }}
+        run: |
+          dpkg --add-architecture i386
+          apt-get update -qq
+          apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 wine-stable
+      - name: (apt) Set up dependencies (win64)
+        if: ${{ matrix.target == 'win64' }}
+        run: |
+          dpkg --add-architecture i386
+          apt-get update -qq
+          apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable
       - name: (homebrew) Set up dependencies
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
@@ -149,7 +156,7 @@ jobs:
         if: ${{ matrix.installer == 'apt' }}
         run: |
             mkdir -p ~/PawPawBuilds/debs
-            sudo mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
+            mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Run bootstrap
         shell: bash
         run: |
