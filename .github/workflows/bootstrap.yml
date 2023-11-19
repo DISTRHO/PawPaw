@@ -220,6 +220,8 @@ jobs:
             container: ubuntu:22.04
             target: win64
     runs-on: ${{ matrix.os }}
+    container:
+      image: ${{ matrix.container }}
     needs: common
     steps:
       - uses: actions/checkout@v3
