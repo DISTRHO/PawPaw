@@ -76,12 +76,6 @@ jobs:
           path: |
             ~/PawPawBuilds
           key: common-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
-      - name: (apt) Restore debian package cache
-        if: ${{ matrix.installer == 'apt' }}
-        run: |
-          if [ -d ~/PawPawBuilds/debs ] && [ "$(ls ~/PawPawBuilds/debs | wc -l)" -ne 0 ]; then
-            cp ~/PawPawBuilds/debs/*.deb /var/cache/apt/archives/
-          fi
       - name: (apt) Set up dependencies (common)
         if: ${{ matrix.installer == 'apt' }}
         run: |
@@ -152,11 +146,6 @@ jobs:
         if: ${{ matrix.installer == 'homebrew' }}
         run: |
           brew install cmake git jq meson
-      - name: (apt) Cache debian packages
-        if: ${{ matrix.installer == 'apt' }}
-        run: |
-            mkdir -p ~/PawPawBuilds/debs
-            mv /var/cache/apt/archives/*.deb ~/PawPawBuilds/debs/
       - name: Run bootstrap
         shell: bash
         run: |
