@@ -150,7 +150,9 @@ jobs:
       - name: Run bootstrap
         shell: bash
         run: |
-          source ~/PawPawBuilds/emsdk/emsdk_env.sh
+          if [ '${{ matrix.target }}' == 'wasm' ]; then
+            source ~/PawPawBuilds/emsdk/emsdk_env.sh
+          fi
           ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
