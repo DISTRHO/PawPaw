@@ -44,6 +44,62 @@ if [ "${WIN32}" -eq 1 ] && [ -n "${EXE_WRAPPER}" ] && [ ! -d "${WINEPREFIX}" ]; 
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# custom function for openssl
+
+function build_conf_openssl() {
+    local name="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ -n "${TOOLCHAIN_PREFIX}" ]; then
+        export MACHINE="x86_64"
+        export RELEASE="whatever"
+        export SYSTEM="mingw64" # mingw
+        export BUILD="unknown"
+    fi
+
+    _prebuild "${name}" "${pkgdir}"
+
+    if [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        pushd "${pkgdir}"
+        ./config --prefix="${PAWPAW_PREFIX}" ${extraconfrules} CFLAGS="${TARGET_CFLAGS} -Wa,-mbig-obj"
+        touch .stamp_configured
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}"
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
+        touch .stamp_built
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}"
+        make ${MAKE_ARGS} install_sw -j 1
+        touch .stamp_installed
+        popd
+    fi
+
+    if [ -n "${TOOLCHAIN_PREFIX}" ]; then
+        unset CROSS_COMPILE
+    fi
+
+    _postbuild
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# openssl
+
+OPENSSL_URL="https://www.openssl.org/source"
+OPENSSL_VERSION="1.1.1w"
+
+download openssl "${OPENSSL_VERSION}" "${OPENSSL_URL}"
+build_conf_openssl openssl "${OPENSSL_VERSION}" "no-shared no-hw threads no-zlib no-capieng no-pinshared"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # custom function for python
 
 function build_conf_python() {

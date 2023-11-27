@@ -400,3 +400,146 @@ if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# cryptodome
+
+CRYPTODOME_VERSION="3.19.0"
+
+export EXTRA_CFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --cflags python3 openssl)"
+export EXTRA_LDFLAGS="$(${PAWPAW_PREFIX}/bin/pkg-config --libs python3 openssl) -shared"
+export LDSHARED="${TARGET_CXX}"
+
+download pycryptodomex "${CRYPTODOME_VERSION}" "https://files.pythonhosted.org/packages/14/c9/09d5df04c9f29ae1b49d0e34c9934646b53bb2131a55e8ed2a0d447c7c53"
+build_python pycryptodomex "${CRYPTODOME_VERSION}"
+
+if [ "${WIN32}" -eq 1 ] && [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHONPATH="${PAWPAW_PREFIX}/lib/python3.8/site-packages"
+    if [ ! -e "${PYTHONPATH}/Cryptodome" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome "${PYTHONPATH}/Cryptodome"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_ARC4.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_ARC4.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_ARC4.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_chacha20.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_chacha20.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_chacha20.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_pkcs1_decode.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_pkcs1_decode.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_pkcs1_decode.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_aes.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_aes.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_aes.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_aesni.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_aesni.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_aesni.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_arc2.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_arc2.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_arc2.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_blowfish.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_blowfish.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_blowfish.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_cast.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_cast.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_cast.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_cbc.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_cbc.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_cbc.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_cfb.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_cfb.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_cfb.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_ctr.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_ctr.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_ctr.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_des3.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_des3.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_des3.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_des.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_des.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_des.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_ecb.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_ecb.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_ecb.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_eksblowfish.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_eksblowfish.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_eksblowfish.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_ocb.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_ocb.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_ocb.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_raw_ofb.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_raw_ofb.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_raw_ofb.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Cipher/_Salsa20.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Cipher/_Salsa20.abi3.so "${PYTHONPATH}/Cryptodome/Cipher/_Salsa20.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_BLAKE2b.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_BLAKE2b.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_BLAKE2b.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_BLAKE2s.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_BLAKE2s.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_BLAKE2s.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_ghash_clmul.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_ghash_clmul.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_ghash_clmul.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_ghash_portable.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_ghash_portable.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_ghash_portable.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_keccak.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_keccak.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_keccak.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_MD2.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_MD2.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_MD2.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_MD4.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_MD4.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_MD4.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_MD5.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_MD5.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_MD5.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_poly1305.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_poly1305.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_poly1305.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_RIPEMD160.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_RIPEMD160.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_RIPEMD160.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_SHA1.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_SHA1.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_SHA1.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_SHA224.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_SHA224.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_SHA224.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_SHA256.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_SHA256.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_SHA256.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_SHA384.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_SHA384.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_SHA384.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Hash/_SHA512.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Hash/_SHA512.abi3.so "${PYTHONPATH}/Cryptodome/Hash/_SHA512.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Math/_modexp.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Math/_modexp.abi3.so "${PYTHONPATH}/Cryptodome/Math/_modexp.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Protocol/_scrypt.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Protocol/_scrypt.abi3.so "${PYTHONPATH}/Cryptodome/Protocol/_scrypt.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/PublicKey/_ec_ws.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/PublicKey/_ec_ws.abi3.so "${PYTHONPATH}/Cryptodome/PublicKey/_ec_ws.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/PublicKey/_ed25519.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/PublicKey/_ed25519.abi3.so "${PYTHONPATH}/Cryptodome/PublicKey/_ed25519.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/PublicKey/_ed448.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/PublicKey/_ed448.abi3.so "${PYTHONPATH}/Cryptodome/PublicKey/_ed448.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/PublicKey/_x25519.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/PublicKey/_x25519.abi3.so "${PYTHONPATH}/Cryptodome/PublicKey/_x25519.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Util/_cpuid_c.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Util/_cpuid_c.abi3.so "${PYTHONPATH}/Cryptodome/Util/_cpuid_c.pyd"
+    fi
+    if [ ! -e "${PYTHONPATH}/Cryptodome/Util/_strxor.pyd" ]; then
+        ln -sv "${PYTHONPATH}"/pycryptodomex-*.egg/Cryptodome/Util/_strxor.abi3.so "${PYTHONPATH}/Cryptodome/Util/_strxor.pyd"
+    fi
+    unset PYTHONPATH
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
