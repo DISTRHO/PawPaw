@@ -52,11 +52,21 @@ function build_conf_openssl() {
     local extraconfrules="${3}"
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local extraflags=""
 
     if [ -n "${TOOLCHAIN_PREFIX}" ]; then
-        export MACHINE="x86_64"
+        if [ "${WIN64}" -eq 1 ]; then
+            export MACHINE="x86_64"
+            export SYSTEM="mingw64"
+            extraflags="-Wa,-mbig-obj"
+        elif [ "${WIN32}" -eq 1 ]; then
+            export MACHINE="i686"
+            export SYSTEM="mingw"
+        else
+            export MACHINE="$(uname -m)"
+            export SYSTEM="linux2"
+        fi
         export RELEASE="whatever"
-        export SYSTEM="mingw64" # mingw
         export BUILD="unknown"
     fi
 
@@ -64,7 +74,7 @@ function build_conf_openssl() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./config --prefix="${PAWPAW_PREFIX}" ${extraconfrules} CFLAGS="${TARGET_CFLAGS} -Wa,-mbig-obj"
+        ./config --prefix="${PAWPAW_PREFIX}" ${extraconfrules} CFLAGS="${TARGET_CFLAGS} ${extraflags}"
         touch .stamp_configured
         popd
     fi
@@ -84,7 +94,10 @@ function build_conf_openssl() {
     fi
 
     if [ -n "${TOOLCHAIN_PREFIX}" ]; then
-        unset CROSS_COMPILE
+        unset MACHINE
+        unset SYSTEM
+        unset RELEASE
+        unset BUILD
     fi
 
     _postbuild
