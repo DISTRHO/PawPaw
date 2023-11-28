@@ -109,8 +109,13 @@ function build_conf_openssl() {
 OPENSSL_URL="https://www.openssl.org/source"
 OPENSSL_VERSION="1.1.1w"
 
+OPENSSL_EXTRAFLAGS="no-shared no-hw threads no-zlib no-capieng no-pinshared"
+if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+    OPENSSL_EXTRAFLAGS+=" no-asm"
+fi
+
 download openssl "${OPENSSL_VERSION}" "${OPENSSL_URL}"
-build_conf_openssl openssl "${OPENSSL_VERSION}" "no-shared no-hw threads no-zlib no-capieng no-pinshared"
+build_conf_openssl openssl "${OPENSSL_VERSION}" "${OPENSSL_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # custom function for python
