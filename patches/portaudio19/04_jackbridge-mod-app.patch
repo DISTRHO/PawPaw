@@ -432,7 +432,7 @@ index a800f8e..c06eb89 100644
 +            if( jackbridge_port_connected( stream->local_input_ports[i] ) )
              {
 -                UNLESS( !jack_port_disconnect( stream->jack_client, stream->local_input_ports[i] ),
-+                UNLESS( !jackbridge_port_disconnect( stream->jack_client, stream->local_input_ports[i] ),
++                UNLESS( jackbridge_port_disconnect( stream->jack_client, stream->local_input_ports[i] ),
                          paUnanticipatedHostError );
              }
          }
@@ -442,7 +442,7 @@ index a800f8e..c06eb89 100644
 +            if( jackbridge_port_connected( stream->local_output_ports[i] ) )
              {
 -                UNLESS( !jack_port_disconnect( stream->jack_client, stream->local_output_ports[i] ),
-+                UNLESS( !jackbridge_port_disconnect( stream->jack_client, stream->local_output_ports[i] ),
++                UNLESS( jackbridge_port_disconnect( stream->jack_client, stream->local_output_ports[i] ),
                          paUnanticipatedHostError );
              }
          }
