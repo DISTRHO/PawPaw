@@ -181,7 +181,7 @@ build_make hylia "${HYLIA_VERSION}" "${HYLIA_EXTRAFLAGS}"
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-JACK2_VERSION="0d730dd3567f250edaa899af906b8a8593e3492f"
+JACK2_VERSION="806da09a120f254ae231c2ef87cf9fe2f4fb4f5b"
 JACK2_URL="https://github.com/jackaudio/jack2.git"
 
 JACK2_EXTRAFLAGS=""
@@ -197,7 +197,7 @@ JACK2_EXTRAFLAGS+=" --samplerate=no"
 JACK2_EXTRAFLAGS+=" --systemd=no"
 
 if [ "${LINUX}" -eq 1 ]; then
-    JACK2_EXTRAFLAGS+=" --platform=linux --portaudio=yes --alsa=yes"
+    JACK2_EXTRAFLAGS+=" --platform=linux --portaudio=yes --alsa=yes --libdbus=yes"
 elif [ "${MACOS}" -eq 1 ]; then
     JACK2_EXTRAFLAGS+=" --platform=darwin"
 elif [ "${WIN32}" -eq 1 ]; then
