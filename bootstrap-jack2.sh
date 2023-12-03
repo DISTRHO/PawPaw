@@ -123,7 +123,10 @@ if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     PORTAUDIO_EXTRAFLAGS+=" --without-asihpi"
     PORTAUDIO_EXTRAFLAGS+=" --without-oss"
 
-    if [ "${LINUX}" -eq 1 ]; then
+    if [ -n "${MODAUDIO}" ] && [ "${MODAUDIO}" -eq 1 ]; then
+        PORTAUDIO_EXTRAFLAGS+=" --without-alsa"
+        PORTAUDIO_EXTRAFLAGS+=" --with-jack"
+    elif [ "${LINUX}" -eq 1 ]; then
         PORTAUDIO_EXTRAFLAGS+=" --with-alsa"
         PORTAUDIO_EXTRAFLAGS+=" --with-jack"
     else
