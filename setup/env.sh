@@ -71,6 +71,20 @@ if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# emscripten setup
+
+if [ "${WASM}" -eq 1 ]; then
+    EMSCRIPTEN_VERSION=${EMSCRIPTEN_VERSION:=3.1.27}
+
+    if [ ! -e "${PAWPAW_DIR}/emsdk" ]; then
+        git clone https://github.com/emscripten-core/emsdk.git "${PAWPAW_DIR}/emsdk"
+        "${PAWPAW_DIR}/emsdk/emsdk" install ${EMSCRIPTEN_VERSION} && "${PAWPAW_DIR}/emsdk/emsdk" activate ${EMSCRIPTEN_VERSION}
+    fi
+
+    source "${PAWPAW_DIR}/emsdk/emsdk_env.sh"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # build environment
 
 ## build flags

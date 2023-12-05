@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 3
+  CACHE_VERSION: 1
   DEBIAN_FRONTEND: noninteractive
   EMSCRIPTEN_VERSION: 3.1.27
   PAWPAW_SKIP_TESTS: 1
@@ -14,36 +14,70 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: linux-aarch64
-            os: ubuntu-latest
-            container: ubuntu:22.04
-          - target: linux-armhf
-            os: ubuntu-latest
-            container: ubuntu:22.04
-          - target: linux-i686
-            os: ubuntu-latest
-            container: ubuntu:22.04
-          - target: linux-riscv64
-            os: ubuntu-latest
-            container: ubuntu:22.04
-          - target: linux-x86_64
-            os: ubuntu-latest
-            container: ubuntu:22.04
+          # macos
           - target: macos
             os: macos-11
           - target: macos-universal
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
+          # ubuntu:18.04
+          - target: linux-aarch64
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          - target: linux-i686
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          #- target: linux-riscv64
+            #container: ubuntu:18.04
+            #os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          # ubuntu:20.04
+          - target: linux-aarch64
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-i686
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-riscv64
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          # ubuntu:22.04
+          - target: linux-aarch64
+            container: ubuntu:22.04
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: ubuntu:22.04
+            os: ubuntu-latest
+          - target: linux-i686
+            container: ubuntu:22.04
+            os: ubuntu-latest
+          - target: linux-riscv64
+            container: ubuntu:22.04
+            os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:22.04
+            os: ubuntu-latest
           - target: wasm
-            os: ubuntu-latest
             container: ubuntu:22.04
+            os: ubuntu-latest
           - target: win32
-            os: ubuntu-latest
             container: ubuntu:22.04
+            os: ubuntu-latest
           - target: win64
-            os: ubuntu-latest
             container: ubuntu:22.04
+            os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
@@ -54,25 +88,22 @@ jobs:
         with:
           path: |
             ~/PawPawBuilds
-          key: common-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
+          key: common-${{ matrix.container || matrix.os }}-${{ matrix.target }}-v${{ env.CACHE_VERSION }}
       - name: Set up dependencies
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
       - name: Run bootstrap
         shell: bash
         run: |
-          if [ '${{ matrix.target }}' == 'wasm' ]; then
-            source ~/PawPawBuilds/emsdk/emsdk_env.sh
-          fi
           ./bootstrap-common.sh ${{ matrix.target }} && ./.cleanup.sh ${{ matrix.target }}
       - name: Pack bootstrap build
         shell: bash
         run: |
-          tar -C ~/PawPawBuilds -czf common-${{ matrix.target }}.tar.gz builds targets
+          tar -C ~/PawPawBuilds -czf common-${{ env.PAWPAW_PACK_NAME }}.tar.gz builds targets
       - uses: actions/upload-artifact@v3
         with:
-          name: common-${{ matrix.target }}
-          path: common-${{ matrix.target }}.tar.gz
+          name: common-${{ env.PAWPAW_PACK_NAME }}
+          path: common-${{ env.PAWPAW_PACK_NAME }}.tar.gz
 
   #plugins:
     #strategy:
