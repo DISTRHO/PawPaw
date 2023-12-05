@@ -106,7 +106,7 @@ function build_conf_openssl() {
 # ---------------------------------------------------------------------------------------------------------------------
 # openssl
 
-if [ -n "${PAWPAW_SKIP_OPENSSL}" ]; then
+if [ -z "${PAWPAW_SKIP_OPENSSL}" ]; then
 
 OPENSSL_URL="https://www.openssl.org/source"
 OPENSSL_VERSION="1.1.1w"

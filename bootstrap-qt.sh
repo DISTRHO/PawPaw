@@ -29,6 +29,44 @@ source setup/functions.sh
 source setup/versions.sh
 
 # ---------------------------------------------------------------------------------------------------------------------
+# Use local Qt on Linux builds
+
+if [ "${LINUX}" -eq 1 ]; then
+    if [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-i686" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/riscv64-linux-gnu/pkgconfig
+    elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
+        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+    fi
+    if ! pkg-config --print-errors --exists Qt5Core Qt5Gui Qt5Svg Qt5Widgets; then
+        echo "Qt system libs are not available, cannot continue"
+        exit 2
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Core.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Core)/Qt5Core.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Core.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Gui.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Gui)/Qt5Gui.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Gui.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Svg.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Svg)/Qt5Svg.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Svg.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Widgets.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir Qt5Widgets)/Qt5Widgets.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Widgets.pc
+    fi
+    exit 0
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
 # qt package suffix changes depending on the version
 
 if [ "${QT5_MVERSION}" = "5.12" ]; then
@@ -292,8 +330,7 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/features/toolchain.prf" 's/-arch $$QMAKE_APPLE_DEVICE_ARCHS/-arch arm64/'
 elif [ "${MACOS}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/macx-clang/qmake.conf" 's/10.10/10.8/'
-fi
-if [ "${WIN32}" -eq 1 ]; then
+elif [ "${WIN32}" -eq 1 ]; then
     if [ "${QT5_MVERSION}" = "5.12" ]; then
         patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/g++-win32.conf" 's/= -shared/= -static -shared/'
         patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -fno-keep-inline-dllexport/= -Wno-deprecated-copy -Wno-deprecated-declarations -fno-keep-inline-dllexport/'

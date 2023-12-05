@@ -55,73 +55,69 @@ function install_compiler() {
             fi
         ;;
         "win32")
-            dpkg --add-architecture i386
-            apt-get update -qq
-            apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64
-            if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
-                apt-get install -yqq wine wine32
-            else
-                apt-get install -yqq wine-stable
-            fi
+            apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686
         ;;
         "win64")
-            dpkg --add-architecture i386
-            apt-get update -qq
-            apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64
-            if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
-                apt-get install -yqq wine wine32 wine64
-            else
-                apt-get install -yqq wine-stable
-            fi
+            apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64
         ;;
     esac
 }
 
 case "${1}" in
     "macos"|"macos-universal"|"macos-universal-10.15")
-        brew install cmake git jq meson
+        brew install autoconf automake cmake coreutils gawk git gnu-sed jq make meson
 
-        [ -n "${GITHUB_ENV}" ] && echo "PAWPAW_PACK_NAME=${1}-$(sw_vers -productVersion)" >> "${GITHUB_ENV}"
+        [ -n "${GITHUB_ENV}" ] && echo "PAWPAW_PACK_NAME=${1}-$(sw_vers -productVersion | cut -d '.' -f 1)" >> "${GITHUB_ENV}"
     ;;
     *)
         apt-get update -qq
-        apt-get install -yqq autoconf automake autopoint build-essential curl cmake dpkg-dev file git jq libtool lsb-release meson gperf patchelf
+        apt-get install -yqq autoconf automake build-essential curl cmake dpkg-dev file git jq libglib2.0-dev-bin libtool lsb-release make meson gperf patchelf
 
-        arch=$(get_linux_deb_arch "${1}")
+        linux_arch=$(get_linux_deb_arch "${1}")
         release=$(lsb_release -cs 2>/dev/null)
 
-        if [ -n "${arch}" ]; then
+        if [ -n "${linux_arch}" ]; then
             if [ "$(lsb_release -si 2>/dev/null)" = "Ubuntu" ]; then
                 sed -i "s/deb http/deb [arch=i386,amd64] http/" /etc/apt/sources.list
                 sed -i "s/deb mirror/deb [arch=i386,amd64] mirror/" /etc/apt/sources.list
-                if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ]; then
-                    echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release} main restricted universe multiverse" | tee -a /etc/apt/sources.list
-                    echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list
-                    echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                if [ "${linux_arch}" != "amd64" ] && [ "${linux_arch}" != "i386" ]; then
+                    echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release} main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                    echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                    echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
                 fi
             fi
-
-            dpkg --add-architecture ${arch}
+            dpkg --add-architecture ${linux_arch}
             apt-get update -qq
             apt-get install -yqq \
                 binfmt-support \
                 qemu-user-static \
-                libasound2-dev:${arch} \
-                libdbus-1-dev:${arch} \
-                libgl1-mesa-dev:${arch} \
-                libglib2.0-dev:${arch} \
-                libpcre2-dev:${arch} \
-                libpcre3-dev:${arch} \
-                libx11-dev:${arch} \
-                libxcb1-dev:${arch} \
-                libxcursor-dev:${arch} \
-                libxext-dev:${arch} \
-                libxfixes-dev:${arch} \
-                libxrandr-dev:${arch} \
-                libxrender-dev:${arch} \
-                uuid-dev:${arch}
+                qtbase5-dev-tools \
+                libasound2-dev:${linux_arch} \
+                libdbus-1-dev:${linux_arch} \
+                libgl1-mesa-dev:${linux_arch} \
+                libglib2.0-dev:${linux_arch} \
+                libpcre2-dev:${linux_arch} \
+                libpcre3-dev:${linux_arch} \
+                libqt5svg5-dev:${linux_arch} \
+                libx11-dev:${linux_arch} \
+                libxcb1-dev:${linux_arch} \
+                libxcursor-dev:${linux_arch} \
+                libxext-dev:${linux_arch} \
+                libxfixes-dev:${linux_arch} \
+                libxrandr-dev:${linux_arch} \
+                libxrender-dev:${linux_arch} \
+                qtbase5-dev:${linux_arch} \
+                uuid-dev:${linux_arch}
+        elif [ "${1}" = "win32" ] || [ "${1}" = "win64" ]; then
+            dpkg --add-architecture i386
+            apt-get update -qq
+            apt-get install -yqq autopoint libffi-dev libreadline-dev mingw-w64 uuid-dev zlib1g-dev
+            if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
+                apt-get install -yqq wine wine32 wine64
+            else
+                apt-get install -yqq wine-stable
+            fi
         fi
-        # libqt5svg5-dev qtbase5-dev qtbase5-dev-tools
 
         case "${release}" in
             "bionic"|"focal")

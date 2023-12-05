@@ -29,6 +29,7 @@ export PAWPAW_MODAUDIO=1
 ./bootstrap-jack2.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
 ./bootstrap-python.sh "${target}"
+./bootstrap-qt.sh "${target}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # source setup code
@@ -37,128 +38,6 @@ source setup/check_target.sh
 source setup/env.sh
 source setup/functions.sh
 source setup/versions.sh
-
-# Use local Qt on Linux builds
-if [ "${LINUX}" -eq 1 ]; then
-    if [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
-        export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
-    elif [ "${LINUX_TARGET}" = "linux-armhf" ]; then
-        export PKG_CONFIG_PATH=/usr/lib/arm-linux-gnueabihf/pkgconfig
-    elif [ "${LINUX_TARGET}" = "linux-i686" ]; then
-        export PKG_CONFIG_PATH=/usr/lib/i386-linux-gnu/pkgconfig
-    elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
-        export PKG_CONFIG_PATH=/usr/lib/riscv64-linux-gnu/pkgconfig
-    elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
-        export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
-    fi
-    if ! pkg-config --print-errors --exists Qt5Core Qt5Gui Qt5Svg Qt5Widgets; then
-        echo "Qt system libs are not available, cannot continue"
-        exit 2
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Core.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir Qt5Core)/Qt5Core.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Core.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Gui.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir Qt5Gui)/Qt5Gui.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Gui.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Svg.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir Qt5Svg)/Qt5Svg.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Svg.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/Qt5Widgets.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir Qt5Widgets)/Qt5Widgets.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/Qt5Widgets.pc
-    fi
-else
-    ./bootstrap-qt.sh "${target}"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# merged usr mode
-
-mkdir -p "${PAWPAW_PREFIX}/bin"
-mkdir -p "${PAWPAW_PREFIX}/docs"
-mkdir -p "${PAWPAW_PREFIX}/etc"
-mkdir -p "${PAWPAW_PREFIX}/include"
-mkdir -p "${PAWPAW_PREFIX}/lib"
-mkdir -p "${PAWPAW_PREFIX}/share"
-mkdir -p "${PAWPAW_PREFIX}/usr"
-
-if [ ! -e "${PAWPAW_PREFIX}/usr/bin" ]; then
-    ln -s ../bin "${PAWPAW_PREFIX}/usr/bin"
-fi
-if [ ! -e "${PAWPAW_PREFIX}/usr/docs" ]; then
-    ln -s ../docs "${PAWPAW_PREFIX}/usr/docs"
-fi
-if [ ! -e "${PAWPAW_PREFIX}/usr/etc" ]; then
-    ln -s ../etc "${PAWPAW_PREFIX}/usr/etc"
-fi
-if [ ! -e "${PAWPAW_PREFIX}/usr/include" ]; then
-    ln -s ../include "${PAWPAW_PREFIX}/usr/include"
-fi
-if [ ! -e "${PAWPAW_PREFIX}/usr/lib" ]; then
-    ln -s ../lib "${PAWPAW_PREFIX}/usr/lib"
-fi
-if [ ! -e "${PAWPAW_PREFIX}/usr/share" ]; then
-    ln -s ../share "${PAWPAW_PREFIX}/usr/share"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# merged usr mode (host)
-
-mkdir -p "${PAWPAW_PREFIX}-host/bin"
-mkdir -p "${PAWPAW_PREFIX}-host/usr"
-
-if [ ! -e "${PAWPAW_PREFIX}-host/usr/bin" ]; then
-    ln -s ../bin "${PAWPAW_PREFIX}-host/usr/bin"
-fi
-
-# ---------------------------------------------------------------------------------------------------------------------
-# GNU tools by default on macOS
-
-if [ "${MACOS}" -eq 1 ]; then
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/awk" ]; then
-        ln -s $(command -v gawk) "${PAWPAW_PREFIX}-host/bin/awk"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/cp" ]; then
-        ln -s $(command -v gcp) "${PAWPAW_PREFIX}-host/bin/cp"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/install" ]; then
-        ln -s $(command -v ginstall) "${PAWPAW_PREFIX}-host/bin/install"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/libtool" ]; then
-        ln -s $(command -v glibtool) "${PAWPAW_PREFIX}-host/bin/libtool"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/libtoolize" ]; then
-        ln -s $(command -v glibtoolize) "${PAWPAW_PREFIX}-host/bin/libtoolize"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/m4" ]; then
-        ln -s $(command -v gm4) "${PAWPAW_PREFIX}-host/bin/m4"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/make" ]; then
-        ln -s $(command -v gmake) "${PAWPAW_PREFIX}-host/bin/make"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/readlink" ]; then
-        ln -s $(command -v greadlink) "${PAWPAW_PREFIX}-host/bin/readlink"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/realpath" ]; then
-        ln -s $(command -v grealpath) "${PAWPAW_PREFIX}-host/bin/realpath"
-    fi
-
-    if [ ! -e "${PAWPAW_PREFIX}-host/bin/sed" ]; then
-        ln -s $(command -v gsed) "${PAWPAW_PREFIX}-host/bin/sed"
-    fi
-fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # armadillo

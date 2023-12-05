@@ -18,6 +18,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
+export PAWPAW_SKIP_OPENSSL=1
+
 ./bootstrap-common.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
 

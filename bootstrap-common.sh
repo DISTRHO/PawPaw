@@ -75,7 +75,122 @@ mkdir -p "${PAWPAW_PREFIX}"
 mkdir -p "${PAWPAW_TMPDIR}"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# let's use some native libs for linux builds
+# merged usr mode
+
+mkdir -p "${PAWPAW_PREFIX}/bin"
+mkdir -p "${PAWPAW_PREFIX}/docs"
+mkdir -p "${PAWPAW_PREFIX}/etc"
+mkdir -p "${PAWPAW_PREFIX}/include"
+mkdir -p "${PAWPAW_PREFIX}/lib"
+mkdir -p "${PAWPAW_PREFIX}/share"
+mkdir -p "${PAWPAW_PREFIX}/usr"
+
+if [ ! -e "${PAWPAW_PREFIX}/usr/bin" ]; then
+    ln -s ../bin "${PAWPAW_PREFIX}/usr/bin"
+fi
+if [ ! -e "${PAWPAW_PREFIX}/usr/docs" ]; then
+    ln -s ../docs "${PAWPAW_PREFIX}/usr/docs"
+fi
+if [ ! -e "${PAWPAW_PREFIX}/usr/etc" ]; then
+    ln -s ../etc "${PAWPAW_PREFIX}/usr/etc"
+fi
+if [ ! -e "${PAWPAW_PREFIX}/usr/include" ]; then
+    ln -s ../include "${PAWPAW_PREFIX}/usr/include"
+fi
+if [ ! -e "${PAWPAW_PREFIX}/usr/lib" ]; then
+    ln -s ../lib "${PAWPAW_PREFIX}/usr/lib"
+fi
+if [ ! -e "${PAWPAW_PREFIX}/usr/share" ]; then
+    ln -s ../share "${PAWPAW_PREFIX}/usr/share"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# merged usr mode (host)
+
+mkdir -p "${PAWPAW_PREFIX}-host/bin"
+mkdir -p "${PAWPAW_PREFIX}-host/usr"
+
+if [ ! -e "${PAWPAW_PREFIX}-host/usr/bin" ]; then
+    ln -s ../bin "${PAWPAW_PREFIX}-host/usr/bin"
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# GNU tools by default on macOS
+
+if [ "${MACOS}" -eq 1 ]; then
+    if ! command -v gawk >/dev/null; then
+        echo "missing 'gawk' program, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/awk" ]; then
+        ln -s $(command -v gawk) "${PAWPAW_PREFIX}-host/bin/awk"
+    fi
+
+    if ! command -v gcp >/dev/null; then
+        echo "missing 'gcp' program, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/cp" ]; then
+        ln -s $(command -v gcp) "${PAWPAW_PREFIX}-host/bin/cp"
+    fi
+
+    if ! command -v ginstall >/dev/null; then
+        echo "missing 'ginstall' program, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/install" ]; then
+        ln -s $(command -v ginstall) "${PAWPAW_PREFIX}-host/bin/install"
+    fi
+
+    if ! command -v glibtool >/dev/null; then
+        echo "missing 'glibtool' program, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/libtool" ]; then
+        ln -s $(command -v glibtool) "${PAWPAW_PREFIX}-host/bin/libtool"
+    fi
+
+    if ! command -v glibtoolize >/dev/null; then
+        echo "missing 'glibtoolize' program, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/libtoolize" ]; then
+        ln -s $(command -v glibtoolize) "${PAWPAW_PREFIX}-host/bin/libtoolize"
+    fi
+
+    if ! command -v gm4 >/dev/null; then
+        echo "missing 'curl' gm4, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/m4" ]; then
+        ln -s $(command -v gm4) "${PAWPAW_PREFIX}-host/bin/m4"
+    fi
+
+    if ! command -v gmake >/dev/null; then
+        echo "missing 'curl' gmake, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/make" ]; then
+        ln -s $(command -v gmake) "${PAWPAW_PREFIX}-host/bin/make"
+    fi
+
+    if ! command -v greadlink >/dev/null; then
+        echo "missing 'curl' greadlink, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/readlink" ]; then
+        ln -s $(command -v greadlink) "${PAWPAW_PREFIX}-host/bin/readlink"
+    fi
+
+    if ! command -v grealpath >/dev/null; then
+        echo "missing 'curl' grealpath, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/realpath" ]; then
+        ln -s $(command -v grealpath) "${PAWPAW_PREFIX}-host/bin/realpath"
+    fi
+
+    if ! command -v gsed >/dev/null; then
+        echo "missing 'curl' gsed, cannot continue!"
+        exit 2
+    elif [ ! -e "${PAWPAW_PREFIX}-host/bin/sed" ]; then
+        ln -s $(command -v gsed) "${PAWPAW_PREFIX}-host/bin/sed"
+    fi
+fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# use some native libs for linux builds
 
 if [ "${LINUX}" -eq 1 ]; then
     mkdir -p ${TARGET_PKG_CONFIG_PATH}
