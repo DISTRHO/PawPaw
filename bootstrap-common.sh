@@ -90,7 +90,7 @@ if [ "${LINUX}" -eq 1 ]; then
     elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
-    if ! pkg-config --exists alsa dbus-1 gl glib-2.0 libpcre pthread-stubs uuid x11 xcb xcursor xext xfixes xproto xrandr xrender; then
+    if ! pkg-config --print-errors --exists alsa dbus-1 gl glib-2.0 libpcre pthread-stubs uuid x11 xcb xcursor xext xfixes xproto xrandr xrender; then
         echo "some system libs are not available, cannot continue"
         exit 2
     fi

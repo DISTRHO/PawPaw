@@ -95,6 +95,7 @@ case "${1}" in
                 libdbus-1-dev:${arch} \
                 libgl1-mesa-dev:${arch} \
                 libglib2.0-dev:${arch} \
+                libpcre3-dev:${arch} \
                 libx11-dev:${arch} \
                 libxcb1-dev:${arch} \
                 libxcursor-dev:${arch} \
@@ -104,6 +105,7 @@ case "${1}" in
                 libxrender-dev:${arch} \
                 uuid-dev:${arch}
         fi
+        # libqt5svg5-dev qtbase5-dev qtbase5-dev-tools
 
         install_compiler "${1}"
 

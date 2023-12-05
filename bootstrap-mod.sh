@@ -51,7 +51,7 @@ if [ "${LINUX}" -eq 1 ]; then
     elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
-    if ! pkg-config --exists Qt5Core Qt5Gui Qt5Svg Qt5Widgets; then
+    if ! pkg-config --print-errors --exists Qt5Core Qt5Gui Qt5Svg Qt5Widgets; then
         echo "Qt system libs are not available, cannot continue"
         exit 2
     fi
