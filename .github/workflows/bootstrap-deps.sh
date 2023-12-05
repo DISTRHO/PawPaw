@@ -85,7 +85,7 @@ case "${1}" in
     ;;
     *)
         apt-get update -qq
-        apt-get install -yqq autoconf automake autopoint build-essential curl cmake dpkg-dev git jq lsb-release meson gperf patchelf
+        apt-get install -yqq autoconf automake autopoint build-essential curl cmake dpkg-dev file git jq libtool lsb-release meson gperf patchelf
 
         arch=$(get_linux_deb_arch "${1}")
         release=$(lsb_release -cs 2>/dev/null)
@@ -110,6 +110,7 @@ case "${1}" in
                 libdbus-1-dev:${arch} \
                 libgl1-mesa-dev:${arch} \
                 libglib2.0-dev:${arch} \
+                libpcre2-dev:${arch} \
                 libpcre3-dev:${arch} \
                 libx11-dev:${arch} \
                 libxcb1-dev:${arch} \

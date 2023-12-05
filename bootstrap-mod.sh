@@ -23,7 +23,7 @@ export PAWPAW_SKIP_LTO=1
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
-export MODAUDIO=1
+export PAWPAW_MODAUDIO=1
 
 ./bootstrap-common.sh "${target}"
 ./bootstrap-jack2.sh "${target}"

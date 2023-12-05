@@ -90,7 +90,7 @@ if [ "${LINUX}" -eq 1 ]; then
     elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
-    if ! pkg-config --print-errors --exists alsa dbus-1 gl glib-2.0 libpcre pthread-stubs uuid x11 xcb xcursor xext xfixes xproto xrandr xrender; then
+    if ! pkg-config --print-errors --exists alsa dbus-1 gl glib-2.0 libpcre libpcre2-8 pthread-stubs uuid x11 xcb xcursor xext xfixes xproto xrandr xrender; then
         echo "some system libs are not available, cannot continue"
         exit 2
     fi
@@ -113,6 +113,10 @@ if [ "${LINUX}" -eq 1 ]; then
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
         cp $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/libpcre.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre2-8.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir libpcre2-8)/libpcre2-8.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/libpcre2-8.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc" ]; then
         cp $(pkg-config --variable=pcfiledir pthread-stubs)/pthread-stubs.pc ${TARGET_PKG_CONFIG_PATH}/

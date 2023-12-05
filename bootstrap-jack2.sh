@@ -63,13 +63,14 @@ function build_custom_db() {
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules+=" --host=${TOOLCHAIN_PREFIX}"
+        extraconfrules+=" --build=$(uname -m)-linux-gnu ac_cv_build=$(uname -m)-linux-gnu"
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} ac_cv_host=${TOOLCHAIN_PREFIX}"
     fi
     if [ "${MACOS}" -eq 1 ]; then
         extraconfrules+=" --with-mutex=x86_64/gcc-assembly db_cv_atomic=x86/gcc-assembly"
     fi
     if [ "${WIN32}" -eq 1 ]; then
-        extraconfrules+=" --enable-mingw ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX}"
+        extraconfrules+=" --enable-mingw"
     fi
 
     _prebuild "${name}" "${pkgdir}"
@@ -123,7 +124,7 @@ if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     PORTAUDIO_EXTRAFLAGS+=" --without-asihpi"
     PORTAUDIO_EXTRAFLAGS+=" --without-oss"
 
-    if [ -n "${MODAUDIO}" ] && [ "${MODAUDIO}" -eq 1 ]; then
+    if [ -n "${PAWPAW_MODAUDIO}" ] && [ "${PAWPAW_MODAUDIO}" -eq 1 ]; then
         PORTAUDIO_EXTRAFLAGS+=" --without-alsa"
         PORTAUDIO_EXTRAFLAGS+=" --with-jack"
     elif [ "${LINUX}" -eq 1 ]; then

@@ -718,19 +718,18 @@ jobs:
       matrix:
         include:
           # ubuntu:20.04
-          # FIXME Could not invoke sanity test executable
-          #- target: linux-aarch64
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
-          #- target: linux-armhf
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
+          - target: linux-aarch64
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: ubuntu:20.04
+            os: ubuntu-latest
           - target: linux-i686
             container: ubuntu:20.04
             os: ubuntu-latest
-          #- target: linux-riscv64
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
+          - target: linux-riscv64
+            container: ubuntu:20.04
+            os: ubuntu-latest
           - target: linux-x86_64
             container: ubuntu:20.04
             os: ubuntu-latest
@@ -739,9 +738,10 @@ jobs:
           - target: wasm
             container: debian:12
             os: ubuntu-latest
-          - target: win32
-            container: debian:12
-            os: ubuntu-latest
+          # FIXME build failure: too many sections (40327)
+          #- target: win32
+            #container: debian:12
+            #os: ubuntu-latest
           - target: win64
             container: debian:12
             os: ubuntu-latest
@@ -768,9 +768,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - target: linux-x86_64
-            container: ubuntu:18.04
-            os: ubuntu-latest
+          # FIXME needs CMake 3.15
+          #- target: linux-x86_64
+            #container: ubuntu:18.04
+            #os: ubuntu-latest
           - target: macos-universal-10.15
             os: macos-11
           - target: win64

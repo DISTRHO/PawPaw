@@ -16,6 +16,11 @@ if [ -z "${target}" ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
+# LTO is unwanted for Cardinal builds, make sure it is off
+
+export PAWPAW_SKIP_LTO=1
+
+# ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
 export PAWPAW_SKIP_GLIB=1
