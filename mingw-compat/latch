@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: 0BSD OR ISC
 
 #pragma once
-#include_next <condition_variable>
+#include_next <latch>
 
 #if __GNUC__ < 12
-#include "mingw.condition_variable.h"
+#include "mingw.latch.h"
 #endif
