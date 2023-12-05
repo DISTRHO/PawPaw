@@ -57,12 +57,22 @@ function install_compiler() {
         "win32")
             dpkg --add-architecture i386
             apt-get update -qq
-            apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64 wine-stable
+            apt-get install -yqq binutils-mingw-w64-i686 g++-mingw-w64-i686 mingw-w64
+            if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
+                apt-get install -yqq wine wine32
+            else
+                apt-get install -yqq wine-stable
+            fi
         ;;
         "win64")
             dpkg --add-architecture i386
             apt-get update -qq
-            apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64 wine-stable
+            apt-get install -yqq binutils-mingw-w64-x86-64 g++-mingw-w64-x86-64 mingw-w64
+            if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
+                apt-get install -yqq wine wine32 wine64
+            else
+                apt-get install -yqq wine-stable
+            fi
         ;;
     esac
 }
@@ -74,23 +84,28 @@ case "${1}" in
         [ -n "${GITHUB_ENV}" ] && echo "PAWPAW_PACK_NAME=${1}-$(sw_vers -productVersion)" >> "${GITHUB_ENV}"
     ;;
     *)
-        sed -i "s/deb http/deb [arch=i386,amd64] http/" /etc/apt/sources.list
-        sed -i "s/deb mirror/deb [arch=i386,amd64] mirror/" /etc/apt/sources.list
         apt-get update -qq
-        apt-get install -yqq autoconf automake autopoint binfmt-support build-essential curl cmake git jq lsb-release meson gperf patchelf qemu-user-static
+        apt-get install -yqq autoconf automake autopoint build-essential curl cmake dpkg-dev git jq lsb-release meson gperf patchelf
 
         arch=$(get_linux_deb_arch "${1}")
-        release=$(lsb_release -cs)
+        release=$(lsb_release -cs 2>/dev/null)
 
         if [ -n "${arch}" ]; then
-            dpkg --add-architecture ${arch}
-            if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ]; then
-                echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release} main restricted universe multiverse" | tee -a /etc/apt/sources.list
-                echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list
-                echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
+            if [ "$(lsb_release -si 2>/dev/null)" = "Ubuntu" ]; then
+                sed -i "s/deb http/deb [arch=i386,amd64] http/" /etc/apt/sources.list
+                sed -i "s/deb mirror/deb [arch=i386,amd64] mirror/" /etc/apt/sources.list
+                if [ "${arch}" != "amd64" ] && [ "${arch}" != "i386" ]; then
+                    echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release} main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                    echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                    echo "deb [arch=${arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                fi
             fi
+
+            dpkg --add-architecture ${arch}
             apt-get update -qq
             apt-get install -yqq \
+                binfmt-support \
+                qemu-user-static \
                 libasound2-dev:${arch} \
                 libdbus-1-dev:${arch} \
                 libgl1-mesa-dev:${arch} \
@@ -106,6 +121,19 @@ case "${1}" in
                 uuid-dev:${arch}
         fi
         # libqt5svg5-dev qtbase5-dev qtbase5-dev-tools
+
+        case "${release}" in
+            "bionic"|"focal")
+                apt-get install -yqq python3-pkg-resources
+                curl -sOL https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/meson_0.56.0-1kxstudio4_all.deb
+                if [ "${release}" = "bionic" ]; then
+                    curl -sOL https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/cmake_3.13.4-1kxstudio1_$(dpkg-architecture -qDEB_HOST_ARCH).deb
+                    curl -sOL https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/cmake-data_3.13.4-1kxstudio1_all.deb
+                fi
+                dpkg -i *.deb
+                rm *.deb
+            ;;
+        esac
 
         install_compiler "${1}"
 

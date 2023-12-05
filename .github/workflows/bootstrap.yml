@@ -21,6 +21,28 @@ jobs:
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
+          # debian:12
+          - target: linux-aarch64
+            container: debian:12
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: debian:12
+            os: ubuntu-latest
+          - target: linux-i686
+            container: debian:12
+            os: ubuntu-latest
+          - target: linux-x86_64
+            container: debian:12
+            os: ubuntu-latest
+          - target: wasm
+            container: debian:12
+            os: ubuntu-latest
+          - target: win32
+            container: debian:12
+            os: ubuntu-latest
+          - target: win64
+            container: debian:12
+            os: ubuntu-latest
           # ubuntu:18.04
           - target: linux-aarch64
             container: ubuntu:18.04
@@ -135,48 +157,73 @@ jobs:
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
-          # ubuntu:18.04
+          # debian:12
           - target: linux-aarch64
-            container: ubuntu:18.04
+            container: debian:12
             os: ubuntu-latest
           - target: linux-armhf
-            container: ubuntu:18.04
+            container: debian:12
             os: ubuntu-latest
           - target: linux-i686
-            container: ubuntu:18.04
+            container: debian:12
             os: ubuntu-latest
           - target: linux-x86_64
-            container: ubuntu:18.04
+            container: debian:12
             os: ubuntu-latest
+          - target: wasm
+            container: debian:12
+            os: ubuntu-latest
+          #- target: win32
+            #container: debian:12
+            #os: ubuntu-latest
+          #- target: win64
+            #container: debian:12
+            #os: ubuntu-latest
+          # ubuntu:18.04
+          # FIXME needs CMake 3.15
+          #- target: linux-aarch64
+            #container: ubuntu:18.04
+            #os: ubuntu-latest
+          #- target: linux-armhf
+            #container: ubuntu:18.04
+            #os: ubuntu-latest
+          #- target: linux-i686
+            #container: ubuntu:18.04
+            #os: ubuntu-latest
+          #- target: linux-x86_64
+            #container: ubuntu:18.04
+            #os: ubuntu-latest
           # ubuntu:20.04
-          - target: linux-aarch64
-            container: ubuntu:20.04
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:20.04
-            os: ubuntu-latest
+          # FIXME Could not invoke sanity test executable
+          #- target: linux-aarch64
+            #container: ubuntu:20.04
+            #os: ubuntu-latest
+          #- target: linux-armhf
+            #container: ubuntu:20.04
+            #os: ubuntu-latest
           - target: linux-i686
             container: ubuntu:20.04
             os: ubuntu-latest
-          - target: linux-riscv64
-            container: ubuntu:20.04
-            os: ubuntu-latest
+          #- target: linux-riscv64
+            #container: ubuntu:20.04
+            #os: ubuntu-latest
           - target: linux-x86_64
             container: ubuntu:20.04
             os: ubuntu-latest
           # ubuntu:22.04
-          - target: linux-aarch64
-            container: ubuntu:22.04
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:22.04
-            os: ubuntu-latest
+          # FIXME Could not invoke sanity test executable
+          #- target: linux-aarch64
+            #container: ubuntu:22.04
+            #os: ubuntu-latest
+          #- target: linux-armhf
+            #container: ubuntu:22.04
+            #os: ubuntu-latest
           - target: linux-i686
             container: ubuntu:22.04
             os: ubuntu-latest
-          - target: linux-riscv64
-            container: ubuntu:22.04
-            os: ubuntu-latest
+          #- target: linux-riscv64
+            #container: ubuntu:22.04
+            #os: ubuntu-latest
           - target: linux-x86_64
             container: ubuntu:22.04
             os: ubuntu-latest
@@ -190,27 +237,28 @@ jobs:
             container: ubuntu:22.04
             os: ubuntu-latest
           # ubuntu:23.10
-          - target: linux-aarch64
-            container: ubuntu:23.10
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:23.10
-            os: ubuntu-latest
-          - target: linux-riscv64
-            container: ubuntu:23.10
-            os: ubuntu-latest
+          # FIXME Could not invoke sanity test executable
+          #- target: linux-aarch64
+            #container: ubuntu:23.10
+            #os: ubuntu-latest
+          #- target: linux-armhf
+            #container: ubuntu:23.10
+            #os: ubuntu-latest
+          #- target: linux-riscv64
+            #container: ubuntu:23.10
+            #os: ubuntu-latest
           - target: linux-x86_64
             container: ubuntu:23.10
             os: ubuntu-latest
           - target: wasm
             container: ubuntu:23.10
             os: ubuntu-latest
-          - target: win32
-            container: ubuntu:23.10
-            os: ubuntu-latest
-          - target: win64
-            container: ubuntu:23.10
-            os: ubuntu-latest
+          #- target: win32
+            #container: ubuntu:23.10
+            #os: ubuntu-latest
+          #- target: win64
+            #container: ubuntu:23.10
+            #os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
