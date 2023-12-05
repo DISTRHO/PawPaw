@@ -115,7 +115,7 @@ if [ "${WIN32}" -eq 1 ]; then
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
-# portaudio (win32 only)
+# portaudio
 
 if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     PORTAUDIO_EXTRAFLAGS=""
@@ -134,7 +134,9 @@ if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         PORTAUDIO_EXTRAFLAGS+=" --without-jack"
     fi
 
-    if [ "${WIN32}" -eq 1 ]; then
+    if [ "${LINUX}" -eq 1 ]; then
+        export EXTRA_LDFLAGS="-ldl"
+    elif [ "${WIN32}" -eq 1 ]; then
         export EXTRA_CFLAGS="-I${ASIO_DIR}"
         export EXTRA_CXXFLAGS="-I${ASIO_DIR}"
         PORTAUDIO_EXTRAFLAGS+=" --with-asiodir=${ASIO_DIR}"
