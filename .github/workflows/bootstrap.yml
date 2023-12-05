@@ -713,6 +713,7 @@ jobs:
       PAWPAW_SKIP_LTO: 1
       PAWPAW_SKIP_GLIB: 1
       PAWPAW_SKIP_LV2: 1
+      PAWPAW_SKIP_OPENSSL: 1
       PAWPAW_SKIP_SAMPLERATE: 1
     strategy:
       matrix:
@@ -738,10 +739,9 @@ jobs:
           - target: wasm
             container: debian:12
             os: ubuntu-latest
-          # FIXME build failure: too many sections (40327)
-          #- target: win32
-            #container: debian:12
-            #os: ubuntu-latest
+          - target: win32
+            container: debian:12
+            os: ubuntu-latest
           - target: win64
             container: debian:12
             os: ubuntu-latest

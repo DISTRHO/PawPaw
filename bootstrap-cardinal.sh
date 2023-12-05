@@ -25,6 +25,7 @@ export PAWPAW_SKIP_LTO=1
 
 export PAWPAW_SKIP_GLIB=1
 export PAWPAW_SKIP_LV2=1
+export PAWPAW_SKIP_OPENSSL=1
 export PAWPAW_SKIP_SAMPLERATE=1
 
 # we just build the whole thing on Windows

@@ -106,6 +106,8 @@ function build_conf_openssl() {
 # ---------------------------------------------------------------------------------------------------------------------
 # openssl
 
+if [ -n "${PAWPAW_SKIP_OPENSSL}" ]; then
+
 OPENSSL_URL="https://www.openssl.org/source"
 OPENSSL_VERSION="1.1.1w"
 
@@ -116,6 +118,8 @@ fi
 
 download openssl "${OPENSSL_VERSION}" "${OPENSSL_URL}"
 build_conf_openssl openssl "${OPENSSL_VERSION}" "${OPENSSL_EXTRAFLAGS}"
+
+fi # PAWPAW_SKIP_OPENSSL
 
 # ---------------------------------------------------------------------------------------------------------------------
 # custom function for python
