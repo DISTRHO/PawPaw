@@ -71,7 +71,7 @@ case "${1}" in
     ;;
     *)
         apt-get update -qq
-        apt-get install -yqq autoconf automake build-essential curl cmake dpkg-dev file git jq libglib2.0-dev-bin libtool lsb-release make meson gperf patchelf
+        apt-get install -yqq autoconf automake build-essential curl cmake dpkg-dev file git jq libffi-dev libglib2.0-dev-bin libreadline-dev libtool lsb-release make meson gperf patchelf uuid-dev zlib1g-dev
 
         linux_arch=$(get_linux_deb_arch "${1}")
         release=$(lsb_release -cs 2>/dev/null)
@@ -111,7 +111,7 @@ case "${1}" in
         elif [ "${1}" = "win32" ] || [ "${1}" = "win64" ]; then
             dpkg --add-architecture i386
             apt-get update -qq
-            apt-get install -yqq autopoint libffi-dev libreadline-dev mingw-w64 uuid-dev zlib1g-dev
+            apt-get install -yqq autopoint mingw-w64
             if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
                 apt-get install -yqq wine wine32 wine64
             else
@@ -120,15 +120,10 @@ case "${1}" in
         fi
 
         case "${release}" in
-            "bionic"|"focal")
-                apt-get install -yqq python3-pkg-resources
-                curl -sOL https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/meson_0.56.0-1kxstudio4_all.deb
-                if [ "${release}" = "bionic" ]; then
-                    curl -sOL https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/cmake_3.13.4-1kxstudio1_$(dpkg-architecture -qDEB_HOST_ARCH).deb
-                    curl -sOL https://launchpad.net/~kxstudio-debian/+archive/ubuntu/toolchain/+files/cmake-data_3.13.4-1kxstudio1_all.deb
-                fi
-                dpkg -i *.deb
-                rm *.deb
+            "bionic"|"bullseye"|"focal")
+                apt-get install -yqq --no-install-recommends python3-pip
+                pip3 install --isolated --upgrade --no-cache-dir --force-reinstall pip
+                pip3 install --isolated --upgrade --no-cache-dir --force-reinstall cmake meson
             ;;
         esac
 

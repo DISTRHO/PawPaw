@@ -237,19 +237,18 @@ jobs:
             container: debian:12
             os: ubuntu-latest
           # ubuntu:18.04
-          # FIXME needs CMake 3.15
-          #- target: linux-aarch64
-            #container: ubuntu:18.04
-            #os: ubuntu-latest
-          #- target: linux-armhf
-            #container: ubuntu:18.04
-            #os: ubuntu-latest
-          #- target: linux-i686
-            #container: ubuntu:18.04
-            #os: ubuntu-latest
-          #- target: linux-x86_64
-            #container: ubuntu:18.04
-            #os: ubuntu-latest
+          - target: linux-aarch64
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          - target: linux-i686
+            container: ubuntu:18.04
+            os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:18.04
+            os: ubuntu-latest
           # ubuntu:20.04
           - target: linux-aarch64
             container: ubuntu:20.04
@@ -795,13 +794,12 @@ jobs:
           - target: macos-universal-10.15
             os: macos-12
           # debian 11
-          # FIXME debian:11 needs meson 0.58
-          #- target: linux-x86_64
-            #container: debian:11
-            #os: ubuntu-latest
-          #- target: win64
-            #container: debian:11
-            #os: ubuntu-latest
+          - target: linux-x86_64
+            container: debian:11
+            os: ubuntu-latest
+          - target: win64
+            container: debian:11
+            os: ubuntu-latest
           # debian 12
           - target: linux-x86_64
             container: debian:12
@@ -811,16 +809,13 @@ jobs:
             #container: debian:12
             #os: ubuntu-latest
           # ubuntu 18.04
-          # FIXME ubuntu:18.04 needs CMake 3.15
-          # FIXME ubuntu:18.04 needs meson 0.58
-          #- target: linux-x86_64
-            #container: ubuntu:18.04
-            #os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:18.04
+            os: ubuntu-latest
           # ubuntu 20.04
-          # FIXME ubuntu:20.04 needs meson 0.58
-          #- target: linux-x86_64
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:20.04
+            os: ubuntu-latest
           # ubuntu 22.04
           - target: linux-x86_64
             container: ubuntu:22.04

@@ -29,7 +29,10 @@ export PAWPAW_MODAUDIO=1
 ./bootstrap-jack2.sh "${target}"
 ./bootstrap-plugins.sh "${target}"
 ./bootstrap-python.sh "${target}"
-./bootstrap-qt.sh "${target}"
+
+if [ -z "${PAWPAW_SKIP_QT}" ]; then
+    ./bootstrap-qt.sh "${target}"
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # source setup code
@@ -151,6 +154,12 @@ if [ ! -e "${PAWPAW_BUILDDIR}/lvtk1-${LVTK1_VERSION}/.stamp_configured" ]; then
 fi
 
 build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------
+
+if [ -n "${PAWPAW_SKIP_PYTHON_MODULES}" ]; then
+    exit 0
+fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # aggdraw
