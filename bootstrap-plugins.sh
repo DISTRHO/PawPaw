@@ -437,6 +437,8 @@ if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER
     SERD_EXTRAFLAGS="-Dtools=disabled"
 fi
 
+export EXTRA_CFLAGS="-fno-finite-math-only"
+
 download serd "${SERD_VERSION}" "${SERD_URL}" "tar.xz"
 build_meson serd "${SERD_VERSION}" "-Ddefault_library=static -Ddocs=disabled ${SERD_EXTRAFLAGS}"
 
