@@ -18,40 +18,48 @@ function get_linux_deb_arch() {
 }
 
 function install_compiler() {
-    case "${1}" in
+    local arch="${1}"
+    local release="${2}"
+
+    apt-get install -yqq g++
+
+    if [ -n "${GITHUB_ENV}" ] && [ "${release}" = "bionic" ]; then
+        apt-get install -yqq g++-11
+        update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 60 --slave /usr/bin/g++ g++ /usr/bin/g++-11
+    fi
+
+    case "${arch}" in
         "linux-aarch64")
             if [ "$(uname -m)" != "aarch64" ]; then
                 apt-get install -yqq g++-aarch64-linux-gnu
-            else
-                apt-get install -yqq g++
+            elif [ -n "${GITHUB_ENV}" ] && [ "${release}" = "bionic" ]; then
+                update-alternatives --install /usr/bin/aarch64-linux-gnu-gcc aarch64-linux-gnu-gcc /usr/bin/gcc-11 60 --slave /usr/bin/aarch64-linux-gnu-g++ aarch64-linux-gnu-g++ /usr/bin/g++-11
             fi
         ;;
         "linux-armhf")
             if [ "$(uname -m)" != "armhf" ]; then
                 apt-get install -yqq g++-arm-linux-gnueabihf
-            else
-                apt-get install -yqq g++
+            elif [ -n "${GITHUB_ENV}" ] && [ "${release}" = "bionic" ]; then
+                update-alternatives --install /usr/bin/arm-linux-gnueabihf-gcc arm-linux-gnueabihf-gcc /usr/bin/gcc-11 60 --slave /usr/bin/arm-linux-gnueabihf-g++ arm-linux-gnueabihf-g++ /usr/bin/g++-11
             fi
         ;;
         "linux-i686")
             if [ "$(uname -m)" != "i686" ]; then
                 apt-get install -yqq g++-i686-linux-gnu
-            else
-                apt-get install -yqq g++
+            elif [ -n "${GITHUB_ENV}" ] && [ "${release}" = "bionic" ]; then
+                update-alternatives --install /usr/bin/i686-linux-gnu-gcc i686-linux-gnu-gcc /usr/bin/gcc-11 60 --slave /usr/bin/i686-linux-gnu-g++ i686-linux-gnu-g++ /usr/bin/g++-11
             fi
         ;;
         "linux-riscv64")
             if [ "$(uname -m)" != "riscv64" ]; then
                 apt-get install -yqq g++-riscv64-linux-gnu
-            else
-                apt-get install -yqq g++
             fi
         ;;
         "linux-x86_64")
             if [ "$(uname -m)" != "x86_64" ]; then
                 apt-get install -yqq g++-x86_64-linux-gnu
-            else
-                apt-get install -yqq g++
+            elif [ -n "${GITHUB_ENV}" ] && [ "${release}" = "bionic" ]; then
+                update-alternatives --install /usr/bin/x86_64-linux-gnu-gcc x86_64-linux-gnu-gcc /usr/bin/gcc-11 60 --slave /usr/bin/x86_64-linux-gnu-g++ x86_64-linux-gnu-g++ /usr/bin/g++-11
             fi
         ;;
         "win32")
@@ -84,6 +92,10 @@ case "${1}" in
                     echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release} main restricted universe multiverse" | tee -a /etc/apt/sources.list
                     echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list
                     echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-backports main restricted universe multiverse" | tee -a /etc/apt/sources.list
+                fi
+                if [ -n "${GITHUB_ENV}" ] && [ "${release}" = "bionic" ]; then
+                    apt-get install -yqq --no-install-recommends software-properties-common
+                    add-apt-repository -yn ppa:ubuntu-toolchain-r/test
                 fi
             fi
             dpkg --add-architecture ${linux_arch}
@@ -127,7 +139,7 @@ case "${1}" in
             ;;
         esac
 
-        install_compiler "${1}"
+        install_compiler "${1}" "${release}"
 
         [ -n "${GITHUB_ENV}" ] && echo "PAWPAW_PACK_NAME=${1}-${release}" >> "${GITHUB_ENV}"
     ;;
