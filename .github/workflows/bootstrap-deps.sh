@@ -71,7 +71,7 @@ case "${1}" in
     ;;
     *)
         apt-get update -qq
-        apt-get install -yqq autoconf automake build-essential curl cmake dpkg-dev file git jq libffi-dev libglib2.0-dev-bin libreadline-dev libtool lsb-release make meson gperf patchelf uuid-dev zlib1g-dev
+        apt-get install -yqq autoconf automake build-essential curl cmake dpkg-dev file git jq libglib2.0-dev-bin libtool lsb-release make meson gperf patchelf uuid-dev zlib1g-dev
 
         linux_arch=$(get_linux_deb_arch "${1}")
         release=$(lsb_release -cs 2>/dev/null)
@@ -111,7 +111,7 @@ case "${1}" in
         elif [ "${1}" = "win32" ] || [ "${1}" = "win64" ]; then
             dpkg --add-architecture i386
             apt-get update -qq
-            apt-get install -yqq autopoint mingw-w64
+            apt-get install -yqq autopoint libffi-dev libreadline-dev mingw-w64
             if [ "$(lsb_release -si 2>/dev/null)" = "Debian" ]; then
                 apt-get install -yqq wine wine32 wine64
             else

@@ -357,7 +357,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libffi
 
-if [ "${WIN32}" -eq 1 ]; then
+if [ "${LINUX}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     LIBFFI_EXTRAFLAGS="--disable-multi-os-directory --disable-raw-api"
 
     download libffi "${LIBFFI_VERSION}" "${LIBFFI_URL}"
