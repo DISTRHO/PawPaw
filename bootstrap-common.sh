@@ -317,7 +317,7 @@ FLAC_EXTRAFLAGS+=" --disable-stack-smash-protection"
 FLAC_EXTRAFLAGS+=" --disable-thorough-tests"
 FLAC_EXTRAFLAGS+=" --disable-xmms-plugin"
 
-if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
+if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -eq 1 ]; then
     FLAC_EXTRAFLAGS+=" ac_cv_header_x86intrin_h=no ac_cv_header_arm_neon_h=no asm_opt=no"
 elif [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
     # FIXME
@@ -348,7 +348,7 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-extra-programs"
 fi
 
-if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
+if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -eq 1 ]; then
     OPUS_EXTRAFLAGS+=" --disable-intrinsics"
 # FIXME macos-universal proper optimizations https://github.com/DISTRHO/PawPaw/issues/4
 elif [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
