@@ -171,3 +171,7 @@ function check_target() {
 }
 
 check_target
+
+if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PAWPAW_SKIP_TESTS=${PAWPAW_SKIP_TESTS:=1}
+fi

@@ -47,7 +47,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # everything after this point requires Qt or PyQt
 
-if [ -n "${PAWPAW_SKIP_QT}" ]; then
+if [ -n "${PAWPAW_SKIP_QT}" ] && [ "${PAWPAW_SKIP_QT}" -eq 1 ]; then
     exit 0
 fi
 

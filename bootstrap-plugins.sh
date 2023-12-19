@@ -18,7 +18,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # skip fluidsynth if glib is not wanted (fluidsynth requires glib)
 
-if [ -n "${PAWPAW_SKIP_GLIB}" ]; then
+if [ -n "${PAWPAW_SKIP_GLIB}" ] && [ "${PAWPAW_SKIP_GLIB}" -eq 1 ]; then
     PAWPAW_SKIP_FLUIDSYNTH=1
 fi
 
@@ -43,7 +43,7 @@ if [ -z "${autoconf}" ]; then
     exit 2
 fi
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
     if [ -z "${meson}" ]; then
         echo "missing 'meson' program, cannot continue!"
         exit 2
@@ -78,7 +78,7 @@ fi
 download libpng "${LIBPNG_VERSION}" "${LIBPNG_URL}" "tar.xz"
 build_autoconf libpng "${LIBPNG_VERSION}" "${LIBPNG_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make libpng "${LIBPNG_VERSION}" "check -j 1"
 fi
 
@@ -122,7 +122,7 @@ download pixman "${PIXMAN_VERSION}" "${PIXMAN_URL}"
 build_autoconf pixman "${PIXMAN_VERSION}" "${PIXMAN_EXTRAFLAGS}"
 
 # FIXME tests fail on i686 CI builds
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ] && [ "x${LINUX_TARGET}" != "xlinux-i686" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ] && [ "x${LINUX_TARGET}" != "xlinux-i686" ]; then
     run_make pixman "${PIXMAN_VERSION}" check
 fi
 
@@ -178,7 +178,7 @@ download fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_URL}"
 build_autoconf fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_EXTRAFLAGS}"
 
 # tests fail on stable release, see https://gitlab.freedesktop.org/fontconfig/fontconfig/-/issues/177
-# if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+# if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
 #     run_make fontconfig "${FONTCONFIG_VERSION}" check
 # fi
 
@@ -276,14 +276,14 @@ download cairo "${CAIRO_VERSION}" "${CAIRO_URL}" "tar.xz"
 build_autoconf cairo "${CAIRO_VERSION}" "${CAIRO_EXTRAFLAGS}"
 
 # FIXME tests are failing :(
-# if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+# if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
 #     run_make cairo "${CAIRO_VERSION}" "check -j 1"
 # fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # fftw
 
-if [ -z "${PAWPAW_SKIP_FFTW}" ]; then
+if [ -z "${PAWPAW_SKIP_FFTW}" ] && [ "${PAWPAW_SKIP_FFTW}" -eq 1 ]; then
 
 # fftw is not compatible with LTO
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
@@ -312,7 +312,7 @@ fi
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make fftw "${FFTW_VERSION}" check
 fi
 
@@ -321,7 +321,7 @@ fi # PAWPAW_SKIP_FFTW
 # ---------------------------------------------------------------------------------------------------------------------
 # fftwf
 
-if [ -z "${PAWPAW_SKIP_FFTW}" ]; then
+if [ -z "${PAWPAW_SKIP_FFTW}" ] && [ "${PAWPAW_SKIP_FFTW}" -eq 1 ]; then
 
 # fftw is not compatible with LTO
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
@@ -340,7 +340,7 @@ fi
 copy_download fftw fftwf "${FFTW_VERSION}"
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make fftwf "${FFTW_VERSION}" check
 fi
 
@@ -367,7 +367,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # glib
 
-if [ -z "${PAWPAW_SKIP_GLIB}" ]; then
+if [ -z "${PAWPAW_SKIP_GLIB}" ] && [ "${PAWPAW_SKIP_GLIB}" -eq 1 ]; then
 
 if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     GLIB_EXTRAFLAGS="--disable-rebuilds"
@@ -408,7 +408,7 @@ fi # PAWPAW_SKIP_GLIB
 
 LIBLO_EXTRAFLAGS="--enable-threads --disable-examples --disable-tools"
 
-if [ "${CROSS_COMPILING}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -ne 1 ]; then
     LIBLO_EXTRAFLAGS+=" --disable-tests"
 fi
 
@@ -424,14 +424,14 @@ download liblo "${LIBLO_VERSION}" "${LIBLO_URL}"
 build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 
 # FIXME tests fail on macOS
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ] && [ "${MACOS}" -eq 0 ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ] && [ "${MACOS}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
     SERD_EXTRAFLAGS="-Dtools=disabled"
@@ -447,7 +447,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # sord
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
     SORD_EXTRAFLAGS="-Dtools=disabled"
@@ -461,7 +461,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 git_clone lv2 "${LV2_VERSION}" "${LV2_URL}"
 build_meson lv2 "${LV2_VERSION}" "-Dlv2dir=${PAWPAW_PREFIX}/lib/lv2 -Dplugins=disabled"
@@ -471,7 +471,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # sratom
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 download sratom "${SRATOM_VERSION}" "${SRATOM_URL}" "tar.xz"
 build_meson sratom "${SRATOM_VERSION}" "-Ddefault_library=static -Ddocs=disabled"
@@ -481,7 +481,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # lilv
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ]; then
     LILV_EXTRAFLAGS="-Dtests=disabled -Dtools=disabled"
@@ -495,7 +495,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # lv2lint
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
     download lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
@@ -508,7 +508,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # kxstudio lv2 extensions
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 git_clone kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}" "${KXSTUDIO_LV2_EXTENSIONS_URL}"
 build_make kxstudio-lv2-extensions "${KXSTUDIO_LV2_EXTENSIONS_VERSION}"
@@ -518,7 +518,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # MOD lv2 extensions
 
-if [ -z "${PAWPAW_SKIP_LV2}" ]; then
+if [ -z "${PAWPAW_SKIP_LV2}" ] && [ "${PAWPAW_SKIP_LV2}" -eq 1 ]; then
 
 git_clone mod-sdk "${MOD_SDK_VERSION}" "${MOD_SDK_URL}"
 build_make mod-sdk "${MOD_SDK_VERSION}"
@@ -528,7 +528,7 @@ fi # PAWPAW_SKIP_LV2
 # ---------------------------------------------------------------------------------------------------------------------
 # fluidsynth
 
-if [ -z "${PAWPAW_SKIP_FLUIDSYNTH}" ]; then
+if [ -z "${PAWPAW_SKIP_FLUIDSYNTH}" ] && [ "${PAWPAW_SKIP_FLUIDSYNTH}" -eq 1 ]; then
 
 FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-alsa=OFF"

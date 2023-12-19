@@ -157,7 +157,7 @@ build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 
-if [ -n "${PAWPAW_SKIP_PYTHON_MODULES}" ]; then
+if [ -n "${PAWPAW_SKIP_PYTHON_MODULES}" ] && [ "${PAWPAW_SKIP_PYTHON_MODULES}" -eq 1 ]; then
     exit 0
 fi
 

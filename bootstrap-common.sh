@@ -291,7 +291,7 @@ fi
 download libogg "${LIBOGG_VERSION}" "${LIBOGG_URL}"
 build_autoconf libogg "${LIBOGG_VERSION}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make libogg "${LIBOGG_VERSION}" "check -j 1"
 fi
 
@@ -303,7 +303,7 @@ LIBVORBIS_EXTRAFLAGS="--disable-examples"
 download libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_URL}"
 build_autoconf libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make libvorbis "${LIBVORBIS_VERSION}" "check -j 1"
 fi
 
@@ -334,7 +334,7 @@ fi
 download flac "${FLAC_VERSION}" "${FLAC_URL}" "tar.xz"
 build_autoconf flac "${FLAC_VERSION}" "${FLAC_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make flac "${FLAC_VERSION}" "check -j 1"
 fi
 
@@ -358,7 +358,7 @@ fi
 download opus "${OPUS_VERSION}" "${OPUS_URL}"
 build_autoconf opus "${OPUS_VERSION}" "${OPUS_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make opus "${OPUS_VERSION}" check
 fi
 
@@ -396,14 +396,14 @@ download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.xz"
 
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make libsndfile "${LIBSNDFILE_VERSION}" check
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
 # libsamplerate
 
-if [ -z "${PAWPAW_SKIP_SAMPLERATE}" ]; then
+if [ -z "${PAWPAW_SKIP_SAMPLERATE}" ] && [ "${PAWPAW_SKIP_SAMPLERATE}" -eq 1 ]; then
 
 LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
 
@@ -415,7 +415,7 @@ fi
 download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}"
 build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_EXTRAFLAGS}"
 
-if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${MACOS}" -eq 0 ] && [ -z "${PAWPAW_SKIP_TESTS}" ]; then
+if [ "${MACOS}" -eq 0 ] && [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     run_make libsamplerate "${LIBSAMPLERATE_VERSION}" check
 fi
 
