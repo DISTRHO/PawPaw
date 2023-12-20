@@ -78,7 +78,7 @@ fi
 download libpng "${LIBPNG_VERSION}" "${LIBPNG_URL}" "tar.xz"
 build_autoconf libpng "${LIBPNG_VERSION}" "${LIBPNG_EXTRAFLAGS}"
 
-if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
     run_make libpng "${LIBPNG_VERSION}" "check -j 1"
 fi
 
@@ -122,7 +122,7 @@ download pixman "${PIXMAN_VERSION}" "${PIXMAN_URL}"
 build_autoconf pixman "${PIXMAN_VERSION}" "${PIXMAN_EXTRAFLAGS}"
 
 # FIXME tests fail on i686 CI builds
-if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ] && [ "x${LINUX_TARGET}" != "xlinux-i686" ]; then
+if ([ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]) && [ "x${LINUX_TARGET}" != "xlinux-i686" ]; then
     run_make pixman "${PIXMAN_VERSION}" check
 fi
 
@@ -178,7 +178,7 @@ download fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_URL}"
 build_autoconf fontconfig "${FONTCONFIG_VERSION}" "${FONTCONFIG_EXTRAFLAGS}"
 
 # tests fail on stable release, see https://gitlab.freedesktop.org/fontconfig/fontconfig/-/issues/177
-# if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
+# if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
 #     run_make fontconfig "${FONTCONFIG_VERSION}" check
 # fi
 
@@ -276,7 +276,7 @@ download cairo "${CAIRO_VERSION}" "${CAIRO_URL}" "tar.xz"
 build_autoconf cairo "${CAIRO_VERSION}" "${CAIRO_EXTRAFLAGS}"
 
 # FIXME tests are failing :(
-# if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
+# if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
 #     run_make cairo "${CAIRO_VERSION}" "check -j 1"
 # fi
 
@@ -312,7 +312,7 @@ fi
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
-if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
     run_make fftw "${FFTW_VERSION}" check
 fi
 
@@ -340,7 +340,7 @@ fi
 copy_download fftw fftwf "${FFTW_VERSION}"
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
-if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
     run_make fftwf "${FFTW_VERSION}" check
 fi
 
@@ -424,7 +424,7 @@ download liblo "${LIBLO_VERSION}" "${LIBLO_URL}"
 build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 
 # FIXME tests fail on macOS
-if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ] && [ "${MACOS}" -eq 0 ]; then
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ] && [ "${MACOS}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
 
