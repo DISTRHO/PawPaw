@@ -65,7 +65,7 @@ if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
     PAWPAW_PREFIX+="-lto"
 fi
 
-if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -ne 0 ]; then
+if [ -n "${PAWPAW_NOSIMD}" ] && [ "${PAWPAW_NOSIMD}" -eq 1 ]; then
     PAWPAW_BUILDDIR+="-nosimd"
     PAWPAW_PREFIX+="-nosimd"
 fi

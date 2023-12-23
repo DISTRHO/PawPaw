@@ -408,7 +408,7 @@ fi # PAWPAW_SKIP_GLIB
 
 LIBLO_EXTRAFLAGS="--enable-threads --disable-examples --disable-tools"
 
-if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
+if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     LIBLO_EXTRAFLAGS+=" --disable-tests"
 fi
 
@@ -418,13 +418,16 @@ if [ "${MACOS}" -eq 1 ]; then
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
         LIBLO_EXTRAFLAGS+=" ac_cv_c_bigendian=universal"
     fi
+# use of wrong macro, should be _WIN32
+elif [ "${MACOS}" -eq 1 ]; then
+    export EXTRA_CFLAGS="-DWIN32"
 fi
 
 download liblo "${LIBLO_VERSION}" "${LIBLO_URL}"
 build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 
 # FIXME tests fail on macOS
-if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ] && [ "${MACOS}" -eq 0 ]; then
+if ([ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]) && [ "${MACOS}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
 
