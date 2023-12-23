@@ -78,6 +78,10 @@ case "${1}" in
         [ -n "${GITHUB_ENV}" ] && echo "PAWPAW_PACK_NAME=${1}-$(sw_vers -productVersion | cut -d '.' -f 1)" >> "${GITHUB_ENV}"
     ;;
     *)
+        if [ "$(id -u)" -ne 0 ] && [ -e /usr/bin/sudo ]; then
+            exec /usr/bin/sudo $0 "$@"
+        fi
+
         apt-get update -qq
         apt-get install -yqq autoconf automake build-essential curl cmake file git jq libglib2.0-dev-bin libtool lsb-release make meson gperf patchelf pkg-config uuid-dev zlib1g-dev
 
