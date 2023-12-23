@@ -147,8 +147,14 @@ QT5_URL=https://download.qt.io/new_archive/qt/${QT5_MVERSION}/${QT5_VERSION}/sub
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap carla stuff
 
-FILE_VERSION=5.34
 FILE_URL=ftp://ftp.astron.com/pub/file
+
+# try to use same version as host
+if [ "${LINUX}" -eq 1 ] && [ -e /usr/bin/file ]; then
+    FILE_VERSION=$(/usr/bin/file -v | awk 'sub("file-","")')
+else
+    FILE_VERSION=5.34
+fi
 
 if [ "${LINUX}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     CXFREEZE_VERSION=a59a0f6c476554c1a789de2a9f6f77329d6a6dd1 # 6.8.4

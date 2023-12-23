@@ -681,22 +681,21 @@ jobs:
       matrix:
         include:
           # ubuntu:20.04
-          # FIXME Cannot use the installed version of file (5.38) to cross-compile file 5.34
-          #- target: linux-aarch64
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
-          #- target: linux-armhf
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
-          #- target: linux-i686
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
-          #- target: linux-riscv64
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
-          #- target: linux-x86_64
-            #container: ubuntu:20.04
-            #os: ubuntu-latest
+          - target: linux-aarch64
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-armhf
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-i686
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-riscv64
+            container: ubuntu:20.04
+            os: ubuntu-latest
+          - target: linux-x86_64
+            container: ubuntu:20.04
+            os: ubuntu-latest
           - target: macos-universal-10.15
             os: macos-11
           - target: wasm
