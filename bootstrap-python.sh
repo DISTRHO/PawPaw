@@ -217,12 +217,10 @@ fi
 PYTHON_EXTRAFLAGS=""
 
 if [ "${MACOS}" -eq 1 ]; then
-    if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-        PYTHON_EXTRAFLAGS+=" --enable-optimizations"
-        PYTHON_EXTRAFLAGS+=" ac_cv_lib_intl_textdomain=no"
-        PYTHON_EXTRAFLAGS+=" ac_cv_header_libintl_h=no"
-        PYTHON_EXTRAFLAGS+=" ac_cv_func_setlocale=no"
-    fi
+    PYTHON_EXTRAFLAGS+=" --enable-optimizations"
+    PYTHON_EXTRAFLAGS+=" ac_cv_lib_intl_textdomain=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_header_libintl_h=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_func_setlocale=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_futimens=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_preadv=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_func_pwritev=no"
