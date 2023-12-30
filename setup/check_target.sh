@@ -31,15 +31,15 @@ function check_target() {
             CLANG=1
             MACOS=1
             ;;
-        "macos-universal")
-            CLANG=1
-            MACOS=1
-            MACOS_UNIVERSAL=1
-            ;;
         "macos-10.15")
             CLANG=1
             MACOS=1
             MACOS_10_15=1
+            ;;
+        "macos-universal")
+            CLANG=1
+            MACOS=1
+            MACOS_UNIVERSAL=1
             ;;
         "macos-universal-10.15")
             CLANG=1
@@ -167,8 +167,16 @@ function check_target() {
             ;;
         default|*)
             echo "Invalid target '${target}', possible values are:"
-            echo "\tmacos"
+            echo "\tlinux"
+            echo "\tlinux-aarch64|linux-arm64"
+            echo "\tlinux-armhf"
+            echo "\tlinux-i686|linux-i386"
+            echo "\tlinux-riscv64"
+            echo "\tlinux-x86_64"
+            echo "\tmacos|macos-intel"
+            echo "\tmacos-10.15"
             echo "\tmacos-universal"
+            echo "\tmacos-universal-10.15"
             echo "\twasm"
             echo "\twin32"
             echo "\twin64"
