@@ -431,7 +431,7 @@ function build_meson() {
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        env NINJA="${ninja}" ${meson} build --buildtype release --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
+        env NINJA="${ninja}" ${meson} setup build --buildtype release --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
         touch .stamp_configured
         popd
     fi
