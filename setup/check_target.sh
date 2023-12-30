@@ -8,8 +8,8 @@ INVALID_TARGET=0
 
 LINUX=0
 MACOS=0
+MACOS_10_15=0
 MACOS_UNIVERSAL=0
-MACOS_UNIVERSAL_10_15=0
 WASM=0
 WIN32=0
 WIN64=0
@@ -20,7 +20,14 @@ unset TOOLCHAIN_PREFIX_
 
 function check_target() {
     case "${target}" in
-        "macos"|"macos-intel"|"Darwin")
+        "Darwin")
+            CLANG=1
+            MACOS=1
+            if [ "$(uname -m)" = "x86_64" ]; then
+                MACOS_UNIVERSAL=1
+            fi
+            ;;
+        "macos"|"macos-intel")
             CLANG=1
             MACOS=1
             ;;
@@ -29,11 +36,16 @@ function check_target() {
             MACOS=1
             MACOS_UNIVERSAL=1
             ;;
-        "macos-10.15"|"macos-universal-10.15")
+        "macos-10.15")
             CLANG=1
             MACOS=1
+            MACOS_10_15=1
+            ;;
+        "macos-universal-10.15")
+            CLANG=1
+            MACOS=1
+            MACOS_10_15=1
             MACOS_UNIVERSAL=1
-            MACOS_UNIVERSAL_10_15=1
             ;;
         "wasm")
             CLANG=1

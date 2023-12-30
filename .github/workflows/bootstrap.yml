@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 5
+  CACHE_VERSION: 6
   DEBIAN_FRONTEND: noninteractive
   PAWPAW_SKIP_TESTS: 1
 
@@ -16,12 +16,16 @@ jobs:
           # macos 11
           - target: macos
             os: macos-11
+          - target: macos-10.15
+            os: macos-11
           - target: macos-universal
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
           # macos 12
           - target: macos
+            os: macos-12
+          - target: macos-10.15
             os: macos-12
           - target: macos-universal
             os: macos-12
@@ -181,12 +185,16 @@ jobs:
           # macos 11
           - target: macos
             os: macos-11
+          - target: macos-10.15
+            os: macos-11
           - target: macos-universal
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
           # macos 12
           - target: macos
+            os: macos-12
+          - target: macos-10.15
             os: macos-12
           - target: macos-universal
             os: macos-12
@@ -357,12 +365,16 @@ jobs:
           # macos 11
           - target: macos
             os: macos-11
+          - target: macos-10.15
+            os: macos-11
           - target: macos-universal
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
           # macos 12
           - target: macos
+            os: macos-12
+          - target: macos-10.15
             os: macos-12
           - target: macos-universal
             os: macos-12
@@ -513,12 +525,16 @@ jobs:
           # macos 11
           - target: macos
             os: macos-11
+          - target: macos-10.15
+            os: macos-11
           - target: macos-universal
             os: macos-11
           - target: macos-universal-10.15
             os: macos-11
           # macos 12
           - target: macos
+            os: macos-12
+          - target: macos-10.15
             os: macos-12
           - target: macos-universal
             os: macos-12
@@ -787,9 +803,13 @@ jobs:
       matrix:
         include:
           # macos 11
+          - target: macos-10.15
+            os: macos-11
           - target: macos-universal-10.15
             os: macos-11
           # macos 12
+          - target: macos-10.15
+            os: macos-12
           - target: macos-universal-10.15
             os: macos-12
           # debian 11

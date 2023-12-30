@@ -134,7 +134,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap qt stuff
 
-if [ "${LINUX}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
+if [ "${LINUX}" -eq 1 ] || [ "${MACOS_10_15}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     QT5_VERSION=5.12.12
     QT5_MVERSION=5.12
 else

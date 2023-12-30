@@ -170,7 +170,7 @@ function build_qt_conf() {
 # base
 qtbase_conf_args="-opensource -confirm-license"
 qtbase_conf_args+=" -c++std"
-if [ "${LINUX}" -eq 1 ] || [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+if [ "${QT5_MVERSION}" = "5.12" ]; then
     qtbase_conf_args+=" c++14"
 else
     qtbase_conf_args+=" c++11"
@@ -328,6 +328,8 @@ if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MIN = 10.13/QT_MAC_SDK_VERSION_MIN = 10.12/'
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MAX = 10.15/QT_MAC_SDK_VERSION_MAX = 10.12/'
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/features/toolchain.prf" 's/-arch $$QMAKE_APPLE_DEVICE_ARCHS/-arch arm64/'
+elif [ "${MACOS_10_15}" -eq 1 ]; then
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/macx.conf" 's/QT_MAC_SDK_VERSION_MIN = 10.13/QT_MAC_SDK_VERSION_MIN = 10.15/'
 elif [ "${MACOS}" -eq 1 ]; then
     patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/macx-clang/qmake.conf" 's/10.10/10.8/'
 elif [ "${WIN32}" -eq 1 ]; then

@@ -146,14 +146,25 @@ function _prebuild() {
         done
     fi
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch$" | sort); do
-            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
-                touch "${pkgdir}/.stamp_applied_${p}"
-            fi
-        done
+    local patchtargets="${PAWPAW_TARGET}"
+    if [ "${PAWPAW_TARGET}" = "linux-"* ]; then
+        patchtargets+=" linux"
+    elif [ "${PAWPAW_TARGET}" = "macos-universal-10.15" ]; then
+        patchtargets+=" macos-10.15 macos-universal"
+    elif [ "${PAWPAW_TARGET}" = "win64" ]; then
+        patchtargets+=" win32"
     fi
+ 
+    for target in ${patchtargets[@]}; do
+        if [ -d "${PAWPAW_ROOT}/patches/${name}/${target}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
+            for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${target}/" | grep "\.patch$" | sort); do
+                if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                    patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${target}/${p}"
+                    touch "${pkgdir}/.stamp_applied_${p}"
+                fi
+            done
+        fi
+    done
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         rm -f "${pkgdir}/.stamp_built"
@@ -336,19 +347,19 @@ function build_cmake() {
     fi
 
     if [ "${MACOS}" -eq 1 ]; then
-        if [ "${MACOS_UNIVERSAL_10_15}" -eq 1 ]; then
-            OSX_ARCHS="arm64;x86_64"
-            OSX_TARGET="10.15"
-        elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
-            OSX_ARCHS="arm64;x86_64"
-            OSX_TARGET="10.12"
-        else
-            OSX_ARCHS="x86_64"
-            OSX_TARGET="10.8"
-        fi
-        extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES=${OSX_ARCHS}"
-        extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=${OSX_TARGET}"
         extraconfrules+=" -DCMAKE_OSX_SYSROOT=macosx"
+        if [ "${MACOS_10_15}" -eq 1 ]; then
+            extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15"
+        elif [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+            extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.12"
+        else
+            extraconfrules+=" -DCMAKE_OSX_DEPLOYMENT_TARGET=10.8"
+        fi
+        if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
+            extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES='arm64;x86_64'"
+        else
+            extraconfrules+=" -DCMAKE_OSX_ARCHITECTURES=x86_64"
+        fi
     elif [ "${WIN32}" -eq 1 ]; then
         extraconfrules+=" -DCMAKE_RC_COMPILER=${WINDRES}"
     fi
