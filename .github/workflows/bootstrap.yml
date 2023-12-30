@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 6
+  CACHE_VERSION: 7
   DEBIAN_FRONTEND: noninteractive
   PAWPAW_SKIP_TESTS: 1
 
@@ -866,6 +866,9 @@ jobs:
       - name: Set up dependencies
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
+          if [ "${{ matrix.target }}" = "linux-x86_64" ]; then
+            apt-get install -yqq libfreetype6-dev
+          fi
       - name: Run bootstrap
         shell: bash
         run: |

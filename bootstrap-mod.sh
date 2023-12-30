@@ -135,6 +135,59 @@ download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOL
 build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOLS_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# juce-6.0
+
+JUCE_6_0_VERSION="6648f3fee63fce603a21d467715e4314f3766a27"
+JUCE_6_0_URL="https://github.com/DISTRHO/JUCE.git"
+
+JUCE_6_0_EXTRAFLAGS=""
+JUCE_6_0_EXTRAFLAGS+=" -DCMAKE_INSTALL_PREFIX=${PAWPAW_PREFIX}"
+JUCE_6_0_EXTRAFLAGS+=" -DJUCE_BUILD_HELPER_TOOLS=ON"
+JUCE_6_0_EXTRAFLAGS+=" -DJUCE_INSTALL_DESTINATION=lib/cmake/JUCE-6.0.8"
+
+download juce-6.0 "${JUCE_6_0_VERSION}" "${JUCE_6_0_URL}" "" "git"
+build_host_cmake juce-6.0 "${JUCE_6_0_VERSION}" "${JUCE_6_0_EXTRAFLAGS}"
+
+link_target_file juce-6.0 "${JUCE_6_0_VERSION}" "JUCEConfig.cmake" "lib/cmake/JUCE-6.0.8/JUCE-6.0.8Config.cmake"
+install_file juce-6.0 "${JUCE_6_0_VERSION}" "build/extras/Build/juceaide/juceaide_artefacts/Release/juceaide" "bin" "juceaide60"
+install_file juce-6.0 "${JUCE_6_0_VERSION}" "extras/Build/CMake/lv2_ttl_generator.c" "lib/cmake/JUCE-6.0.8"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# juce-6.1
+
+JUCE_6_1_VERSION="7c23c02e47739ee77f29a9bec4d5440b59dc54d3"
+JUCE_6_1_URL="https://github.com/DISTRHO/JUCE.git"
+
+JUCE_6_1_EXTRAFLAGS=""
+JUCE_6_1_EXTRAFLAGS+=" -DCMAKE_INSTALL_PREFIX=${PAWPAW_PREFIX}"
+JUCE_6_1_EXTRAFLAGS+=" -DJUCE_BUILD_HELPER_TOOLS=ON"
+JUCE_6_1_EXTRAFLAGS+=" -DJUCE_INSTALL_DESTINATION=lib/cmake/JUCE-6.1.6"
+
+download juce-6.1 "${JUCE_6_1_VERSION}" "${JUCE_6_1_URL}" "" "git"
+build_host_cmake juce-6.1 "${JUCE_6_1_VERSION}" "${JUCE_6_1_EXTRAFLAGS}"
+
+link_target_file juce-6.1 "${JUCE_6_1_VERSION}" "JUCEConfig.cmake" "lib/cmake/JUCE-6.1.6/JUCE-6.1.6Config.cmake"
+install_file juce-6.1 "${JUCE_6_1_VERSION}" "build/extras/Build/juceaide/juceaide_artefacts/Release/juceaide" "bin" "juceaide61"
+install_file juce-6.1 "${JUCE_6_1_VERSION}" "extras/Build/CMake/lv2_ttl_generator.c" "lib/cmake/JUCE-6.1.6"
+
+# ---------------------------------------------------------------------------------------------------------------------
+# juce-7.0
+
+JUCE_7_0_VERSION="c3099e733e90b8a2e7071698980abd70efb9a4e7"
+JUCE_7_0_URL="https://github.com/DISTRHO/JUCE.git"
+
+JUCE_7_0_EXTRAFLAGS=""
+JUCE_7_0_EXTRAFLAGS+=" -DCMAKE_INSTALL_PREFIX=${PAWPAW_PREFIX}"
+JUCE_7_0_EXTRAFLAGS+=" -DJUCE_BUILD_HELPER_TOOLS=ON"
+JUCE_7_0_EXTRAFLAGS+=" -DJUCE_INSTALL_DESTINATION=lib/cmake/JUCE-7.0.9"
+
+download juce-7.0 "${JUCE_7_0_VERSION}" "${JUCE_7_0_URL}" "" "git"
+build_host_cmake juce-7.0 "${JUCE_7_0_VERSION}" "${JUCE_7_0_EXTRAFLAGS}"
+
+link_target_file juce-7.0 "${JUCE_7_0_VERSION}" "JUCEConfig.cmake" "lib/cmake/JUCE-7.0.9/JUCE-7.0.9Config.cmake"
+install_file juce-7.0 "${JUCE_7_0_VERSION}" "build/extras/Build/juceaide/juceaide_artefacts/Release/juceaide" "bin" "juceaide70"
+
+# ---------------------------------------------------------------------------------------------------------------------
 # lvtk1
 
 LVTK1_VERSION="c105fd5077b4f7d963ad543b9979b94b9b052551"

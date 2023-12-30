@@ -639,19 +639,30 @@ function build_host_autoconf() {
     unset CXXFLAGS
     unset LDFLAGS
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch$" | sort); do
-            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
-                touch "${pkgdir}/.stamp_applied_${p}"
+    if [ -e "${PAWPAW_ROOT}/patches/${pkgname}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ] && [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        local patchtargets="${PAWPAW_TARGET}"
+        if [[ "${PAWPAW_TARGET}" = "linux-"* ]]; then
+            patchtargets+=" linux"
+        elif [ "${PAWPAW_TARGET}" = "macos-universal-10.15" ]; then
+            patchtargets+=" macos-10.15 macos-universal"
+        elif [ "${PAWPAW_TARGET}" = "win64" ]; then
+            patchtargets+=" win32"
+        fi
+
+        for target in ${patchtargets[@]}; do
+            if [ -e "${PAWPAW_ROOT}/patches/${pkgname}/${target}" ]; then
+                for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/${target}/" | grep "\.patch$" | sort); do
+                    if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                        patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${target}/${p}"
+                        touch "${pkgdir}/.stamp_applied_${p}"
+                    fi
+                done
             fi
         done
-    fi
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch$" | sort); do
+        for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/" | grep "\.patch$" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${p}"
                 touch "${pkgdir}/.stamp_applied_${p}"
             fi
         done
@@ -675,6 +686,82 @@ function build_host_autoconf() {
         pushd "${pkgdir}"
         make ${MAKE_ARGS} install -j 1
         touch .stamp_installed
+        popd
+    fi
+}
+
+function build_host_cmake() {
+    local pkgname="${1}"
+    local version="${2}"
+    local extraconfrules="${3}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
+
+    unset AR
+    unset CC
+    unset CXX
+    unset LD
+    unset STRIP
+    unset CFLAGS
+    unset CPPFLAGS
+    unset CXXFLAGS
+    unset LDFLAGS
+
+    if [ -e "${PAWPAW_ROOT}/patches/${pkgname}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ] && [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        local patchtargets="${PAWPAW_TARGET}"
+        if [[ "${PAWPAW_TARGET}" = "linux-"* ]]; then
+            patchtargets+=" linux"
+        elif [ "${PAWPAW_TARGET}" = "macos-universal-10.15" ]; then
+            patchtargets+=" macos-10.15 macos-universal"
+        elif [ "${PAWPAW_TARGET}" = "win64" ]; then
+            patchtargets+=" win32"
+        fi
+
+        for target in ${patchtargets[@]}; do
+            if [ -e "${PAWPAW_ROOT}/patches/${pkgname}/${target}" ]; then
+                for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/${target}/" | grep "\.patch$" | sort); do
+                    if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                        patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${target}/${p}"
+                        touch "${pkgdir}/.stamp_applied_${p}"
+                    fi
+                done
+            fi
+        done
+
+        for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/" | grep "\.patch$" | sort); do
+            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${p}"
+                touch "${pkgdir}/.stamp_applied_${p}"
+            fi
+        done
+    fi
+
+    mkdir -p "${pkgdir}/build"
+
+    if [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        pushd "${pkgdir}/build"
+        ${CMAKE_EXE_WRAPPER} ${cmake} \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_LIBDIR=lib \
+            -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}-host" \
+            -DCMAKE_MODULE_PATH="${PAWPAW_PREFIX}-host/lib/cmake" \
+            -DBUILD_SHARED_LIBS=OFF \
+            ${extraconfrules} ..
+        touch ../.stamp_configured
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_built" ]; then
+        pushd "${pkgdir}/build"
+        make ${MAKE_ARGS} ${EXTRA_MAKE_ARGS}
+        touch ../.stamp_built
+        popd
+    fi
+
+    if [ ! -f "${pkgdir}/.stamp_installed" ]; then
+        pushd "${pkgdir}/build"
+        make ${MAKE_ARGS} -j 1 install
+        touch ../.stamp_installed
         popd
     fi
 }
@@ -714,12 +801,17 @@ function install_file() {
     local version="${2}"
     local source="${3}"
     local targetdir="${4}"
+    local targetname="${5}"
+
+    if [ -z "${targetname}" ]; then
+        targetname="$(basename ${source})"
+    fi
 
     local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
 
-    if [ ! -e "${PAWPAW_PREFIX}/${targetdir}/$(basename ${source})" ]; then
+    if [ ! -e "${PAWPAW_PREFIX}/${targetdir}/${targetname})" ]; then
         pushd "${pkgdir}"
-        cp -v "${source}" "${PAWPAW_PREFIX}/${targetdir}/"
+        cp -v "${source}" "${PAWPAW_PREFIX}/${targetdir}/${targetname}"
         popd
     fi
 }
@@ -736,6 +828,32 @@ function link_file() {
         pushd "${pkgdir}"
         ln -sfv "${source}" "${target}"
         popd
+    fi
+}
+
+function link_host_file() {
+    local name="${1}"
+    local version="${2}"
+    local source="${3}"
+    local target="${4}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ ! -e "${PAWPAW_PREFIX}-host/${target}" ]; then
+        ln -sfv "${source}" "${PAWPAW_PREFIX}-host/${target}"
+    fi
+}
+
+function link_target_file() {
+    local name="${1}"
+    local version="${2}"
+    local source="${3}"
+    local target="${4}"
+
+    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+
+    if [ ! -e "${PAWPAW_PREFIX}/${target}" ]; then
+        ln -sfv "${source}" "${PAWPAW_PREFIX}/${target}"
     fi
 }
 
