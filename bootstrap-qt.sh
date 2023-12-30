@@ -96,10 +96,10 @@ function download_qt() {
 }
 
 function build_qt_conf() {
-    local name="${1}"
+    local pkgname="${1}"
     local extraconfrules="${2}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}${qtsuffix}-${QT5_VERSION}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}${qtsuffix}-${QT5_VERSION}"
 
     unset AR
     unset CC
@@ -116,19 +116,30 @@ function build_qt_conf() {
     export PKG_CONFIG_PATH="${TARGET_PKG_CONFIG_PATH}"
     export PKG_CONFIG_SYSROOT_DIR="/"
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch" | sort); do
-            if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
-                touch "${pkgdir}/.stamp_applied_${p}"
+    if [ -e "${PAWPAW_ROOT}/patches/${pkgname}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ] && [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        local patchtargets="${PAWPAW_TARGET}"
+        if [[ "${PAWPAW_TARGET}" = "linux-"* ]]; then
+            patchtargets+=" linux"
+        elif [ "${PAWPAW_TARGET}" = "macos-universal-10.15" ]; then
+            patchtargets+=" macos-10.15 macos-universal"
+        elif [ "${PAWPAW_TARGET}" = "win64" ]; then
+            patchtargets+=" win32"
+        fi
+
+        for target in ${patchtargets[@]}; do
+            if [ -e "${PAWPAW_ROOT}/patches/${pkgname}/${target}" ]; then
+                for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/${target}/" | grep "\.patch$" | sort); do
+                    if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                        patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${target}/${p}"
+                        touch "${pkgdir}/.stamp_applied_${p}"
+                    fi
+                done
             fi
         done
-    fi
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/" | grep "\.patch" | sort); do
+        for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/" | grep "\.patch$" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${PAWPAW_TARGET}/${p}"
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${p}"
                 touch "${pkgdir}/.stamp_applied_${p}"
             fi
         done
