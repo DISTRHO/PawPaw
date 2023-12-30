@@ -110,7 +110,7 @@ function git_clone() {
 # ---------------------------------------------------------------------------------------------------------------------
 
 function _prebuild() {
-    local name="${1}"
+    local pkgname="${1}"
     local pkgdir="${2}"
 
     export AR="${TARGET_AR}"
@@ -137,34 +137,34 @@ function _prebuild() {
     export OLD_PATH="${PATH}"
     export PATH="${TARGET_PATH}"
 
-    if [ -d "${PAWPAW_ROOT}/patches/${name}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-        for p in $(ls "${PAWPAW_ROOT}/patches/${name}/" | grep "\.patch$" | sort); do
+    if [ -e "${PAWPAW_ROOT}/patches/${pkgname}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ] && [ ! -f "${pkgdir}/.stamp_configured" ]; then
+        local patchtargets="${PAWPAW_TARGET}"
+        if [[ "${PAWPAW_TARGET}" = "linux-"* ]]; then
+            patchtargets+=" linux"
+        elif [ "${PAWPAW_TARGET}" = "macos-universal-10.15" ]; then
+            patchtargets+=" macos-10.15 macos-universal"
+        elif [ "${PAWPAW_TARGET}" = "win64" ]; then
+            patchtargets+=" win32"
+        fi
+
+        for target in ${patchtargets[@]}; do
+            if [ -e "${PAWPAW_ROOT}/patches/${pkgname}/${target}" ]; then
+                for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/${target}/" | grep "\.patch$" | sort); do
+                    if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
+                        patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${target}/${p}"
+                        touch "${pkgdir}/.stamp_applied_${p}"
+                    fi
+                done
+            fi
+        done
+
+        for p in $(ls "${PAWPAW_ROOT}/patches/${pkgname}/" | grep "\.patch$" | sort); do
             if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${p}"
+                patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${pkgname}/${p}"
                 touch "${pkgdir}/.stamp_applied_${p}"
             fi
         done
     fi
-
-    local patchtargets="${PAWPAW_TARGET}"
-    if [ "${PAWPAW_TARGET}" = "linux-"* ]; then
-        patchtargets+=" linux"
-    elif [ "${PAWPAW_TARGET}" = "macos-universal-10.15" ]; then
-        patchtargets+=" macos-10.15 macos-universal"
-    elif [ "${PAWPAW_TARGET}" = "win64" ]; then
-        patchtargets+=" win32"
-    fi
- 
-    for target in ${patchtargets[@]}; do
-        if [ -d "${PAWPAW_ROOT}/patches/${name}/${target}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
-            for p in $(ls "${PAWPAW_ROOT}/patches/${name}/${target}/" | grep "\.patch$" | sort); do
-                if [ ! -f "${pkgdir}/.stamp_applied_${p}" ]; then
-                    patch -p1 -d "${pkgdir}" -i "${PAWPAW_ROOT}/patches/${name}/${target}/${p}"
-                    touch "${pkgdir}/.stamp_applied_${p}"
-                fi
-            done
-        fi
-    done
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         rm -f "${pkgdir}/.stamp_built"

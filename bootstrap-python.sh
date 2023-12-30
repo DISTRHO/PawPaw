@@ -62,8 +62,20 @@ function build_conf_openssl() {
         elif [ "${WIN32}" -eq 1 ]; then
             export MACHINE="i686"
             export SYSTEM="mingw"
-        else
-            export MACHINE="$(uname -m)"
+        elif [ -n "${LINUX_TARGET}" ]; then
+            if [ "${LINUX_TARGET}" = "linux-armhf" ]; then
+                export MACHINE="armv4"
+            elif [ "${LINUX_TARGET}" = "linux-aarch64" ]; then
+                export MACHINE="aarch64"
+            elif [ "${LINUX_TARGET}" = "linux-i686" ]; then
+                export MACHINE="i686"
+            elif [ "${LINUX_TARGET}" = "linux-riscv64" ]; then
+                export MACHINE="riscv64"
+            elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
+                export MACHINE="x86_64"
+            else
+                export MACHINE="$(uname -m)"
+            fi
             export SYSTEM="linux2"
         fi
         export RELEASE="whatever"
@@ -111,7 +123,7 @@ if [ -z "${PAWPAW_SKIP_OPENSSL}" ]; then
 OPENSSL_URL="https://www.openssl.org/source"
 OPENSSL_VERSION="1.1.1w"
 
-OPENSSL_EXTRAFLAGS="no-shared no-hw threads no-zlib no-capieng no-pinshared"
+OPENSSL_EXTRAFLAGS="no-capieng no-pinshared no-shared no-hw no-zlib threads"
 if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
     OPENSSL_EXTRAFLAGS+=" no-asm"
 fi
@@ -229,7 +241,7 @@ if [ "${MACOS}" -eq 1 ]; then
 elif [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS=" -fwrapv -D_WIN32_WINNT=0x0601"
     export EXTRA_CXXFLAGS=" -fwrapv -D_WIN32_WINNT=0x0601"
-    PYTHON_EXTRAFLAGS="--with-nt-threads"
+    PYTHON_EXTRAFLAGS+=" --with-nt-threads"
     PYTHON_EXTRAFLAGS+=" --without-ensurepip"
     PYTHON_EXTRAFLAGS+=" --without-c-locale-coercion"
     # Workaround for conftest error on 64-bit builds
@@ -246,6 +258,10 @@ elif [ "${WIN32}" -eq 1 ]; then
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_MEMBER=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NODELETE=no"
     PYTHON_EXTRAFLAGS+=" ac_cv_have_decl_RTLD_NOLOAD=no"
+elif [ "${CROSS_COMPILING}" -eq 1 ]; then
+    PYTHON_EXTRAFLAGS+=" --disable-ipv6"
+    PYTHON_EXTRAFLAGS+=" ac_cv_file__dev_ptc=no"
+    PYTHON_EXTRAFLAGS+=" ac_cv_file__dev_ptmx=no"
 fi
 
 download Python "${PYTHON_VERSION}" "https://www.python.org/ftp/python/${PYTHON_VERSION}" "tgz"
