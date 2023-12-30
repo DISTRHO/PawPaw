@@ -403,7 +403,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # libsamplerate
 
-if [ -n "${PAWPAW_SKIP_SAMPLERATE}" ] && [ "${PAWPAW_SKIP_SAMPLERATE}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_SAMPLERATE}" ] || [ "${PAWPAW_SKIP_SAMPLERATE}" -eq 0 ]; then
 
 LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
 
