@@ -529,9 +529,8 @@ jobs:
             os: macos-11
           - target: macos-universal
             os: macos-11
-          # FIXME broken build
-          #- target: macos-universal-10.15
-            #os: macos-11
+          - target: macos-universal-10.15
+            os: macos-11
           # macos 12
           - target: macos
             os: macos-12
@@ -539,9 +538,8 @@ jobs:
             os: macos-12
           - target: macos-universal
             os: macos-12
-          # FIXME broken build
-          #- target: macos-universal-10.15
-            #os: macos-12
+          - target: macos-universal-10.15
+            os: macos-12
           # debian:11
           - target: linux-aarch64
             container: debian:11
@@ -809,15 +807,13 @@ jobs:
           # macos 11
           - target: macos-10.15
             os: macos-11
-          # FIXME broken build
-          #- target: macos-universal-10.15
-            #os: macos-11
+          - target: macos-universal-10.15
+            os: macos-11
           # macos 12
           - target: macos-10.15
             os: macos-12
-          # FIXME broken build
-          #- target: macos-universal-10.15
-            #os: macos-12
+          - target: macos-universal-10.15
+            os: macos-12
           # debian 11
           - target: linux-x86_64
             container: debian:11
