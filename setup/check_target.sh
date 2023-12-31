@@ -110,6 +110,7 @@ function check_target() {
             if [ "$(uname -m)" != "aarch64" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="aarch64"
+                export EXE_WRAPPER="qemu-aarch64-static"
             fi
             ;;
         "linux-armhf")
@@ -121,6 +122,7 @@ function check_target() {
             if [ "$(uname -m)" != "arm" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="armv7"
+                export EXE_WRAPPER="qemu-arm-static"
             fi
             ;;
         "linux-i686"|"linux-i386")
@@ -133,6 +135,7 @@ function check_target() {
             if [ "$(uname -m)" != "i386" ] && [ "$(uname -m)" != "i686" ] && [ "$(uname -m)" != "x86_64" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="i386"
+                export EXE_WRAPPER="qemu-i386-static"
             fi
             ;;
         "linux-riscv64")
@@ -144,6 +147,7 @@ function check_target() {
             if [ "$(uname -m)" != "riscv64" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="riscv64"
+                export EXE_WRAPPER="qemu-riscv64-static"
             fi
             ;;
         "linux-x86_64")
@@ -156,6 +160,7 @@ function check_target() {
             if [ "$(uname -m)" != "x86_64" ]; then
                 CROSS_COMPILING=1
                 CMAKE_SYSTEM_PROCESSOR="x86_64"
+                export EXE_WRAPPER="qemu-x86_64-static"
             fi
             ;;
         "native")
