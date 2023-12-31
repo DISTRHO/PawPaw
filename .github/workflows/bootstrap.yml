@@ -866,8 +866,17 @@ jobs:
       - name: Set up dependencies
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
+
+          if [ "${{ matrix.container }}" = "ubuntu:18.04" ]; then
+            freetypepkgname="libfreetype6-dev"
+          else
+            freetypepkgname="libfreetype-dev"
+          fi
+
           if [ "${{ matrix.target }}" = "linux-x86_64" ]; then
-            apt-get install -yqq libfreetype6-dev
+            apt-get install -yqq ${freetypepkgname}
+          elif [ "${{ matrix.target }}" = "win64" ]; then
+            apt-get install -yqq ${freetypepkgname} libx11-dev libxcursor-dev libxext-dev libxrandr-dev libxrender-dev
           fi
       - name: Run bootstrap
         shell: bash
