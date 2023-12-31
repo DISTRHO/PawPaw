@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 function download() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local dlbaseurl="${3}"
     local dlext="${4}"
@@ -16,11 +16,11 @@ function download() {
         dlext="tar.gz"
     fi
     if [ -z "${dlname}" ]; then
-        dlname="${name}"
+        dlname="${pkgname}"
     fi
 
     local dlfile="${PAWPAW_DOWNLOADDIR}/${dlname}-${version}.${dlext}"
-    local dlfolder="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local dlfolder="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ ! -f "${dlfile}" ]; then
         if [ -n "${dlmethod}" ] && [ "${dlmethod}" = "git" ]; then
@@ -60,8 +60,8 @@ function download() {
 }
 
 function copy_download() {
-    local name1="${1}"
-    local name2="${2}"
+    local pkgname1="${1}"
+    local pkgname2="${2}"
     local version="${3}"
     local dlext="${4}"
 
@@ -69,8 +69,8 @@ function copy_download() {
         dlext="tar.gz"
     fi
 
-    local dlfile1="${PAWPAW_DOWNLOADDIR}/${name1}-${version}.${dlext}"
-    local dlfolder2="${PAWPAW_BUILDDIR}/${name2}-${version}"
+    local dlfile1="${PAWPAW_DOWNLOADDIR}/${pkgname1}-${version}.${dlext}"
+    local dlfolder2="${PAWPAW_BUILDDIR}/${pkgname2}-${version}"
 
     if [ ! -d "${dlfolder2}" ]; then
         mkdir "${dlfolder2}"
@@ -79,17 +79,17 @@ function copy_download() {
 }
 
 function git_clone() {
-    local name="${1}"
+    local pkgname="${1}"
     local hash="${2}"
     local repourl="${3}"
     local dlname="${4}"
 
     if [ -z "${dlname}" ]; then
-        dlname="${name}"
+        dlname="${pkgname}"
     fi
 
     local dlfile="${PAWPAW_DOWNLOADDIR}/${dlname}-${hash}.tar.gz"
-    local dlfolder="${PAWPAW_BUILDDIR}/${name}-${hash}"
+    local dlfolder="${PAWPAW_BUILDDIR}/${pkgname}-${hash}"
 
     if [ ! -f "${dlfile}" ]; then
         local tmprepodir="${PAWPAW_TMPDIR}/${dlname}-${hash}"
@@ -211,11 +211,11 @@ function _postbuild() {
 # ---------------------------------------------------------------------------------------------------------------------
 
 function build_autoconf() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ "${WASM}" -eq 1 ]; then
         extraconfrules="--host=$(uname -m)-linux-gnu ${extraconfrules}"
@@ -223,7 +223,7 @@ function build_autoconf() {
         extraconfrules="--host=${TOOLCHAIN_PREFIX} ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
     fi
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -250,18 +250,18 @@ function build_autoconf() {
 }
 
 function build_autoconfgen() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     local EXTRA_CFLAGS2="${EXTRA_CFLAGS}"
     local EXTRA_CXXFLAGS2="${EXTRA_CXXFLAGS}"
     local EXTRA_LDFLAGS2="${EXTRA_LDFLAGS}"
     local EXTRA_MAKE_ARGS2="${EXTRA_MAKE_ARGS}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_preconfigured" ]; then
         pushd "${pkgdir}"
@@ -281,17 +281,17 @@ function build_autoconfgen() {
     export EXTRA_LDFLAGS="${EXTRA_LDFLAGS2}"
     export EXTRA_MAKE_ARGS="${EXTRA_MAKE_ARGS2}"
 
-    build_autoconf "${name}" "${version}" "${extraconfrules}"
+    build_autoconf "${pkgname}" "${version}" "${extraconfrules}"
 }
 
 function build_conf() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -318,13 +318,13 @@ function build_conf() {
 }
 
 function build_cmake() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
     mkdir -p "${pkgdir}/build"
 
     if [ "${WASM}" -eq 1 ]; then
@@ -389,13 +389,13 @@ function build_cmake() {
 }
 
 function build_make() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     touch "${pkgdir}/.stamp_configured"
 
@@ -417,17 +417,17 @@ function build_make() {
 }
 
 function build_meson() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         extraconfrules="--cross-file "${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini" ${extraconfrules}"
     fi
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -454,14 +454,14 @@ function build_meson() {
 }
 
 function build_python() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
     local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
@@ -512,13 +512,13 @@ function build_python() {
 }
 
 function build_qmake() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     # if [ "${CROSS_COMPILING}" -eq 1 ]; then
     #     export PKG_CONFIG_LIBDIR="${TARGET_PKG_CONFIG_PATH}"
@@ -553,11 +553,11 @@ function build_qmake() {
 }
 
 function build_waf() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
     local python=python3
 
     if ! which python3 > /dev/null; then
@@ -568,7 +568,7 @@ function build_waf() {
         export LD_LIBRARY_PATH="${PAWPAW_PREFIX}/lib"
     fi
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
@@ -602,13 +602,13 @@ function build_waf() {
 # ---------------------------------------------------------------------------------------------------------------------
 
 function run_make() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local makerule="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_custom_run" ]; then
         pushd "${pkgdir}"
@@ -623,11 +623,11 @@ function run_make() {
 # ---------------------------------------------------------------------------------------------------------------------
 
 function build_host_autoconf() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     unset AR
     unset CC
@@ -769,12 +769,12 @@ function build_host_cmake() {
 # ---------------------------------------------------------------------------------------------------------------------
 
 function patch_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local file="${3}"
     local rule="${4}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ -e "${pkgdir}/${file}" ]; then
         sed -i -e "${rule}" "${pkgdir}/${file}"
@@ -782,12 +782,12 @@ function patch_file() {
 }
 
 function copy_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local source="${3}"
     local target="${4}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ ! -e "${pkgdir}/${target}" ] || [ "${source}" -nt "${target}" ]; then
         pushd "${pkgdir}"
@@ -797,7 +797,7 @@ function copy_file() {
 }
 
 function install_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local source="${3}"
     local targetdir="${4}"
@@ -807,7 +807,7 @@ function install_file() {
         targetname="$(basename ${source})"
     fi
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ ! -e "${PAWPAW_PREFIX}/${targetdir}/${targetname})" ]; then
         pushd "${pkgdir}"
@@ -817,12 +817,12 @@ function install_file() {
 }
 
 function link_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local source="${3}"
     local target="${4}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ ! -e "${pkgdir}/${target}" ]; then
         pushd "${pkgdir}"
@@ -832,12 +832,12 @@ function link_file() {
 }
 
 function link_host_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local source="${3}"
     local target="${4}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ ! -e "${PAWPAW_PREFIX}-host/${target}" ]; then
         ln -sfv "${source}" "${PAWPAW_PREFIX}-host/${target}"
@@ -845,12 +845,12 @@ function link_host_file() {
 }
 
 function link_target_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local source="${3}"
     local target="${4}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ ! -e "${PAWPAW_PREFIX}/${target}" ]; then
         ln -sfv "${source}" "${PAWPAW_PREFIX}/${target}"
@@ -858,11 +858,11 @@ function link_target_file() {
 }
 
 function remove_file() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local file="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ -e "${pkgdir}/${file}" ]; then
         rm -fv "${pkgdir}/${file}"
@@ -893,13 +893,13 @@ function patch_osx_binary_libs() {
 }
 
 function patch_osx_qtapp() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local appfile="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     mkdir -p "${appfile}/Contents/PlugIns/platforms"
     mkdir -p "${appfile}/Contents/PlugIns/printsupport"
