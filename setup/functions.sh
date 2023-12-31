@@ -809,7 +809,7 @@ function install_file() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    if [ ! -e "${PAWPAW_PREFIX}/${targetdir}/${targetname})" ]; then
+    if [ ! -e "${PAWPAW_PREFIX}/${targetdir}/${targetname}" ]; then
         pushd "${pkgdir}"
         cp -v "${source}" "${PAWPAW_PREFIX}/${targetdir}/${targetname}"
         popd

@@ -137,7 +137,7 @@ build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_T
 # ---------------------------------------------------------------------------------------------------------------------
 # juce-6.0
 
-JUCE_6_0_VERSION="5a7b0760aa8ccbc92e2c3abb9ce36e8dd23427ba"
+JUCE_6_0_VERSION="24b7e3b2b2c4713d53163b58aed8f79a605218e9"
 JUCE_6_0_URL="https://github.com/DISTRHO/JUCE.git"
 
 JUCE_6_0_EXTRAFLAGS=""
@@ -155,7 +155,7 @@ install_file juce-6.0 "${JUCE_6_0_VERSION}" "extras/Build/CMake/lv2_ttl_generato
 # ---------------------------------------------------------------------------------------------------------------------
 # juce-6.1
 
-JUCE_6_1_VERSION="297338ad7e8215ac1448917716b7f2eb1a663014"
+JUCE_6_1_VERSION="2cf0224df33e52ebbaebacc9a846d2be26cdcbcb"
 JUCE_6_1_URL="https://github.com/DISTRHO/JUCE.git"
 
 JUCE_6_1_EXTRAFLAGS=""
