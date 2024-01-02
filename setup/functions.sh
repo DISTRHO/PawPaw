@@ -224,9 +224,9 @@ function build_autoconf() {
     fi
 
     if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
-        extraconfrules+=" --disable-debug"
-    else
         extraconfrules+=" --enable-debug"
+    else
+        extraconfrules+=" --disable-debug"
     fi
 
     _prebuild "${pkgname}" "${pkgdir}"
@@ -371,9 +371,9 @@ function build_cmake() {
     fi
 
     if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
-        extraconfrules+=" -DCMAKE_BUILD_TYPE=Release"
-    else
         extraconfrules+=" -DCMAKE_BUILD_TYPE=Debug"
+    else
+        extraconfrules+=" -DCMAKE_BUILD_TYPE=Release"
     fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
@@ -436,13 +436,13 @@ function build_meson() {
     local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules+=" --cross-file '${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini'"
+        extraconfrules+=" --cross-file ${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini"
     fi
 
     if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
-        extraconfrules+=" --buildtype release"
-    else
         extraconfrules+=" --buildtype debug"
+    else
+        extraconfrules+=" --buildtype release"
     fi
 
     _prebuild "${pkgname}" "${pkgdir}"

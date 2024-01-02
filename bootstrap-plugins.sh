@@ -533,7 +533,8 @@ fi # PAWPAW_SKIP_LV2
 
 if [ -z "${PAWPAW_SKIP_FLUIDSYNTH}" ] || [ "${PAWPAW_SKIP_FLUIDSYNTH}" -eq 0 ]; then
 
-FLUIDSYNTH_EXTRAFLAGS="-Denable-floats=ON"
+FLUIDSYNTH_EXTRAFLAGS=""
+FLUIDSYNTH_EXTRAFLAGS+=" -Denable-floats=ON"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-alsa=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-aufile=OFF"
 FLUIDSYNTH_EXTRAFLAGS+=" -Denable-coreaudio=OFF"
@@ -574,8 +575,11 @@ fi # PAWPAW_SKIP_FLUIDSYNTH
 # ---------------------------------------------------------------------------------------------------------------------
 # mxml
 
+MXML_EXTRAFLAGS=""
+MXML_EXTRAFLAGS+=" --with-archflags="
+
 download mxml "${MXML_VERSION}" "${MXML_URL}"
-build_autoconf mxml "${MXML_VERSION}"
+build_autoconf mxml "${MXML_VERSION}" "${MXML_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
 # carla (backend only)
