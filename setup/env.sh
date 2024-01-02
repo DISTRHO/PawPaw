@@ -296,6 +296,10 @@ if [ "${CROSS_COMPILING}" -eq 1 ]; then
     fi
 fi
 
+if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+    MAKE_ARGS+=" DEBUG=true"
+fi
+
 if [ "${MACOS}" -eq 1 ]; then
     MAKE_ARGS+=" MACOS=true"
     if [ "${MACOS_UNIVERSAL}" -eq 1 ]; then
