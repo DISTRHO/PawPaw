@@ -61,6 +61,11 @@ PAWPAW_BUILDDIR="${PAWPAW_DIR}/builds/${PAWPAW_TARGET}"
 PAWPAW_PREFIX="${PAWPAW_DIR}/targets/${PAWPAW_TARGET}"
 PAWPAW_TMPDIR="/tmp"
 
+if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+    PAWPAW_BUILDDIR+="-debug"
+    PAWPAW_PREFIX+="-debug"
+fi
+
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
     PAWPAW_BUILDDIR+="-lto"
     PAWPAW_PREFIX+="-lto"
@@ -90,14 +95,20 @@ fi
 
 ## build flags
 
-BUILD_FLAGS="-Os -pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
+BUILD_FLAGS="-pipe -I${PAWPAW_PREFIX}/include ${EXTRA_FLAGS}"
 BUILD_FLAGS+=" -ffast-math"
-BUILD_FLAGS+=" -fPIC -DPIC -DNDEBUG=1"
-BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fomit-frame-pointer -fvisibility=hidden"
+BUILD_FLAGS+=" -fPIC -DPIC"
+BUILD_FLAGS+=" -fdata-sections -ffunction-sections -fno-common -fvisibility=hidden"
 BUILD_FLAGS+=" -fno-stack-protector -U_FORTIFY_SOURCE -Wp,-U_FORTIFY_SOURCE"
 
 if [ "${GCC}" -eq 1 ]; then
     BUILD_FLAGS+=" -fno-gnu-unique"
+fi
+
+if [ -z "${PAWPAW_DEBUG}" ] || [ "${PAWPAW_DEBUG}" -eq 0 ]; then
+    BUILD_FLAGS+=" -Os -DNDEBUG=1 -fomit-frame-pointer"
+else
+    BUILD_FLAGS+=" -O0 -g -DDEBUG=1 -D_DEBUG=1"
 fi
 
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
@@ -185,7 +196,10 @@ elif [ "${WASM}" -eq 1 ]; then
         LINK_FLAGS+=" -sAGGRESSIVE_VARIABLE_ELIMINATION=1"
     fi
 else
-    LINK_FLAGS+=" -Wl,-O1,--gc-sections,--no-undefined"
+    LINK_FLAGS+=" -Wl,--gc-sections,--no-undefined"
+    if [ -z "${PAWPAW_DEBUG}" ] || [ "${PAWPAW_DEBUG}" -eq 0 ]; then
+        LINK_FLAGS+=" -Wl,-O1"
+    fi
     if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
         LINK_FLAGS+=" -Wl,--as-needed,--strip-all"
     fi

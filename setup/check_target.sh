@@ -197,6 +197,12 @@ function check_target() {
 
 check_target
 
+# always skip tests when cross-compiling
 if [ "${CROSS_COMPILING}" -eq 1 ]; then
     PAWPAW_SKIP_TESTS=${PAWPAW_SKIP_TESTS:=1}
+fi
+
+# always skip stripping if building in debug mode
+if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+    PAWPAW_SKIP_STRIPPING=1
 fi

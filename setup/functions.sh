@@ -218,16 +218,22 @@ function build_autoconf() {
     local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ "${WASM}" -eq 1 ]; then
-        extraconfrules="--host=$(uname -m)-linux-gnu ${extraconfrules}"
+        extraconfrules+=" --host=$(uname -m)-linux-gnu"
     elif [ -n "${TOOLCHAIN_PREFIX}" ]; then
-        extraconfrules="--host=${TOOLCHAIN_PREFIX} ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX} ${extraconfrules}"
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX}"
+    fi
+
+    if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+        extraconfrules+=" --disable-debug"
+    else
+        extraconfrules+=" --enable-debug"
     fi
 
     _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        ./configure --enable-static --disable-shared --disable-debug --disable-doc --disable-docs --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ./configure --enable-static --disable-shared --disable-doc --disable-docs --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch .stamp_configured
         popd
     fi
@@ -364,9 +370,15 @@ function build_cmake() {
         extraconfrules+=" -DCMAKE_RC_COMPILER=${WINDRES}"
     fi
 
+    if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+        extraconfrules+=" -DCMAKE_BUILD_TYPE=Release"
+    else
+        extraconfrules+=" -DCMAKE_BUILD_TYPE=Debug"
+    fi
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
-        ${CMAKE_EXE_WRAPPER} ${cmake} -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
+        ${CMAKE_EXE_WRAPPER} ${cmake} -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..
         touch ../.stamp_configured
         popd
     fi
@@ -424,14 +436,20 @@ function build_meson() {
     local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
-        extraconfrules="--cross-file "${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini" ${extraconfrules}"
+        extraconfrules+=" --cross-file '${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini'"
+    fi
+
+    if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+        extraconfrules+=" --buildtype release"
+    else
+        extraconfrules+=" --buildtype debug"
     fi
 
     _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}"
-        env NINJA="${ninja}" ${meson} setup build --buildtype release --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
+        env NINJA="${ninja}" ${meson} setup build --prefix "${PAWPAW_PREFIX}" --libdir lib ${extraconfrules}
         touch .stamp_configured
         popd
     fi
@@ -474,7 +492,8 @@ function build_python() {
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
-    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--gc-sections,--no-undefined//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--gc-sections,--no-undefined//')"
+    export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--as-needed,--strip-all//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
