@@ -116,8 +116,8 @@ MOD_SDK_URL=https://github.com/moddevices/mod-lv2-extensions.git
 FLUIDSYNTH_VERSION=f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
 FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 
-MXML_VERSION=38b044ed8ca2a611ed9ed3e26c4b46416335194e # 3.2
-MXML_URL=https://github.com/michaelrsweet/mxml.git
+MXML_VERSION=3.3.1
+MXML_URL=https://github.com/michaelrsweet/mxml/releases/download/v${MXML_VERSION}
 
 CARLA_VERSION=658b5e30c6457fe9ef9a839e06a49912bb4feee2 # 2.5.1~
 CARLA_URL=https://github.com/falkTX/Carla.git
