@@ -185,6 +185,9 @@ if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
 fi
 
 if [ "${MACOS}" -eq 1 ]; then
+    if ld -v 2>&1 | grep -q ld-classic; then
+        LINK_FLAGS+=" -Wl,-ld_classic"
+    fi
     if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
         LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
     fi
