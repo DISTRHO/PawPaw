@@ -40,7 +40,7 @@ But roughly all that is needed is something like:
 # change dir to PawPaw root folder
 cd /path/to/PawPaw
 # build plugin dependencies for win64 target (only needed once)
-./bootstrap-plugins win64
+./bootstrap-plugins.sh win64
 # set up environment variables for win64 builds with PawPaw static libs
 source local.env win64
 # change dir to your own project
@@ -48,3 +48,26 @@ cd /path/to/my/project
 # build as usual
 make # or whatever other build system applies
 ```
+
+##### On MacOS
+
+##### Prerequisites
+Based on Sonoma 14.2.1 running on an M1 based MacBook, the following are needed:
+* Xcode command line tools https://mac.install.guide/commandlinetools/about-xcode-clt.html
+
+As well as:
+* autoconf
+* cmake
+* gawk
+* coreutils
+* libtool
+* make
+* meson
+
+A great way of installing these are using Homebrew "The Missing Package Manager for macOS". You can install Homebrew by visiting https://brew.sh/
+
+The brew command to install the dependencies listed above is:
+
+```zsh
+brew install autoconf cmake coreutils gawk libtool make meson
+``` 
