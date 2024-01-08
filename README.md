@@ -28,8 +28,10 @@ PawPaw has the following goals:
  - Package the entire collection as an installer
 
 Additionally, PawPaw is used to build library dependencies for
-[Carla](https://github.com/falkTX/Carla) and
-[JACK2](https://github.com/jackaudio/jack2).
+[Cardinal](https://github.com/DISTRHO/Cardinal),
+[Carla](https://github.com/falkTX/Carla),
+[JACK2](https://github.com/jackaudio/jack2) and
+[mod-app](https://github.com/moddevices/mod-app).
 
 ## For developers
 
@@ -39,12 +41,16 @@ But roughly all that is needed is something like:
 ```bash
 # change dir to PawPaw root folder
 cd /path/to/PawPaw
+
 # build plugin dependencies for win64 target (only needed once)
 ./bootstrap-plugins.sh win64
+
 # set up environment variables for win64 builds with PawPaw static libs
 source local.env win64
+
 # change dir to your own project
 cd /path/to/my/project
+
 # build as usual
 make # or whatever other build system applies
 ```
@@ -52,22 +58,25 @@ make # or whatever other build system applies
 ##### On MacOS
 
 ##### Prerequisites
+
 Based on Sonoma 14.2.1 running on an M1 based MacBook, the following are needed:
 * Xcode command line tools https://mac.install.guide/commandlinetools/about-xcode-clt.html
 
 As well as:
 * autoconf
+* automake
 * cmake
-* gawk
 * coreutils
-* libtool
+* gawk
+* gnu-sed
+* jq
 * make
 * meson
 
-A great way of installing these are using Homebrew "The Missing Package Manager for macOS". You can install Homebrew by visiting https://brew.sh/
+A great way of installing these is using Homebrew "The Missing Package Manager for macOS". You can install Homebrew by visiting https://brew.sh/
 
 The brew command to install the dependencies listed above is:
 
 ```zsh
-brew install autoconf cmake coreutils gawk libtool make meson
-``` 
+brew install autoconf automake cmake coreutils gawk git gnu-sed jq make meson
+```
