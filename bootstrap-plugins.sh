@@ -367,7 +367,7 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # glib
 
-if [ -z "${PAWPAW_SKIP_GLIB}" ] || [ "${PAWPAW_SKIP_GLIB}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_GLIB}" ] || [ "${PAWPAW_SKIP_GLIB}" -eq 0 ]; then
 
 if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
     GLIB_EXTRAFLAGS="--disable-rebuilds"
