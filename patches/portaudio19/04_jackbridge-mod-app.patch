@@ -18,7 +18,7 @@ index a800f8e..c06eb89 100644
  static pthread_t mainThread_;
  static char *jackErr_ = NULL;
 -static const char* clientName_ = "PortAudio";
-+static const char* clientName_ = "MOD App";
++static const char* clientName_ = "MOD Desktop App";
  
  #define STRINGIZE_HELPER(expr) #expr
  #define STRINGIZE(expr) STRINGIZE_HELPER(expr)
