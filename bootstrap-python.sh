@@ -153,8 +153,9 @@ function build_conf_python() {
 
     # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
-    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-finite-math-only//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,--gc-sections,--no-undefined//')"

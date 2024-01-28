@@ -66,13 +66,15 @@ function build_pyqt() {
 
     # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
-    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-ffast-math//')"
+    export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-finite-math-only//')"
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility=hidden//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fvisibility-inlines-hidden//')"
-    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-ffast-math//')"
+    export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fno-finite-math-only//')"
     export CXXFLAGS="$(echo ${CXXFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-dead_strip,-dead_strip_dylibs,-x//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-Wl,-O1,--gc-sections,--no-undefined//')"
