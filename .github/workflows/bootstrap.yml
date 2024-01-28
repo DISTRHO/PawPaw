@@ -688,6 +688,7 @@ jobs:
 
   cardinal:
     env:
+      PAWPAW_FAST_MATH: 1
       PAWPAW_SKIP_LTO: 1
       PAWPAW_SKIP_GLIB: 1
       PAWPAW_SKIP_LV2: 1
@@ -800,6 +801,7 @@ jobs:
 
   modaudio:
     env:
+      PAWPAW_FAST_MATH: 1
       PAWPAW_SKIP_LTO: 1
     strategy:
       matrix:

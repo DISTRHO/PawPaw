@@ -23,6 +23,7 @@ export PAWPAW_SKIP_LTO=1
 # ---------------------------------------------------------------------------------------------------------------------
 # run bootstrap dependencies
 
+export PAWPAW_FAST_MATH=1
 export PAWPAW_MODAUDIO=1
 
 ./bootstrap-common.sh "${target}"
