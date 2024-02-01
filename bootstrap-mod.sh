@@ -98,7 +98,7 @@ if [ "${LINUX}" -eq 1 ]; then
 fi
 
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
-patch_file jack2 "${JACK2_VERSION}" "dbus/audio_reserve.c" "s/Jack audio server/MOD Desktop App/"
+patch_file jack2 "${JACK2_VERSION}" "dbus/audio_reserve.c" "s/Jack audio server/MOD Desktop/"
 build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
 # patch pkg-config file for static win32 builds
