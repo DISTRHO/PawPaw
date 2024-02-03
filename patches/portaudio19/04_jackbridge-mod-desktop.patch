@@ -2728,10 +2728,10 @@ index a800f8e..150bf81 100644
 -        UNLESS( i == outputChannelCount, paInternalError );
 -    }
 +    UNLESS( stream->local_input_midi = jackbridge_port_register(
-+            jackHostApi->jack_client, "midi_in",
++            jackHostApi->jack_client, "midi-in",
 +            JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0 ), paInsufficientMemory );
 +    UNLESS( stream->local_output_midi = jackbridge_port_register(
-+            jackHostApi->jack_client, "midi_out",
++            jackHostApi->jack_client, "midi-out",
 +            JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0 ), paInsufficientMemory );
  
      ENSURE_PA( PaUtil_InitializeBufferProcessor(
