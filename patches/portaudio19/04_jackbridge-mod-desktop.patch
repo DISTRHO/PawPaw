@@ -2251,7 +2251,7 @@ index 0000000..eff8cb0
 +
 +#endif // JACKBRIDGE_HPP_INCLUDED
 diff --git a/src/hostapi/jack/pa_jack.c b/src/hostapi/jack/pa_jack.c
-index a800f8e..0c578ad 100644
+index a800f8e..150bf81 100644
 --- a/src/hostapi/jack/pa_jack.c
 +++ b/src/hostapi/jack/pa_jack.c
 @@ -59,8 +59,8 @@
@@ -2274,18 +2274,33 @@ index a800f8e..0c578ad 100644
  
  #define STRINGIZE_HELPER(expr) #expr
  #define STRINGIZE(expr) STRINGIZE_HELPER(expr)
-@@ -191,10 +191,6 @@ typedef struct PaJackStream
+@@ -190,16 +190,21 @@ typedef struct PaJackStream
+     /* our input and output ports */
      jack_port_t **local_input_ports;
      jack_port_t **local_output_ports;
- 
+-
 -    /* the input and output ports of the client we are connecting to */
 -    jack_port_t **remote_input_ports;
 -    jack_port_t **remote_output_ports;
--
++    jack_port_t *local_input_midi;
++    jack_port_t *local_output_midi;
+ 
      int num_incoming_connections;
      int num_outgoing_connections;
  
-@@ -232,10 +228,6 @@ typedef struct PaJackStream
+     jack_client_t *jack_client;
+ 
++    /* MIDI handling */
++    void *midi_get_ptr;
++    void *midi_write_ptr;
++    jacksym_midi_get_event_count midi_get_count;
++    jacksym_midi_event_get midi_get;
++    jacksym_midi_event_write midi_write;
++
+     /* The stream is running if it's still producing samples.
+      * The stream is active if samples it produced are still being heard.
+      */
+@@ -232,10 +237,6 @@ typedef struct PaJackStream
  }
  PaJackStream;
  
@@ -2296,7 +2311,7 @@ index a800f8e..0c578ad 100644
  #define TRUE 1
  #define FALSE 0
  
-@@ -468,110 +460,33 @@ static PaError BuildDeviceList( PaJackHostApiRepresentation *jackApi )
+@@ -468,110 +469,33 @@ static PaError BuildDeviceList( PaJackHostApiRepresentation *jackApi )
      PaError result = paNoError;
      PaUtilHostApiRepresentation *commonApi = &jackApi->commonHostApiRep;
  
@@ -2411,7 +2426,7 @@ index a800f8e..0c578ad 100644
  
          curDevInfo->structVersion = 2;
          curDevInfo->hostApi = jackApi->hostApiIndex;
-@@ -580,65 +495,22 @@ static PaError BuildDeviceList( PaJackHostApiRepresentation *jackApi )
+@@ -580,65 +504,22 @@ static PaError BuildDeviceList( PaJackHostApiRepresentation *jackApi )
           * system must run at, and all clients must speak IEEE float. */
          curDevInfo->defaultSampleRate = globalSampleRate;
  
@@ -2432,7 +2447,7 @@ index a800f8e..0c578ad 100644
 -            jack_port_t *p = jack_port_by_name( jackApi->jack_client, clientPorts[0] );
 -            curDevInfo->defaultLowInputLatency = curDevInfo->defaultHighInputLatency =
 -                jack_port_get_latency( p ) / globalSampleRate;
- 
+-
 -            for( i = 0; clientPorts[i] != NULL; i++)
 -            {
 -                /* The number of ports returned is the number of output channels.
@@ -2441,7 +2456,7 @@ index a800f8e..0c578ad 100644
 -            }
 -            free(clientPorts);
 -        }
--
+ 
 -        /* ... what are your input ports (that we could output to)? */
 -        clientPorts = jack_get_ports( jackApi->jack_client, regex_pattern,
 -                                     JACK_PORT_TYPE_FILTER, JackPortIsInput);
@@ -2483,7 +2498,7 @@ index a800f8e..0c578ad 100644
      return result;
  }
  
-@@ -730,7 +602,11 @@ PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi,
+@@ -730,7 +611,11 @@ PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi,
       * automatically which we do not want.
       */
  
@@ -2496,7 +2511,7 @@ index a800f8e..0c578ad 100644
      if( !jackHostApi->jack_client )
      {
          /* the V19 development docs say that if an implementation
-@@ -746,7 +622,7 @@ PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi,
+@@ -746,7 +631,7 @@ PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi,
      *hostApi = &jackHostApi->commonHostApiRep;
      (*hostApi)->info.structVersion = 1;
      (*hostApi)->info.type = paJACK;
@@ -2505,7 +2520,7 @@ index a800f8e..0c578ad 100644
  
      /* Build a device list by querying the JACK server */
      ENSURE_PA( BuildDeviceList( jackHostApi ) );
-@@ -778,26 +654,26 @@ PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi,
+@@ -778,26 +663,26 @@ PaError PaJack_Initialize( PaUtilHostApiRepresentation **hostApi,
      jackHostApi->processQueue = NULL;
      jackHostApi->jackIsDown = 0;
  
@@ -2541,7 +2556,7 @@ index a800f8e..0c578ad 100644
  
          if( jackHostApi->deviceInfoMemory )
          {
-@@ -817,12 +693,12 @@ static void Terminate( struct PaUtilHostApiRepresentation *hostApi )
+@@ -817,12 +702,12 @@ static void Terminate( struct PaUtilHostApiRepresentation *hostApi )
  
      /* note: this automatically disconnects all ports, since a deactivated
       * client is not allowed to have any ports connected */
@@ -2556,7 +2571,7 @@ index a800f8e..0c578ad 100644
  
      if( jackHostApi->deviceInfoMemory )
      {
-@@ -915,7 +791,7 @@ static PaError IsFormatSupported( struct PaUtilHostApiRepresentation *hostApi,
+@@ -915,7 +800,7 @@ static PaError IsFormatSupported( struct PaUtilHostApiRepresentation *hostApi,
      /* check that the device supports sampleRate */
  
  #define ABS(x) ( (x) > 0 ? (x) : -(x) )
@@ -2565,7 +2580,7 @@ index a800f8e..0c578ad 100644
         return paInvalidSampleRate;
  #undef ABS
  
-@@ -940,10 +816,6 @@ static PaError InitializeStream( PaJackStream *stream, PaJackHostApiRepresentati
+@@ -940,10 +825,6 @@ static PaError InitializeStream( PaJackStream *stream, PaJackHostApiRepresentati
                  (jack_port_t**) PaUtil_GroupAllocateMemory( stream->stream_memory, sizeof(jack_port_t*) * numInputChannels ),
                  paInsufficientMemory );
          memset( stream->local_input_ports, 0, sizeof(jack_port_t*) * numInputChannels );
@@ -2576,7 +2591,7 @@ index a800f8e..0c578ad 100644
      }
      if( numOutputChannels > 0 )
      {
-@@ -951,10 +823,6 @@ static PaError InitializeStream( PaJackStream *stream, PaJackHostApiRepresentati
+@@ -951,10 +832,6 @@ static PaError InitializeStream( PaJackStream *stream, PaJackHostApiRepresentati
                  (jack_port_t**) PaUtil_GroupAllocateMemory( stream->stream_memory, sizeof(jack_port_t*) * numOutputChannels ),
                  paInsufficientMemory );
          memset( stream->local_output_ports, 0, sizeof(jack_port_t*) * numOutputChannels );
@@ -2587,7 +2602,7 @@ index a800f8e..0c578ad 100644
      }
  
      stream->num_incoming_connections = numInputChannels;
-@@ -980,12 +848,12 @@ static void CleanUpStream( PaJackStream *stream, int terminateStreamRepresentati
+@@ -980,14 +857,19 @@ static void CleanUpStream( PaJackStream *stream, int terminateStreamRepresentati
      for( i = 0; i < stream->num_incoming_connections; ++i )
      {
          if( stream->local_input_ports[i] )
@@ -2601,8 +2616,15 @@ index a800f8e..0c578ad 100644
 +            ASSERT_CALL( jackbridge_port_unregister( stream->jack_client, stream->local_output_ports[i] ), 0 );
      }
  
++    if( stream->local_input_midi )
++        ASSERT_CALL( jackbridge_port_unregister( stream->jack_client, stream->local_input_midi ), 0 );
++    if( stream->local_output_midi )
++        ASSERT_CALL( jackbridge_port_unregister( stream->jack_client, stream->local_output_midi ), 0 );
++
      if( terminateStreamRepresentation )
-@@ -1077,14 +945,14 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
+         PaUtil_TerminateStreamRepresentation( &stream->streamRepresentation );
+     if( terminateBufferProcessor )
+@@ -1077,14 +959,14 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
      PaError result = paNoError;
      PaJackHostApiRepresentation *jackHostApi = (PaJackHostApiRepresentation*)hostApi;
      PaJackStream *stream = NULL;
@@ -2621,7 +2643,7 @@ index a800f8e..0c578ad 100644
      PaSampleFormat inputSampleFormat = 0, outputSampleFormat = 0;
      int bpInitialized = 0, srInitialized = 0;   /* Initialized buffer processor and stream representation? */
      unsigned long ofs;
-@@ -1178,7 +1046,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
+@@ -1178,7 +1060,7 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
              latency = outputParameters->suggestedLatency;
  
          /* the latency the user asked for indicates the minimum buffer size in frames */
@@ -2630,24 +2652,24 @@ index a800f8e..0c578ad 100644
  
          /* we also need to be able to store at least three full jack buffers to avoid dropouts */
          if( jackHostApi->jack_buffer_size * 3 > minimum_buffer_frames )
-@@ -1211,8 +1079,8 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
+@@ -1211,8 +1093,8 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
      ofs = jackHostApi->inputBase;
      for( i = 0; i < inputChannelCount; i++ )
      {
 -        snprintf( port_string, jack_port_name_size(), "in_%lu", ofs + i );
 -        UNLESS( stream->local_input_ports[i] = jack_port_register(
-+        snprintf( port_string, jackbridge_port_name_size(), "in_%lu", ofs + i );
++        snprintf( port_string, jackbridge_port_name_size(), "audio-in-%lu", ofs + i + 1 );
 +        UNLESS( stream->local_input_ports[i] = jackbridge_port_register(
                jackHostApi->jack_client, port_string,
                JACK_DEFAULT_AUDIO_TYPE, JackPortIsInput, 0 ), paInsufficientMemory );
      }
-@@ -1221,65 +1089,13 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
+@@ -1221,64 +1103,19 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
      ofs = jackHostApi->outputBase;
      for( i = 0; i < outputChannelCount; i++ )
      {
 -        snprintf( port_string, jack_port_name_size(), "out_%lu", ofs + i );
 -        UNLESS( stream->local_output_ports[i] = jack_port_register(
-+        snprintf( port_string, jackbridge_port_name_size(), "out_%lu", ofs + i );
++        snprintf( port_string, jackbridge_port_name_size(), "audio-out-%lu", ofs + i + 1 );
 +        UNLESS( stream->local_output_ports[i] = jackbridge_port_register(
               jackHostApi->jack_client, port_string,
               JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0 ), paInsufficientMemory );
@@ -2705,11 +2727,16 @@ index a800f8e..0c578ad 100644
 -        /* Fewer ports than expected? */
 -        UNLESS( i == outputChannelCount, paInternalError );
 -    }
--
++    UNLESS( stream->local_input_midi = jackbridge_port_register(
++            jackHostApi->jack_client, "midi_in",
++            JACK_DEFAULT_MIDI_TYPE, JackPortIsInput, 0 ), paInsufficientMemory );
++    UNLESS( stream->local_output_midi = jackbridge_port_register(
++            jackHostApi->jack_client, "midi_out",
++            JACK_DEFAULT_MIDI_TYPE, JackPortIsOutput, 0 ), paInsufficientMemory );
+ 
      ENSURE_PA( PaUtil_InitializeBufferProcessor(
                    &stream->bufferProcessor,
-                   inputChannelCount,
-@@ -1298,16 +1114,14 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
+@@ -1298,16 +1135,14 @@ static PaError OpenStream( struct PaUtilHostApiRepresentation *hostApi,
      bpInitialized = 1;
  
      if( stream->num_incoming_connections > 0 )
@@ -2731,16 +2758,19 @@ index a800f8e..0c578ad 100644
  
      /* Add to queue of opened streams */
      ENSURE_PA( AddStream( stream ) );
-@@ -1346,7 +1160,7 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
+@@ -1346,7 +1181,10 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
      PaStreamCallbackTimeInfo timeInfo = {0,0,0};
      int chn;
      int framesProcessed;
 -    const double sr = jack_get_sample_rate( stream->jack_client );    /* Shouldn't change during the process callback */
++    void *mbuf;
++    uint32_t num_events;
++    jack_midi_event_t event;
 +    const double sr = jackbridge_get_sample_rate( stream->jack_client );    /* Shouldn't change during the process callback */
      PaStreamCallbackFlags cbFlags = 0;
  
      /* If the user has returned !paContinue from the callback we'll want to flush the internal buffers,
-@@ -1362,13 +1176,11 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
+@@ -1362,13 +1200,11 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
          goto end;
      }
  
@@ -2757,7 +2787,7 @@ index a800f8e..0c578ad 100644
  
      PaUtil_BeginCpuLoadMeasurement( &stream->cpuLoadMeasurer );
  
-@@ -1389,7 +1201,7 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
+@@ -1389,7 +1225,7 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
      for( chn = 0; chn < stream->num_incoming_connections; chn++ )
      {
          jack_default_audio_sample_t *channel_buf = (jack_default_audio_sample_t*)
@@ -2766,7 +2796,7 @@ index a800f8e..0c578ad 100644
                      frames );
  
          PaUtil_SetNonInterleavedInputChannel( &stream->bufferProcessor,
-@@ -1400,7 +1212,7 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
+@@ -1400,7 +1236,7 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
      for( chn = 0; chn < stream->num_outgoing_connections; chn++ )
      {
          jack_default_audio_sample_t *channel_buf = (jack_default_audio_sample_t*)
@@ -2775,7 +2805,49 @@ index a800f8e..0c578ad 100644
                      frames );
  
          PaUtil_SetNonInterleavedOutputChannel( &stream->bufferProcessor,
-@@ -1424,7 +1236,7 @@ static PaError UpdateQueue( PaJackHostApiRepresentation *hostApi )
+@@ -1408,11 +1244,41 @@ static PaError RealProcess( PaJackStream *stream, jack_nframes_t frames )
+                 channel_buf );
+     }
+ 
++    if( stream->midi_write_ptr )
++    {
++        mbuf = jackbridge_port_get_buffer( stream->local_input_midi, frames );
++        num_events = jackbridge_midi_get_event_count (mbuf);
++
++        for (uint32_t i = 0; i < num_events; ++i)
++        {
++            if( !jackbridge_midi_event_get( &event, mbuf, i ) )
++                break;
++
++            stream->midi_write( stream->midi_write_ptr, event.time, event.buffer, event.size );
++        }
++    }
++
+     framesProcessed = PaUtil_EndBufferProcessing( &stream->bufferProcessor,
+             &stream->callbackResult );
+     /* We've specified a host buffer size mode where every frame should be consumed by the buffer processor */
+     assert( framesProcessed == frames );
+ 
++    mbuf = jackbridge_port_get_buffer( stream->local_output_midi, frames );
++    jackbridge_midi_clear_buffer (mbuf);
++
++    if( stream->midi_get_ptr )
++    {
++        num_events = stream->midi_get_count( stream->midi_get_ptr );
++
++        for (uint32_t i = 0; i < num_events; ++i)
++        {
++            if( stream->midi_get( &event, stream->midi_get_ptr, i ) != 0 )
++                break;
++
++            jackbridge_midi_event_write( mbuf, event.time, event.buffer, event.size );
++        }
++    }
++
+     PaUtil_EndCpuLoadMeasurement( &stream->cpuLoadMeasurer, framesProcessed );
+ 
+ end:
+@@ -1424,7 +1290,7 @@ static PaError UpdateQueue( PaJackHostApiRepresentation *hostApi )
  {
      PaError result = paNoError;
      int queueModified = 0;
@@ -2784,7 +2856,7 @@ index a800f8e..0c578ad 100644
      int err;
  
      if( (err = pthread_mutex_trylock( &hostApi->mtx )) != 0 )
-@@ -1559,7 +1371,7 @@ static int JackCallback( jack_nframes_t frames, void *userData )
+@@ -1559,7 +1425,7 @@ static int JackCallback( jack_nframes_t frames, void *userData )
              PA_DEBUG(( "Silencing the output\n" ));
              for( i = 0; i < stream->num_outgoing_connections; ++i )
              {
@@ -2793,7 +2865,7 @@ index a800f8e..0c578ad 100644
                  memset( buffer, 0, sizeof (jack_default_audio_sample_t) * frames );
              }
  
-@@ -1602,24 +1414,24 @@ static PaError StartStream( PaStream *s )
+@@ -1602,24 +1468,24 @@ static PaError StartStream( PaStream *s )
      /* Connect the ports. Note that the ports may already have been connected by someone else in
       * the meantime, in which case JACK returns EEXIST. */
  
@@ -2832,7 +2904,7 @@ index a800f8e..0c578ad 100644
      }
  
      stream->xrun = FALSE;
-@@ -1685,17 +1497,17 @@ error:
+@@ -1685,17 +1551,17 @@ error:
      {
          for( i = 0; i < stream->num_incoming_connections; i++ )
          {
@@ -2854,7 +2926,7 @@ index a800f8e..0c578ad 100644
                          paUnanticipatedHostError );
              }
          }
-@@ -1735,7 +1547,7 @@ static PaTime GetStreamTime( PaStream *s )
+@@ -1735,7 +1601,7 @@ static PaTime GetStreamTime( PaStream *s )
      PaJackStream *stream = (PaJackStream*)s;
  
      /* A: Is this relevant?? --> TODO: what if we're recording-only? */
@@ -2863,7 +2935,7 @@ index a800f8e..0c578ad 100644
  }
  
  
-@@ -1747,7 +1559,7 @@ static double GetStreamCpuLoad( PaStream* s )
+@@ -1747,7 +1613,7 @@ static double GetStreamCpuLoad( PaStream* s )
  
  PaError PaJack_SetClientName( const char* name )
  {
@@ -2872,7 +2944,35 @@ index a800f8e..0c578ad 100644
      {
          /* OK, I don't know any better error code */
          return paInvalidFlag;
-@@ -1762,7 +1574,7 @@ PaError PaJack_GetClientName(const char** clientName)
+@@ -1756,13 +1622,35 @@ PaError PaJack_SetClientName( const char* name )
+     return paNoError;
+ }
+ 
++void PaJack_SetMidiCallbacks( PaStream *s,
++                              jacksym_midi_get_event_count get_count,
++                              jacksym_midi_event_get get,
++                              jacksym_midi_event_write write )
++{
++    PaJackStream *stream = (PaJackStream*)s;
++
++    stream->midi_get_count = get_count;
++    stream->midi_get = get;
++    stream->midi_write = write;
++}
++
++void PaJack_SetMidiBuffers( PaStream *s,
++                            void* get_ptr,
++                            void* write_ptr )
++{
++    PaJackStream *stream = (PaJackStream*)s;
++
++    stream->midi_get_ptr = get_ptr;
++    stream->midi_write_ptr = write_ptr;
++}
++
+ PaError PaJack_GetClientName(const char** clientName)
+ {
+     PaError result = paNoError;
      PaJackHostApiRepresentation* jackHostApi = NULL;
      PaJackHostApiRepresentation** ref = &jackHostApi;
      ENSURE_PA( PaUtil_GetHostApiRepresentation( (PaUtilHostApiRepresentation**)ref, paJACK ) );
