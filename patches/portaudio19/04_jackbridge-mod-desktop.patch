@@ -333,7 +333,7 @@ index 0000000..facfb53
 +    const char* const filename = filenameEnv != NULL ? filenameEnv : "libjack.so.0";
 +   #endif
 +
-+    void* const lib = dlopen(filename, RTLD_NOW|RTLD_LOCAL);
++    void* const lib = dlmopen(LM_ID_NEWLM, filename, RTLD_NOW|RTLD_LOCAL);
 +
 +    if (lib == NULL)
 +    {
