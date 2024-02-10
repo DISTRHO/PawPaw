@@ -321,7 +321,7 @@ fi # PAWPAW_SKIP_FFTW
 # ---------------------------------------------------------------------------------------------------------------------
 # fftwf
 
-if [ -z "${PAWPAW_SKIP_FFTW}" ] || [ "${PAWPAW_SKIP_FFTW}" -eq 1 ]; then
+if [ -z "${PAWPAW_SKIP_FFTW}" ] || [ "${PAWPAW_SKIP_FFTW}" -eq 0 ]; then
 
 # fftw is not compatible with LTO
 if [ -z "${PAWPAW_SKIP_LTO}" ] || [ "${PAWPAW_SKIP_LTO}" -eq 0 ]; then
