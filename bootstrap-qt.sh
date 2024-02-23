@@ -323,10 +323,10 @@ elif [ "${WIN32}" -eq 1 ]; then
 fi
 
 # zlib
-if [ "${MACOS}" -eq 1 ]; then
-    qtbase_conf_args+=" -system-zlib"
-else
+if [ "${MACOS}" -eq 0 ] || ld -v 2>&1 | grep -q ld-classic; then
     qtbase_conf_args+=" -qt-zlib"
+else
+    qtbase_conf_args+=" -system-zlib"
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -346,11 +346,22 @@ elif [ "${MACOS}" -eq 1 ]; then
 elif [ "${WIN32}" -eq 1 ]; then
     if [ "${QT5_MVERSION}" = "5.12" ]; then
         patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/g++-win32.conf" 's/= -shared/= -static -shared/'
-        patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -fno-keep-inline-dllexport/= -Wno-deprecated-copy -Wno-deprecated-declarations -fno-keep-inline-dllexport/'
     else
         patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -shared/= -static -shared/'
         patch_file qtbase${qtsuffix} ${QT5_VERSION} "src/plugins/platforms/direct2d/direct2d.pro" 's/-lVersion/-lversion/'
     fi
+fi
+
+if [ "${MACOS}" -eq 1 ] && ld -v 2>&1 | grep -q ld-classic; then
+    if [ "${QT5_MVERSION}" = "5.12" ]; then
+        patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/clang-mac.conf" 's/QMAKE_LFLAGS   += -stdlib=libc++/QMAKE_LFLAGS   += -Wl,-ld_classic -stdlib=libc++/'
+        patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/features/toolchain.prf" 's/isEmpty(QMAKE_DEFAULT_LIBDIRS)|isEmpty(QMAKE_DEFAULT_INCDIRS):/isEmpty(QMAKE_DEFAULT_INCDIRS):/'
+    fi
+fi
+
+if [ "${QT5_MVERSION}" = "5.12" ]; then
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/common/clang-mac.conf" 's/QMAKE_CXXFLAGS += -stdlib=libc++/QMAKE_CXXFLAGS += -Wno-deprecated-copy -Wno-deprecated-copy-with-user-provided-copy -stdlib=libc++/'
+    patch_file qtbase${qtsuffix} ${QT5_VERSION} "mkspecs/win32-g++/qmake.conf" 's/= -fno-keep-inline-dllexport/= -Wno-deprecated-copy -Wno-deprecated-declarations -fno-keep-inline-dllexport/'
 fi
 
 build_qt_conf qtbase "${qtbase_conf_args}"
