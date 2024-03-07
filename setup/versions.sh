@@ -25,13 +25,13 @@ LIBOGG_URL=${XIPH_URL}/ogg
 LIBVORBIS_VERSION=1.3.7
 LIBVORBIS_URL=${XIPH_URL}/vorbis
 
-FLAC_VERSION=1.4.2
+FLAC_VERSION=1.4.3
 FLAC_URL=${XIPH_URL}/flac
 
-OPUS_VERSION=1.3.1
+OPUS_VERSION=1.5.1
 OPUS_URL=${XIPH_URL}/opus
 
-LIBSNDFILE_VERSION=1.1.0
+LIBSNDFILE_VERSION=1.2.2
 LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}
 
 LIBSAMPLERATE_VERSION=0.1.9
@@ -40,8 +40,8 @@ LIBSAMPLERATE_URL=http://www.mega-nerd.com/SRC
 MINGW_STD_THREADS_VERSION=c931bac289dd431f1dd30fc4a5d1a7be36668073
 MINGW_STD_THREADS_URL=https://github.com/meganz/mingw-std-threads.git
 
-ZLIB_VERSION=cacf7f1d4e3d44d871b605da3b647f07d718623f # 1.2.11
-ZLIB_URL=https://github.com/madler/zlib.git
+ZLIB_VERSION=1.3.1
+ZLIB_URL=https://github.com/madler/zlib/releases/download/v${ZLIB_VERSION}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap plugins

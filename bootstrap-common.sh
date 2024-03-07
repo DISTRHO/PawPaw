@@ -425,7 +425,7 @@ fi # PAWPAW_SKIP_SAMPLERATE
 # zlib (skipped on macOS)
 
 if [ "${MACOS}" -eq 0 ]; then
-    git_clone zlib "${ZLIB_VERSION}" "${ZLIB_URL}"
+    download zlib "${ZLIB_VERSION}" "${ZLIB_URL}"
     build_conf zlib "${ZLIB_VERSION}" "--static --prefix=${PAWPAW_PREFIX} --zprefix"
 
     if [ "${CROSS_COMPILING}" -eq 0 ]; then

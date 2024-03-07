@@ -1,11 +1,13 @@
---- opus-static-1.3.1.orig/include/opus_defines.h
-+++ opus-static-1.3.1/include/opus_defines.h
+diff --git a/include/opus_defines.h b/include/opus_defines.h
+index cd8f4dd..48f59da 100644
+--- a/include/opus_defines.h
++++ b/include/opus_defines.h
 @@ -63,19 +63,7 @@ extern "C" {
  /** @cond OPUS_INTERNAL_DOC */
  /**Export control for opus functions */
  
 -#ifndef OPUS_EXPORT
--# if defined(WIN32)
+-# if defined(_WIN32)
 -#  if defined(OPUS_BUILD) && defined(DLL_EXPORT)
 -#   define OPUS_EXPORT __declspec(dllexport)
 -#  else
