@@ -87,6 +87,7 @@ if [ "${WASM}" -eq 1 ]; then
         "${PAWPAW_DIR}/emsdk/emsdk" install ${EMSCRIPTEN_VERSION} && "${PAWPAW_DIR}/emsdk/emsdk" activate ${EMSCRIPTEN_VERSION}
     fi
 
+    export EMSDK_QUIET=1
     source "${PAWPAW_DIR}/emsdk/emsdk_env.sh"
 fi
 

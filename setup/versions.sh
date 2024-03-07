@@ -46,21 +46,22 @@ ZLIB_URL=https://github.com/madler/zlib/releases/download/v${ZLIB_VERSION}
 # ---------------------------------------------------------------------------------------------------------------------
 # bootstrap plugins
 
-LIBPNG_VERSION=1.6.39
+LIBPNG_VERSION=1.6.43
 LIBPNG_URL=http://download.sourceforge.net/libpng
 
-LIBXML2_VERSION=2.10.3
-LIBXML2_URL=https://download.gnome.org/sources/libxml2/2.10
+LIBXML2_VERSION=2.12.4
+LIBXML2_URL=https://download.gnome.org/sources/libxml2/2.12
 
 PIXMAN_VERSION=0.42.2
 PIXMAN_URL=https://cairographics.org/releases
 
-FREETYPE_VERSION=2.12.1
+FREETYPE_VERSION=2.13.2
 FREETYPE_URL=http://download.sourceforge.net/freetype
 
-FONTCONFIG_VERSION=2.13.1
+FONTCONFIG_VERSION=2.15.0
 FONTCONFIG_URL=https://www.freedesktop.org/software/fontconfig/release
 
+# TODO update and adapt to meson
 CAIRO_VERSION=1.16.0
 CAIRO_URL=https://cairographics.org/releases
 
@@ -86,31 +87,34 @@ fi
 LIBFFI_URL=https://github.com/libffi/libffi/releases/download/v${LIBFFI_VERSION}
 GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
 
-LIBLO_VERSION=0.31
+LIBLO_VERSION=0.32
 LIBLO_URL=http://download.sourceforge.net/liblo
 
 LV2_VERSION=0bcde338db1c63bbc503b4d1f6d7b55ed43154af # 1.18.10
 LV2_URL=https://gitlab.com/lv2/lv2.git
 
-SERD_VERSION=0.30.16
+ZIX_VERSION=0.4.2
+ZIX_URL=${DROBILLA_URL}
+
+SERD_VERSION=0.32.0
 SERD_URL=${DROBILLA_URL}
 
-SORD_VERSION=0.16.14
+SORD_VERSION=0.16.16
 SORD_URL=${DROBILLA_URL}
 
-SRATOM_VERSION=0.6.14
+SRATOM_VERSION=0.6.16
 SRATOM_URL=${DROBILLA_URL}
 
-LILV_VERSION=0.24.20
+LILV_VERSION=0.24.22
 LILV_URL=${DROBILLA_URL}
 
-LV2LINT_VERSION=0.16.2
-LV2LINT_URL=https://gitlab.com/OpenMusicKontrollers/lv2lint/-/archive/${LV2LINT_VERSION}
+LV2LINT_VERSION=ea7126042356d245610ecf7a56354dd196fafff7 # 0.16.2
+LV2LINT_URL=https://git.open-music-kontrollers.ch/~hp/lv2lint
 
-KXSTUDIO_LV2_EXTENSIONS_VERSION=58010323797754dc6cd50084d456e5ac2e7c034c
+KXSTUDIO_LV2_EXTENSIONS_VERSION=6e76943b360b65b18cf95a9bd1a3bfd155d0630b
 KXSTUDIO_LV2_EXTENSIONS_URL=https://github.com/KXStudio/LV2-Extensions.git
 
-MOD_SDK_VERSION=60abe7176b4e4f46f20a41cdf3d65d909c8d8a34
+MOD_SDK_VERSION=f4341a6c2b2f50e2eb405b06ce19f9f0b4b1a62b
 MOD_SDK_URL=https://github.com/moddevices/mod-lv2-extensions.git
 
 FLUIDSYNTH_VERSION=f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
@@ -119,7 +123,7 @@ FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 MXML_VERSION=3.3.1
 MXML_URL=https://github.com/michaelrsweet/mxml/releases/download/v${MXML_VERSION}
 
-CARLA_VERSION=73ddea269b927770a338d352a0d0db20aad87624 # 2.6.x
+CARLA_VERSION=66afe24a08790732cc17d81d4b846a1e0cfa0118 # 2.6.x
 CARLA_URL=https://github.com/falkTX/Carla.git
 
 # ---------------------------------------------------------------------------------------------------------------------

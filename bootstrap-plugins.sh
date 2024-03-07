@@ -410,6 +410,8 @@ LIBLO_EXTRAFLAGS="--enable-threads --disable-examples --disable-tools"
 
 if [ -n "${PAWPAW_SKIP_TESTS}" ] && [ "${PAWPAW_SKIP_TESTS}" -eq 1 ]; then
     LIBLO_EXTRAFLAGS+=" --disable-tests"
+else
+    LIBLO_EXTRAFLAGS+=" --disable-network-tests"
 fi
 
 # auto-detection fails
@@ -430,6 +432,26 @@ build_autoconf liblo "${LIBLO_VERSION}" "${LIBLO_EXTRAFLAGS}"
 if ([ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]) && [ "${MACOS}" -eq 0 ]; then
     run_make liblo "${LIBLO_VERSION}" check
 fi
+
+# ---------------------------------------------------------------------------------------------------------------------
+# zix
+
+if [ -z "${PAWPAW_SKIP_LV2}" ] || [ "${PAWPAW_SKIP_LV2}" -eq 0 ]; then
+
+ZIX_EXTRAFLAGS=""
+
+if [ "${WASM}" -eq 1 ]; then
+    ZIX_EXTRAFLAGS+=" -Dtests=disabled -Dtests_cpp=disabled -Dthreads=disabled"
+elif [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
+    ZIX_EXTRAFLAGS+=" -Dtests=disabled -Dtests_cpp=disabled"
+fi
+
+export EXTRA_CFLAGS="-fno-finite-math-only"
+
+download zix "${ZIX_VERSION}" "${ZIX_URL}" "tar.xz"
+build_meson zix "${ZIX_VERSION}" "-Dbenchmarks=disabled -Ddefault_library=static -Ddocs=disabled ${ZIX_EXTRAFLAGS}"
+
+fi # PAWPAW_SKIP_LV2
 
 # ---------------------------------------------------------------------------------------------------------------------
 # serd
@@ -501,7 +523,7 @@ fi # PAWPAW_SKIP_LV2
 if [ -z "${PAWPAW_SKIP_LV2}" ] || [ "${PAWPAW_SKIP_LV2}" -eq 0 ]; then
 
 if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
-    download lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
+    git_clone lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"
 fi

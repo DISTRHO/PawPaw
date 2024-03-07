@@ -3,14 +3,14 @@ index bea1b79..2f57bb7 100644
 --- a/Makefile.in
 +++ b/Makefile.in
 @@ -223,7 +223,7 @@ CTAGS = ctags
- CSCOPE = cscope
+   done | $(am__uniquify_input)`
  DIST_SUBDIRS = fontconfig fc-case fc-lang src fc-cache fc-cat \
  	fc-conflist fc-list fc-match fc-pattern fc-query fc-scan \
 -	fc-validate conf.d its po po-conf test doc
 +	fc-validate conf.d its po po-conf doc
  am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/config.h.in \
  	$(srcdir)/fontconfig-zip.in $(srcdir)/fontconfig.pc.in \
- 	$(srcdir)/fontconfig.spec.in ABOUT-NLS AUTHORS COPYING \
+ 	ABOUT-NLS AUTHORS COPYING ChangeLog INSTALL NEWS README.md \
 @@ -456,7 +456,7 @@ top_builddir = @top_builddir@
  top_srcdir = @top_srcdir@
  SUBDIRS = fontconfig fc-case fc-lang src fc-cache fc-cat fc-conflist \
@@ -18,5 +18,5 @@ index bea1b79..2f57bb7 100644
 -	conf.d its po po-conf test $(am__append_1)
 +	conf.d its po po-conf $(am__append_1)
  ACLOCAL_AMFLAGS = -I m4
- EXTRA_DIST = config.rpath fontconfig.pc.in fonts.conf.in fonts.dtd \
- 	fontconfig.spec.in fontconfig.spec fontconfig-zip.in \
+ MESON_FILES = \
+ 	conf.d/link_confs.py \

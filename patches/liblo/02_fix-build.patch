@@ -1,0 +1,16 @@
+diff --git a/src/server.c b/src/server.c
+index 130f6d5..2106b1f 100644
+--- a/src/server.c
++++ b/src/server.c
+@@ -1394,7 +1394,10 @@ int lo_server_wait(lo_server s, int timeout)
+ 
+ int lo_servers_wait(lo_server *s, int *status, int num_servers, int timeout)
+ {
+-    int i, j, k, sched_timeout;
++    int i, j, sched_timeout;
++#ifdef HAVE_POLL
++    int k;
++#endif
+ 
+     if (!status)
+         status = alloca(sizeof(int) * num_servers);
