@@ -631,7 +631,7 @@ function run_make() {
 
     _prebuild "${pkgname}" "${pkgdir}"
 
-    if [ ! -f "${pkgdir}/.stamp_custom_run" ]; then
+    if [ ! -f "${pkgdir}/.stamp_custom_run" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ]; then
         pushd "${pkgdir}"
         make ${MAKE_ARGS} ${makerule}
         touch .stamp_custom_run
