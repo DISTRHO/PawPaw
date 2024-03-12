@@ -512,6 +512,9 @@ if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ]; then
     LILV_EXTRAFLAGS="-Dtests=disabled -Dtools=disabled"
 fi
 
+# Fix tests
+export EXTRA_CXXFLAGS="-std=c++11"
+
 download lilv "${LILV_VERSION}" "${LILV_URL}" "tar.xz"
 build_meson lilv "${LILV_VERSION}" "-Ddefault_library=static -Dbindings_py=disabled -Ddocs=disabled ${LILV_EXTRAFLAGS}"
 
