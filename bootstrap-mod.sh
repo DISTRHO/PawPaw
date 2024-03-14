@@ -66,8 +66,8 @@ build_make hylia "${HYLIA_VERSION}" "${HYLIA_EXTRAFLAGS}"
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-JACK2_VERSION="806da09a120f254ae231c2ef87cf9fe2f4fb4f5b"
-JACK2_URL="https://github.com/jackaudio/jack2.git"
+JACK2_VERSION="b1ae29dae8ce4118b86e3febc16c12828bcf8d89"
+JACK2_URL="https://github.com/moddevices/jack2.git"
 
 JACK2_EXTRAFLAGS=""
 JACK2_EXTRAFLAGS+=" --autostart=none"
@@ -98,7 +98,6 @@ if [ "${LINUX}" -eq 1 ]; then
 fi
 
 download jack2 "${JACK2_VERSION}" "${JACK2_URL}" "" "git"
-patch_file jack2 "${JACK2_VERSION}" "dbus/audio_reserve.c" "s/Jack audio server/MOD Desktop/"
 build_waf jack2 "${JACK2_VERSION}" "${JACK2_EXTRAFLAGS}"
 
 # patch pkg-config file for static win32 builds
