@@ -274,7 +274,7 @@ if [ "${LINUX}" -eq 1 ]; then
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xfixes.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xproto.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xproto)/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc ${TARGET_PKG_CONFIG_PATH}/
+        cp $(pkg-config --variable=pcfiledir xproto)/{damageproto,fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrandr.pc" ]; then
