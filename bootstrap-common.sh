@@ -205,7 +205,7 @@ if [ "${LINUX}" -eq 1 ]; then
     elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
-    if ! pkg-config --print-errors --exists alsa dbus-1 gl glib-2.0 libpcre libpcre2-8 pthread-stubs uuid x11 xcb xcursor xext xfixes xproto xrandr xrender; then
+    if ! pkg-config --print-errors --exists alsa dbus-1 gl glib-2.0 libpcre libpcre2-8 pthread-stubs uuid x11 xcb xcb-dri2 xcursor xdamage xext xfixes xproto xrandr xrender xxf86vm; then
         echo "some system libs are not available, cannot continue"
         exit 2
     fi
@@ -249,13 +249,25 @@ if [ "${LINUX}" -eq 1 ]; then
         cp $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{xau,xcb,xdmcp}.pc
     fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcb-dri2.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir xcb-dri2)/xcb-dri2.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xcb-dri2.pc
+    fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcursor.pc" ]; then
         cp $(pkg-config --variable=pcfiledir xcursor)/xcursor.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xcursor.pc
     fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xdamage.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir xdamage)/xdamage.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xdamage.pc
+    fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xext.pc" ]; then
         cp $(pkg-config --variable=pcfiledir xext)/xext.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xext.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xf86vidmodeproto.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir xf86vidmodeproto)/xf86vidmodeproto.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xf86vidmodeproto.pc
     fi
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xfixes.pc" ]; then
         cp $(pkg-config --variable=pcfiledir xfixes)/xfixes.pc ${TARGET_PKG_CONFIG_PATH}/
@@ -272,6 +284,10 @@ if [ "${LINUX}" -eq 1 ]; then
     if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrender.pc" ]; then
         cp $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
         sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrender.pc
+    fi
+    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xxf86vm.pc" ]; then
+        cp $(pkg-config --variable=pcfiledir xxf86vm)/xxf86vm.pc ${TARGET_PKG_CONFIG_PATH}/
+        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xxf86vm.pc
     fi
 fi
 

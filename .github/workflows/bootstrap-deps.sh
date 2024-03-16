@@ -117,11 +117,14 @@ case "${1}" in
                 libvulkan-dev:${linux_arch} \
                 libx11-dev:${linux_arch} \
                 libxcb1-dev:${linux_arch} \
+                libxcb-dri2-0-dev:${linux_arch} \
                 libxcursor-dev:${linux_arch} \
+                libxdamage-dev:${linux_arch} \
                 libxext-dev:${linux_arch} \
                 libxfixes-dev:${linux_arch} \
                 libxrandr-dev:${linux_arch} \
                 libxrender-dev:${linux_arch} \
+                libxxf86vm-dev:${linux_arch} \
                 uuid-dev:${linux_arch}
             apt-get install -yqq --allow-downgrades \
                 qtbase5-dev-tools \
