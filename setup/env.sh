@@ -195,7 +195,10 @@ if [ "${MACOS}" -eq 1 ]; then
         LINK_FLAGS+=" -Wl,-ld_classic"
     fi
     if [ -z "${PAWPAW_SKIP_STRIPPING}" ] || [ "${PAWPAW_SKIP_STRIPPING}" -eq 0 ]; then
-        LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs,-x"
+        if [ -z "${PAWPAW_SKIP_MACOS_DEAD_STRIP}" ] || [ "${PAWPAW_SKIP_MACOS_DEAD_STRIP}" -eq 0 ]; then
+            LINK_FLAGS+=" -Wl,-dead_strip,-dead_strip_dylibs"
+        fi
+        LINK_FLAGS+=" -Wl,-x"
     fi
 elif [ "${WASM}" -eq 1 ]; then
     LINK_FLAGS+=" -Wl,--gc-sections"
