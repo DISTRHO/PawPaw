@@ -66,7 +66,7 @@ build_make hylia "${HYLIA_VERSION}" "${HYLIA_EXTRAFLAGS}"
 # ---------------------------------------------------------------------------------------------------------------------
 # jack2
 
-JACK2_VERSION="fdcfced51e2273ef390e562a325215995ff8762f"
+JACK2_VERSION="d0cb3bfa8f0a7ae1145dffe4f0dea0a90fbfbe81"
 JACK2_URL="https://github.com/moddevices/jack2.git"
 
 JACK2_EXTRAFLAGS=""
