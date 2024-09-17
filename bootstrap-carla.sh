@@ -55,14 +55,14 @@ fi
 # custom function for sip and pyqt packages
 
 function build_pyqt() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
     local python="python$(echo ${PYTHON_VERSION} | cut -b 1,2,3)"
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     # remove flags not compatible with python
     export CFLAGS="$(echo ${CFLAGS} | sed -e 's/-fvisibility=hidden//')"
@@ -82,13 +82,19 @@ function build_pyqt() {
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fdata-sections -ffunction-sections//')"
     export LDFLAGS="$(echo ${LDFLAGS} | sed -e 's/-fno-strict-aliasing -flto//')"
 
+    export CFLAGS="${CFLAGS} $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3)"
+    export CXXFLAGS="${CXXFLAGS} $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3)"
+
     # non-standard vars used by sip/pyqt
+    export LDFLAGS="${LDFLAGS} $(${PAWPAW_PREFIX}/bin/pkg-config --libs python3)"
     export LFLAGS="${LDFLAGS}"
     export LINK="${CXX}"
 
     # add host/native binaries to path
     if [ "${CROSS_COMPILING}" -eq 1 ]; then
         export PATH="${PAWPAW_PREFIX}-host/bin:${PATH}"
+    elif [ "${LINUX}" -eq 1 ]; then
+        export LD_LIBRARY_PATH="${PAWPAW_PREFIX}/lib"
     fi
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
@@ -141,6 +147,12 @@ function build_pyqt() {
 
     unset LFLAGS
     unset LINK
+
+    if [ "${CROSS_COMPILING}" -eq 0 ] && [ "${LINUX}" -eq 1 ]; then
+        unset LD_LIBRARY_PATH
+    fi
+
+    _postbuild
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
