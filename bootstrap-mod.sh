@@ -209,6 +209,26 @@ fi
 build_waf lvtk1 "${LVTK1_VERSION}" "${LVTK1_EXTRAFLAGS}"
 
 # ---------------------------------------------------------------------------------------------------------------------
+# lvtk
+
+LVTK_VERSION="6bfe981dfb5b27ea199dd4f6801b5305ca0355f9"
+LVTK_URL="https://github.com/lvtk/lvtk.git"
+
+LVTK_EXTRAFLAGS=""
+LVTK_EXTRAFLAGS+=" --disable-examples"
+LVTK_EXTRAFLAGS+=" --disable-ui"
+
+download lvtk "${LVTK_VERSION}" "${LVTK_URL}" "" "git"
+
+# force waf update for py3 compat
+if [ ! -e "${PAWPAW_BUILDDIR}/lvtk-${LVTK_VERSION}/.stamp_configured" ]; then
+    cp -v "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/waf" "${PAWPAW_BUILDDIR}/lvtk-${LVTK_VERSION}/"
+    cp -rv "${PAWPAW_BUILDDIR}/jack2-${JACK2_VERSION}/waflib" "${PAWPAW_BUILDDIR}/lvtk-${LVTK_VERSION}/"
+fi
+
+build_waf lvtk "${LVTK_VERSION}" "${LVTK_EXTRAFLAGS}"
+
+# ---------------------------------------------------------------------------------------------------------------------
 
 if [ -n "${PAWPAW_SKIP_PYTHON_MODULES}" ] && [ "${PAWPAW_SKIP_PYTHON_MODULES}" -eq 1 ]; then
     exit 0
