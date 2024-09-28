@@ -90,8 +90,12 @@ case "${1}" in
 
         if [ -n "${linux_arch}" ]; then
             if [ "$(lsb_release -si 2>/dev/null)" = "Ubuntu" ]; then
-                sed -i "s/deb http/deb [arch=i386,amd64] http/" /etc/apt/sources.list
-                sed -i "s/deb mirror/deb [arch=i386,amd64] mirror/" /etc/apt/sources.list
+                if [ -e /etc/apt/sources.list.d/ubuntu.sources ]; then
+                    sed -i 's|Types: deb|Types: deb\nArchitectures: amd64 i386|g' /etc/apt/sources.list.d/ubuntu.sources
+                else
+                    sed -i "s/deb http/deb [arch=i386,amd64] http/" /etc/apt/sources.list
+                    sed -i "s/deb mirror/deb [arch=i386,amd64] mirror/" /etc/apt/sources.list
+                fi
                 if [ "${linux_arch}" != "amd64" ] && [ "${linux_arch}" != "i386" ]; then
                     echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release} main restricted universe multiverse" | tee -a /etc/apt/sources.list
                     echo "deb [arch=${linux_arch}] http://ports.ubuntu.com/ubuntu-ports ${release}-updates main restricted universe multiverse" | tee -a /etc/apt/sources.list

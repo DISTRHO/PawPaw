@@ -13,15 +13,6 @@ jobs:
     strategy:
       matrix:
         include:
-          # macos 11
-          - target: macos
-            os: macos-11
-          - target: macos-10.15
-            os: macos-11
-          - target: macos-universal
-            os: macos-11
-          - target: macos-universal-10.15
-            os: macos-11
           # macos 12
           - target: macos
             os: macos-12
@@ -31,6 +22,15 @@ jobs:
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
+          # macos 13
+          - target: macos
+            os: macos-13
+          - target: macos-10.15
+            os: macos-13
+          - target: macos-universal
+            os: macos-13
+          - target: macos-universal-10.15
+            os: macos-13
           # debian:11
           - target: linux-aarch64
             container: debian:11
@@ -75,19 +75,6 @@ jobs:
           - target: win64
             container: debian:12
             os: ubuntu-latest
-          # ubuntu:18.04
-          - target: linux-aarch64
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-i686
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-x86_64
-            container: ubuntu:18.04
-            os: ubuntu-latest
           # ubuntu:20.04
           - target: linux-aarch64
             container: ubuntu:20.04
@@ -129,35 +116,35 @@ jobs:
           - target: win64
             container: ubuntu:22.04
             os: ubuntu-latest
-          # ubuntu:23.10
+          # ubuntu:24.04
           - target: linux-aarch64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-armhf
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-riscv64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-x86_64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: wasm
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win32
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -173,7 +160,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf common-${{ env.PAWPAW_PACK_NAME }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: common-${{ env.PAWPAW_PACK_NAME }}
           path: common-${{ env.PAWPAW_PACK_NAME }}.tar.gz
@@ -182,15 +169,6 @@ jobs:
     strategy:
       matrix:
         include:
-          # macos 11
-          - target: macos
-            os: macos-11
-          - target: macos-10.15
-            os: macos-11
-          - target: macos-universal
-            os: macos-11
-          - target: macos-universal-10.15
-            os: macos-11
           # macos 12
           - target: macos
             os: macos-12
@@ -200,6 +178,15 @@ jobs:
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
+          # macos 13
+          - target: macos
+            os: macos-13
+          - target: macos-10.15
+            os: macos-13
+          - target: macos-universal
+            os: macos-13
+          - target: macos-universal-10.15
+            os: macos-13
           # debian:11
           - target: linux-aarch64
             container: debian:11
@@ -244,19 +231,6 @@ jobs:
           - target: win64
             container: debian:12
             os: ubuntu-latest
-          # ubuntu:18.04
-          - target: linux-aarch64
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-i686
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-x86_64
-            container: ubuntu:18.04
-            os: ubuntu-latest
           # ubuntu:20.04
           - target: linux-aarch64
             container: ubuntu:20.04
@@ -298,36 +272,36 @@ jobs:
           - target: win64
             container: ubuntu:22.04
             os: ubuntu-latest
-          # ubuntu:23.10
+          # ubuntu:24.04
           - target: linux-aarch64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-armhf
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-riscv64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-x86_64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: wasm
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win32
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
     needs: common
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -336,7 +310,7 @@ jobs:
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
       - name: Download common
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: common-${{ env.PAWPAW_PACK_NAME }}
           path: ~/PawPawBuilds
@@ -353,7 +327,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf plugins-${{ env.PAWPAW_PACK_NAME }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: plugins-${{ env.PAWPAW_PACK_NAME }}
           path: plugins-${{ env.PAWPAW_PACK_NAME }}.tar.gz
@@ -362,15 +336,6 @@ jobs:
     strategy:
       matrix:
         include:
-          # macos 11
-          - target: macos
-            os: macos-11
-          - target: macos-10.15
-            os: macos-11
-          - target: macos-universal
-            os: macos-11
-          - target: macos-universal-10.15
-            os: macos-11
           # macos 12
           - target: macos
             os: macos-12
@@ -380,6 +345,15 @@ jobs:
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
+          # macos 13
+          - target: macos
+            os: macos-13
+          - target: macos-10.15
+            os: macos-13
+          - target: macos-universal
+            os: macos-13
+          - target: macos-universal-10.15
+            os: macos-13
           # debian:11
           - target: linux-aarch64
             container: debian:11
@@ -417,19 +391,6 @@ jobs:
             os: ubuntu-latest
           - target: win64
             container: debian:12
-            os: ubuntu-latest
-          # ubuntu:18.04
-          - target: linux-aarch64
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-i686
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-x86_64
-            container: ubuntu:18.04
             os: ubuntu-latest
           # ubuntu:20.04
           - target: linux-aarch64
@@ -469,33 +430,33 @@ jobs:
           - target: win64
             container: ubuntu:22.04
             os: ubuntu-latest
-          # ubuntu:23.10
+          # ubuntu:24.04
           - target: linux-aarch64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-armhf
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-riscv64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-x86_64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win32
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
     needs: common
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -504,7 +465,7 @@ jobs:
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
       - name: Download common
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: common-${{ env.PAWPAW_PACK_NAME }}
           path: ~/PawPawBuilds
@@ -522,15 +483,6 @@ jobs:
     strategy:
       matrix:
         include:
-          # macos 11
-          - target: macos
-            os: macos-11
-          - target: macos-10.15
-            os: macos-11
-          - target: macos-universal
-            os: macos-11
-          - target: macos-universal-10.15
-            os: macos-11
           # macos 12
           - target: macos
             os: macos-12
@@ -540,6 +492,15 @@ jobs:
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
+          # macos 13
+          - target: macos
+            os: macos-13
+          - target: macos-10.15
+            os: macos-13
+          - target: macos-universal
+            os: macos-13
+          - target: macos-universal-10.15
+            os: macos-13
           # debian:11
           - target: linux-aarch64
             container: debian:11
@@ -577,19 +538,6 @@ jobs:
             os: ubuntu-latest
           - target: win64
             container: debian:12
-            os: ubuntu-latest
-          # ubuntu:18.04
-          - target: linux-aarch64
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-armhf
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-i686
-            container: ubuntu:18.04
-            os: ubuntu-latest
-          - target: linux-x86_64
-            container: ubuntu:18.04
             os: ubuntu-latest
           # ubuntu:20.04
           - target: linux-aarch64
@@ -629,33 +577,33 @@ jobs:
           - target: win64
             container: ubuntu:22.04
             os: ubuntu-latest
-          # ubuntu:23.10
+          # ubuntu:24.04
           - target: linux-aarch64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-armhf
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-riscv64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: linux-x86_64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win32
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           - target: win64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
     needs: common
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -664,7 +612,7 @@ jobs:
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
       - name: Download common
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: common-${{ env.PAWPAW_PACK_NAME }}
           path: ~/PawPawBuilds
@@ -681,7 +629,7 @@ jobs:
         shell: bash
         run: |
           tar -C ~/PawPawBuilds -czf qt-${{ env.PAWPAW_PACK_NAME }}.tar.gz builds targets
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: qt-${{ env.PAWPAW_PACK_NAME }}
           path: qt-${{ env.PAWPAW_PACK_NAME }}.tar.gz
@@ -714,7 +662,7 @@ jobs:
             container: ubuntu:20.04
             os: ubuntu-latest
           - target: macos-universal-10.15
-            os: macos-11
+            os: macos-13
           - target: wasm
             container: debian:12
             os: ubuntu-latest
@@ -728,9 +676,9 @@ jobs:
     container:
       image: ${{ matrix.container }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -750,7 +698,9 @@ jobs:
       matrix:
         include:
           - target: macos-universal
-            os: macos-11
+            os: macos-12
+          - target: macos-universal
+            os: macos-13
           - target: win32
             container: debian:12
             os: ubuntu-latest
@@ -762,9 +712,9 @@ jobs:
       image: ${{ matrix.container }}
     needs: [plugins, qt]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -773,17 +723,17 @@ jobs:
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
       - name: Download common
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: common-${{ env.PAWPAW_PACK_NAME }}
           path: ~/PawPawBuilds
       - name: Download plugins
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: plugins-${{ env.PAWPAW_PACK_NAME }}
           path: ~/PawPawBuilds
       - name: Download qt
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: qt-${{ env.PAWPAW_PACK_NAME }}
           path: ~/PawPawBuilds
@@ -806,16 +756,16 @@ jobs:
     strategy:
       matrix:
         include:
-          # macos 11
-          - target: macos-10.15
-            os: macos-11
-          - target: macos-universal-10.15
-            os: macos-11
           # macos 12
           - target: macos-10.15
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
+          # macos 13
+          - target: macos-10.15
+            os: macos-13
+          - target: macos-universal-10.15
+            os: macos-13
           # debian 11
           - target: linux-x86_64
             container: debian:11
@@ -831,10 +781,6 @@ jobs:
           #- target: win64
             #container: debian:12
             #os: ubuntu-latest
-          # ubuntu 18.04
-          - target: linux-x86_64
-            container: ubuntu:18.04
-            os: ubuntu-latest
           # ubuntu 20.04
           - target: linux-x86_64
             container: ubuntu:20.04
@@ -846,21 +792,21 @@ jobs:
           - target: win64
             container: ubuntu:22.04
             os: ubuntu-latest
-          # ubuntu 23.10
+          # ubuntu 24.04
           - target: linux-x86_64
-            container: ubuntu:23.10
+            container: ubuntu:24.04
             os: ubuntu-latest
           # FIXME std::mutex issues
           #- target: win64
-            #container: ubuntu:23.10
+            #container: ubuntu:24.04
             #os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ~/PawPawBuilds
@@ -868,17 +814,10 @@ jobs:
       - name: Set up dependencies
         run: |
           ./.github/workflows/bootstrap-deps.sh ${{ matrix.target }}
-
-          if [ "${{ matrix.container }}" = "ubuntu:18.04" ]; then
-            freetypepkgname="libfreetype6-dev"
-          else
-            freetypepkgname="libfreetype-dev"
-          fi
-
           if [ "${{ matrix.target }}" = "linux-x86_64" ]; then
-            apt-get install -yqq ${freetypepkgname}
+            apt-get install -yqq libfreetype-dev
           elif [ "${{ matrix.target }}" = "win64" ]; then
-            apt-get install -yqq ${freetypepkgname} libx11-dev libxcursor-dev libxext-dev libxrandr-dev libxrender-dev
+            apt-get install -yqq libfreetype-dev libx11-dev libxcursor-dev libxext-dev libxrandr-dev libxrender-dev
           fi
       - name: Run bootstrap
         shell: bash
