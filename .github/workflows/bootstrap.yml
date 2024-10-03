@@ -178,15 +178,6 @@ jobs:
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
-          # macos 13
-          - target: macos
-            os: macos-13
-          - target: macos-10.15
-            os: macos-13
-          - target: macos-universal
-            os: macos-13
-          - target: macos-universal-10.15
-            os: macos-13
           # debian:11
           - target: linux-aarch64
             container: debian:11
@@ -492,15 +483,6 @@ jobs:
             os: macos-12
           - target: macos-universal-10.15
             os: macos-12
-          # macos 13
-          - target: macos
-            os: macos-13
-          - target: macos-10.15
-            os: macos-13
-          - target: macos-universal
-            os: macos-13
-          - target: macos-universal-10.15
-            os: macos-13
           # debian:11
           - target: linux-aarch64
             container: debian:11
