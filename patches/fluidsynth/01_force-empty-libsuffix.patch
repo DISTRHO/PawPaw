@@ -1,6 +1,6 @@
 --- fluidsynth-static-1.1.11.orig/CMakeLists.txt
 +++ fluidsynth-static-1.1.11/CMakeLists.txt
-@@ -89,16 +89,7 @@ if ( CMAKE_SYSTEM MATCHES "OS2" )
+@@ -90,16 +90,7 @@ if ( CMAKE_SYSTEM MATCHES "OS2" )
  endif ( CMAKE_SYSTEM MATCHES "OS2" )
  
  # Initialize the library directory name suffix.
