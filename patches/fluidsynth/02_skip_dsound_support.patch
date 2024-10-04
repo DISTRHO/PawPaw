@@ -54,6 +54,16 @@
 
 --- fluidsynth-static-1.1.11.orig/src/drivers/fluid_aufile.c
 +++ fluidsynth-static-1.1.11/src/drivers/fluid_aufile.c
+
+@@ -49,6 +49,8 @@ typedef struct
+
+ static int fluid_file_audio_run_s16(void *d, unsigned int msec);
+
++void delete_fluid_file_audio_driver(fluid_audio_driver_t *p);
++
+ /**************************************************************
+  *
+  *        'file' audio driver
 @@ -98,7 +98,7 @@ new_fluid_file_audio_driver(fluid_settings_t *settings,
      return (fluid_audio_driver_t *) dev;
 
