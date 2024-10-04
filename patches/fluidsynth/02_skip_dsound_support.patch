@@ -69,7 +69,7 @@
 
  error_recovery:
 -    delete_fluid_file_audio_driver((fluid_audio_driver_t *) dev);
-+    delete_fluid_file_audio_driver(fluid_audio_driver_t *);
++    delete_fluid_file_audio_driver(fluid_audio_driver_t *dev);
      return NULL;
  }
 
