@@ -50,3 +50,16 @@
      fluid_settings_add_option(settings, "audio.driver", "dsound");
  #endif
  #if SNDMAN_SUPPORT
+
+
+--- fluidsynth-static-1.1.11.orig/src/drivers/fluid_aufile.c
++++ fluidsynth-static-1.1.11/src/drivers/fluid_aufile.c
+@@ -98,7 +98,7 @@ new_fluid_file_audio_driver(fluid_settings_t *settings,
+     return (fluid_audio_driver_t *) dev;
+
+ error_recovery:
+-    delete_fluid_file_audio_driver((fluid_audio_driver_t *) dev);
++    delete_fluid_file_audio_driver(fluid_audio_driver_t *);
+     return NULL;
+ }
+
