@@ -9,9 +9,9 @@ fi
 
 function get_linux_deb_arch() {
     case "${1}" in
-        "linux-aarch64") echo "arm64" ;;
+        "linux-arm64"|"linux-aarch64") echo "arm64" ;;
         "linux-armhf") echo "armhf" ;;
-        "linux-i686") echo "i386" ;;
+        "linux-i386"|"linux-i686") echo "i386" ;;
         "linux-riscv64") echo "riscv64" ;;
         "linux-x86_64") echo "amd64" ;;
     esac
@@ -111,7 +111,7 @@ case "${1}" in
             apt-get install -yqq --allow-downgrades \
                 binfmt-support \
                 qemu-user-static \
-                x11proto-dev x11proto-render-dev \
+                x11proto-dev x11proto-render-dev x11proto-xf86vidmode-dev \
                 libasound2-dev:${linux_arch} \
                 libdbus-1-dev:${linux_arch} \
                 libgl1-mesa-dev:${linux_arch} \
