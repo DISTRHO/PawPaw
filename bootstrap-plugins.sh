@@ -585,17 +585,6 @@ FLUIDSYNTH_EXTRAFLAGS+=" -Denable-trap-on-fpe=OFF"
 git_clone fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_URL}"
 build_cmake fluidsynth "${FLUIDSYNTH_VERSION}" "${FLUIDSYNTH_EXTRAFLAGS}"
 
-if [ ! -e "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e" ]; then
-    FLUIDSYNTH_EXTRALIBS="-lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -lm"
-    if [ "${MACOS}" -eq 1 ]; then
-        FLUIDSYNTH_EXTRALIBS+=" -liconv"
-    elif [ "${WIN32}" -eq 1 ]; then
-        FLUIDSYNTH_EXTRALIBS+=" -lole32 -lws2_32 -lwinmm"
-    fi
-    sed -i -e "s/-L\${libdir} -lfluidsynth/-L\${libdir}  -lfluidsynth ${FLUIDSYNTH_EXTRALIBS}/" "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc"
-    touch "${PAWPAW_PREFIX}/lib/pkgconfig/fluidsynth.pc-e"
-fi
-
 fi # PAWPAW_SKIP_FLUIDSYNTH
 
 # ---------------------------------------------------------------------------------------------------------------------

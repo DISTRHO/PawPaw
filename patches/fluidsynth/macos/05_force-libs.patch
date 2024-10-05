@@ -1,0 +1,11 @@
+diff --git a/fluidsynth.pc.in b/fluidsynth.pc.in
+index 3aca407..733420d 100644
+--- a/fluidsynth.pc.in
++++ b/fluidsynth.pc.in
+@@ -6,5 +6,5 @@ includedir=@includedir@
+ Name: FluidSynth
+ Description: Software SoundFont synth
+ Version: @VERSION@
+-Libs: -L${libdir} -lfluidsynth
++Libs: -L${libdir} -lfluidsynth -lglib-2.0 -lgthread-2.0 -lsndfile -lFLAC -lvorbisenc -lvorbis -lopus -logg -lpthread -lm -liconv
+ Cflags: -I${includedir}
