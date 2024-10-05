@@ -117,7 +117,7 @@ KXSTUDIO_LV2_EXTENSIONS_URL=https://github.com/KXStudio/LV2-Extensions.git
 MOD_SDK_VERSION=f4341a6c2b2f50e2eb405b06ce19f9f0b4b1a62b
 MOD_SDK_URL=https://github.com/moddevices/mod-lv2-extensions.git
 
-FLUIDSYNTH_VERSION=f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
+FLUIDSYNTH_VERSION=cbe4003d97332d3a443422eab8d2764428e31130 # 2.0.0 # f65c6ba25fb2c7e37c89fc6a4afc5aa645e208c2 # 1.1.11
 FLUIDSYNTH_URL=https://github.com/FluidSynth/fluidsynth.git
 
 MXML_VERSION=3.3.1
