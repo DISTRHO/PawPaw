@@ -423,7 +423,7 @@ if [ "${MACOS}" -eq 1 ]; then
         LIBLO_EXTRAFLAGS+=" ac_cv_c_bigendian=universal"
     fi
 # use of wrong macro, should be _WIN32
-elif [ "${MACOS}" -eq 1 ]; then
+elif [ "${WIN32}" -eq 1 ]; then
     export EXTRA_CFLAGS="-DWIN32"
 fi
 
