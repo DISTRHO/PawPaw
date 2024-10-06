@@ -74,6 +74,7 @@ function install_compiler() {
 case "${1}" in
     "macos"|"macos-intel"|"macos-10.15"|"macos-universal"|"macos-universal-10.15")
         brew install autoconf automake cmake coreutils gawk git gnu-sed jq libtool make meson
+        brew uninstall --ignore-dependencies cairo freetype
 
         [ -n "${GITHUB_ENV}" ] && echo "PAWPAW_PACK_NAME=${1}-$(sw_vers -productVersion | cut -d '.' -f 1)" >> "${GITHUB_ENV}"
     ;;
