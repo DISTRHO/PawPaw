@@ -279,12 +279,13 @@ jobs:
           - target: wasm
             container: ubuntu:24.04
             os: ubuntu-latest
-          - target: win32
-            container: ubuntu:24.04
-            os: ubuntu-latest
-          - target: win64
-            container: ubuntu:24.04
-            os: ubuntu-latest
+          # fails due to python3.12 imp removal
+          # - target: win32
+          #   container: ubuntu:24.04
+          #   os: ubuntu-latest
+          # - target: win64
+          #   container: ubuntu:24.04
+          #   os: ubuntu-latest
     runs-on: ${{ matrix.os }}
     container:
       image: ${{ matrix.container }}
