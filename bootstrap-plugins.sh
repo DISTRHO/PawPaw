@@ -441,7 +441,10 @@ if [ -z "${PAWPAW_SKIP_LV2}" ] || [ "${PAWPAW_SKIP_LV2}" -eq 0 ]; then
 
 ZIX_EXTRAFLAGS=""
 
-if [ "${WASM}" -eq 1 ]; then
+if [ "${MACOS}" -eq 1 ] && [ "${MACOS_10_15}" -eq 0 ]; then
+    # tests under macOS require >= 10.15
+    ZIX_EXTRAFLAGS+=" -Dtests=disabled -Dtests_cpp=disabled"
+elif [ "${WASM}" -eq 1 ]; then
     ZIX_EXTRAFLAGS+=" -Dtests=disabled -Dtests_cpp=disabled -Dthreads=disabled"
 elif [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER}" ]; then
     ZIX_EXTRAFLAGS+=" -Dtests=disabled -Dtests_cpp=disabled"
