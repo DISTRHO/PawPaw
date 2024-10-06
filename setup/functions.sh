@@ -371,7 +371,7 @@ function build_cmake() {
     fi
 
     if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
-        extraconfrules+=" -DCMAKE_BUILD_TYPE=Debug"
+        extraconfrules+=" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_DEBUG_POSTFIX="
     else
         extraconfrules+=" -DCMAKE_BUILD_TYPE=Release"
     fi
