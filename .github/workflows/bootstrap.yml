@@ -682,8 +682,6 @@ jobs:
         include:
           - target: macos-universal
             os: macos-12
-          - target: macos-universal
-            os: macos-13
           - target: win32
             container: debian:12
             os: ubuntu-latest
