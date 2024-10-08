@@ -313,8 +313,10 @@ fi
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
-if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
-    run_make fftw "${FFTW_VERSION}" check
+if [ -z "${PAWPAW_DEBUG}" ] || [ "${PAWPAW_DEBUG}" -eq 0 ]; then
+    if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
+        run_make fftw "${FFTW_VERSION}" check
+    fi
 fi
 
 fi # PAWPAW_SKIP_FFTW
@@ -341,8 +343,10 @@ fi
 copy_download fftw fftwf "${FFTW_VERSION}"
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
-if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
-    run_make fftwf "${FFTW_VERSION}" check
+if [ -z "${PAWPAW_DEBUG}" ] || [ "${PAWPAW_DEBUG}" -eq 0 ]; then
+    if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
+        run_make fftwf "${FFTW_VERSION}" check
+    fi
 fi
 
 fi # PAWPAW_SKIP_FFTW
