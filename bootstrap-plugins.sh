@@ -274,6 +274,10 @@ elif [ "${WIN32}" -eq 1 ]; then
 fi
 
 download cairo "${CAIRO_VERSION}" "${CAIRO_URL}" "tar.xz"
+
+# fix build when compiler or linker uses stderr, see https://gitlab.freedesktop.org/cairo/cairo/-/issues/121
+patch_file cairo "${CAIRO_VERSION}" "configure" 's/test "x$cairo_cc_stderr" != "x"/false/g'
+
 build_autoconf cairo "${CAIRO_VERSION}" "${CAIRO_EXTRAFLAGS}"
 
 # FIXME tests are failing :(
@@ -310,13 +314,16 @@ elif [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
     FFTW_EXTRAFLAGS+=" --enable-sse2"
 fi
 
+# debug builds are broken, as they override CFLAGS
+if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+    FFTW_EXTRAFLAGS+=" --disable-debug"
+fi
+
 download fftw "${FFTW_VERSION}" "${FFTW_URL}"
 build_autoconf fftw "${FFTW_VERSION}" "${FFTW_EXTRAFLAGS}"
 
-if [ -z "${PAWPAW_DEBUG}" ] || [ "${PAWPAW_DEBUG}" -eq 0 ]; then
-    if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
-        run_make fftw "${FFTW_VERSION}" check
-    fi
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
+    run_make fftw "${FFTW_VERSION}" check
 fi
 
 fi # PAWPAW_SKIP_FFTW
@@ -340,13 +347,16 @@ if [ -z "${PAWPAW_NOSIMD}" ] || [ "${PAWPAW_NOSIMD}" -eq 0 ]; then
     fi
 fi
 
+# debug builds are broken, as they override CFLAGS
+if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+    FFTWF_EXTRAFLAGS+=" --disable-debug"
+fi
+
 copy_download fftw fftwf "${FFTW_VERSION}"
 build_autoconf fftwf "${FFTW_VERSION}" "${FFTWF_EXTRAFLAGS}"
 
-if [ -z "${PAWPAW_DEBUG}" ] || [ "${PAWPAW_DEBUG}" -eq 0 ]; then
-    if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
-        run_make fftwf "${FFTW_VERSION}" check
-    fi
+if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
+    run_make fftwf "${FFTW_VERSION}" check
 fi
 
 fi # PAWPAW_SKIP_FFTW
@@ -388,10 +398,12 @@ if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS+=" ac_cv_lib_socket_socket=no ac_cv_func_posix_getgrgid_r=no ac_cv_func_posix_getpwuid_r=no glib_cv_stack_grows=no glib_cv_uscore=no"
     fi
 
+    export EXTRA_CFLAGS="-Wno-incompatible-function-pointer-types"
+
     if [ "${MACOS}" -eq 1 ]; then
         export EXTRA_LDFLAGS="-lresolv"
     elif [ "${WIN32}" -eq 1 ]; then
-        export EXTRA_CFLAGS="-Wno-format -Wno-format-overflow"
+        export EXTRA_CFLAGS="${EXTRA_CFLAGS} -Wno-format -Wno-format-overflow"
     fi
 
     download glib ${GLIB_VERSION} "${GLIB_URL}" "${GLIB_TAR_EXT}"

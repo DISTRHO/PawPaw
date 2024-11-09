@@ -294,6 +294,8 @@ fi
 # ---------------------------------------------------------------------------------------------------------------------
 # pkgconfig
 
+export EXTRA_CFLAGS="-Wno-int-conversion"
+
 download pkg-config "${PKG_CONFIG_VERSION}" "${PKG_CONFIG_URL}"
 build_host_autoconf pkg-config "${PKG_CONFIG_VERSION}" "--enable-indirect-deps --with-internal-glib --with-pc-path=${TARGET_PKG_CONFIG_PATH}"
 

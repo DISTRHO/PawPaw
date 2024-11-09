@@ -223,7 +223,9 @@ function build_autoconf() {
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX} ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX}"
     fi
 
-    if [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+    if echo "${extraconfrules}" | grep -q -e '--enable-debug' -e '--disable-debug'; then
+        true
+    elif [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
         extraconfrules+=" --enable-debug"
     else
         extraconfrules+=" --disable-debug"
@@ -655,10 +657,11 @@ function build_host_autoconf() {
     unset CXX
     unset LD
     unset STRIP
-    unset CFLAGS
     unset CPPFLAGS
-    unset CXXFLAGS
-    unset LDFLAGS
+
+    export CFLAGS="${EXTRA_CFLAGS}"
+    export CXXFLAGS="${EXTRA_CXXFLAGS}"
+    export LDFLAGS="${EXTRA_LDFLAGS}"
 
     if [ -e "${PAWPAW_ROOT}/patches/${pkgname}" ] && [ ! -f "${pkgdir}/.stamp_cleanup" ] && [ ! -f "${pkgdir}/.stamp_configured" ]; then
         local patchtargets="${PAWPAW_TARGET}"
@@ -709,6 +712,10 @@ function build_host_autoconf() {
         touch .stamp_installed
         popd
     fi
+
+    unset CFLAGS
+    unset CXXFLAGS
+    unset LDFLAGS
 }
 
 function build_host_cmake() {
