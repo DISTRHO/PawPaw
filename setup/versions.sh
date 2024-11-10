@@ -85,7 +85,10 @@ else
 fi
 
 LIBFFI_URL=https://github.com/libffi/libffi/releases/download/v${LIBFFI_VERSION}
-GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
+
+# FIXME wrong downloads?
+# GLIB_URL=https://download.gnome.org/sources/glib/${GLIB_MVERSION}
+GLIB_URL=${KXSTUDIO_FILES_URL}
 
 LIBLO_VERSION=0.32
 LIBLO_URL=http://download.sourceforge.net/liblo
