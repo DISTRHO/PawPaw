@@ -23,18 +23,24 @@ function check_target() {
         "Darwin")
             CLANG=1
             MACOS=1
-            if [ "$(uname -m)" = "x86_64" ]; then
+            if [ "$(uname -m)" = "arm64" ]; then
                 MACOS_UNIVERSAL=1
             fi
             ;;
         "macos"|"macos-intel")
             CLANG=1
             MACOS=1
+            if [ "$(uname -m)" = "arm64" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "macos-10.15")
             CLANG=1
             MACOS=1
             MACOS_10_15=1
+            if [ "$(uname -m)" = "arm64" ]; then
+                CROSS_COMPILING=1
+            fi
             ;;
         "macos-universal")
             CLANG=1
@@ -166,9 +172,6 @@ function check_target() {
         "native")
             target=$(uname -s)
             check_target
-            if [ "${target}" = "Darwin" ] && [ "$(uname -m)" = "arm64" ]; then
-                MACOS_UNIVERSAL=1
-            fi
             ;;
         default|*)
             echo "Invalid target '${target}', possible values are:"
