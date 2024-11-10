@@ -49,12 +49,16 @@ function download() {
                 dlurl1="${dlbaseurl}/${dlname}-${version}.${dlext}"
                 dlurl2="${KXSTUDIO_FILES_URL}/${dlname}-${version}.${dlext}"
             fi
+            echo "Downloading ${dlurl1}"
             curl -L "${dlurl1}" -o "${dlfile}" --fail || curl -L "${dlurl2}" -o "${dlfile}" --fail
         fi
     fi
 
     if [ ! -d "${dlfolder}" ]; then
         mkdir "${dlfolder}"
+        echo "Extracting ${dlfile}"
+        file "${dlfile}"
+        md5sum "${dlfile}"
         tar -xf "${dlfile}" -C "${dlfolder}" --strip-components=1
     fi
 }
