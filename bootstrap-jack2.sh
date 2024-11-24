@@ -56,16 +56,32 @@ download db "${DB_VERSION}" "${DB_URL}"
 
 # based on build_autoconf
 function build_custom_db() {
-    local name="${1}"
+    local pkgname="${1}"
     local version="${2}"
     local extraconfrules="${3}"
 
-    local pkgdir="${PAWPAW_BUILDDIR}/${name}-${version}"
+    local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    if [ "${CROSS_COMPILING}" -eq 1 ]; then
+    if [ "${LINUX}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
         extraconfrules+=" --build=$(uname -m)-linux-gnu ac_cv_build=$(uname -m)-linux-gnu"
+    fi
+
+    if [ "${LINUX}" -eq 1 ] && [ "$(uname -m)" != "x86_64" ]; then
+        extraconfrules+=" --host=$(uname -m)-linux-gnu ac_cv_host=$(uname -m)-linux-gnu"
+    elif [ "${WASM}" -eq 1 ]; then
+        extraconfrules+=" --host=i686-linux-gnu ac_cv_host=i686-linux-gnu"
+    elif [ -n "${TOOLCHAIN_PREFIX}" ]; then
         extraconfrules+=" --host=${TOOLCHAIN_PREFIX} ac_cv_host=${TOOLCHAIN_PREFIX}"
     fi
+
+    if echo "${extraconfrules}" | grep -q -e '--enable-debug' -e '--disable-debug'; then
+        true
+    elif [ -n "${PAWPAW_DEBUG}" ] && [ "${PAWPAW_DEBUG}" -eq 1 ]; then
+        extraconfrules+=" --enable-debug"
+    else
+        extraconfrules+=" --disable-debug"
+    fi
+
     if [ "${MACOS}" -eq 1 ]; then
         extraconfrules+=" --with-mutex=x86_64/gcc-assembly db_cv_atomic=x86/gcc-assembly"
     fi
@@ -73,11 +89,11 @@ function build_custom_db() {
         extraconfrules+=" --enable-mingw"
     fi
 
-    _prebuild "${name}" "${pkgdir}"
+    _prebuild "${pkgname}" "${pkgdir}"
 
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build_unix"
-        ../dist/configure --enable-static --disable-shared --disable-debug --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
+        ../dist/configure --enable-static --disable-shared --disable-doc --disable-maintainer-mode --prefix="${PAWPAW_PREFIX}" ${extraconfrules}
         touch ../.stamp_configured
         popd
     fi

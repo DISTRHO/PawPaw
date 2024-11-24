@@ -221,10 +221,16 @@ function build_autoconf() {
 
     local pkgdir="${PAWPAW_BUILDDIR}/${pkgname}-${version}"
 
-    if [ "${WASM}" -eq 1 ]; then
-        extraconfrules+=" --host=$(uname -m)-linux-gnu"
+    if [ "${LINUX}" -eq 1 ] || [ "${WASM}" -eq 1 ]; then
+        extraconfrules+=" --build=$(uname -m)-linux-gnu ac_cv_build=$(uname -m)-linux-gnu"
+    fi
+
+    if [ "${LINUX}" -eq 1 ] && [ "$(uname -m)" != "x86_64" ]; then
+        extraconfrules+=" --host=$(uname -m)-linux-gnu ac_cv_host=$(uname -m)-linux-gnu"
+    elif [ "${WASM}" -eq 1 ]; then
+        extraconfrules+=" --host=i686-linux-gnu ac_cv_host=i686-linux-gnu"
     elif [ -n "${TOOLCHAIN_PREFIX}" ]; then
-        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} ac_cv_build=$(uname -m)-linux-gnu ac_cv_host=${TOOLCHAIN_PREFIX}"
+        extraconfrules+=" --host=${TOOLCHAIN_PREFIX} ac_cv_host=${TOOLCHAIN_PREFIX}"
     fi
 
     if echo "${extraconfrules}" | grep -q -e '--enable-debug' -e '--disable-debug'; then

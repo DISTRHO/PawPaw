@@ -385,8 +385,9 @@ fi
 if [ -z "${PAWPAW_SKIP_GLIB}" ] || [ "${PAWPAW_SKIP_GLIB}" -eq 0 ]; then
 
 if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
-    GLIB_EXTRAFLAGS="--disable-rebuilds"
-    GLIB_EXTRAFLAGS="--disable-profile"
+    GLIB_EXTRAFLAGS=""
+    GLIB_EXTRAFLAGS+=" --disable-rebuilds"
+    GLIB_EXTRAFLAGS+=" --disable-profile"
 
     if [ "${WIN32}" -eq 1 ]; then
         GLIB_EXTRAFLAGS+=" --with-threads=win32"
@@ -413,6 +414,7 @@ if [ "${MACOS}" -eq 1 ] || [ "${WASM}" -eq 1 ] || [ "${WIN32}" -eq 1 ]; then
         patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_ARM/__aarch64__/'
         patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/__SSE2__/'
     elif [ "${WASM}" -eq 1 ]; then
+        patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_I486/_G_ATOMIC_NOT_I486/'
         patch_file glib ${GLIB_VERSION} "glib/gatomic.c" 's/G_ATOMIC_X86_64/_G_ATOMIC_NOT_X86_64/'
     fi
 
