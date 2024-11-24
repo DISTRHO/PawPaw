@@ -80,7 +80,7 @@ function build_conf_openssl() {
         fi
         export RELEASE="whatever"
         export BUILD="unknown"
-    elif [ "${MACOS_UNIVERSAL}" -eq 0 ] && [ "$(uname -m)" = "x86_64" ]; then
+    elif [ "${MACOS}" -eq 1 ] && [ "${MACOS_UNIVERSAL}" -eq 0 ]; then
         export MACHINE="x86_64"
     fi
 

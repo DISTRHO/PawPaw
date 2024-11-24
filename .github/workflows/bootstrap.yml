@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  CACHE_VERSION: 14
+  CACHE_VERSION: 15
   DEBIAN_FRONTEND: noninteractive
   PAWPAW_SKIP_TESTS: 1
 
