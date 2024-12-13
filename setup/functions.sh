@@ -57,8 +57,8 @@ function download() {
     if [ ! -d "${dlfolder}" ]; then
         mkdir "${dlfolder}"
         echo "Extracting ${dlfile}"
-        file "${dlfile}"
-        md5sum "${dlfile}"
+        # file "${dlfile}"
+        # md5sum "${dlfile}"
         tar -xf "${dlfile}" -C "${dlfolder}" --strip-components=1
     fi
 }
