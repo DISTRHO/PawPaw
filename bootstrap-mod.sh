@@ -137,6 +137,8 @@ build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_T
 # ---------------------------------------------------------------------------------------------------------------------
 # juce-6.0
 
+if [ -z "${PAWPAW_SKIP_JUCE}" ] || [ "${PAWPAW_SKIP_JUCE}" -eq 0 ]; then
+
 JUCE_6_0_VERSION="24b7e3b2b2c4713d53163b58aed8f79a605218e9"
 JUCE_6_0_URL="https://github.com/DISTRHO/JUCE.git"
 
@@ -152,8 +154,12 @@ link_target_file juce-6.0 "${JUCE_6_0_VERSION}" "JUCEConfig.cmake" "lib/cmake/JU
 install_file juce-6.0 "${JUCE_6_0_VERSION}" "build/extras/Build/juceaide/juceaide_artefacts/Release/juceaide" "bin" "juceaide60"
 install_file juce-6.0 "${JUCE_6_0_VERSION}" "extras/Build/CMake/lv2_ttl_generator.c" "lib/cmake/JUCE-6.0.8"
 
+fi # PAWPAW_SKIP_JUCE
+
 # ---------------------------------------------------------------------------------------------------------------------
 # juce-6.1
+
+if [ -z "${PAWPAW_SKIP_JUCE}" ] || [ "${PAWPAW_SKIP_JUCE}" -eq 0 ]; then
 
 JUCE_6_1_VERSION="2cf0224df33e52ebbaebacc9a846d2be26cdcbcb"
 JUCE_6_1_URL="https://github.com/DISTRHO/JUCE.git"
@@ -170,8 +176,12 @@ link_target_file juce-6.1 "${JUCE_6_1_VERSION}" "JUCEConfig.cmake" "lib/cmake/JU
 install_file juce-6.1 "${JUCE_6_1_VERSION}" "build/extras/Build/juceaide/juceaide_artefacts/Release/juceaide" "bin" "juceaide61"
 install_file juce-6.1 "${JUCE_6_1_VERSION}" "extras/Build/CMake/lv2_ttl_generator.c" "lib/cmake/JUCE-6.1.6"
 
+fi # PAWPAW_SKIP_JUCE
+
 # ---------------------------------------------------------------------------------------------------------------------
 # juce-7.0
+
+if [ -z "${PAWPAW_SKIP_JUCE}" ] || [ "${PAWPAW_SKIP_JUCE}" -eq 0 ]; then
 
 JUCE_7_0_VERSION="c3099e733e90b8a2e7071698980abd70efb9a4e7"
 JUCE_7_0_URL="https://github.com/DISTRHO/JUCE.git"
@@ -186,6 +196,8 @@ build_host_cmake juce-7.0 "${JUCE_7_0_VERSION}" "${JUCE_7_0_EXTRAFLAGS}"
 
 link_target_file juce-7.0 "${JUCE_7_0_VERSION}" "JUCEConfig.cmake" "lib/cmake/JUCE-7.0.9/JUCE-7.0.9Config.cmake"
 install_file juce-7.0 "${JUCE_7_0_VERSION}" "build/extras/Build/juceaide/juceaide_artefacts/Release/juceaide" "bin" "juceaide70"
+
+fi # PAWPAW_SKIP_JUCE
 
 # ---------------------------------------------------------------------------------------------------------------------
 # lvtk1
