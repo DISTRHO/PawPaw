@@ -388,6 +388,8 @@ function build_cmake() {
         extraconfrules+=" -DCMAKE_BUILD_TYPE=Release"
     fi
 
+    extraconfrules+=" -DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+
     if [ ! -f "${pkgdir}/.stamp_configured" ]; then
         pushd "${pkgdir}/build"
         ${CMAKE_EXE_WRAPPER} ${cmake} -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX="${PAWPAW_PREFIX}" ${extraconfrules} ..

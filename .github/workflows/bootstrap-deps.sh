@@ -150,7 +150,7 @@ case "${1}" in
             "bionic"|"bullseye"|"focal")
                 apt-get install -yqq --no-install-recommends python3-pip
                 pip3 install --isolated --upgrade --no-cache-dir --force-reinstall pip
-                pip3 install --isolated --upgrade --no-cache-dir --force-reinstall cmake meson
+                pip3 install --isolated --upgrade --no-cache-dir --force-reinstall cmake==3.31.6 meson
             ;;
         esac
 
