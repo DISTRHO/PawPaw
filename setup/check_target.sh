@@ -30,17 +30,17 @@ function check_target() {
         "macos"|"macos-intel")
             CLANG=1
             MACOS=1
-            if [ "$(uname -m)" = "arm64" ]; then
-                CROSS_COMPILING=1
-            fi
+            # if [ "$(uname -m)" = "arm64" ]; then
+            #     CROSS_COMPILING=1
+            # fi
             ;;
         "macos-10.15")
             CLANG=1
             MACOS=1
             MACOS_10_15=1
-            if [ "$(uname -m)" = "arm64" ]; then
-                CROSS_COMPILING=1
-            fi
+            # if [ "$(uname -m)" = "arm64" ]; then
+            #     CROSS_COMPILING=1
+            # fi
             ;;
         "macos-universal")
             CLANG=1
