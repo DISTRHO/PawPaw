@@ -422,7 +422,7 @@ fi
 
 if [ -z "${PAWPAW_SKIP_SAMPLERATE}" ] || [ "${PAWPAW_SKIP_SAMPLERATE}" -eq 0 ]; then
 
-LIBSAMPLERATE_EXTRAFLAGS="--disable-fftw"
+LIBSAMPLERATE_EXTRAFLAGS="--disable-alsa --disable-fftw"
 
 # NOTE: sndfile tests use Carbon, which is not always available on macOS
 if [ "${CROSS_COMPILING}" -eq 1 ] || [ "${MACOS}" -eq 1 ]; then
