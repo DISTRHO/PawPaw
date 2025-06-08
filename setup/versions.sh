@@ -31,6 +31,9 @@ FLAC_URL=${XIPH_URL}/flac
 OPUS_VERSION=1.5.2
 OPUS_URL=${XIPH_URL}/opus
 
+# TODO libmp3lame
+# TODO libmpg123
+
 LIBSNDFILE_VERSION=1.2.2
 LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}
 
