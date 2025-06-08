@@ -37,8 +37,8 @@ OPUS_URL=${XIPH_URL}/opus
 LIBSNDFILE_VERSION=1.2.2
 LIBSNDFILE_URL=https://github.com/libsndfile/libsndfile/releases/download/${LIBSNDFILE_VERSION}
 
-LIBSAMPLERATE_VERSION=0.1.9
-LIBSAMPLERATE_URL=http://www.mega-nerd.com/SRC
+LIBSAMPLERATE_VERSION=0.2.2
+LIBSAMPLERATE_URL=https://github.com/libsndfile/libsamplerate/releases/download/${LIBSAMPLERATE_VERSION}
 
 MINGW_STD_THREADS_VERSION=c931bac289dd431f1dd30fc4a5d1a7be36668073
 MINGW_STD_THREADS_URL=https://github.com/meganz/mingw-std-threads.git

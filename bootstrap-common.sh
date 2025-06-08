@@ -411,7 +411,6 @@ else
 fi
 
 download libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_URL}" "tar.xz"
-
 build_autoconf libsndfile "${LIBSNDFILE_VERSION}" "${LIBSNDFILE_EXTRAFLAGS}"
 
 if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
@@ -430,7 +429,7 @@ if [ "${CROSS_COMPILING}" -eq 1 ] || [ "${MACOS}" -eq 1 ]; then
     LIBSAMPLERATE_EXTRAFLAGS+=" --disable-sndfile"
 fi
 
-download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}"
+download libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_URL}" "tar.xz"
 build_autoconf libsamplerate "${LIBSAMPLERATE_VERSION}" "${LIBSAMPLERATE_EXTRAFLAGS}"
 
 if ([ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]) && [ "${MACOS}" -eq 0 ]; then
