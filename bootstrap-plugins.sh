@@ -549,7 +549,7 @@ fi # PAWPAW_SKIP_LV2
 if [ -z "${PAWPAW_SKIP_LV2}" ] || [ "${PAWPAW_SKIP_LV2}" -eq 0 ]; then
 
 if [ "${LV2LINT_SUPPORTED}" -eq 1 ]; then
-    git_clone lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
+    download lv2lint "${LV2LINT_VERSION}" "${LV2LINT_URL}"
     build_meson lv2lint "${LV2LINT_VERSION}"
     # "-Donline-tests=true -Delf-tests=true"
 fi
