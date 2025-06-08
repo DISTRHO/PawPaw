@@ -6,6 +6,7 @@ on:
 env:
   CACHE_VERSION: 15
   DEBIAN_FRONTEND: noninteractive
+  PAWPAW_CI: 1
   PAWPAW_SKIP_TESTS: 1
 
 jobs:

@@ -656,7 +656,7 @@ fi # WASM
 # ---------------------------------------------------------------------------------------------------------------------
 # wine bootstrap (needed for cross-compilation)
 
-if [ "${EXE_WRAPPER}" = "wine" ]; then
+if [ -z "${PAWPAW_CI}" ] && [ "${EXE_WRAPPER}" = "wine" ]; then
     wineboot -u
 fi
 
