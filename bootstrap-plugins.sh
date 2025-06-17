@@ -557,6 +557,16 @@ fi
 fi # PAWPAW_SKIP_LV2
 
 # ---------------------------------------------------------------------------------------------------------------------
+# darkglass lv2 extensions
+
+if [ -z "${PAWPAW_SKIP_LV2}" ] || [ "${PAWPAW_SKIP_LV2}" -eq 0 ]; then
+
+git_clone darkglass-lv2-extensions "${DARKGLASS_LV2_EXTENSIONS_VERSION}" "${DARKGLASS_LV2_EXTENSIONS_URL}"
+build_make darkglass-lv2-extensions "${DARKGLASS_LV2_EXTENSIONS_VERSION}"
+
+fi # PAWPAW_SKIP_LV2
+
+# ---------------------------------------------------------------------------------------------------------------------
 # kxstudio lv2 extensions
 
 if [ -z "${PAWPAW_SKIP_LV2}" ] || [ "${PAWPAW_SKIP_LV2}" -eq 0 ]; then
