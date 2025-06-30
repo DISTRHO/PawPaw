@@ -319,6 +319,10 @@ fi
 LIBVORBIS_EXTRAFLAGS="--disable-examples"
 
 download libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_URL}"
+
+# fix build, flag is not valid anymore
+patch_file libvorbis "${LIBVORBIS_VERSION}" "configure" 's/-force_cpusubtype_ALL//'
+
 build_autoconf libvorbis "${LIBVORBIS_VERSION}" "${LIBVORBIS_EXTRAFLAGS}"
 
 if [ -z "${PAWPAW_SKIP_TESTS}" ] || [ "${PAWPAW_SKIP_TESTS}" -eq 0 ]; then
