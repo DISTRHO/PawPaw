@@ -1,0 +1,15 @@
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 99ead02..a2555e4 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -78,10 +78,6 @@ if ( PORTAUDIO_SUPPORT )
+   include_directories ( ${PORTAUDIO_INCLUDE_DIRS} )
+ endif ( PORTAUDIO_SUPPORT )
+ 
+-if ( WINDOWS_SUPPORT )
+-  set ( fluid_windows_SOURCES drivers/fluid_dsound.c drivers/fluid_winmidi.c )
+-endif ( WINDOWS_SUPPORT )
+-
+ if ( OSS_SUPPORT )
+   set ( fluid_oss_SOURCES drivers/fluid_oss.c )
+ endif ( OSS_SUPPORT )
