@@ -205,90 +205,44 @@ if [ "${LINUX}" -eq 1 ]; then
     elif [ "${LINUX_TARGET}" = "linux-x86_64" ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
-    if ! pkg-config --print-errors --exists alsa dbus-1 gl glib-2.0 libpcre libpcre2-8 pthread-stubs uuid x11 xcb xcb-dri2 xcursor xdamage xext xfixes xproto xrandr xrender xxf86vm; then
-        echo "some system libs are not available, cannot continue"
+    DEPS=("alsa" "dbus-1" "gl" "gio-2.0" "glib-2.0" "gmodule-2.0" "gobject-2.0" "gthread-2.0" "x11" "xcb" "xcursor" "xext" "xrandr")
+    # libpcre libpcre2-8 pthread-stubs uuid xcb-dri2 xdamage xf86vidmodeproto xfixes xproto xrender xxf86vm
+    DEP_ERROR=0
+    for dep in ${DEPS[@]}; do
+        if ! pkg-config --print-errors --exists ${dep}; then
+            echo "system lib '${dep}' is not available, cannot continue"
+            DEP_ERROR=1
+        fi
+    done
+    if [ "${DEP_ERROR}" -eq 1 ]; then
         exit 2
     fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/alsa.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir alsa)/alsa.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/alsa.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/dbus-1.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir dbus-1)/dbus-1.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/dbus-1.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/gl.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir gl)/gl.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/gl.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/glib-2.0.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir glib-2.0)/g{io,lib,module,object,thread}-2.0.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d;/Requires.private/d' ${TARGET_PKG_CONFIG_PATH}/g{io,lib,module,object,thread}-2.0.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir libpcre)/libpcre.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/libpcre.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/libpcre2-8.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir libpcre2-8)/libpcre2-8.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/libpcre2-8.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir pthread-stubs)/pthread-stubs.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/pthread-stubs.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/uuid.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir uuid)/uuid.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/uuid.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/x11.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir x11)/x11.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/x11.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcb.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xcb)/{xau,xcb,xdmcp}.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{xau,xcb,xdmcp}.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcb-dri2.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xcb-dri2)/xcb-dri2.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xcb-dri2.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xcursor.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xcursor)/xcursor.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xcursor.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xdamage.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xdamage)/xdamage.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xdamage.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xext.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xext)/xext.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xext.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xf86vidmodeproto.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xf86vidmodeproto)/xf86vidmodeproto.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xf86vidmodeproto.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xfixes.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xfixes)/xfixes.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xfixes.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xproto.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xproto)/{damageproto,fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/{fixesproto,kbproto,randrproto,renderproto,xextproto,xproto}.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrandr.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xrandr)/xrandr.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrandr.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xrender.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xrender)/xrender.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xrender.pc
-    fi
-    if [ ! -e "${TARGET_PKG_CONFIG_PATH}/xxf86vm.pc" ]; then
-        cp $(pkg-config --variable=pcfiledir xxf86vm)/xxf86vm.pc ${TARGET_PKG_CONFIG_PATH}/
-        sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/xxf86vm.pc
-    fi
+    function install_pkg_config_file() {
+        local dep=${1}
+        if [ ! -e "${TARGET_PKG_CONFIG_PATH}/${dep}.pc" ]; then
+            cp $(pkg-config --variable=pcfiledir ${dep})/${dep}.pc ${TARGET_PKG_CONFIG_PATH}/
+            sed -i '/Libs.private/d' ${TARGET_PKG_CONFIG_PATH}/${dep}.pc
+        fi
+        IFS=$'\n'
+        local SUBDEPS=$(pkg-config --print-requires ${dep})
+        local SUBDEPS_PRIV=$(pkg-config --print-requires-private ${dep})
+        for subdep in ${SUBDEPS[@]}; do
+            unset IFS
+            subdep=(${subdep})
+            install_pkg_config_file ${subdep[0]}
+            IFS=$'\n'
+        done
+        for subdep in ${SUBDEPS_PRIV[@]}; do
+            unset IFS
+            subdep=(${subdep})
+            install_pkg_config_file ${subdep[0]}
+            IFS=$'\n'
+        done
+        unset IFS
+    }
+    for dep in ${DEPS[@]}; do
+        install_pkg_config_file "${dep}"
+    done
 fi
 
 # ---------------------------------------------------------------------------------------------------------------------
