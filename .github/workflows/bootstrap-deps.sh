@@ -121,14 +121,6 @@ case "${1}" in
                 libxcursor-dev:${linux_arch} \
                 libxext-dev:${linux_arch} \
                 libxrandr-dev:${linux_arch}
-#                 x11proto-dev x11proto-render-dev x11proto-xf86vidmode-dev \
-#                 libvulkan-dev:${linux_arch} \
-#                 libxcb-dri2-0-dev:${linux_arch} \
-#                 libxdamage-dev:${linux_arch} \
-#                 libxfixes-dev:${linux_arch} \
-#                 libxrender-dev:${linux_arch} \
-#                 libxxf86vm-dev:${linux_arch} \ \
-#                 uuid-dev:${linux_arch}
             apt-get install -yqq --allow-downgrades \
                 qtbase5-dev-tools \
                 libqt5svg5-dev:${linux_arch} \

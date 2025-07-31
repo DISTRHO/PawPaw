@@ -206,7 +206,6 @@ if [ "${LINUX}" -eq 1 ]; then
         export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
     fi
     DEPS=("alsa" "dbus-1" "gl" "gio-2.0" "glib-2.0" "gmodule-2.0" "gobject-2.0" "gthread-2.0" "x11" "xcb" "xcursor" "xext" "xrandr")
-    # libpcre libpcre2-8 pthread-stubs uuid xcb-dri2 xdamage xf86vidmodeproto xfixes xproto xrender xxf86vm
     DEP_ERROR=0
     for dep in ${DEPS[@]}; do
         if ! pkg-config --print-errors --exists ${dep}; then
