@@ -131,6 +131,10 @@ else
     JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" -Dalsa_midi=disabled"
 fi
 
+if [ "${MACOS}" -eq 1 ] && [ "${MACOS_UNIVERSAL}" -eq 0 ] && [ "$(uname -m)" != "x86_64" ]; then
+    JACK_EXAMPLE_TOOLS_EXTRAFLAGS+=" --cross-file ${PAWPAW_ROOT}/setup/meson/${PAWPAW_TARGET}.ini"
+fi
+
 download jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOLS_URL}" "" "git"
 build_meson jack-example-tools "${JACK_EXAMPLE_TOOLS_VERSION}" "${JACK_EXAMPLE_TOOLS_EXTRAFLAGS}"
 
