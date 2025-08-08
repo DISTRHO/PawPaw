@@ -1,0 +1,147 @@
+From 6c283bab3570af9e059745aec6a7f41bfa8e37df Mon Sep 17 00:00:00 2001
+From: falkTX <falktx@falktx.com>
+Date: Thu, 14 Mar 2024 18:27:29 +0100
+Subject: [PATCH] portaudio driver midi bridge
+
+Signed-off-by: falkTX <falktx@falktx.com>
+---
+ windows/portaudio/JackPortAudioDriver.cpp | 64 +++++++++++++++++++++++
+ windows/portaudio/JackPortAudioDriver.h   |  7 +++
+ 2 files changed, 71 insertions(+)
+
+diff --git a/windows/portaudio/JackPortAudioDriver.cpp b/windows/portaudio/JackPortAudioDriver.cpp
+index 67829abac..0f428cf0d 100644
+--- a/windows/portaudio/JackPortAudioDriver.cpp
++++ b/windows/portaudio/JackPortAudioDriver.cpp
+@@ -26,6 +26,8 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ #include "JackTime.h"
+ #include "JackTools.h"
+ #include "JackCompilerDeps.h"
++#include "JackLockedEngine.h"
++#include "JackMidiPort.h"
+ #include <iostream>
+ #include <assert.h>
+ 
+@@ -33,6 +35,31 @@ Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ #include "JackServerGlobals.h"
+ #endif
+ 
++typedef uint32_t (*jacksym_midi_get_event_count)(void*);
++typedef int (*jacksym_midi_event_get)(jack_midi_event_t*, void*, uint32_t);
++typedef int (*jacksym_midi_event_write)(void*, jack_nframes_t, const jack_midi_data_t*, size_t);
++
++extern "C"
++{
++LIB_EXPORT uint32_t jack_midi_get_event_count(void* port_buffer);
++
++LIB_EXPORT int jack_midi_event_get(jack_midi_event_t* event,
++                                void* port_buffer, uint32_t event_index);
++
++LIB_EXPORT int jack_midi_event_write(void* port_buffer,
++                                     jack_nframes_t time, const jack_midi_data_t* data, size_t data_size);
++
++void PaJack_SetMidiCallbacks(PaStream* s,
++                             jacksym_midi_get_event_count get_count,
++                             jacksym_midi_event_get get,
++                             jacksym_midi_event_write write);
++
++void PaJack_SetMidiBuffers(PaStream* s,
++                           void* get_ptr,
++                           void* write_ptr);
++
++}
++
+ using namespace std;
+ 
+ namespace Jack
+@@ -109,6 +136,14 @@ int JackPortAudioDriver::Read()
+     for (int i = 0; i < fCaptureChannels; i++) {
+         memcpy(GetInputBuffer(i), fInputBuffer[i], sizeof(jack_default_audio_sample_t) * fEngineControl->fBufferSize);
+     }
++
++#ifdef __linux__
++    JackMidiBuffer* cbuf = (JackMidiBuffer*)fGraphManager->GetBuffer(fCaptureMidiPort, fEngineControl->fBufferSize);
++    JackMidiBuffer* pbuf = (JackMidiBuffer*)fGraphManager->GetBuffer(fPlaybackMidiPort, fEngineControl->fBufferSize);
++    pbuf->Reset(fEngineControl->fBufferSize);
++    PaJack_SetMidiBuffers(fStream, pbuf, cbuf);
++#endif
++
+     return 0;
+ }
+ 
+@@ -117,6 +152,12 @@ int JackPortAudioDriver::Write()
+     for (int i = 0; i < fPlaybackChannels; i++) {
+         memcpy(fOutputBuffer[i], GetOutputBuffer(i), sizeof(jack_default_audio_sample_t) * fEngineControl->fBufferSize);
+     }
++
++#ifdef __linux__
++    JackMidiBuffer* cbuf = (JackMidiBuffer*)fGraphManager->GetBuffer(fCaptureMidiPort, fEngineControl->fBufferSize);
++    cbuf->Reset(fEngineControl->fBufferSize);
++#endif
++
+     return 0;
+ }
+ 
+@@ -303,6 +344,23 @@ int JackPortAudioDriver::Open(jack_nframes_t buffer_size,
+             device_reservation_loop_running = false;
+         }
+     }
++
++    jack_port_id_t port_index;
++    JackPort* port;
++    if (fEngine->PortRegister(fClientControl.fRefNum, "system:midi_capture_1", JACK_DEFAULT_MIDI_TYPE,
++                              CaptureDriverFlags, fEngineControl->fBufferSize, &port_index) < 0) {
++        goto error;
++    }
++    fCaptureMidiPort = port_index;
++    port = fGraphManager->GetPort(port_index);
++    port->SetAlias("MOD Desktop MIDI Capture");
++    if (fEngine->PortRegister(fClientControl.fRefNum, "system:midi_playback_1", JACK_DEFAULT_MIDI_TYPE,
++                              PlaybackDriverFlags, fEngineControl->fBufferSize, &port_index) < 0) {
++        goto error;
++    }
++    fPlaybackMidiPort = port_index;
++    port = fGraphManager->GetPort(port_index);
++    port->SetAlias("MOD Desktop MIDI Playback");
+ #endif
+ 
+     return 0;
+@@ -387,6 +445,12 @@ int JackPortAudioDriver::Start()
+     if (JackAudioDriver::Start() == 0) {
+         PaError err;
+         if ((err = Pa_StartStream(fStream)) == paNoError) {
++#ifdef __linux__
++            PaJack_SetMidiCallbacks(fStream,
++                                    jack_midi_get_event_count,
++                                    jack_midi_event_get,
++                                    jack_midi_event_write);
++#endif
+             return 0;
+         }
+         jack_error("Pa_StartStream error = %s", Pa_GetErrorText(err));
+diff --git a/windows/portaudio/JackPortAudioDriver.h b/windows/portaudio/JackPortAudioDriver.h
+index 7b16d6ea6..f366189b7 100644
+--- a/windows/portaudio/JackPortAudioDriver.h
++++ b/windows/portaudio/JackPortAudioDriver.h
+@@ -49,7 +49,11 @@ class JackPortAudioDriver :
+         PaDeviceIndex fInputDevice;
+         PaDeviceIndex fOutputDevice;
+         PortAudioDevices* fPaDevices;
++#ifdef __linux__
++        int fCaptureMidiPort;
++        int fPlaybackMidiPort;
+         jack_native_thread_t fReservationLoopThread;
++#endif
+ 
+         static int Render(const void* inputBuffer, void* outputBuffer,
+                           unsigned long framesPerBuffer,
+@@ -69,6 +73,9 @@ class JackPortAudioDriver :
+ #endif
+                 JackAudioDriver(name, alias, engine, table), fStream(NULL), fInputBuffer(NULL), fOutputBuffer(NULL),
+                 fInputDevice(paNoDevice), fOutputDevice(paNoDevice), fPaDevices(pa_devices)
++#ifdef __linux__
++                , fCaptureMidiPort(0), fPlaybackMidiPort(0)
++#endif
+         {}
+ 
+         virtual ~JackPortAudioDriver()

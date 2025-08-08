@@ -1,0 +1,53 @@
+From 3bc08a79629fe22b2cbf4acb4a69bfe79403a6a6 Mon Sep 17 00:00:00 2001
+From: falkTX <falktx@falktx.com>
+Date: Thu, 14 Mar 2024 18:26:30 +0100
+Subject: [PATCH] Ignore missing internals
+
+Signed-off-by: falkTX <falktx@falktx.com>
+---
+ common/JackControlAPI.cpp   | 3 ---
+ common/JackDriverLoader.cpp | 9 ---------
+ 2 files changed, 12 deletions(-)
+
+diff --git a/common/JackControlAPI.cpp b/common/JackControlAPI.cpp
+index c13640a97..0e005353b 100644
+--- a/common/JackControlAPI.cpp
++++ b/common/JackControlAPI.cpp
+@@ -458,10 +458,7 @@ jackctl_internals_load(
+ 
+     descriptor_node_ptr = jack_internals_load(NULL);
+     if (descriptor_node_ptr == NULL)
+-    {
+-        jack_error("Could not find any internals in driver directory!");
+         return false;
+-    }
+ 
+     while (descriptor_node_ptr != NULL)
+     {
+diff --git a/common/JackDriverLoader.cpp b/common/JackDriverLoader.cpp
+index 77150435c..9a1be518b 100644
+--- a/common/JackDriverLoader.cpp
++++ b/common/JackDriverLoader.cpp
+@@ -670,10 +670,6 @@ JSList* jack_internals_load(JSList * internals)
+ 
+     } while (FindNextFileW(file, &filedata));
+ 
+-    if (!driver_list) {
+-        jack_error ("Could not find any internals in %s!", driver_dir);
+-    }
+-
+  error:
+     if (driver_dir) {
+         free(driver_dir);
+@@ -738,11 +734,6 @@ JSList* jack_internals_load(JSList * internals)
+                     driver_dir, strerror (errno));
+     }
+ 
+-    if (!driver_list) {
+-        jack_error ("Could not find any internals in %s!", driver_dir);
+-        return NULL;
+-    }
+-
+     return driver_list;
+ }
+ 

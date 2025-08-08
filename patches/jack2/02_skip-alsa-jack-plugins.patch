@@ -1,0 +1,25 @@
+From 912ed316fdec187005f4172d06093baa1a791c2a Mon Sep 17 00:00:00 2001
+From: falkTX <falktx@falktx.com>
+Date: Thu, 14 Mar 2024 18:27:05 +0100
+Subject: [PATCH] Skip alsa-jack from alsa-plugins
+
+Signed-off-by: falkTX <falktx@falktx.com>
+---
+ common/JackInternalClient.cpp | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/common/JackInternalClient.cpp b/common/JackInternalClient.cpp
+index 6b4dd75bd..a428c975d 100644
+--- a/common/JackInternalClient.cpp
++++ b/common/JackInternalClient.cpp
+@@ -73,6 +73,10 @@ int JackInternalClient::Open(const char* server_name, const char* name, jack_uui
+     int result;
+     jack_log("JackInternalClient::Open name = %s", name);
+     
++    // ignore client from alsa-plugins
++    if (strncmp(name, "alsa-jack.", 10) == 0)
++        return -1;
++
+     if (strlen(name) >= JACK_CLIENT_NAME_SIZE) {
+         jack_error("\"%s\" is too long to be used as a JACK client name.\n"
+                    "Please use %lu characters or less",
