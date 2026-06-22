@@ -501,6 +501,9 @@ if [ "${CROSS_COMPILING}" -eq 1 ] && [ "${LINUX}" -eq 0 ] && [ -z "${EXE_WRAPPER
     SORD_EXTRAFLAGS="-Dtools=disabled"
 fi
 
+# Fix tests
+export EXTRA_CXXFLAGS="-std=c++11"
+
 download sord "${SORD_VERSION}" "${SORD_URL}" "tar.xz"
 build_meson sord "${SORD_VERSION}" "-Ddefault_library=static -Ddocs=disabled ${SORD_EXTRAFLAGS}"
 
